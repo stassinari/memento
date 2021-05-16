@@ -73,7 +73,7 @@ const EmailPasswordForm: FunctionComponent<Props> = ({
         firebaseAuthPromise
           .then((result) => {
             setAuthError("");
-            console.log("successful auth action");
+            console.log(`successful ${authAction}`);
           })
           .catch((error) => {
             setAuthError(error.message);
