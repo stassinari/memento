@@ -103,8 +103,7 @@ const Home: FunctionComponent = () => {
     .collection("users")
     .doc(userId)
     .collection("beans")
-    .orderBy("roastDate", "desc")
-    .where("isFinished", "==", false);
+    .orderBy("roastDate", "desc");
   const { status: beansStatus, data: beans } =
     useFirestoreCollectionData<Beans>(beansQuery, {
       idField: "id",
@@ -225,23 +224,25 @@ const Home: FunctionComponent = () => {
           {beans.length === 0 ? (
             <EmptyListPlaceholder type="beans" filterLabel="open bags of" />
           ) : (
-            filterBeans(beans).map((bean) => (
-              <ListItem
-                key={bean.id}
-                button
-                onClick={() => history.push(`/beans/${bean.id}`)}
-              >
-                <ListItemAvatar>
-                  <Avatar>
-                    <BeanBagIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={buildBeansLabel(bean, true)}
-                  secondary={buildBeansSecondaryLabel(bean)}
-                />
-              </ListItem>
-            ))
+            filterBeans(beans)
+              .filter((b) => !b.isFinished)
+              .map((bean) => (
+                <ListItem
+                  key={bean.id}
+                  button
+                  onClick={() => history.push(`/beans/${bean.id}`)}
+                >
+                  <ListItemAvatar>
+                    <Avatar>
+                      <BeanBagIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={buildBeansLabel(bean, true)}
+                    secondary={buildBeansSecondaryLabel(bean)}
+                  />
+                </ListItem>
+              ))
           )}
         </List>
         <Button
