@@ -102,7 +102,9 @@ const Home: FunctionComponent = () => {
   const beansQuery = useFirestore()
     .collection("users")
     .doc(userId)
-    .collection("beans");
+    .collection("beans")
+    .orderBy("roastDate", "desc")
+    .where("isFinished", "==", false);
   const { status: beansStatus, data: beans } =
     useFirestoreCollectionData<Beans>(beansQuery, {
       idField: "id",
