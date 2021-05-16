@@ -128,9 +128,8 @@ const CustomListItemIcon = withStyles((theme) => {
 })(ListItemIcon);
 
 const Sidebar: FunctionComponent<Props> = ({ open, setOpen }) => {
-  const {
-    data: { isAnonymous: isUserAnonymous },
-  } = useUser();
+  const { data: userData } = useUser();
+  const isUserAnonymous = userData && userData.isAnonymous;
   const classes = useStyles();
 
   const theme = useTheme();
