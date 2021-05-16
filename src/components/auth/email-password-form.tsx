@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import clsx from "clsx";
 import {
   Button,
@@ -47,7 +47,6 @@ const EmailPasswordForm: FunctionComponent<Props> = ({
   authAction,
 }) => {
   const auth = useAuth();
-  const history = useHistory();
   const classes = useStyles();
   const commonStyles = useCommonStyles();
   const [authError, setAuthError] = useState("");
@@ -74,8 +73,7 @@ const EmailPasswordForm: FunctionComponent<Props> = ({
         firebaseAuthPromise
           .then((result) => {
             setAuthError("");
-            console.log("successful auth action", result);
-            history.push("/");
+            console.log(`successful ${authAction}`);
           })
           .catch((error) => {
             setAuthError(error.message);

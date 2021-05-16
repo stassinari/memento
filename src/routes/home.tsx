@@ -69,9 +69,9 @@ const EmptyListPlaceholder: FunctionComponent<EmptyListPlaceholderProps> = ({
 );
 
 const Home: FunctionComponent = () => {
-  const {
-    data: { uid: userId },
-  } = useUser();
+  const { data: userData } = useUser();
+  const userId = userData?.uid;
+
   const history = useHistory();
   const classes = useStyles();
 
@@ -102,11 +102,15 @@ const Home: FunctionComponent = () => {
   const beansQuery = useFirestore()
     .collection("users")
     .doc(userId)
-    .collection("beans");
+    .collection("beans")
+    .orderBy("roastDate", "desc")
+    .where("isFinished", "==", false);
   const { status: beansStatus, data: beans } =
     useFirestoreCollectionData<Beans>(beansQuery, {
       idField: "id",
     });
+
+  if (!userId) return null;
 
   const beansIdLabelMap = buildBeansIdLabelMap(beans);
 

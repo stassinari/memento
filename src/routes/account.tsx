@@ -49,9 +49,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Account: FunctionComponent = () => {
-  const {
-    data: { uid: userId, email: userEmail, isAnonymous: isUserAnonymous },
-  } = useUser();
+  const { data: userData } = useUser();
+  const isUserAnonymous = userData && userData.isAnonymous;
+  const userId = userData?.uid;
+  const userEmail = userData?.email;
+
   const firestore = useFirestore();
   const auth = useAuth();
 

@@ -90,9 +90,8 @@ const Header: FunctionComponent<Props> = ({
   title,
   hideHamburger,
 }) => {
-  const {
-    data: { isAnonymous: isUserAnonymous },
-  } = useUser();
+  const { data: userData } = useUser();
+  const isUserAnonymous = userData && userData.isAnonymous;
   const classes = useStyles();
 
   return (
@@ -131,21 +130,23 @@ const Header: FunctionComponent<Props> = ({
             {title}
           </Typography>
         </div>
-        <IconButton
-          className={classes.rightSide}
-          color="inherit"
-          component={Link}
-          edge="end"
-          to="/account"
-        >
-          <Badge
-            badgeContent="!"
-            color="secondary"
-            invisible={!isUserAnonymous}
+        {userData && (
+          <IconButton
+            className={classes.rightSide}
+            color="inherit"
+            component={Link}
+            edge="end"
+            to="/account"
           >
-            <AccountCircleIcon />
-          </Badge>
-        </IconButton>
+            <Badge
+              badgeContent="!"
+              color="secondary"
+              invisible={!isUserAnonymous}
+            >
+              <AccountCircleIcon />
+            </Badge>
+          </IconButton>
+        )}
       </Toolbar>
     </AppBar>
   );
