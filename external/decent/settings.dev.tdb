@@ -1,0 +1,7 @@
+auto_upload 1
+auto_upload_min_seconds 1
+memento_browse_url http://localhost:3000/espresso/<ID>/decent
+memento_endpoint decentUpload
+memento_password passwd
+memento_url https://europe-west2-brewlog-dev.cloudfunctions.net
+memento_username demo@demo123

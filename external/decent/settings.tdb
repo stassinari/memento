@@ -1,0 +1,7 @@
+auto_upload 1
+auto_upload_min_seconds 6
+memento_browse_url https://brewlog-early-test.netlify.app/espresso/<ID>/decent
+memento_endpoint decentUpload
+memento_password passwd
+memento_url https://europe-west2-brewlog-prod.cloudfunctions.net
+memento_username demo@demo123
