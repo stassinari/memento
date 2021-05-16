@@ -1,0 +1,7 @@
+auto_upload 1
+auto_upload_min_seconds 1
+memento_browse_url http://localhost:3000/espresso/<ID>/decent
+memento_endpoint brewlog-dev/europe-west2/decentUpload
+memento_password arsars
+memento_url http://localhost:5001
+memento_username ars@ars.ars

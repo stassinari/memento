@@ -1,0 +1,204 @@
+import React, { FunctionComponent, useContext } from "react";
+import Layout from "../components/layout";
+import {
+  Button,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  makeStyles,
+  Paper,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+
+import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import PersonIcon from "@material-ui/icons/Person";
+import ErrorIcon from "@material-ui/icons/Error";
+
+import { ThemeContext } from "../components/app";
+import { ThemePreference } from "../config/mui-theme";
+import { generateSecretKey } from "../database/queries";
+import { Link } from "react-router-dom";
+import useCommonStyles from "../config/use-common-styles";
+import { useAuth, useFirestore, useFirestoreDocData, useUser } from "reactfire";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+  divider: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  infoParagraph: {
+    marginBottom: theme.spacing(2),
+  },
+  email: {
+    marginTop: theme.spacing(2),
+  },
+  headingWithIcon: {
+    display: "flex",
+    alignItems: "center",
+  },
+  headingIcon: {
+    marginRight: theme.spacing(1),
+  },
+}));
+
+const Account: FunctionComponent = () => {
+  const {
+    data: { uid: userId, email: userEmail, isAnonymous: isUserAnonymous },
+  } = useUser();
+  const firestore = useFirestore();
+  const auth = useAuth();
+
+  const classes = useStyles();
+  const commonStyles = useCommonStyles();
+
+  const { themePref, setThemePref } = useContext(ThemeContext);
+
+  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const theme = (event.target as HTMLInputElement).value as ThemePreference;
+    if (setThemePref) {
+      setThemePref(theme);
+      localStorage.setItem("theme", theme);
+    }
+  };
+
+  const userRef = firestore.collection("users").doc(userId);
+  const { data: dbUser } = useFirestoreDocData<User>(userRef);
+  const secretKey = dbUser ? dbUser.secretKey : "";
+
+  return (
+    <Layout title="Account">
+      <Paper className={classes.root}>
+        {isUserAnonymous && (
+          <>
+            <Typography
+              className={classes.headingWithIcon}
+              variant="h5"
+              component="h2"
+            >
+              <ErrorIcon className={classes.headingIcon} />
+              Complete signing up
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              className={classes.infoParagraph}
+            >
+              Complete the signup process to enable all the features and access
+              Memento on all your devices.
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<PersonIcon />}
+              component={Link}
+              to="/guest-sign-up"
+            >
+              Sign up
+            </Button>
+
+            <Divider className={classes.divider} />
+          </>
+        )}
+
+        <Typography variant="h5" component="h2" gutterBottom>
+          Select theme
+        </Typography>
+        <div>
+          <FormControl component="fieldset">
+            <RadioGroup
+              aria-label="gender"
+              name="gender1"
+              value={themePref}
+              onChange={handleThemeChange}
+            >
+              <FormControlLabel
+                value="light"
+                control={<Radio />}
+                label="Light"
+              />
+              <FormControlLabel value="dark" control={<Radio />} label="Dark" />
+              <FormControlLabel
+                value="auto"
+                control={<Radio />}
+                label="Auto (system default)"
+              />
+            </RadioGroup>
+          </FormControl>
+        </div>
+
+        <Divider className={classes.divider} />
+
+        {!isUserAnonymous && (
+          <>
+            <Typography variant="h5" component="h2">
+              Secret key
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              className={classes.infoParagraph}
+            >
+              Note: this section is useful only if you own a Decent DE1 espresso
+              machine, and you'd like to enable the Uploader plugin.
+            </Typography>
+            <div>
+              {secretKey ? (
+                <TextField
+                  className={commonStyles.formFieldWidth}
+                  label="Secret key"
+                  variant="outlined"
+                  value={secretKey}
+                />
+              ) : (
+                <Button
+                  variant="outlined"
+                  startIcon={<VpnKeyIcon />}
+                  onClick={() => generateSecretKey(firestore, userId)}
+                >
+                  Generate secret key
+                </Button>
+              )}
+            </div>
+            <div className={classes.email}>
+              <TextField
+                className={commonStyles.formFieldWidth}
+                label="Email"
+                variant="outlined"
+                value={userEmail}
+              />
+            </div>
+
+            <Divider className={classes.divider} />
+          </>
+        )}
+
+        <Typography variant="h5" component="h2">
+          Account actions
+        </Typography>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          className={classes.infoParagraph}
+        >
+          TODO: change password. For the time being, please log out and select
+          "Reset password".
+        </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<MeetingRoomIcon />}
+          onClick={() => auth.signOut()}
+        >
+          Log out
+        </Button>
+      </Paper>
+    </Layout>
+  );
+};
+
+export default Account;

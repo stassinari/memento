@@ -1,0 +1,16 @@
+node_modules
+serviceAccountKey*.json
+build/
+.env*
+
+# Logs
+*.log
+
+# Local Netlify folder
+.netlify
+
+# Firebase
+.firebaserc
+
+backups/
+external/decent/shots
