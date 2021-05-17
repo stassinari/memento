@@ -28,7 +28,7 @@ export const buildBeansLabel = (
   beans: Beans | undefined,
   extended: boolean
 ) => {
-  if (!beans) {
+  if (!beans || !beans.name) {
     return "";
   }
 
@@ -48,14 +48,16 @@ export const buildBeansSecondaryLabel = (beans: Beans | undefined): string =>
     : `${capitalise(beans.roastStyle)} blend`;
 
 export const filterBeans = (
-  beansList: Beans[],
+  beansList?: Beans[],
   excludeRoastStyle?: RoastStyle
 ): Beans[] =>
   beansList
-    .filter((b) => {
-      if (!b.roastStyle) return true; // only useful for non-migrated beans
-      if (areBeansFrozen(b)) return false;
+    ? beansList
+        .filter((b) => {
+          if (!b.roastStyle) return true; // only useful for non-migrated beans
+          if (areBeansFrozen(b)) return false;
 
-      return excludeRoastStyle ? b.roastStyle !== excludeRoastStyle : true;
-    })
-    .sort(sortBeansByRoastDate);
+          return excludeRoastStyle ? b.roastStyle !== excludeRoastStyle : true;
+        })
+        .sort(sortBeansByRoastDate)
+    : [];

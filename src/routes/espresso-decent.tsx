@@ -147,6 +147,7 @@ const EspressoDecentAdd: FunctionComponent<Props> = ({ update, clone }) => {
     ...emptyValues,
     ...espresso,
     beans: beans.length === 1 ? beans[0] : espresso.beans, // autoselect beans if only one bean bag is present
+    machine: latestDecentEspresso.machine,
     grinder: latestDecentEspresso.grinder,
     grinderBurrs: latestDecentEspresso.grinderBurrs,
     portafilter: latestDecentEspresso.portafilter,
