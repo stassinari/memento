@@ -108,8 +108,14 @@ const App = () => {
               />
               <PrivateRoute path="/espresso/add" page={EspressoAdd} />
               <PrivateRoute
+                exact
                 path="/espresso/:id/decent"
                 page={EspressoDecentAdd}
+              />
+              <PrivateRoute
+                path="/espresso/:id/decent/edit"
+                page={EspressoDecentAdd}
+                pageProps={{ update: true }}
               />
               {/* BEANS */}
               <PrivateRoute exact path="/beans" page={BeansList} />

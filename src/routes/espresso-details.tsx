@@ -192,7 +192,7 @@ const EspressoDetails = () => {
             secondaryText: "Edit the espresso details.",
             Icon: EditIcon,
             linkTo: espresso.fromDecent
-              ? `/espresso/${espressoId}/decent`
+              ? `/espresso/${espressoId}/decent/edit`
               : `/espresso/${espressoId}/edit`,
           },
           {
