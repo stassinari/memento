@@ -228,7 +228,7 @@ const BrewDetails: FunctionComponent = () => {
               <TableRow>
                 <TableCell className={commonStyles.label}>Date</TableCell>
                 <TableCell>
-                  {renderDate(brew.date, "dd MMM yyyy @ HH:mm:ss")}
+                  {renderDate(brew.date, "dd MMM yyyy @ HH:mm")}
                 </TableCell>
               </TableRow>
               <TableRow>

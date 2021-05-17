@@ -337,7 +337,7 @@ const EspressoDetails = () => {
                   <TableRow>
                     <TableCell className={commonStyles.label}>Date</TableCell>
                     <TableCell>
-                      {renderDate(espresso.date, "dd MMM yyyy @ HH:mm:ss")}
+                      {renderDate(espresso.date, "dd MMM yyyy @ HH:mm")}
                     </TableCell>
                   </TableRow>
                   {espresso.profileName && (
