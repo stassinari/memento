@@ -146,6 +146,7 @@ const CardsList: FunctionComponent<CardsListProps> = ({ title, list }) => {
               }
               date={beanBag.roastDate}
               datePrefix="Roasted on"
+              includeDateTime={false}
               Tag={areBeansFrozen(beanBag) && FrozenChip}
             />
           </Grid>

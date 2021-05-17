@@ -23,6 +23,7 @@ interface Props {
   thirdLine?: string;
   date?: firebase.firestore.Timestamp | Date | null;
   datePrefix?: string;
+  includeDateTime?: boolean;
   link: string;
   Icon: React.ElementType;
   Tag?: React.ReactNode;
@@ -88,6 +89,7 @@ const Card: FunctionComponent<Props> = ({
   thirdLine,
   date,
   datePrefix,
+  includeDateTime = true,
   Tag,
 }) => {
   const classes = useStyles();
@@ -110,7 +112,10 @@ const Card: FunctionComponent<Props> = ({
               <Box alignItems="center" display="flex">
                 <Typography className={classes.smallText} color="textSecondary">
                   {datePrefix && datePrefix}{" "}
-                  {format(parsedDate, "dd/MM/yyyy @ HH:mm")}
+                  {format(
+                    parsedDate,
+                    `dd/MM/yyyy${includeDateTime ? " @ HH:mm" : ""}`
+                  )}
                 </Typography>
                 <EventIcon className={classes.dateIcon} />
               </Box>
