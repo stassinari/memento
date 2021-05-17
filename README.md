@@ -18,7 +18,7 @@ A list of some of the features:
 - Dark mode
 - Guest access if you want to try it on a single device before you sign up
 
-Want to make a suggestion for a new feature or have your say on a pleanned one? Found a nasty bug that is driving you crazy? Head over to the [issues section](https://github.com/stassinari/memento/issues)!
+Want to make a suggestion for a new feature or have your say on a planned one? Found a nasty bug that is driving you crazy? Head over to the [issues section](https://github.com/stassinari/memento/issues)!
 
 ## Decent Espresso integration
 
@@ -30,7 +30,7 @@ The end result will look something like this:
 
 <img src="docs/decent-graph.png" width=512 />
 
-In order to have the integration running, follow theses steps:
+In order to have the integration running, follow these steps:
 
 On Memento:
 
