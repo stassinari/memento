@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => {
       marginLeft: theme.spacing(2),
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
-      width: "4rem",
+      minWidth: "4rem",
       height: "4rem",
       backgroundColor: theme.palette.primary.light,
       display: "flex",
