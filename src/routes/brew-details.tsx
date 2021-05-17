@@ -26,7 +26,7 @@ import ActionDialog from "../components/action-dialog";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import Markdown from "../components/markdown";
-import FlavoursChart from "../components/brew/flavours-chart";
+import FlavoursChart from "../components/flavours-chart";
 import { useUser, useFirestore, useFirestoreDocData } from "reactfire";
 
 interface RouteParams {

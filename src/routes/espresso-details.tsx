@@ -36,7 +36,7 @@ import DecentChart from "../components/espresso/decent-chart";
 import TemperaturesChart from "../components/espresso/temperatures-charts";
 import { Alert } from "@material-ui/lab";
 import Markdown from "../components/markdown";
-import FlavoursChart from "../components/brew/flavours-chart";
+import FlavoursChart from "../components/flavours-chart";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 
 interface RouteParams {
