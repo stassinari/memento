@@ -1,8 +1,21 @@
 # Memento
 
-Memento is a SPA (Single Page Application) that helps you keep track of everything coffee.
+Memento helps you keep track of everything coffee:
 
-_Short description_
+- Coffee beans
+- Brew/filter
+- Espresso
+- Tastings (experimental)
+
+A list of some of the features:
+
+- Strong focus on making form filling as quick as possible, thanks to one-tap autosuggestions based on previous brews/espressos and equipment
+- Integrated timer when adding brews/espressos
+- Clone feature to add new brews/espressos based on existing ones
+- Scales beautifully from mobile all the way to ultra-wide screens
+- Blazing fast loading and real-time updating when using multiple devices
+
+Want to make a suggestion for a new feature or have your say on a pleanned one? Found a nasty bug that is driving you crazy? Head over to the [issues section](https://github.com/stassinari/memento/issues)!
 
 ## Decent Espresso integration
 
