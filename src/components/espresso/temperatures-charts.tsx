@@ -112,14 +112,14 @@ const TemperaturesChart: FunctionComponent<Props> = ({ readings }) => {
           <Line
             type="basis"
             dot={false}
-            dataKey="mix"
+            dataKey="basket"
             stroke={red[700]}
             strokeWidth={2}
           />
           <Line
             type="basis"
             dot={false}
-            dataKey="basket"
+            dataKey="mix"
             stroke={amber[500]}
             strokeWidth={2}
           />
