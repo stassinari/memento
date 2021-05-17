@@ -94,7 +94,11 @@ const DecentChart: FunctionComponent<Props> = ({ readings, profileName }) => {
 
   return (
     <>
-      <Typography variant="h6" component="h2" className={classes.title}>
+      <Typography
+        variant="subtitle2"
+        className={classes.title}
+        color="textSecondary"
+      >
         {profileName}
       </Typography>
       <div className={classes.chart}>

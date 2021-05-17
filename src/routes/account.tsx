@@ -83,6 +83,7 @@ const Account: FunctionComponent = () => {
               className={classes.headingWithIcon}
               variant="h5"
               component="h2"
+              gutterBottom
             >
               <ErrorIcon className={classes.headingIcon} />
               Complete signing up
@@ -138,7 +139,7 @@ const Account: FunctionComponent = () => {
 
         {!isUserAnonymous && (
           <>
-            <Typography variant="h5" component="h2">
+            <Typography variant="h5" component="h2" gutterBottom>
               Secret key
             </Typography>
             <Typography
@@ -180,7 +181,7 @@ const Account: FunctionComponent = () => {
           </>
         )}
 
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2" gutterBottom>
           Account actions
         </Typography>
         <Typography

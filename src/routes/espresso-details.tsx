@@ -171,12 +171,16 @@ const EspressoDetails = () => {
       />
       <ActionsMenu
         menuItems={[
-          {
-            primaryText: "Clone",
-            secondaryText: "Copy this recipe for a new espresso.",
-            Icon: FileCopyIcon,
-            linkTo: `/espresso/${espressoId}/clone`,
-          },
+          ...(!espresso.fromDecent
+            ? [
+                {
+                  primaryText: "Clone",
+                  secondaryText: "Copy this recipe for a new espresso.",
+                  Icon: FileCopyIcon,
+                  linkTo: `/espresso/${espressoId}/clone`,
+                },
+              ]
+            : []),
           {
             primaryText: "Edit outcome",
             secondaryText: "Edit the espresso rating.",
