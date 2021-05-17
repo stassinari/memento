@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { Field } from "formik";
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
+  KeyboardDateTimePicker,
 } from "@material-ui/pickers";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
@@ -26,18 +26,19 @@ const Date: FunctionComponent<Props> = ({
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Field
-          as={KeyboardDatePicker}
+          as={KeyboardDateTimePicker}
           className={commonStyles.formFieldWidth}
           InputAdornmentProps={{ position: "end" }}
           KeyboardButtonProps={{ edge: "end" }}
           value={value}
+          ampm={false}
           name="date"
           autoOk
           label="Date"
-          format="dd/MM/yyyy"
+          format="dd/MM/yyyy @ HH:mm"
           inputVariant="outlined"
           margin="normal"
-          placeholder="E.g 10/10/2018"
+          placeholder="E.g 10/10/2018 @ 08:34"
           disableFuture={true}
           onChange={(event: React.ChangeEvent) => {
             setValue(event);

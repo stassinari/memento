@@ -35,7 +35,6 @@ interface RouteParams {
 
 interface Props {
   update: boolean;
-  clone: boolean;
 }
 
 const espressoAddSchema = Yup.object().shape({
@@ -75,7 +74,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const EspressoDecentAdd: FunctionComponent<Props> = ({ update, clone }) => {
+const EspressoDecentAdd: FunctionComponent<Props> = ({ update }) => {
   const {
     data: { uid: userId },
   } = useUser();
@@ -143,15 +142,21 @@ const EspressoDecentAdd: FunctionComponent<Props> = ({ update, clone }) => {
     completedDecent.length !== 0
       ? completedDecent[0]
       : (emptyValues as Espresso);
-  const newValues = {
-    ...emptyValues,
-    ...espresso,
-    beans: beans.length === 1 ? beans[0] : espresso.beans, // autoselect beans if only one bean bag is present
+  const latestEspressoValues = {
+    machine: latestDecentEspresso.machine,
     grinder: latestDecentEspresso.grinder,
     grinderBurrs: latestDecentEspresso.grinderBurrs,
     portafilter: latestDecentEspresso.portafilter,
     basket: latestDecentEspresso.basket,
   };
+  let newValues = {
+    ...emptyValues,
+    ...espresso,
+    beans: beans.length === 1 ? beans[0] : espresso.beans, // autoselect beans if only one bean bag is present
+  };
+  if (!update) {
+    newValues = { ...newValues, ...latestEspressoValues };
+  }
 
   return (
     <Layout title={title}>

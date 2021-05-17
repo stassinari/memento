@@ -21,7 +21,6 @@ interface DbUser {
 }
 
 interface Espresso {
-  machine: string;
   partial: boolean;
   fromDecent: boolean;
   profileName: string;
@@ -111,7 +110,6 @@ export const decentUpload = functions
           const actualWeight = extractTotalWeight(lines);
 
           const espresso: Espresso = {
-            machine: "Decent",
             partial: true,
             fromDecent: true,
             profileName,

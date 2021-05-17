@@ -34,6 +34,10 @@ const SignUp: FunctionComponent<Props> = ({ isGuest }) => {
   return (
     <Layout title="Memento" hideMenu={!isGuest} maxWidth="xs">
       <Paper className={classes.container}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Sign up
+        </Typography>
+
         <EmailPasswordForm buttonLabel="Sign up" authAction={"sign-up"} />
 
         <Typography>or</Typography>

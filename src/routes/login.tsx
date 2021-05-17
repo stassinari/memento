@@ -28,6 +28,9 @@ const Login: FunctionComponent = () => {
   return (
     <Layout title="Memento" hideMenu={true} maxWidth="xs">
       <Paper className={classes.container}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Log in
+        </Typography>
         <EmailPasswordForm buttonLabel="Log in" authAction={"login"} />
 
         <Typography>or</Typography>

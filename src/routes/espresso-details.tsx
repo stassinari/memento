@@ -36,7 +36,7 @@ import DecentChart from "../components/espresso/decent-chart";
 import TemperaturesChart from "../components/espresso/temperatures-charts";
 import { Alert } from "@material-ui/lab";
 import Markdown from "../components/markdown";
-import FlavoursChart from "../components/brew/flavours-chart";
+import FlavoursChart from "../components/flavours-chart";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 
 interface RouteParams {
@@ -171,12 +171,16 @@ const EspressoDetails = () => {
       />
       <ActionsMenu
         menuItems={[
-          {
-            primaryText: "Clone",
-            secondaryText: "Copy this recipe for a new espresso.",
-            Icon: FileCopyIcon,
-            linkTo: `/espresso/${espressoId}/clone`,
-          },
+          ...(!espresso.fromDecent
+            ? [
+                {
+                  primaryText: "Clone",
+                  secondaryText: "Copy this recipe for a new espresso.",
+                  Icon: FileCopyIcon,
+                  linkTo: `/espresso/${espressoId}/clone`,
+                },
+              ]
+            : []),
           {
             primaryText: "Edit outcome",
             secondaryText: "Edit the espresso rating.",
@@ -188,7 +192,7 @@ const EspressoDetails = () => {
             secondaryText: "Edit the espresso details.",
             Icon: EditIcon,
             linkTo: espresso.fromDecent
-              ? `/espresso/${espressoId}/decent`
+              ? `/espresso/${espressoId}/decent/edit`
               : `/espresso/${espressoId}/edit`,
           },
           {
@@ -333,7 +337,7 @@ const EspressoDetails = () => {
                   <TableRow>
                     <TableCell className={commonStyles.label}>Date</TableCell>
                     <TableCell>
-                      {renderDate(espresso.date, "dd MMM yyyy @ HH:mm:ss")}
+                      {renderDate(espresso.date, "dd MMM yyyy @ HH:mm")}
                     </TableCell>
                   </TableRow>
                   {espresso.profileName && (

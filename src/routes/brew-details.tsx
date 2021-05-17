@@ -26,7 +26,7 @@ import ActionDialog from "../components/action-dialog";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import Markdown from "../components/markdown";
-import FlavoursChart from "../components/brew/flavours-chart";
+import FlavoursChart from "../components/flavours-chart";
 import { useUser, useFirestore, useFirestoreDocData } from "reactfire";
 
 interface RouteParams {
@@ -228,7 +228,7 @@ const BrewDetails: FunctionComponent = () => {
               <TableRow>
                 <TableCell className={commonStyles.label}>Date</TableCell>
                 <TableCell>
-                  {renderDate(brew.date, "dd MMM yyyy @ HH:mm:ss")}
+                  {renderDate(brew.date, "dd MMM yyyy @ HH:mm")}
                 </TableCell>
               </TableRow>
               <TableRow>

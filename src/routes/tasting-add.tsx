@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
+  KeyboardDateTimePicker,
 } from "@material-ui/pickers";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
@@ -178,17 +178,18 @@ const TastingAdd = () => {
       </Typography>
       <div>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
+          <KeyboardDateTimePicker
             value={date}
+            ampm={false}
             InputAdornmentProps={{ position: "end" }}
             KeyboardButtonProps={{ edge: "end" }}
             name="date"
             autoOk
             label="Date"
-            format="dd/MM/yyyy"
+            format="dd/MM/yyyy @ HH:mm"
             inputVariant="outlined"
             margin="normal"
-            placeholder="E.g 10/10/2018"
+            placeholder="E.g 10/10/2018 @ 08:34"
             disableFuture={true}
             onChange={(date: Date | null) => {
               setDate(date);
