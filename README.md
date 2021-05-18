@@ -1,20 +1,31 @@
 # Memento
 
-Memento helps you keep track of everything coffee:
+Memento helps you keep track of all your coffee brewing at home:
 
 - Coffee beans
 - Brew/filter
 - Espresso
 - Tastings (experimental)
 
+## Who is this for?
+
+Memento is for you if you:
+
+- want to achieve tasty, repeatable coffee 
+- have several coffee beans open at any given time and want to remember each individual settings
+- painstakingly keep track of all your coffee data on a whiteboard, spreadsheet, etc. and are looking for a better and easier way
+- want to record the outcome and flavour notes of espresso/filter coffee to improve upon
+
+## Features
+
 A list of some of the features:
 
 - Strong focus on making form filling as quick as possible, thanks to one-tap autosuggestions based on what you previously entered
-- Integrated timer when adding brews/espressos
-- Clone feature to add new brews/espressos based on existing ones
-- Blazing fast loading and real-time updating when using multiple devices
 - Scales beautifully from mobile all the way to ultra-wide screens
   - Optimised to behave like a native app when added to your [iPhone](https://support.apple.com/en-gb/guide/iphone/iph42ab2f3a7/ios#iph4f9a47bbc) or Android home screen
+- Integrated timer when adding brews/espressos
+- Clone feature to add new brews/espressos based on existing ones
+- Real-time updating when using multiple devices
 - Dark mode
 - Guest access if you want to try it on a single device before you sign up
 
