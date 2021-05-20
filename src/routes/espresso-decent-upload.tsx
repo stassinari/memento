@@ -3,6 +3,9 @@ import Layout from "../components/layout";
 import { DropzoneArea } from "material-ui-dropzone";
 import { makeStyles } from "@material-ui/core";
 import { Form, Formik } from "formik";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 
 const useStyles = makeStyles((theme) => ({
   previewChip: {
@@ -12,7 +15,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EspressoDecentUpload = () => {
+  const { data: userData } = useUser();
+  const isUserAnonymous = userData && userData.isAnonymous;
+  const userId = userData?.uid;
+  const userEmail = userData?.email ? userData.email : "";
+
+  const firestore = useFirestore();
+  const userRef = firestore.collection("users").doc(userId);
+  const { data: dbUser, status } = useFirestoreDocData<User>(userRef);
+  const secretKey = dbUser?.secretKey ? dbUser.secretKey : "";
+
+  const history = useHistory();
   const classes = useStyles();
+
+  if (status === "loading") {
+    return null;
+  }
 
   return (
     <Layout title="Upload Decent shots">
@@ -26,13 +44,15 @@ const EspressoDecentUpload = () => {
             formData.append(`file${i}`, file);
           });
 
-          fetch(url, {
-            method: "POST",
-            body: formData,
-          })
-            .then((lol) => console.log(lol))
+          axios
+            .post(url, formData, {
+              auth: {
+                username: userEmail,
+                password: secretKey,
+              },
+            })
+            .then(() => history.push("/espresso"))
             .catch((error) => console.log(error));
-          console.log(formData);
         }}
       >
         {(formik) => (
@@ -40,7 +60,6 @@ const EspressoDecentUpload = () => {
             <Form>
               <DropzoneArea
                 onDrop={(acceptedFiles) => {
-                  console.log(acceptedFiles);
                   formik.setFieldValue("files", acceptedFiles);
                 }}
                 dropzoneText="Drag and drop your shot files"
@@ -60,7 +79,6 @@ const EspressoDecentUpload = () => {
           </>
         )}
       </Formik>
-      Upload shots here:
     </Layout>
   );
 };
