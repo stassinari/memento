@@ -33,6 +33,7 @@ import config from "../config/firebase-config";
 import BeansUpdate from "../routes/beans-update";
 import EspressoUpdate from "../routes/espresso-update";
 import BrewUpdate from "../routes/brew-update";
+import EspressoDecentUpload from "../routes/espresso-decent-upload";
 
 interface ThemeContextProps {
   themePref: ThemePreference;
@@ -111,6 +112,11 @@ const App = () => {
                 exact
                 path="/espresso/:id/decent"
                 page={EspressoDecentAdd}
+              />
+              <PrivateRoute
+                exact
+                path="/espresso/decent/upload"
+                page={EspressoDecentUpload}
               />
               <PrivateRoute
                 path="/espresso/:id/decent/edit"
