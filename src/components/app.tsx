@@ -115,7 +115,7 @@ const App = () => {
               />
               <PrivateRoute
                 exact
-                path="/espresso/decent/upload"
+                path="/decent-upload"
                 page={EspressoDecentUpload}
               />
               <PrivateRoute

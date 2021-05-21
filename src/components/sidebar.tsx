@@ -239,7 +239,7 @@ const Sidebar: FunctionComponent<Props> = ({ open, setOpen }) => {
                     dense
                     button
                     component={NavLink}
-                    to="/espresso/decent/upload"
+                    to="/decent-upload"
                     activeStyle={activeNavLinkStyles}
                   >
                     <CustomListItemIcon>

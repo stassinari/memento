@@ -27,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface UploadForm {
+  files: File[];
+}
+
 const EspressoDecentUpload = () => {
   const { data: userData } = useUser();
   const isUserAnonymous = userData && userData.isAnonymous;
@@ -45,11 +49,29 @@ const EspressoDecentUpload = () => {
     return null;
   }
 
+  const handleUpload = async (values: UploadForm) => {
+    const url =
+      "https://europe-west2-brewlog-dev.cloudfunctions.net/decentUpload";
+    let formData = new FormData();
+    values.files.forEach((file, i) => {
+      formData.append(`file${i}`, file);
+    });
+    axios
+      .post(url, formData, {
+        auth: {
+          username: userEmail,
+          password: secretKey,
+        },
+      })
+      .then(() => history.push("/espresso"))
+      .catch((error) => console.log(error));
+  };
+
   return (
     <Layout title="Upload Decent shots">
       <Paper className={classes.paper}>
         <Typography variant="body2" gutterBottom>
-          Manually upload your Decent Espresso .shot files here.
+          Manually upload your Decent Espresso .shot files.
         </Typography>
         <Typography variant="body2" gutterBottom>
           If you'd like to enable automatic uploads,{" "}
@@ -62,26 +84,7 @@ const EspressoDecentUpload = () => {
           </Link>
           .
         </Typography>
-        <Formik
-          initialValues={{ files: [] }}
-          onSubmit={async (values) => {
-            const url =
-              "https://europe-west2-brewlog-dev.cloudfunctions.net/decentUpload";
-            let formData = new FormData();
-            values.files.forEach((file, i) => {
-              formData.append(`file`, file);
-            });
-            axios
-              .post(url, formData, {
-                auth: {
-                  username: userEmail,
-                  password: secretKey,
-                },
-              })
-              .then(() => history.push("/espresso"))
-              .catch((error) => console.log(error));
-          }}
-        >
+        <Formik initialValues={{ files: [] }} onSubmit={handleUpload}>
           {(formik) => (
             <>
               <Form>
