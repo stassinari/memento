@@ -1,11 +1,19 @@
 import React from "react";
 import Layout from "../components/layout";
 import { DropzoneArea } from "material-ui-dropzone";
-import { Button, Link, makeStyles, Paper, Typography } from "@material-ui/core";
+import {
+  Button,
+  Link,
+  makeStyles,
+  Paper,
+  Typography,
+  Link as MuiLink,
+} from "@material-ui/core";
 import { Form, Formik } from "formik";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as RouterLink } from "react-router-dom";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -24,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginLeft: "auto",
     marginRight: "auto",
+  },
+  alert: {
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -84,43 +95,57 @@ const EspressoDecentUpload = () => {
           </Link>
           .
         </Typography>
-        <Formik initialValues={{ files: [] }} onSubmit={handleUpload}>
-          {(formik) => (
-            <>
-              <Form>
-                <DropzoneArea
-                  onDrop={(acceptedFiles) => {
-                    formik.setFieldValue("files", acceptedFiles);
-                  }}
-                  dropzoneText="Drag and drop your shot files"
-                  dropzoneClass={classes.dropzone}
-                  filesLimit={20}
-                  showAlerts={["error"]}
-                  showPreviews={true}
-                  showPreviewsInDropzone={false}
-                  useChipsForPreview
-                  previewGridProps={{
-                    container: {
-                      spacing: 1,
-                      direction: "row",
-                      justify: "center",
-                    },
-                  }}
-                  previewChipProps={{ classes: { root: classes.previewChip } }}
-                  previewText=""
-                />
-                <Button
-                  className={classes.button}
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                >
-                  Upload
-                </Button>
-              </Form>
-            </>
-          )}
-        </Formik>
+
+        {!isUserAnonymous ? (
+          <Formik initialValues={{ files: [] }} onSubmit={handleUpload}>
+            {(formik) => (
+              <>
+                <Form>
+                  <DropzoneArea
+                    onDrop={(acceptedFiles) => {
+                      formik.setFieldValue("files", acceptedFiles);
+                    }}
+                    dropzoneText="Drag and drop your shot files"
+                    dropzoneClass={classes.dropzone}
+                    filesLimit={20}
+                    showAlerts={["error"]}
+                    showPreviews={true}
+                    showPreviewsInDropzone={false}
+                    useChipsForPreview
+                    previewGridProps={{
+                      container: {
+                        spacing: 1,
+                        direction: "row",
+                        justify: "center",
+                      },
+                    }}
+                    previewChipProps={{
+                      classes: { root: classes.previewChip },
+                    }}
+                    previewText=""
+                  />
+                  <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                  >
+                    Upload
+                  </Button>
+                </Form>
+              </>
+            )}
+          </Formik>
+        ) : (
+          <Alert severity="warning" className={classes.alert}>
+            Uploading shot files is only available for registered users. Head
+            over to{" "}
+            <MuiLink to="/account" component={RouterLink}>
+              the Account page
+            </MuiLink>{" "}
+            to complete your registration.
+          </Alert>
+        )}
       </Paper>
     </Layout>
   );
