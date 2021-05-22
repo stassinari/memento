@@ -14,6 +14,7 @@ import axios from "axios";
 import { useHistory, Link as RouterLink } from "react-router-dom";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { Alert } from "@material-ui/lab";
+import { generateSecretKey } from "../database/queries";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -96,7 +97,40 @@ const EspressoDecentUpload = () => {
           .
         </Typography>
 
-        {!isUserAnonymous ? (
+        {isUserAnonymous && (
+          <Alert severity="warning" className={classes.alert}>
+            Uploading shot files is only available for registered users. Head
+            over to{" "}
+            <MuiLink to="/account" component={RouterLink}>
+              the Account page
+            </MuiLink>{" "}
+            to complete your registration.
+          </Alert>
+        )}
+
+        {!secretKey && (
+          <>
+            <Alert severity="warning" className={classes.alert}>
+              It looks like you haven't uploaded any shot files yet. For
+              security reasons, we require you to generate a secret token (the
+              same used used by auto-upload feature). Click the button below or
+              head over to{" "}
+              <MuiLink to="/account" component={RouterLink}>
+                your Account page
+              </MuiLink>{" "}
+              to create your token.
+            </Alert>
+            <Button
+              className={classes.button}
+              variant="outlined"
+              onClick={() => generateSecretKey(firestore, userId)}
+            >
+              Generate secret key
+            </Button>
+          </>
+        )}
+
+        {!isUserAnonymous && !!secretKey && (
           <Formik initialValues={{ files: [] }} onSubmit={handleUpload}>
             {(formik) => (
               <>
@@ -136,15 +170,6 @@ const EspressoDecentUpload = () => {
               </>
             )}
           </Formik>
-        ) : (
-          <Alert severity="warning" className={classes.alert}>
-            Uploading shot files is only available for registered users. Head
-            over to{" "}
-            <MuiLink to="/account" component={RouterLink}>
-              the Account page
-            </MuiLink>{" "}
-            to complete your registration.
-          </Alert>
         )}
       </Paper>
     </Layout>
