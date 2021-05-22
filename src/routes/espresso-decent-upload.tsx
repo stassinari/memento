@@ -139,6 +139,7 @@ const EspressoDecentUpload = () => {
                     onDrop={(acceptedFiles) => {
                       formik.setFieldValue("files", acceptedFiles);
                     }}
+                    acceptedFiles={[".shot"]}
                     dropzoneText="Drag and drop your shot files"
                     dropzoneClass={classes.dropzone}
                     filesLimit={20}
