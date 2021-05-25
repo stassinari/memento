@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../components/layout";
-import { DropzoneArea } from "material-ui-dropzone";
 import {
   Button,
   Link,
@@ -8,15 +7,20 @@ import {
   Paper,
   Typography,
   Link as MuiLink,
+  CircularProgress,
 } from "@material-ui/core";
-import { Form, Formik } from "formik";
 import axios from "axios";
 import { useHistory, Link as RouterLink } from "react-router-dom";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { Alert } from "@material-ui/lab";
 import { generateSecretKey } from "../database/queries";
+import { DropzoneArea } from "material-ui-dropzone";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    position: "relative",
+  },
   paper: {
     padding: theme.spacing(2),
   },
@@ -24,9 +28,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
-  previewChip: {
-    minWidth: 160,
-    maxWidth: 210,
+  lodaingOverlay: {
+    opacity: 0.3,
+  },
+  progressIndicator: {
+    position: "absolute",
+    top: "70%",
+    left: "50%",
+    marginTop: -24,
+    marginLeft: -24,
   },
   button: {
     display: "block",
@@ -39,10 +49,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface UploadForm {
-  files: File[];
-}
-
 const EspressoDecentUpload = () => {
   const { data: userData } = useUser();
   const isUserAnonymous = userData && userData.isAnonymous;
@@ -54,6 +60,8 @@ const EspressoDecentUpload = () => {
   const { data: dbUser, status } = useFirestoreDocData<User>(userRef);
   const secretKey = dbUser?.secretKey ? dbUser.secretKey : "";
 
+  const [loading, setLoading] = useState(false);
+
   const history = useHistory();
   const classes = useStyles();
 
@@ -61,11 +69,11 @@ const EspressoDecentUpload = () => {
     return null;
   }
 
-  const handleUpload = async (values: UploadForm) => {
+  const handleUpload = async (files: File[]) => {
     const url =
       "https://europe-west2-brewlog-dev.cloudfunctions.net/decentUpload";
     let formData = new FormData();
-    values.files.forEach((file, i) => {
+    files.forEach((file, i) => {
       formData.append(`file${i}`, file);
     });
     axios
@@ -76,103 +84,83 @@ const EspressoDecentUpload = () => {
         },
       })
       .then(() => history.push("/espresso"))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false));
   };
 
   return (
     <Layout title="Upload Decent shots">
-      <Paper className={classes.paper}>
-        <Typography variant="body2" gutterBottom>
-          Manually upload your Decent Espresso .shot files.
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          If you'd like to enable automatic uploads,{" "}
-          <Link
-            target="_blank"
-            rel="noreferrer noopener"
-            href="https://github.com/stassinari/memento#decent-espresso-integration"
-          >
-            follow the guide here
-          </Link>
-          .
-        </Typography>
-
-        {isUserAnonymous && (
-          <Alert severity="warning" className={classes.alert}>
-            Uploading shot files is only available for registered users. Head
-            over to{" "}
-            <MuiLink to="/account" component={RouterLink}>
-              the Account page
-            </MuiLink>{" "}
-            to complete your registration.
-          </Alert>
+      <div className={classes.root}>
+        {loading && (
+          <CircularProgress size={48} className={classes.progressIndicator} />
         )}
-
-        {!secretKey && (
-          <>
-            <Alert severity="warning" className={classes.alert}>
-              It looks like you haven't uploaded any shot files yet. For
-              security reasons, we require you to generate a secret token (the
-              same used used by auto-upload feature). Click the button below or
-              head over to{" "}
-              <MuiLink to="/account" component={RouterLink}>
-                your Account page
-              </MuiLink>{" "}
-              to create your token.
-            </Alert>
-            <Button
-              className={classes.button}
-              variant="outlined"
-              onClick={() => generateSecretKey(firestore, userId)}
+        <Paper
+          className={clsx(classes.paper, {
+            [classes.lodaingOverlay]: loading,
+          })}
+        >
+          <Typography variant="body2" gutterBottom>
+            Manually upload your Decent Espresso .shot files.
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            If you'd like to enable automatic uploads,{" "}
+            <Link
+              target="_blank"
+              rel="noreferrer noopener"
+              href="https://github.com/stassinari/memento#decent-espresso-integration"
             >
-              Generate secret key
-            </Button>
-          </>
-        )}
-
-        {!isUserAnonymous && !!secretKey && (
-          <Formik initialValues={{ files: [] }} onSubmit={handleUpload}>
-            {(formik) => (
-              <>
-                <Form>
-                  <DropzoneArea
-                    onDrop={(acceptedFiles) => {
-                      formik.setFieldValue("files", acceptedFiles);
-                    }}
-                    acceptedFiles={[".shot"]}
-                    dropzoneText="Drag and drop your shot files"
-                    dropzoneClass={classes.dropzone}
-                    filesLimit={20}
-                    showAlerts={["error"]}
-                    showPreviews={true}
-                    showPreviewsInDropzone={false}
-                    useChipsForPreview
-                    previewGridProps={{
-                      container: {
-                        spacing: 1,
-                        direction: "row",
-                        justify: "center",
-                      },
-                    }}
-                    previewChipProps={{
-                      classes: { root: classes.previewChip },
-                    }}
-                    previewText=""
-                  />
-                  <Button
-                    className={classes.button}
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                  >
-                    Upload
-                  </Button>
-                </Form>
-              </>
-            )}
-          </Formik>
-        )}
-      </Paper>
+              follow the guide here
+            </Link>
+            .
+          </Typography>
+          {isUserAnonymous && (
+            <Alert severity="warning" className={classes.alert}>
+              Uploading shot files is only available for registered users. Head
+              over to{" "}
+              <MuiLink to="/account" component={RouterLink}>
+                the Account page
+              </MuiLink>{" "}
+              to complete your registration.
+            </Alert>
+          )}
+          {!secretKey && (
+            <>
+              <Alert severity="warning" className={classes.alert}>
+                It looks like you haven't uploaded any shot files yet. For
+                security reasons, we require you to generate a secret token (the
+                same used used by auto-upload feature). Click the button below
+                or head over to{" "}
+                <MuiLink to="/account" component={RouterLink}>
+                  your Account page
+                </MuiLink>{" "}
+                to create your token.
+              </Alert>
+              <Button
+                className={classes.button}
+                variant="outlined"
+                onClick={() => generateSecretKey(firestore, userId)}
+              >
+                Generate secret key
+              </Button>
+            </>
+          )}
+          {!isUserAnonymous && !!secretKey && (
+            <DropzoneArea
+              onDrop={(acceptedFiles) => {
+                setLoading(true);
+                handleUpload(acceptedFiles);
+              }}
+              acceptedFiles={[".shot"]}
+              dropzoneText="Drag and drop your shot files"
+              dropzoneClass={classes.dropzone}
+              filesLimit={20}
+              showAlerts={["error"]}
+              showPreviews={false}
+              showPreviewsInDropzone={false}
+            />
+          )}
+        </Paper>
+      </div>
     </Layout>
   );
 };
