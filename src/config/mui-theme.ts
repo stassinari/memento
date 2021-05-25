@@ -37,6 +37,10 @@ declare module "@material-ui/core/styles/createMuiTheme" {
 
 const gradientStart = [179, 123, 60];
 const gradientEnd = [37, 33, 29];
+const dzLight =
+  "repeating-linear-gradient(-45deg, #fff, #fff 25px, rgba(0, 0, 0, 0.12) 25px, rgba(0, 0, 0, 0.12) 50px)";
+const dzDark =
+  "repeating-linear-gradient(-45deg, #424242, #424242 25px, rgba(255, 255, 255, 0.12) 25px, rgba(255, 255, 255, 0.12) 50px)";
 
 const buildTheme = (themeType: "light" | "dark"): Theme =>
   createMuiTheme({
@@ -45,6 +49,13 @@ const buildTheme = (themeType: "light" | "dark"): Theme =>
         colorPrimary: {
           color: "#ffffff",
           backgroundColor: themeType === "light" ? deepOrange[900] : "#333333",
+        },
+      },
+      // @ts-ignore
+      MuiDropzoneArea: {
+        invalid: {
+          backgroundImage: themeType === "light" ? dzLight : dzDark,
+          borderColor: "#ffccbc",
         },
       },
     },
