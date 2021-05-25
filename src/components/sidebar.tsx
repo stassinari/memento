@@ -1,7 +1,13 @@
 import React, { FunctionComponent } from "react";
 import clsx from "clsx";
 import { NavLink } from "react-router-dom";
-import { Badge, makeStyles, useTheme, withStyles } from "@material-ui/core";
+import {
+  Badge,
+  makeStyles,
+  useMediaQuery,
+  useTheme,
+  withStyles,
+} from "@material-ui/core";
 import {
   Drawer,
   List,
@@ -14,6 +20,7 @@ import {
 
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 import BeansIcon from "./icons/beans";
 import PortafilterIcon from "./icons/portafilter";
@@ -133,6 +140,7 @@ const Sidebar: FunctionComponent<Props> = ({ open, setOpen }) => {
   const classes = useStyles();
 
   const theme = useTheme();
+  const isBreakpointMd = useMediaQuery(theme.breakpoints.up("md"));
   const activeNavLinkStyles = {
     color: theme.palette.primary.main,
   };
@@ -159,69 +167,90 @@ const Sidebar: FunctionComponent<Props> = ({ open, setOpen }) => {
         </div>
         <Divider className={classes.divider} />
         <div className={classes.menuContainer}>
-          <List>
-            <CustomListItem
-              dense
-              button
-              component={NavLink}
-              to="/"
-              exact
-              activeStyle={activeNavLinkStyles}
-            >
-              <CustomListItemIcon>
-                <HomeIcon />
-              </CustomListItemIcon>
-              <ListItemText primary="Home" />
-            </CustomListItem>
-            <CustomListItem
-              dense
-              button
-              component={NavLink}
-              to="/brews"
-              activeStyle={activeNavLinkStyles}
-            >
-              <CustomListItemIcon>
-                <ChemexIcon />
-              </CustomListItemIcon>
-              <ListItemText primary="Brews" />
-            </CustomListItem>
-            <CustomListItem
-              dense
-              button
-              component={NavLink}
-              to="/espresso"
-              activeStyle={activeNavLinkStyles}
-            >
-              <CustomListItemIcon>
-                <PortafilterIcon />
-              </CustomListItemIcon>
-              <ListItemText primary="Espresso" />
-            </CustomListItem>
-            <CustomListItem
-              dense
-              button
-              component={NavLink}
-              to="/tastings"
-              activeStyle={activeNavLinkStyles}
-            >
-              <CustomListItemIcon>
-                <SpoonIcon />
-              </CustomListItemIcon>
-              <ListItemText primary="Tastings" />
-            </CustomListItem>
-            <CustomListItem
-              dense
-              button
-              component={NavLink}
-              to="/beans"
-              activeStyle={activeNavLinkStyles}
-            >
-              <CustomListItemIcon>
-                <BeansIcon />
-              </CustomListItemIcon>
-              <ListItemText primary="Beans" />
-            </CustomListItem>
-          </List>
+          <div>
+            <List>
+              <CustomListItem
+                dense
+                button
+                component={NavLink}
+                to="/"
+                exact
+                activeStyle={activeNavLinkStyles}
+              >
+                <CustomListItemIcon>
+                  <HomeIcon />
+                </CustomListItemIcon>
+                <ListItemText primary="Home" />
+              </CustomListItem>
+              <CustomListItem
+                dense
+                button
+                component={NavLink}
+                to="/brews"
+                activeStyle={activeNavLinkStyles}
+              >
+                <CustomListItemIcon>
+                  <ChemexIcon />
+                </CustomListItemIcon>
+                <ListItemText primary="Brews" />
+              </CustomListItem>
+              <CustomListItem
+                dense
+                button
+                component={NavLink}
+                to="/espresso"
+                activeStyle={activeNavLinkStyles}
+              >
+                <CustomListItemIcon>
+                  <PortafilterIcon />
+                </CustomListItemIcon>
+                <ListItemText primary="Espresso" />
+              </CustomListItem>
+              <CustomListItem
+                dense
+                button
+                component={NavLink}
+                to="/tastings"
+                activeStyle={activeNavLinkStyles}
+              >
+                <CustomListItemIcon>
+                  <SpoonIcon />
+                </CustomListItemIcon>
+                <ListItemText primary="Tastings" />
+              </CustomListItem>
+              <CustomListItem
+                dense
+                button
+                component={NavLink}
+                to="/beans"
+                activeStyle={activeNavLinkStyles}
+              >
+                <CustomListItemIcon>
+                  <BeansIcon />
+                </CustomListItemIcon>
+                <ListItemText primary="Beans" />
+              </CustomListItem>
+            </List>
+            {isBreakpointMd && (
+              <>
+                <Divider className={classes.divider} />
+                <List>
+                  <CustomListItem
+                    dense
+                    button
+                    component={NavLink}
+                    to="/decent-upload"
+                    activeStyle={activeNavLinkStyles}
+                  >
+                    <CustomListItemIcon>
+                      <CloudUploadIcon />
+                    </CustomListItemIcon>
+                    <ListItemText primary="DE Upload" />
+                  </CustomListItem>
+                </List>
+              </>
+            )}
+          </div>
           <List>
             <CustomListItem
               dense
