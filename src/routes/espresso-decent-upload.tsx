@@ -70,8 +70,10 @@ const EspressoDecentUpload = () => {
   }
 
   const handleUpload = async (files: File[]) => {
-    const url =
-      "https://europe-west2-brewlog-dev.cloudfunctions.net/decentUpload";
+    const url = process.env.REACT_APP_DECENT_UPLOAD_ENDPOINT;
+    if (!url) {
+      throw new Error("decent upload enpoint not set");
+    }
     let formData = new FormData();
     files.forEach((file, i) => {
       formData.append(`file${i}`, file);
@@ -84,7 +86,9 @@ const EspressoDecentUpload = () => {
         },
       })
       .then(() => history.push("/espresso"))
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        throw new Error(error);
+      })
       .finally(() => setLoading(false));
   };
 
