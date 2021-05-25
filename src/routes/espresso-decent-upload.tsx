@@ -16,6 +16,7 @@ import { Alert } from "@material-ui/lab";
 import { generateSecretKey } from "../database/queries";
 import { DropzoneArea } from "material-ui-dropzone";
 import clsx from "clsx";
+import PageProgress from "../components/page-progress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,10 +66,6 @@ const EspressoDecentUpload = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  if (status === "loading") {
-    return null;
-  }
-
   const handleUpload = async (files: File[]) => {
     const url = process.env.REACT_APP_DECENT_UPLOAD_ENDPOINT;
     if (!url) {
@@ -92,8 +89,19 @@ const EspressoDecentUpload = () => {
       .finally(() => setLoading(false));
   };
 
+  const title = "Upload Decent shots";
+
+  if (status === "loading") {
+    return (
+      <>
+        <PageProgress />
+        <Layout title={title}></Layout>
+      </>
+    );
+  }
+
   return (
-    <Layout title="Upload Decent shots">
+    <Layout title={title}>
       <div className={classes.root}>
         {loading && (
           <CircularProgress size={48} className={classes.progressIndicator} />
