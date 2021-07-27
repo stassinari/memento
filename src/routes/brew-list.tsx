@@ -1,21 +1,21 @@
-import React, { useState, FunctionComponent } from "react";
 import { Drawer, Grid, IconButton, useMediaQuery } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import FilterListIcon from "@material-ui/icons/FilterList";
-
-import V60Icon from "../components/icons/v60";
+import React, { FunctionComponent, useState } from "react";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import Card from "../components/card";
-import FilterSort from "../components/filter-sort";
-import { buildBeansIdLabelMap } from "../utils/beans";
+import { EmptyBeans, EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
-import { keys } from "../utils/typescripts";
+import FilterSort from "../components/filter-sort";
+import BeanIcon from "../components/icons/bean";
+import V60Icon from "../components/icons/v60";
 import Layout from "../components/layout";
+import LoadingButton from "../components/loading-button";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
-import { EmptyBeans, EmptyList } from "../components/empty-states";
-import LoadingButton from "../components/loading-button";
 import useCommonStyles from "../config/use-common-styles";
-import { useUser, useFirestore, useFirestoreCollectionData } from "reactfire";
+import { buildBeansIdLabelMap } from "../utils/beans";
+import { keys } from "../utils/typescripts";
 
 const FIRST_LOAD_LIMIT = 10;
 
@@ -175,12 +175,13 @@ const BrewList: FunctionComponent = () => {
                       title={brew.method}
                       link={`/brews/${brew.id}`}
                       Icon={V60Icon}
-                      aside={
+                      rating={
                         brew.rating && brew.rating !== 0
-                          ? `${brew.rating}/10`
+                          ? brew.rating
                           : undefined
                       }
                       secondLine={beansLabel}
+                      SecondLineIcon={BeanIcon}
                       date={brew.date}
                       datePrefix="Brewed on"
                     />
