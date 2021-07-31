@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import DateFnsUtils from "@date-io/date-fns";
 import {
   Button,
   FormControl,
@@ -12,21 +12,19 @@ import {
   Typography,
 } from "@material-ui/core";
 import {
-  MuiPickersUtilsProvider,
   KeyboardDateTimePicker,
+  MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import * as Yup from "yup";
-
 import BeansCheckbox from "../components/beans-checkbox";
 import Layout from "../components/layout";
-
-import { addTasting } from "../database/queries";
-import { useHistory } from "react-router-dom";
 import TastingVariables from "../components/tastings/tasting-variables";
+import { addTasting } from "../database/queries";
 import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
-import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 
 const formSchema = Yup.object().shape({
   date: Yup.date().nullable(true).required("Required"),
@@ -93,7 +91,7 @@ const TastingAdd = () => {
   });
 
   useEffect(() => {
-    const beansToSelect = beans.reduce(
+    const beansToSelect = beans?.reduce(
       (obj, currentValue) => ({ ...obj, [currentValue.id!]: false }),
       {}
     );
@@ -103,8 +101,9 @@ const TastingAdd = () => {
   const [date, setDate] = useState<Date | null>(new Date());
 
   const [isTastingBeans, setIsTastingBeans] = useState<boolean | null>(null);
-  const [tastingVariable, setTastingVariable] =
-    useState<TastingVariable | "">("");
+  const [tastingVariable, setTastingVariable] = useState<TastingVariable | "">(
+    ""
+  );
 
   const [tastingSamplesVarValues, setTastingSamplesVasValues] = useState<
     string[]
