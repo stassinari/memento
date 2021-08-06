@@ -28,12 +28,6 @@ interface Props {
 
 const useStyles = makeStyles((theme) => {
   return {
-    root: {
-      display: "flex",
-    },
-    details: {
-      flexGrow: 1,
-    },
     content: {
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1) + "px !important",
@@ -42,47 +36,16 @@ const useStyles = makeStyles((theme) => {
       fontWeight: "bold",
       paddingRight: theme.spacing(8),
     },
-    image: {
-      marginLeft: theme.spacing(2),
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      minWidth: "4rem",
-      height: "4rem",
-      backgroundColor: theme.palette.primary.light,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      borderRadius: "100%",
-    },
-    icon: {
-      fontSize: 40,
-      color: "white",
-    },
     smallText: {
       fontSize: "0.875rem",
       fontWeight: 500,
     },
     baseIcon: {
       fontSize: "0.875rem",
-
       marginRight: theme.spacing(0.5),
     },
     dateIcon: {
       color: theme.palette.text.secondary,
-    },
-    primaryText: {
-      color: theme.palette.text.primary,
-    },
-    tag: {
-      position: "absolute",
-      top: theme.spacing(1),
-      right: theme.spacing(2),
-    },
-    controls: {
-      display: "flex",
-      alignItems: "center",
-      paddingLeft: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
     },
   };
 });
@@ -104,46 +67,44 @@ const Card: FunctionComponent<Props> = ({
 
   return (
     <MuiCard>
-      <CardActionArea component={Link} to={link} className={classes.root}>
-        <div className={classes.details}>
-          <CardContent className={classes.content}>
-            {aside}
-            {title && (
-              <Typography variant="body1" className={classes.title}>
-                {title}
+      <CardActionArea component={Link} to={link}>
+        <CardContent className={classes.content}>
+          {aside}
+          {title && (
+            <Typography variant="body1" className={classes.title}>
+              {title}
+            </Typography>
+          )}
+          {secondLine && (
+            <Box alignItems="center" display="flex">
+              {SecondLineIcon && (
+                <SecondLineIcon className={classes.baseIcon} />
+              )}
+              <Typography variant="subtitle1" component="span">
+                {secondLine}
               </Typography>
-            )}
-            {secondLine && (
-              <Box alignItems="center" display="flex">
-                {SecondLineIcon && (
-                  <SecondLineIcon className={classes.baseIcon} />
-                )}
-                <Typography variant="subtitle1" component="span">
-                  {secondLine}
-                </Typography>
-              </Box>
-            )}
-            {thirdLine && (
+            </Box>
+          )}
+          {thirdLine && (
+            <Typography className={classes.smallText} color="textSecondary">
+              {thirdLine}
+            </Typography>
+          )}
+          {date && (
+            <Box alignItems="center" display="flex">
+              <EventIcon
+                className={clsx([classes.baseIcon, classes.dateIcon])}
+              />
               <Typography className={classes.smallText} color="textSecondary">
-                {thirdLine}
+                {datePrefix}{" "}
+                {format(
+                  parsedDate,
+                  `dd/MM/yyyy${includeDateTime ? " @ HH:mm" : ""}`
+                )}
               </Typography>
-            )}
-            {date && (
-              <Box alignItems="center" display="flex">
-                <EventIcon
-                  className={clsx([classes.baseIcon, classes.dateIcon])}
-                />
-                <Typography className={classes.smallText} color="textSecondary">
-                  {datePrefix}{" "}
-                  {format(
-                    parsedDate,
-                    `dd/MM/yyyy${includeDateTime ? " @ HH:mm" : ""}`
-                  )}
-                </Typography>
-              </Box>
-            )}
-          </CardContent>
-        </div>
+            </Box>
+          )}
+        </CardContent>
       </CardActionArea>
     </MuiCard>
   );

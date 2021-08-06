@@ -1,6 +1,14 @@
-import { Drawer, Grid, IconButton, useMediaQuery } from "@material-ui/core";
+import {
+  Drawer,
+  Grid,
+  IconButton,
+  Typography,
+  useMediaQuery,
+} from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { subDays, subMonths, subWeeks } from "date-fns/esm";
+import firebase from "firebase/app";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import Card, { CardRating } from "../components/card";
@@ -95,6 +103,60 @@ const BrewList: FunctionComponent = () => {
     });
 
   const filteredSortedBrews = filterBrews(sortBrews(brews, sorting), filters);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = subDays(today, 1);
+  const lastWeek = subWeeks(today, 1);
+  const lastMonth = subMonths(today, 1);
+
+  const todaysBrews = filteredSortedBrews.filter(
+    (brew) =>
+      (brew.date as firebase.firestore.Timestamp).toMillis() > today.getTime()
+  );
+
+  const yesterdaysBrews = filteredSortedBrews.filter(
+    (brew) =>
+      (brew.date as firebase.firestore.Timestamp).toMillis() >
+        yesterday.getTime() &&
+      (brew.date as firebase.firestore.Timestamp).toMillis() < today.getTime()
+  );
+
+  const lastWeeksBrews = filteredSortedBrews.filter(
+    (brew) =>
+      (brew.date as firebase.firestore.Timestamp).toMillis() >
+        lastWeek.getTime() &&
+      (brew.date as firebase.firestore.Timestamp).toMillis() <
+        yesterday.getTime()
+  );
+
+  const lastMonthsBrews = filteredSortedBrews.filter(
+    (brew) =>
+      (brew.date as firebase.firestore.Timestamp).toMillis() >
+        lastMonth.getTime() &&
+      (brew.date as firebase.firestore.Timestamp).toMillis() <
+        lastWeek.getTime()
+  );
+
+  const allLists = [
+    {
+      title: "Today",
+      brews: todaysBrews,
+    },
+    {
+      title: "Yesterday",
+      brews: yesterdaysBrews,
+    },
+    {
+      title: "Last week",
+      brews: lastWeeksBrews,
+    },
+    {
+      title: "Last month",
+      brews: lastMonthsBrews,
+    },
+  ];
+
   const beansIdLabelMap = buildBeansIdLabelMap(beans);
 
   const toggleDrawer =
@@ -163,34 +225,48 @@ const BrewList: FunctionComponent = () => {
             </Grid>
           )}
           <Grid item xs={12} sm={8}>
-            <Grid container direction={"column"} spacing={2}>
-              {filteredSortedBrews.map((brew) => {
-                const beansLabel = brew.beans
-                  ? beansIdLabelMap[brew.beans.id]
-                  : undefined;
-                return (
-                  <Grid item key={brew.id}>
-                    <Card
-                      title={brew.method}
-                      link={`/brews/${brew.id}`}
-                      aside={
-                        brew.rating && (
-                          <CardRating
-                            variant={brew.rating >= 6 ? "primary" : "secondary"}
-                          >
-                            {brew.rating}
-                          </CardRating>
-                        )
-                      }
-                      secondLine={beansLabel}
-                      SecondLineIcon={BeanIcon}
-                      date={brew.date}
-                      datePrefix="Brewed on"
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
+            {allLists.map(
+              (list) =>
+                list.brews.length > 0 && (
+                  <div key={list.title}>
+                    <Typography
+                      variant="h5"
+                      gutterBottom
+                      className={commonStyles.listTitle}
+                    >
+                      {list.title}
+                    </Typography>
+
+                    <Grid container direction={"column"} spacing={2}>
+                      {list.brews.map((brew) => (
+                        <Grid item key={brew.id}>
+                          <Card
+                            title={brew.method}
+                            link={`/brews/${brew.id}`}
+                            aside={
+                              brew.rating && (
+                                <CardRating
+                                  variant={
+                                    brew.rating >= 6 ? "primary" : "secondary"
+                                  }
+                                >
+                                  {brew.rating}
+                                </CardRating>
+                              )
+                            }
+                            secondLine={
+                              brew.beans && beansIdLabelMap[brew.beans.id]
+                            }
+                            SecondLineIcon={BeanIcon}
+                            date={brew.date}
+                            datePrefix="Brewed on"
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </div>
+                )
+            )}
             {(!loadAll || brewsStatus === "loading") &&
               brews.length >= FIRST_LOAD_LIMIT && (
                 <LoadingButton

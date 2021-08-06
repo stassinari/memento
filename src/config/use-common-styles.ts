@@ -1,6 +1,10 @@
 import { makeStyles } from "@material-ui/core";
 
 export default makeStyles((theme) => ({
+  listTitle: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.text.secondary,
+  },
   actionsButton: {
     textAlign: "right",
     marginBottom: theme.spacing(1),
