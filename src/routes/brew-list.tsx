@@ -3,12 +3,11 @@ import { useTheme } from "@material-ui/core/styles";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-import Card from "../components/card";
+import Card, { CardRating } from "../components/card";
 import { EmptyBeans, EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
 import FilterSort from "../components/filter-sort";
 import BeanIcon from "../components/icons/bean";
-import V60Icon from "../components/icons/v60";
 import Layout from "../components/layout";
 import LoadingButton from "../components/loading-button";
 import PageProgress from "../components/page-progress";
@@ -174,11 +173,14 @@ const BrewList: FunctionComponent = () => {
                     <Card
                       title={brew.method}
                       link={`/brews/${brew.id}`}
-                      Icon={V60Icon}
-                      rating={
-                        brew.rating && brew.rating !== 0
-                          ? brew.rating
-                          : undefined
+                      aside={
+                        brew.rating && (
+                          <CardRating
+                            variant={brew.rating >= 6 ? "primary" : "secondary"}
+                          >
+                            {brew.rating}
+                          </CardRating>
+                        )
                       }
                       secondLine={beansLabel}
                       SecondLineIcon={BeanIcon}
