@@ -213,7 +213,7 @@ const Home: FunctionComponent = () => {
           component={Link}
           to="/espresso"
         >
-          See all espressos
+          See recent espressos
         </Button>
       </Paper>
 
