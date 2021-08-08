@@ -3,11 +3,10 @@ import { useTheme } from "@material-ui/core/styles";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-import Card, { CardRating } from "../components/card";
+import BrewCard from "../components/brew/brew-card";
 import { EmptyBeans, EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
 import FilterSort from "../components/filter-sort";
-import BeanIcon from "../components/icons/bean";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
@@ -160,22 +159,9 @@ const BrewList: FunctionComponent = () => {
             <Grid container spacing={2}>
               {filteredSortedBrews.map((brew) => (
                 <Grid item xs={12} key={brew.id}>
-                  <Card
-                    title={brew.method}
-                    link={`/brews/${brew.id}`}
-                    aside={
-                      brew.rating && (
-                        <CardRating
-                          variant={brew.rating >= 6 ? "primary" : "secondary"}
-                        >
-                          {brew.rating}
-                        </CardRating>
-                      )
-                    }
-                    secondLine={brew.beans && beansIdLabelMap[brew.beans.id]}
-                    SecondLineIcon={BeanIcon}
-                    date={brew.date}
-                    datePrefix="Brewed on"
+                  <BrewCard
+                    brew={brew}
+                    beansLabel={brew.beans && beansIdLabelMap[brew.beans.id]}
                   />
                 </Grid>
               ))}

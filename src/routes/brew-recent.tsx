@@ -4,10 +4,9 @@ import firebase from "firebase/app";
 import React, { FunctionComponent } from "react";
 import { Link } from "react-router-dom";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-import Card, { CardRating } from "../components/card";
+import BrewCard from "../components/brew/brew-card";
 import { EmptyBeans, EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
-import BeanIcon from "../components/icons/bean";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
@@ -139,26 +138,11 @@ const BrewRecent: FunctionComponent = () => {
                   <Grid container spacing={2}>
                     {list.brews.map((brew) => (
                       <Grid item xs={12} sm={6} key={brew.id}>
-                        <Card
-                          title={brew.method}
-                          link={`/brews/${brew.id}`}
-                          aside={
-                            brew.rating && (
-                              <CardRating
-                                variant={
-                                  brew.rating >= 6 ? "primary" : "secondary"
-                                }
-                              >
-                                {brew.rating}
-                              </CardRating>
-                            )
-                          }
-                          secondLine={
+                        <BrewCard
+                          brew={brew}
+                          beansLabel={
                             brew.beans && beansIdLabelMap[brew.beans.id]
                           }
-                          SecondLineIcon={BeanIcon}
-                          date={brew.date}
-                          datePrefix="Brewed on"
                         />
                       </Grid>
                     ))}
