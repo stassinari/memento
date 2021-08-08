@@ -1,33 +1,29 @@
-import React, { FunctionComponent } from "react";
-import clsx from "clsx";
-import { NavLink } from "react-router-dom";
 import {
   Badge,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   makeStyles,
   useMediaQuery,
   useTheme,
   withStyles,
 } from "@material-ui/core";
-import {
-  Drawer,
-  List,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@material-ui/core";
-
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-
-import BeansIcon from "./icons/beans";
-import PortafilterIcon from "./icons/portafilter";
-import ChemexIcon from "./icons/chemex";
-import SpoonIcon from "./icons/spoon";
-import HomeIcon from "./icons/home";
+import clsx from "clsx";
+import React, { FunctionComponent } from "react";
+import { NavLink } from "react-router-dom";
 import { useUser } from "reactfire";
+import BeansIcon from "./icons/beans";
+import ChemexIcon from "./icons/chemex";
+import HomeIcon from "./icons/home";
+import PortafilterIcon from "./icons/portafilter";
+import SpoonIcon from "./icons/spoon";
 
 interface Props {
   open: boolean;

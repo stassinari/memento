@@ -1,23 +1,21 @@
-import React, { FunctionComponent, useState } from "react";
 import {
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Grid,
-  Typography,
   Chip,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import AcUnitIcon from "@material-ui/icons/AcUnit";
-
-import BeanBagIcon from "../components/icons/bean-bag";
-import Card from "../components/card";
+import React, { FunctionComponent, useState } from "react";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import Card, { CardRating } from "../components/card";
+import { EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
-import { EmptyList } from "../components/empty-states";
 import { areBeansFrozen, sortBeansByRoastDate } from "../utils/beans";
 
 const useStyles = makeStyles((theme) => {
@@ -119,7 +117,9 @@ interface CardsListProps {
   list: Beans[];
 }
 
-const FrozenChip = <Chip label="Frozen" size="small" icon={<AcUnitIcon />} />;
+const FrozenChip = (
+  <Chip color="secondary" label="Frozen" size="small" icon={<AcUnitIcon />} />
+);
 
 const CardsList: FunctionComponent<CardsListProps> = ({ title, list }) => {
   const classes = useStyles();
@@ -132,22 +132,21 @@ const CardsList: FunctionComponent<CardsListProps> = ({ title, list }) => {
         {list.map((beanBag) => (
           <Grid item key={beanBag.id}>
             <Card
-              title={`${beanBag.name}, ${beanBag.roaster}`}
-              link={`/beans/${beanBag.id}`}
-              Icon={BeanBagIcon}
-              secondLine={
-                beanBag.origin === "blend"
-                  ? `Blend (${beanBag.blend?.map((b) => b.country).join(", ")})`
-                  : beanBag.process || beanBag.country
-                  ? `${[beanBag.process, beanBag.country]
-                      .filter((s) => !!s)
-                      .join(", ")}`
-                  : undefined
+              title={
+                beanBag.country
+                  ? `${beanBag.name} (${beanBag.country})`
+                  : beanBag.name
               }
+              link={`/beans/${beanBag.id}`}
+              aside={
+                areBeansFrozen(beanBag) && (
+                  <CardRating variant="secondary">{FrozenChip}</CardRating>
+                )
+              }
+              secondLine={beanBag.roaster}
               date={beanBag.roastDate}
               datePrefix="Roasted on"
               includeDateTime={false}
-              Tag={areBeansFrozen(beanBag) && FrozenChip}
             />
           </Grid>
         ))}

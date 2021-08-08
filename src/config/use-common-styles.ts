@@ -1,6 +1,24 @@
 import { makeStyles } from "@material-ui/core";
 
 export default makeStyles((theme) => ({
+  listTitle: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.text.secondary,
+    [theme.breakpoints.up("sm")]: {
+      marginTop: theme.spacing(4),
+    },
+    [theme.breakpoints.up("sm")]: {
+      marginTop: theme.spacing(6),
+    },
+  },
+  viewMoreButton: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.up("sm")]: {
+      marginTop: theme.spacing(6),
+      marginBottom: theme.spacing(6),
+    },
+  },
   actionsButton: {
     textAlign: "right",
     marginBottom: theme.spacing(1),

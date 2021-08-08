@@ -1,17 +1,15 @@
-import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
-
+import React, { useState } from "react";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import Card from "../components/card";
+import { EmptyList } from "../components/empty-states";
+import Fab from "../components/fab";
 import Layout from "../components/layout";
+import LoadingButton from "../components/loading-button";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
-import Fab from "../components/fab";
-import { EmptyList } from "../components/empty-states";
-import Card from "../components/card";
-import SpoonThinIcon from "../components/icons/spoon-thin";
-import LoadingButton from "../components/loading-button";
-import { tastingVariablesList } from "../utils/constants";
 import { buildBeansIdLabelMap } from "../utils/beans";
-import { useUser, useFirestore, useFirestoreCollectionData } from "reactfire";
+import { tastingVariablesList } from "../utils/constants";
 
 const FIRST_LOAD_LIMIT = 10;
 
@@ -86,7 +84,6 @@ const TastingList = () => {
                           )!.label
                     }
                     link={`/tastings/${tasting.id}/ratings`}
-                    Icon={SpoonThinIcon}
                     secondLine={`${tastingVariables.join(", ")}`}
                     date={tasting.date}
                     datePrefix="Tasted on"

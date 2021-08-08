@@ -1,23 +1,18 @@
-import React, { useState, FunctionComponent } from "react";
 import { Drawer, Grid, IconButton, useMediaQuery } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import FilterListIcon from "@material-ui/icons/FilterList";
-
-import V60Icon from "../components/icons/v60";
-import Card from "../components/card";
-import FilterSort from "../components/filter-sort";
-import { buildBeansIdLabelMap } from "../utils/beans";
+import React, { FunctionComponent, useState } from "react";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import BrewCard from "../components/brew/brew-card";
+import { EmptyBeans, EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
-import { keys } from "../utils/typescripts";
+import FilterSort from "../components/filter-sort";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
-import { EmptyBeans, EmptyList } from "../components/empty-states";
-import LoadingButton from "../components/loading-button";
 import useCommonStyles from "../config/use-common-styles";
-import { useUser, useFirestore, useFirestoreCollectionData } from "reactfire";
-
-const FIRST_LOAD_LIMIT = 10;
+import { buildBeansIdLabelMap } from "../utils/beans";
+import { keys } from "../utils/typescripts";
 
 const filterBrews = (
   brews: Brew[] | undefined,
@@ -62,9 +57,6 @@ const BrewList: FunctionComponent = () => {
   const theme = useTheme();
   const isBreakpointXs = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const [limit, setLimit] = useState(FIRST_LOAD_LIMIT);
-  const [loadAll, setLoadAll] = useState(false);
-
   const [drawerState, setDrawerState] = useState(false);
 
   const [sorting, setSorting] = useState<string>("date/desc");
@@ -77,8 +69,7 @@ const BrewList: FunctionComponent = () => {
     .collection("users")
     .doc(userId)
     .collection("brews")
-    .orderBy("date", "desc")
-    .limit(limit);
+    .orderBy("date", "desc");
   const { status: brewsStatus, data: brews } = useFirestoreCollectionData<Brew>(
     brewsQuery,
     {
@@ -96,6 +87,7 @@ const BrewList: FunctionComponent = () => {
     });
 
   const filteredSortedBrews = filterBrews(sortBrews(brews, sorting), filters);
+
   const beansIdLabelMap = buildBeansIdLabelMap(beans);
 
   const toggleDrawer =
@@ -112,7 +104,7 @@ const BrewList: FunctionComponent = () => {
 
   const title = "Brews";
 
-  if ((brewsStatus === "loading" && !loadAll) || beansStatus === "loading") {
+  if (brewsStatus === "loading" || beansStatus === "loading") {
     return (
       <>
         <PageProgress />
@@ -164,41 +156,16 @@ const BrewList: FunctionComponent = () => {
             </Grid>
           )}
           <Grid item xs={12} sm={8}>
-            <Grid container direction={"column"} spacing={2}>
-              {filteredSortedBrews.map((brew) => {
-                const beansLabel = brew.beans
-                  ? beansIdLabelMap[brew.beans.id]
-                  : undefined;
-                return (
-                  <Grid item key={brew.id}>
-                    <Card
-                      title={brew.method}
-                      link={`/brews/${brew.id}`}
-                      Icon={V60Icon}
-                      aside={
-                        brew.rating && brew.rating !== 0
-                          ? `${brew.rating}/10`
-                          : undefined
-                      }
-                      secondLine={beansLabel}
-                      date={brew.date}
-                      datePrefix="Brewed on"
-                    />
-                  </Grid>
-                );
-              })}
+            <Grid container spacing={2}>
+              {filteredSortedBrews.map((brew) => (
+                <Grid item xs={12} key={brew.id}>
+                  <BrewCard
+                    brew={brew}
+                    beansLabel={brew.beans && beansIdLabelMap[brew.beans.id]}
+                  />
+                </Grid>
+              ))}
             </Grid>
-            {(!loadAll || brewsStatus === "loading") &&
-              brews.length >= FIRST_LOAD_LIMIT && (
-                <LoadingButton
-                  type="brews"
-                  isLoading={brewsStatus === "loading"}
-                  handleClick={() => {
-                    setLoadAll(true);
-                    setLimit(10000);
-                  }}
-                />
-              )}
           </Grid>
         </Grid>
       )}
