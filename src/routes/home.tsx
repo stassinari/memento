@@ -1,35 +1,33 @@
-import React, { FunctionComponent } from "react";
-import { useHistory, Link } from "react-router-dom";
 import {
+  Avatar,
   Button,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Avatar,
-  Paper,
-  makeStyles,
   ListSubheader,
+  makeStyles,
+  Paper,
 } from "@material-ui/core";
-import { format } from "date-fns";
-
 import ErrorIcon from "@material-ui/icons/Error";
-
+import { format } from "date-fns";
+import React, { FunctionComponent } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import { SpeedDial } from "../components/fab";
+import BeanBagIcon from "../components/icons/bean-bag";
+import TamperIcon from "../components/icons/tamper";
+import V60Icon2 from "../components/icons/v60";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { SkeletonHomePage } from "../components/skeletons";
 import {
   buildBeansIdLabelMap,
   buildBeansLabel,
   buildBeansSecondaryLabel,
   filterBeans,
 } from "../utils/beans";
-import V60Icon2 from "../components/icons/v60";
 import { toDate } from "../utils/dates";
-import { SpeedDial } from "../components/fab";
-import TamperIcon from "../components/icons/tamper";
-import BeanBagIcon from "../components/icons/bean-bag";
-import Layout from "../components/layout";
-import { SkeletonHomePage } from "../components/skeletons";
-import PageProgress from "../components/page-progress";
-import { useUser, useFirestore, useFirestoreCollectionData } from "reactfire";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -169,7 +167,7 @@ const Home: FunctionComponent = () => {
           component={Link}
           to="/brews"
         >
-          See all brews
+          See recent brews
         </Button>
       </Paper>
 

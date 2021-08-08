@@ -1,15 +1,14 @@
-import React from "react";
 import {
   BottomNavigation,
   BottomNavigationAction,
   useMediaQuery,
 } from "@material-ui/core";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
+import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-
 import BeansIcon from "./icons/beans";
-import PortafilterIcon from "./icons/portafilter";
 import ChemexIcon from "./icons/chemex";
+import PortafilterIcon from "./icons/portafilter";
 import SpoonIcon from "./icons/spoon";
 
 const useStyles = makeStyles((theme) => {

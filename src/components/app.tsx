@@ -1,39 +1,39 @@
-import React, { createContext, useState } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { ThemeProvider, useMediaQuery } from "@material-ui/core";
+import React, { createContext, useState } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { FirebaseAppProvider } from "reactfire";
-
-import PrivateRoute from "./auth/private-route";
-import PublicRoute from "./auth/public-routes";
-import Login from "../routes/login";
-import SignUp from "../routes/sign-up";
-import ResetPassword from "../routes/reset-password";
-import BrewList from "../routes/brew-list";
-import BrewDetails from "../routes/brew-details";
-import BeansAdd from "../routes/beans-add";
-import BeansList from "../routes/beans-list";
-import BeansDetails from "../routes/beans-details";
-import BrewAdd from "../routes/brew-add";
-import BrewOutcome from "../routes/brew-outcome";
-import Home from "../routes/home";
-import TastingNotes from "../routes/tasting-notes";
-import Error404 from "../routes/error-404";
-import EspressoList from "../routes/espresso-list";
-import EspressoAdd from "../routes/espresso-add";
-import EspressoDecentAdd from "../routes/espresso-decent";
-import EspressoDetails from "../routes/espresso-details";
-import EspressoOutcome from "../routes/espresso-outcome";
-import TastingAdd from "../routes/tasting-add";
-import TastingPrep from "../routes/tasting-prep";
-import TastingRatings from "../routes/tasting-ratings";
-import TastingList from "../routes/tasting-list";
+import config from "../config/firebase-config";
 import buildTheme, { ThemePreference } from "../config/mui-theme";
 import Account from "../routes/account";
-import config from "../config/firebase-config";
+import BeansAdd from "../routes/beans-add";
+import BeansDetails from "../routes/beans-details";
+import BeansList from "../routes/beans-list";
 import BeansUpdate from "../routes/beans-update";
-import EspressoUpdate from "../routes/espresso-update";
+import BrewAdd from "../routes/brew-add";
+import BrewDetails from "../routes/brew-details";
+import BrewList from "../routes/brew-list";
+import BrewOutcome from "../routes/brew-outcome";
+import BrewRecent from "../routes/brew-recent";
 import BrewUpdate from "../routes/brew-update";
+import Error404 from "../routes/error-404";
+import EspressoAdd from "../routes/espresso-add";
+import EspressoDecentAdd from "../routes/espresso-decent";
 import EspressoDecentUpload from "../routes/espresso-decent-upload";
+import EspressoDetails from "../routes/espresso-details";
+import EspressoList from "../routes/espresso-list";
+import EspressoOutcome from "../routes/espresso-outcome";
+import EspressoUpdate from "../routes/espresso-update";
+import Home from "../routes/home";
+import Login from "../routes/login";
+import ResetPassword from "../routes/reset-password";
+import SignUp from "../routes/sign-up";
+import TastingAdd from "../routes/tasting-add";
+import TastingList from "../routes/tasting-list";
+import TastingNotes from "../routes/tasting-notes";
+import TastingPrep from "../routes/tasting-prep";
+import TastingRatings from "../routes/tasting-ratings";
+import PrivateRoute from "./auth/private-route";
+import PublicRoute from "./auth/public-routes";
 
 interface ThemeContextProps {
   themePref: ThemePreference;
@@ -72,6 +72,7 @@ const App = () => {
               <PublicRoute path="/reset-password" page={ResetPassword} />
               {/* BREWS */}
               <PrivateRoute path="/brews/add" page={BrewAdd} />
+              <PrivateRoute path="/brews/all" page={BrewList} />
               <PrivateRoute
                 path="/brews/:id/clone"
                 page={BrewUpdate}
@@ -88,7 +89,7 @@ const App = () => {
                 page={BrewUpdate}
                 pageProps={{ update: true }}
               />
-              <PrivateRoute exact path="/brews" page={BrewList} />
+              <PrivateRoute exact path="/brews" page={BrewRecent} />
               {/* EPSRESSO */}
               <PrivateRoute exact path="/espresso" page={EspressoList} />
               <PrivateRoute exact path="/espresso/:id" page={EspressoDetails} />

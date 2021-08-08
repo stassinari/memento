@@ -1,33 +1,32 @@
-import React, { FunctionComponent } from "react";
-import { useParams, useHistory, Link as RouterLink } from "react-router-dom";
 import {
+  Link as MuiLink,
+  makeStyles,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Link as MuiLink,
-  makeStyles,
 } from "@material-ui/core";
 import {
-  Edit as EditIcon,
   Delete as DeleteIcon,
+  Edit as EditIcon,
   FileCopy as FileCopyIcon,
   Star as StarIcon,
 } from "@material-ui/icons";
-
+import React, { FunctionComponent } from "react";
+import { Link as RouterLink, useHistory, useParams } from "react-router-dom";
+import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import ActionDialog from "../components/action-dialog";
+import ActionsMenu from "../components/actions-menu";
+import FlavoursChart from "../components/flavours-chart";
+import Layout from "../components/layout";
+import Markdown from "../components/markdown";
+import PageProgress from "../components/page-progress";
+import useCommonStyles from "../config/use-common-styles";
 import { deleteBrew } from "../database/queries";
 import { buildBeansLabel } from "../utils/beans";
-import ActionsMenu from "../components/actions-menu";
-import useCommonStyles from "../config/use-common-styles";
 import { renderDate } from "../utils/dates";
-import ActionDialog from "../components/action-dialog";
-import Layout from "../components/layout";
-import PageProgress from "../components/page-progress";
-import Markdown from "../components/markdown";
-import FlavoursChart from "../components/flavours-chart";
-import { useUser, useFirestore, useFirestoreDocData } from "reactfire";
 
 interface RouteParams {
   id: string;
