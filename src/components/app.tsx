@@ -22,6 +22,7 @@ import EspressoDecentUpload from "../routes/espresso-decent-upload";
 import EspressoDetails from "../routes/espresso-details";
 import EspressoList from "../routes/espresso-list";
 import EspressoOutcome from "../routes/espresso-outcome";
+import EspressoRecent from "../routes/espresso-recent";
 import EspressoUpdate from "../routes/espresso-update";
 import Home from "../routes/home";
 import Login from "../routes/login";
@@ -91,7 +92,8 @@ const App = () => {
               />
               <PrivateRoute exact path="/brews" page={BrewRecent} />
               {/* EPSRESSO */}
-              <PrivateRoute exact path="/espresso" page={EspressoList} />
+              <PrivateRoute exact path="/espresso" page={EspressoRecent} />
+              <PrivateRoute path="/espresso/all" page={EspressoList} />
               <PrivateRoute exact path="/espresso/:id" page={EspressoDetails} />
               <PrivateRoute
                 exact

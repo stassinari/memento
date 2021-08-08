@@ -9,14 +9,11 @@ import Fab from "../components/fab";
 import FilterSort from "../components/filter-sort";
 import BeanIcon from "../components/icons/bean";
 import Layout from "../components/layout";
-import LoadingButton from "../components/loading-button";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
 import useCommonStyles from "../config/use-common-styles";
 import { buildBeansIdLabelMap } from "../utils/beans";
 import { keys } from "../utils/typescripts";
-
-const FIRST_LOAD_LIMIT = 10;
 
 const filterBrews = (
   brews: Brew[] | undefined,
@@ -61,9 +58,6 @@ const BrewList: FunctionComponent = () => {
   const theme = useTheme();
   const isBreakpointXs = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const [limit, setLimit] = useState(FIRST_LOAD_LIMIT);
-  const [loadAll, setLoadAll] = useState(false);
-
   const [drawerState, setDrawerState] = useState(false);
 
   const [sorting, setSorting] = useState<string>("date/desc");
@@ -76,8 +70,7 @@ const BrewList: FunctionComponent = () => {
     .collection("users")
     .doc(userId)
     .collection("brews")
-    .orderBy("date", "desc")
-    .limit(limit);
+    .orderBy("date", "desc");
   const { status: brewsStatus, data: brews } = useFirestoreCollectionData<Brew>(
     brewsQuery,
     {
@@ -112,7 +105,7 @@ const BrewList: FunctionComponent = () => {
 
   const title = "Brews";
 
-  if ((brewsStatus === "loading" && !loadAll) || beansStatus === "loading") {
+  if (brewsStatus === "loading" || beansStatus === "loading") {
     return (
       <>
         <PageProgress />
@@ -187,18 +180,6 @@ const BrewList: FunctionComponent = () => {
                 </Grid>
               ))}
             </Grid>
-
-            {(!loadAll || brewsStatus === "loading") &&
-              brews.length >= FIRST_LOAD_LIMIT && (
-                <LoadingButton
-                  type="brews"
-                  isLoading={brewsStatus === "loading"}
-                  handleClick={() => {
-                    setLoadAll(true);
-                    setLimit(10000);
-                  }}
-                />
-              )}
           </Grid>
         </Grid>
       )}
