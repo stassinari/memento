@@ -1,41 +1,41 @@
-import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  FileCopy as FileCopyIcon,
-  Archive as ArchiveIcon,
-  Unarchive as UnarchiveIcon,
   AcUnit as AcUnitIcon,
+  Archive as ArchiveIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  FileCopy as FileCopyIcon,
+  Unarchive as UnarchiveIcon,
 } from "@material-ui/icons";
 import { Alert, AlertTitle } from "@material-ui/lab";
-import { useFirestoreDocData, useFirestore, useUser } from "reactfire";
-
-import {
-  canRemoveBeans,
-  deleteBeans,
-  beansSetFinished,
-  beansFreezeToday,
-  beansThawToday,
-} from "../database/queries";
-import SimpleDialog from "../components/simple-dialog";
-import { renderDate } from "../utils/dates";
-import { capitalise } from "../utils/string";
+import React, { useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import ActionDialog from "../components/action-dialog";
 import ActionsMenu from "../components/actions-menu";
 import { roastLevelLabels } from "../components/beans/beans-add/fields/roast-level";
-import useCommonStyles from "../config/use-common-styles";
-import ActionDialog from "../components/action-dialog";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
+import SimpleDialog from "../components/simple-dialog";
+import useCommonStyles from "../config/use-common-styles";
+import countriesMap from "../database/countries";
+import {
+  beansFreezeToday,
+  beansSetFinished,
+  beansThawToday,
+  canRemoveBeans,
+  deleteBeans,
+} from "../database/queries";
+import { renderDate } from "../utils/dates";
+import { capitalise } from "../utils/string";
 
 interface RouteParams {
   id: string;
@@ -49,6 +49,23 @@ const useStyles = makeStyles((theme) => ({
     listStyle: "none",
     margin: 0,
     padding: 0,
+  },
+  countryContainer: {
+    position: "relative",
+    width: theme.spacing(24),
+  },
+  countryFlag: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: theme.spacing(8),
+    opacity: 0.75,
+    borderRadius: 4,
+  },
+  countryMap: {
+    width: theme.spacing(24),
+    fill: "red",
   },
 }));
 
@@ -209,6 +226,27 @@ const BeansDetails = () => {
           It won't show up when you select beans, and it will be hidden by
           default in the list of beans page.
         </Alert>
+      )}
+      {beans.country && (
+        <Paper className={commonStyles.table}>
+          {beans.country} - {countriesMap[beans.country].toLowerCase()}
+          <div className={classes.countryContainer}>
+            <img
+              src={`${process.env.PUBLIC_URL}/images/maps/${countriesMap[
+                beans.country
+              ].toLowerCase()}.svg`}
+              className={classes.countryMap}
+              alt={`${beans.country} map outline`}
+            />
+            <img
+              src={`${process.env.PUBLIC_URL}/images/flags/${countriesMap[
+                beans.country
+              ].toLowerCase()}.svg`}
+              className={classes.countryFlag}
+              alt={`${beans.country} flag`}
+            />
+          </div>
+        </Paper>
       )}
       <Paper className={commonStyles.table}>
         <TableContainer>
