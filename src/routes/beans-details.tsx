@@ -6,7 +6,7 @@ import {
   TableContainer,
   TableRow,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   AcUnit as AcUnitIcon,
   Archive as ArchiveIcon,
@@ -59,13 +59,12 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: theme.spacing(8),
-    opacity: 0.75,
+    width: theme.spacing(6),
+    opacity: 0.85,
     borderRadius: 4,
   },
   countryMap: {
     width: theme.spacing(24),
-    fill: "red",
   },
 }));
 
@@ -75,6 +74,8 @@ const BeansDetails = () => {
   } = useUser();
   const commonStyles = useCommonStyles();
   const classes = useStyles();
+  const theme = useTheme();
+  console.log(theme);
 
   // delete dialog state
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -232,9 +233,9 @@ const BeansDetails = () => {
           {beans.country} - {countriesMap[beans.country].toLowerCase()}
           <div className={classes.countryContainer}>
             <img
-              src={`${process.env.PUBLIC_URL}/images/maps/${countriesMap[
-                beans.country
-              ].toLowerCase()}.svg`}
+              src={`${process.env.PUBLIC_URL}/images/maps/${
+                theme.isDark ? "dark" : "light"
+              }/${countriesMap[beans.country].toLowerCase()}.svg`}
               className={classes.countryMap}
               alt={`${beans.country} map outline`}
             />
