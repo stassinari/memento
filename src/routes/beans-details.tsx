@@ -1,5 +1,5 @@
-import { Grid, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Grid, Typography, useMediaQuery } from "@material-ui/core";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   AcUnit as AcUnitIcon,
   Archive as ArchiveIcon,
@@ -9,6 +9,7 @@ import {
   Unarchive as UnarchiveIcon,
 } from "@material-ui/icons";
 import { Alert, AlertTitle } from "@material-ui/lab";
+import clsx from "clsx";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {
@@ -49,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: 0,
   },
+  rightColTitle: {
+    [theme.breakpoints.up("md")]: {
+      marginBottom: theme.spacing(4.5),
+    },
+  },
 }));
 
 const BeansDetails = () => {
@@ -57,6 +63,8 @@ const BeansDetails = () => {
   } = useUser();
   const classes = useStyles();
   const commonStyles = useCommonStyles();
+  const theme = useTheme();
+  const isBreakpointMd = useMediaQuery(theme.breakpoints.up("md"));
 
   // delete dialog state
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -91,7 +99,6 @@ const BeansDetails = () => {
       idField: "id",
     }
   );
-  console.log(brews);
 
   const espressosListRef = firestore
     .collection("users")
@@ -103,7 +110,6 @@ const BeansDetails = () => {
     useFirestoreCollectionData<Espresso>(espressosListRef, {
       idField: "id",
     });
-  console.log(espressoList);
 
   const removeCheck = async () => {
     // TODO refactor this when getting brews/espressos to view as a list
@@ -154,7 +160,7 @@ const BeansDetails = () => {
   }
 
   return (
-    <Layout title={title}>
+    <Layout title={title} maxWidth="lg">
       <ActionDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -233,59 +239,72 @@ const BeansDetails = () => {
           },
         ]}
       />
-      {beans.isFinished && (
-        <Alert className={classes.alert} severity="info">
-          <AlertTitle>Finished (archived)</AlertTitle>
-          This bean bag is <strong>finished</strong> (aka archived).
-          <br />
-          It won't show up when you select beans, and it will be hidden by
-          default in the list of beans page.
-        </Alert>
-      )}
-      <BeansRoastInfo beans={beans} />
-      {beans.origin === "single-origin" ? (
-        <BeansTerroirSingleOrigin beans={beans} />
-      ) : beans.origin === "blend" ? (
-        <BeansTerroirBlend beans={beans} />
-      ) : null}
+      <Grid container spacing={isBreakpointMd ? 8 : 0}>
+        <Grid item xs={12} md={6}>
+          <BeansRoastInfo beans={beans} />
 
-      {brews.length > 0 && (
-        <>
-          <Typography
-            variant="h5"
-            gutterBottom
-            className={commonStyles.listTitle}
-          >
-            Brews
-          </Typography>
-          <Grid container spacing={2}>
-            {brews.map((brew) => (
-              <Grid item xs={12} sm={6} key={brew.id}>
-                <BrewCard brew={brew} />
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
+          {beans.isFinished && (
+            <Alert className={classes.alert} severity="info">
+              <AlertTitle>Finished (archived)</AlertTitle>
+              This bean bag is <strong>finished</strong> (aka archived).
+              <br />
+              It won't show up when you select beans, and it will be hidden by
+              default in the list of beans page.
+            </Alert>
+          )}
 
-      {espressoList.length > 0 && (
-        <>
-          <Typography
-            variant="h5"
-            gutterBottom
-            className={commonStyles.listTitle}
-          >
-            Espressos
-          </Typography>
-          <Grid container spacing={2}>
-            {espressoList.map((espresso) => (
-              <Grid item xs={12} sm={6} key={espresso.id}>
-                <EspressoCard espresso={espresso} />
+          {beans.origin === "single-origin" ? (
+            <BeansTerroirSingleOrigin beans={beans} />
+          ) : beans.origin === "blend" ? (
+            <BeansTerroirBlend beans={beans} />
+          ) : null}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {brews.length > 0 && (
+            <>
+              <Typography
+                variant="h5"
+                gutterBottom
+                className={clsx([
+                  commonStyles.listTitle,
+                  classes.rightColTitle,
+                ])}
+              >
+                Brews
+              </Typography>
+              <Grid container spacing={2}>
+                {brews.map((brew) => (
+                  <Grid item xs={12} sm={6} md={12} lg={6} key={brew.id}>
+                    <BrewCard brew={brew} />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
+            </>
+          )}
+
+          {espressoList.length > 0 && (
+            <>
+              <Typography
+                variant="h5"
+                gutterBottom
+                className={clsx([
+                  commonStyles.listTitle,
+                  classes.rightColTitle,
+                ])}
+              >
+                Espressos
+              </Typography>
+              <Grid container spacing={2}>
+                {espressoList.map((espresso) => (
+                  <Grid item xs={12} sm={6} md={12} lg={6} key={espresso.id}>
+                    <EspressoCard espresso={espresso} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
+        </Grid>
+      </Grid>
     </Layout>
   );
 };
