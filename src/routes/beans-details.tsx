@@ -22,11 +22,12 @@ import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import ActionDialog from "../components/action-dialog";
 import ActionsMenu from "../components/actions-menu";
 import { roastLevelLabels } from "../components/beans/beans-add/fields/roast-level";
+import BeansTerroirBlend from "../components/beans/beans-terroir-blend";
+import BeansTerroirSingleOrigin from "../components/beans/beans-terroir-single-origin";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SimpleDialog from "../components/simple-dialog";
 import useCommonStyles from "../config/use-common-styles";
-import countriesMap from "../database/countries";
 import {
   beansFreezeToday,
   beansSetFinished,
@@ -49,22 +50,6 @@ const useStyles = makeStyles((theme) => ({
     listStyle: "none",
     margin: 0,
     padding: 0,
-  },
-  countryContainer: {
-    position: "relative",
-    width: theme.spacing(24),
-  },
-  countryFlag: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: theme.spacing(6),
-    opacity: 0.85,
-    borderRadius: 4,
-  },
-  countryMap: {
-    width: theme.spacing(24),
   },
 }));
 
@@ -228,27 +213,11 @@ const BeansDetails = () => {
           default in the list of beans page.
         </Alert>
       )}
-      {beans.country && (
-        <Paper className={commonStyles.table}>
-          {beans.country} - {countriesMap[beans.country].toLowerCase()}
-          <div className={classes.countryContainer}>
-            <img
-              src={`${process.env.PUBLIC_URL}/images/maps/${
-                theme.isDark ? "dark" : "light"
-              }/${countriesMap[beans.country].toLowerCase()}.svg`}
-              className={classes.countryMap}
-              alt={`${beans.country} map outline`}
-            />
-            <img
-              src={`${process.env.PUBLIC_URL}/images/flags/${countriesMap[
-                beans.country
-              ].toLowerCase()}.svg`}
-              className={classes.countryFlag}
-              alt={`${beans.country} flag`}
-            />
-          </div>
-        </Paper>
-      )}
+      {beans.origin === "single-origin" ? (
+        <BeansTerroirSingleOrigin beans={beans} />
+      ) : beans.origin === "blend" ? (
+        <BeansTerroirBlend beans={beans} />
+      ) : null}
       <Paper className={commonStyles.table}>
         <TableContainer>
           <Table aria-label="simple table">
