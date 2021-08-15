@@ -70,6 +70,7 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
   const showDivider =
     (!!country || !!region || !!altitude || !!farmer || !!harvestDate) &&
     (procezz || varietals.length > 0);
+
   if (hideComponent) {
     return null;
   }

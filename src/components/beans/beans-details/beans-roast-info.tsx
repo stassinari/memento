@@ -44,10 +44,18 @@ const BeansRoastInfo: FunctionComponent<Props> = ({ beans }) => {
   const commonStyles = useCommonStyles();
   const classes = useStyles();
 
-  const roastStyle =
-    !!beans.roastLevel && roastLevelLabels[beans.roastLevel].label;
-
   const showFrozenChip = areBeansFrozen(beans) || areBeansThawed(beans);
+
+  const roastLevel =
+    !!beans.roastLevel && roastLevelLabels[beans.roastLevel].label;
+  const roastStileAndLevel = [capitalise(beans.roastStyle), roastLevel]
+    .filter((s) => !!s)
+    .join(" - ");
+  const roastingNotes = beans.roastingNotes.join(", ");
+  const roastDate = beans.roastDate;
+
+  const hideRoastInfo =
+    !roastStileAndLevel && !roastingNotes && !roastDate && !showFrozenChip;
 
   return (
     <>
@@ -57,51 +65,52 @@ const BeansRoastInfo: FunctionComponent<Props> = ({ beans }) => {
       <Typography className={classes.roaster} gutterBottom>
         {beans.roaster}
       </Typography>
-      <Paper className={classes.root}>
-        <Typography gutterBottom>
-          {[capitalise(beans.roastStyle), roastStyle]
-            .filter((s) => !!s)
-            .join(" - ")}
-        </Typography>
-        {beans.roastingNotes && (
-          <Typography gutterBottom>{beans.roastingNotes.join(", ")}</Typography>
-        )}
-        {beans.roastDate && (
-          <Box alignItems="center" display="flex">
-            <EventIcon className={classes.icon} />
-            <Typography variant="body2">
-              <span className={classes.label}>Roasted on</span>{" "}
-              {renderDate(beans.roastDate)}
-            </Typography>
-          </Box>
-        )}
 
-        {showFrozenChip && (
-          <Tooltip
-            leaveTouchDelay={3000}
-            enterTouchDelay={50}
-            title={
-              <>
-                <span>Frozen on {renderDate(beans.freezeDate)}</span>
-                {beans.thawDate && (
-                  <>
-                    <br />
-                    <span>Thawed on {renderDate(beans.thawDate)}</span>
-                  </>
-                )}
-              </>
-            }
-          >
-            <Chip
-              color="secondary"
-              label={areBeansThawed(beans) ? "Thawed" : "Frozen"}
-              size="small"
-              icon={<AcUnitIcon />}
-              className={classes.chip}
-            />
-          </Tooltip>
-        )}
-      </Paper>
+      {!hideRoastInfo && (
+        <Paper className={classes.root}>
+          {roastStileAndLevel && (
+            <Typography gutterBottom>{roastStileAndLevel}</Typography>
+          )}
+          {beans.roastingNotes.length > 0 && (
+            <Typography gutterBottom>{roastingNotes}</Typography>
+          )}
+          {roastDate && (
+            <Box alignItems="center" display="flex">
+              <EventIcon className={classes.icon} />
+              <Typography variant="body2">
+                <span className={classes.label}>Roasted on</span>{" "}
+                {renderDate(roastDate)}
+              </Typography>
+            </Box>
+          )}
+
+          {showFrozenChip && (
+            <Tooltip
+              leaveTouchDelay={3000}
+              enterTouchDelay={50}
+              title={
+                <>
+                  <span>Frozen on {renderDate(beans.freezeDate)}</span>
+                  {beans.thawDate && (
+                    <>
+                      <br />
+                      <span>Thawed on {renderDate(beans.thawDate)}</span>
+                    </>
+                  )}
+                </>
+              }
+            >
+              <Chip
+                color="secondary"
+                label={areBeansThawed(beans) ? "Thawed" : "Frozen"}
+                size="small"
+                icon={<AcUnitIcon />}
+                className={classes.chip}
+              />
+            </Tooltip>
+          )}
+        </Paper>
+      )}
     </>
   );
 };
