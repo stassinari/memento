@@ -104,27 +104,22 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
           )}
           <Grid item xs={8} className={classes.terroir}>
             <Typography className={classes.bold}>{country}</Typography>
-            <Typography variant="body2" display="inline">
-              {region}
+            <Typography variant="body2" gutterBottom>
+              {region} {altitude && <span>({altitude} masl)</span>}
             </Typography>
-            {altitude && (
-              <Typography variant="body2" display="inline">
-                ({altitude} masl)
-              </Typography>
-            )}
             {farmer && (
-              <Typography variant="body2">
+              <Typography variant="body2" gutterBottom>
                 <span className={classes.label}>Grown by</span> {farmer}
               </Typography>
             )}
             {harvestDate && (
-              <Typography variant="body2">
+              <Typography variant="body2" gutterBottom>
                 <span className={classes.label}>Harvested in</span>{" "}
                 {renderDate(harvestDate, "MMMM yyyy")}
               </Typography>
             )}
             {showDivider && <Divider className={classes.divider} />}
-            <Typography display="inline">
+            <Typography gutterBottom>
               {[procezz, varietals].filter((s) => !!s).join(" - ")}
             </Typography>
           </Grid>
