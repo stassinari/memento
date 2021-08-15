@@ -10,15 +10,22 @@ import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../config/use-common-styles";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    marginBottom: theme.spacing(2),
+  },
   gridItem: {
-    padding: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    "&:last-child": {
+      paddingBottom: theme.spacing(2),
+    },
   },
   name: {
     fontSize: "1.25rem",
   },
   divider: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
   bold: {
     fontWeight: 600,
@@ -44,19 +51,22 @@ const BeansTerroirBlend: FunctionComponent<Props> = ({ beans }) => {
   const gridSize = blend?.length === 1 ? 12 : blend?.length === 2 ? 6 : 4;
 
   return (
-    <Paper className={commonStyles.table}>
-      <Grid container>
-        {blend &&
-          blend.map((item: BeansBlendPart, index: number) => {
-            const name = item.name;
-            const country = item.country;
-            const percentage = item.percentage;
+    <>
+      <Typography variant="h5" gutterBottom className={commonStyles.listTitle}>
+        Blend composition
+      </Typography>
+      <Paper className={classes.root}>
+        <Grid container>
+          {blend &&
+            blend.map((item: BeansBlendPart, index: number) => {
+              const name = item.name;
+              const country = item.country;
+              const percentage = item.percentage;
 
-            const procezz = item.process;
-            const varietals = item.varietals && item.varietals.join(", ");
+              const procezz = item.process;
+              const varietals = item.varietals && item.varietals.join(", ");
 
-            return (
-              <>
+              return (
                 <Grid
                   item
                   xs={12}
@@ -71,20 +81,15 @@ const BeansTerroirBlend: FunctionComponent<Props> = ({ beans }) => {
                   <Typography variant="body2">
                     {[procezz, varietals].filter((s) => !!s).join(" - ")}
                   </Typography>
+                  {isBreakpointXs && index !== blend.length - 1 && (
+                    <Divider className={classes.divider} />
+                  )}
                 </Grid>
-
-                {isBreakpointXs && (
-                  <Grid item xs={12}>
-                    {index !== blend.length - 1 && (
-                      <Divider className={classes.divider} />
-                    )}
-                  </Grid>
-                )}
-              </>
-            );
-          })}
-      </Grid>
-    </Paper>
+              );
+            })}
+        </Grid>
+      </Paper>
+    </>
   );
 };
 

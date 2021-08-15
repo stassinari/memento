@@ -6,7 +6,7 @@ import {
   TableContainer,
   TableRow,
 } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   AcUnit as AcUnitIcon,
   Archive as ArchiveIcon,
@@ -59,8 +59,6 @@ const BeansDetails = () => {
   } = useUser();
   const commonStyles = useCommonStyles();
   const classes = useStyles();
-  const theme = useTheme();
-  console.log(theme);
 
   // delete dialog state
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);

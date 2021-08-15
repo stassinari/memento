@@ -6,6 +6,9 @@ import countriesMap from "../../database/countries";
 import { renderDate } from "../../utils/dates";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    marginBottom: theme.spacing(2),
+  },
   terroir: {
     padding: theme.spacing(2),
   },
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   label: {
-    fontStyle: "italic",
+    // fontStyle: "italic",
     color: theme.palette.text.secondary,
   },
 }));
@@ -73,56 +76,61 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
   }
 
   return (
-    <Paper className={commonStyles.table}>
-      <Grid container>
-        {country && (
-          <Grid item xs={4}>
-            <div className={classes.countryContainer}>
-              <img
-                src={`${process.env.PUBLIC_URL}/images/maps/${
-                  theme.isDark ? "dark" : "light"
-                }/${countriesMap[country].toLowerCase()}.svg`}
-                className={classes.countryMap}
-                alt={`${country} map outline`}
-              />
-              <img
-                src={`${process.env.PUBLIC_URL}/images/flags/${countriesMap[
-                  country
-                ].toLowerCase()}.svg`}
-                className={classes.countryFlag}
-                alt={`${country} flag`}
-              />
-            </div>
-          </Grid>
-        )}
-        <Grid item xs={8} className={classes.terroir}>
-          <Typography className={classes.bold}>{country}</Typography>
-          <Typography variant="body2" display="inline">
-            {region}
-          </Typography>{" "}
-          {altitude && (
+    <>
+      <Typography variant="h5" gutterBottom className={commonStyles.listTitle}>
+        Single-origin terroir
+      </Typography>
+      <Paper className={classes.root}>
+        <Grid container>
+          {country && (
+            <Grid item xs={4}>
+              <div className={classes.countryContainer}>
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/maps/${
+                    theme.isDark ? "dark" : "light"
+                  }/${countriesMap[country].toLowerCase()}.svg`}
+                  className={classes.countryMap}
+                  alt={`${country} map outline`}
+                />
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/flags/${countriesMap[
+                    country
+                  ].toLowerCase()}.svg`}
+                  className={classes.countryFlag}
+                  alt={`${country} flag`}
+                />
+              </div>
+            </Grid>
+          )}
+          <Grid item xs={8} className={classes.terroir}>
+            <Typography className={classes.bold}>{country}</Typography>
             <Typography variant="body2" display="inline">
-              ({altitude} masl)
-            </Typography>
-          )}
-          {farmer && (
-            <Typography variant="body2">
-              <span className={classes.label}>Grown by</span> {farmer}
-            </Typography>
-          )}
-          {harvestDate && (
-            <Typography variant="body2">
-              <span className={classes.label}>Harvested in</span>{" "}
-              {renderDate(harvestDate)}
-            </Typography>
-          )}
-          {showDivider && <Divider className={classes.divider} />}
-          <Typography display="inline">
-            {[procezz, varietals].filter((s) => !!s).join(" - ")}
-          </Typography>{" "}
+              {region}
+            </Typography>{" "}
+            {altitude && (
+              <Typography variant="body2" display="inline">
+                ({altitude} masl)
+              </Typography>
+            )}
+            {farmer && (
+              <Typography variant="body2">
+                <span className={classes.label}>Grown by</span> {farmer}
+              </Typography>
+            )}
+            {harvestDate && (
+              <Typography variant="body2">
+                <span className={classes.label}>Harvested in</span>{" "}
+                {renderDate(harvestDate, "MMMM yyyy")}
+              </Typography>
+            )}
+            {showDivider && <Divider className={classes.divider} />}
+            <Typography display="inline">
+              {[procezz, varietals].filter((s) => !!s).join(" - ")}
+            </Typography>{" "}
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+    </>
   );
 };
 
