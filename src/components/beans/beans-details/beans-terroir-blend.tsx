@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { FunctionComponent } from "react";
-import useCommonStyles from "../../config/use-common-styles";
+import useCommonStyles from "../../../config/use-common-styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {

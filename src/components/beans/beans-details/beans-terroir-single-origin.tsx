@@ -1,9 +1,9 @@
 import { Divider, Grid, Paper, Typography } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { FunctionComponent } from "react";
-import useCommonStyles from "../../config/use-common-styles";
-import countriesMap from "../../database/countries";
-import { renderDate } from "../../utils/dates";
+import useCommonStyles from "../../../config/use-common-styles";
+import countriesMap from "../../../database/countries";
+import { renderDate } from "../../../utils/dates";
 
 const useStyles = makeStyles((theme) => ({
   root: {
