@@ -1,6 +1,17 @@
 import { makeStyles } from "@material-ui/core";
 
 export default makeStyles((theme) => ({
+  pageTitle: {
+    marginTop: theme.spacing(2),
+    fontWeight: 500,
+    color: theme.palette.text.primary,
+    [theme.breakpoints.up("sm")]: {
+      marginTop: theme.spacing(4),
+    },
+    [theme.breakpoints.up("sm")]: {
+      marginTop: theme.spacing(6),
+    },
+  },
   listTitle: {
     marginTop: theme.spacing(2),
     color: theme.palette.text.secondary,

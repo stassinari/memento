@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from "react";
-import ReactMarkdown from "markdown-to-jsx";
+import { Box } from "@material-ui/core";
+import Link from "@material-ui/core/Link";
 import {
   createStyles,
   makeStyles,
@@ -7,8 +7,8 @@ import {
   withStyles,
 } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
-import { Box } from "@material-ui/core";
+import ReactMarkdown from "markdown-to-jsx";
+import React, { FunctionComponent } from "react";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -64,7 +64,7 @@ const Markdown: FunctionComponent<Props> = ({ md }) => {
 
   return (
     <div className={classes.root}>
-      <ReactMarkdown wrapper={React.Fragment} options={options} children={md} />
+      <ReactMarkdown options={options} children={md} />
     </div>
   );
 };

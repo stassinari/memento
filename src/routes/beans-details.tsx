@@ -1,41 +1,41 @@
-import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { Grid, Typography, useMediaQuery } from "@material-ui/core";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  FileCopy as FileCopyIcon,
-  Archive as ArchiveIcon,
-  Unarchive as UnarchiveIcon,
   AcUnit as AcUnitIcon,
+  Archive as ArchiveIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  FileCopy as FileCopyIcon,
+  Unarchive as UnarchiveIcon,
 } from "@material-ui/icons";
 import { Alert, AlertTitle } from "@material-ui/lab";
-import { useFirestoreDocData, useFirestore, useUser } from "reactfire";
-
+import clsx from "clsx";
+import React, { useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import {
-  canRemoveBeans,
-  deleteBeans,
-  beansSetFinished,
-  beansFreezeToday,
-  beansThawToday,
-} from "../database/queries";
-import SimpleDialog from "../components/simple-dialog";
-import { renderDate } from "../utils/dates";
-import { capitalise } from "../utils/string";
-import ActionsMenu from "../components/actions-menu";
-import { roastLevelLabels } from "../components/beans/beans-add/fields/roast-level";
-import useCommonStyles from "../config/use-common-styles";
+  useFirestore,
+  useFirestoreCollectionData,
+  useFirestoreDocData,
+  useUser,
+} from "reactfire";
 import ActionDialog from "../components/action-dialog";
+import ActionsMenu from "../components/actions-menu";
+import BeansRoastInfo from "../components/beans/beans-details/beans-roast-info";
+import BeansTerroirBlend from "../components/beans/beans-details/beans-terroir-blend";
+import BeansTerroirSingleOrigin from "../components/beans/beans-details/beans-terroir-single-origin";
+import BrewCard from "../components/brew/brew-card";
+import EspressoCard from "../components/espresso/espresso-card";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
+import SimpleDialog from "../components/simple-dialog";
+import useCommonStyles from "../config/use-common-styles";
+import {
+  beansFreezeToday,
+  beansSetFinished,
+  beansThawToday,
+  canRemoveBeans,
+  deleteBeans,
+} from "../database/queries";
 
 interface RouteParams {
   id: string;
@@ -50,14 +50,21 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: 0,
   },
+  rightColTitle: {
+    [theme.breakpoints.up("md")]: {
+      marginBottom: theme.spacing(4.5),
+    },
+  },
 }));
 
 const BeansDetails = () => {
   const {
     data: { uid: userId },
   } = useUser();
-  const commonStyles = useCommonStyles();
   const classes = useStyles();
+  const commonStyles = useCommonStyles();
+  const theme = useTheme();
+  const isBreakpointMd = useMediaQuery(theme.breakpoints.up("md"));
 
   // delete dialog state
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -76,6 +83,33 @@ const BeansDetails = () => {
     .collection("beans")
     .doc(beansId);
   const { status, data: beans } = useFirestoreDocData<Beans>(beansRef);
+
+  const shortRef = firestore.collection("beans").doc(beansId);
+
+  // retrieve brews and espressos
+  const brewsRef = firestore
+    .collection("users")
+    .doc(userId)
+    .collection("brews")
+    .where("beans", "==", shortRef)
+    .orderBy("date", "desc");
+  const { status: brewsStatus, data: brews } = useFirestoreCollectionData<Brew>(
+    brewsRef,
+    {
+      idField: "id",
+    }
+  );
+
+  const espressosListRef = firestore
+    .collection("users")
+    .doc(userId)
+    .collection("espresso")
+    .where("beans", "==", shortRef)
+    .orderBy("date", "desc");
+  const { status: espressoListStatus, data: espressoList } =
+    useFirestoreCollectionData<Espresso>(espressosListRef, {
+      idField: "id",
+    });
 
   const removeCheck = async () => {
     // TODO refactor this when getting brews/espressos to view as a list
@@ -107,7 +141,11 @@ const BeansDetails = () => {
 
   const title = "Beans details";
 
-  if (status === "loading") {
+  if (
+    status === "loading" ||
+    brewsStatus === "loading" ||
+    espressoListStatus === "loading"
+  ) {
     return (
       <>
         <PageProgress />
@@ -122,7 +160,7 @@ const BeansDetails = () => {
   }
 
   return (
-    <Layout title={title}>
+    <Layout title={title} maxWidth="lg">
       <ActionDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -201,163 +239,72 @@ const BeansDetails = () => {
           },
         ]}
       />
-      {beans.isFinished && (
-        <Alert className={classes.alert} severity="info">
-          <AlertTitle>Finished (archived)</AlertTitle>
-          This bean bag is <strong>finished</strong> (aka archived).
-          <br />
-          It won't show up when you select beans, and it will be hidden by
-          default in the list of beans page.
-        </Alert>
-      )}
-      <Paper className={commonStyles.table}>
-        <TableContainer>
-          <Table aria-label="simple table">
-            <TableBody>
-              <TableRow>
-                <TableCell className={commonStyles.label}>Name</TableCell>
-                <TableCell>{beans.name}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={commonStyles.label}>Roaster</TableCell>
-                <TableCell>{beans.roaster}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={commonStyles.label}>Roast date</TableCell>
-                <TableCell>{renderDate(beans.roastDate)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={commonStyles.label}>
-                  Roast style
-                </TableCell>
-                <TableCell>{capitalise(beans.roastStyle)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={commonStyles.label}>
-                  Roast level
-                </TableCell>
-                <TableCell>
-                  {beans.roastLevel !== undefined &&
-                    beans.roastLevel !== null &&
-                    roastLevelLabels[beans.roastLevel].label}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={commonStyles.label}>
-                  Roasting notes
-                </TableCell>
-                <TableCell>
-                  {beans.roastingNotes ? beans.roastingNotes.join(", ") : ""}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-      {beans.freezeDate && (
-        <Paper className={commonStyles.table}>
-          <TableContainer>
-            <Table aria-label="simple table">
-              <TableBody>
-                <TableRow>
-                  <TableCell className={commonStyles.label}>
-                    Freeze date
-                  </TableCell>
-                  <TableCell>{renderDate(beans.freezeDate)}</TableCell>
-                </TableRow>
-                {beans.thawDate && (
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>
-                      Thaw date
-                    </TableCell>
-                    <TableCell>{renderDate(beans.thawDate)}</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      )}
-      <Paper>
-        <TableContainer>
-          <Table aria-label="simple table">
-            <TableBody>
-              <TableRow>
-                <TableCell className={commonStyles.label}>Origin</TableCell>
-                <TableCell>{capitalise(beans.origin)}</TableCell>
-              </TableRow>
-              {beans.origin === "single-origin" && (
-                <>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>
-                      Country
-                    </TableCell>
-                    <TableCell>{beans.country}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>Region</TableCell>
-                    <TableCell>{beans.region}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>
-                      Varietal(s)
-                    </TableCell>
-                    <TableCell>
-                      {beans.varietals && beans.varietals.join(", ")}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>
-                      Altitude
-                    </TableCell>
-                    <TableCell>
-                      {beans.altitude ? `${beans.altitude} masl` : ""}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>
-                      Process
-                    </TableCell>
-                    <TableCell>{beans.process}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>Farmer</TableCell>
-                    <TableCell>{beans.farmer}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={commonStyles.label}>
-                      Harvest Date
-                    </TableCell>
-                    <TableCell>{renderDate(beans.harvestDate)}</TableCell>
-                  </TableRow>
-                </>
-              )}
-              {beans.origin === "blend" && (
-                <>
-                  {beans.blend?.map((item: BeansBlendPart, index: number) => (
-                    <TableRow key={index}>
-                      <TableCell className={commonStyles.label}>
-                        Origin #{index + 1}
-                      </TableCell>
-                      <TableCell>
-                        <ul className={classes.list}>
-                          {item.name && <li>{item.name}</li>}
-                          {item.country && <li>{item.country}</li>}
-                          {item.percentage && <li>{item.percentage}%</li>}
-                          {item.varietals && (
-                            <li>{item.varietals.join(", ")}</li>
-                          )}
-                          {item.process && <li>{item.process}</li>}
-                        </ul>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      <Grid container spacing={isBreakpointMd ? 8 : 0}>
+        <Grid item xs={12} md={6}>
+          <BeansRoastInfo beans={beans} />
+
+          {beans.isFinished && (
+            <Alert className={classes.alert} severity="info">
+              <AlertTitle>Finished (archived)</AlertTitle>
+              This bean bag is <strong>finished</strong> (aka archived).
+              <br />
+              It won't show up when you select beans, and it will be hidden by
+              default in the list of beans page.
+            </Alert>
+          )}
+
+          {beans.origin === "single-origin" ? (
+            <BeansTerroirSingleOrigin beans={beans} />
+          ) : beans.origin === "blend" ? (
+            <BeansTerroirBlend beans={beans} />
+          ) : null}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {brews.length > 0 && (
+            <>
+              <Typography
+                variant="h5"
+                gutterBottom
+                className={clsx([
+                  commonStyles.listTitle,
+                  classes.rightColTitle,
+                ])}
+              >
+                Brews
+              </Typography>
+              <Grid container spacing={2}>
+                {brews.map((brew) => (
+                  <Grid item xs={12} sm={6} md={12} lg={6} key={brew.id}>
+                    <BrewCard brew={brew} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
+
+          {espressoList.length > 0 && (
+            <>
+              <Typography
+                variant="h5"
+                gutterBottom
+                className={clsx([
+                  commonStyles.listTitle,
+                  classes.rightColTitle,
+                ])}
+              >
+                Espressos
+              </Typography>
+              <Grid container spacing={2}>
+                {espressoList.map((espresso) => (
+                  <Grid item xs={12} sm={6} md={12} lg={6} key={espresso.id}>
+                    <EspressoCard espresso={espresso} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
+        </Grid>
+      </Grid>
     </Layout>
   );
 };
