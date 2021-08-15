@@ -4,7 +4,7 @@ import BeanIcon from "../icons/bean";
 
 interface Props {
   brew: Brew;
-  beansLabel: string;
+  beansLabel?: string;
 }
 
 const BrewCard: FunctionComponent<Props> = ({ brew, beansLabel }) => {

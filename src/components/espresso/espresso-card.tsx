@@ -5,7 +5,7 @@ import Card, { CardRating } from "../card";
 import BeanIcon from "../icons/bean";
 interface Props {
   espresso: Espresso;
-  beansLabel: string;
+  beansLabel?: string;
 }
 
 const NewChip = (

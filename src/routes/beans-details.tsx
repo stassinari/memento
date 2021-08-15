@@ -261,7 +261,7 @@ const BeansDetails = () => {
           <Grid container spacing={2}>
             {brews.map((brew) => (
               <Grid item xs={12} sm={6} key={brew.id}>
-                <BrewCard brew={brew} beansLabel="Will remove this" />
+                <BrewCard brew={brew} />
               </Grid>
             ))}
           </Grid>
@@ -280,10 +280,7 @@ const BeansDetails = () => {
           <Grid container spacing={2}>
             {espressoList.map((espresso) => (
               <Grid item xs={12} sm={6} key={espresso.id}>
-                <EspressoCard
-                  espresso={espresso}
-                  beansLabel="Will remove this"
-                />
+                <EspressoCard espresso={espresso} />
               </Grid>
             ))}
           </Grid>
