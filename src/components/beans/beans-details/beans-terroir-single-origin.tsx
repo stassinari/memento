@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   label: {
-    // fontStyle: "italic",
     color: theme.palette.text.secondary,
   },
 }));
@@ -106,7 +105,7 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
             <Typography className={classes.bold}>{country}</Typography>
             <Typography variant="body2" display="inline">
               {region}
-            </Typography>{" "}
+            </Typography>
             {altitude && (
               <Typography variant="body2" display="inline">
                 ({altitude} masl)
@@ -126,7 +125,7 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
             {showDivider && <Divider className={classes.divider} />}
             <Typography display="inline">
               {[procezz, varietals].filter((s) => !!s).join(" - ")}
-            </Typography>{" "}
+            </Typography>
           </Grid>
         </Grid>
       </Paper>

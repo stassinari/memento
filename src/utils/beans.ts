@@ -4,6 +4,9 @@ import { capitalise } from "./string";
 export const areBeansFrozen = (beans: Beans): boolean =>
   !!beans.freezeDate && !beans.thawDate;
 
+export const areBeansThawed = (beans: Beans): boolean =>
+  !!beans.freezeDate && !!beans.thawDate;
+
 export const sortBeansByRoastDate = (a: Beans, b: Beans) =>
   a.roastDate && b.roastDate
     ? toDate(b.roastDate) - toDate(a.roastDate)

@@ -22,6 +22,7 @@ import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import ActionDialog from "../components/action-dialog";
 import ActionsMenu from "../components/actions-menu";
 import { roastLevelLabels } from "../components/beans/beans-add/fields/roast-level";
+import BeansRoastInfo from "../components/beans/beans-details/beans-roast-info";
 import BeansTerroirBlend from "../components/beans/beans-details/beans-terroir-blend";
 import BeansTerroirSingleOrigin from "../components/beans/beans-details/beans-terroir-single-origin";
 import Layout from "../components/layout";
@@ -211,6 +212,7 @@ const BeansDetails = () => {
           default in the list of beans page.
         </Alert>
       )}
+      <BeansRoastInfo beans={beans} />
       {beans.origin === "single-origin" ? (
         <BeansTerroirSingleOrigin beans={beans} />
       ) : beans.origin === "blend" ? (
