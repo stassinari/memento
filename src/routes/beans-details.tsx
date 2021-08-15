@@ -1,3 +1,4 @@
+import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   AcUnit as AcUnitIcon,
@@ -10,12 +11,19 @@ import {
 import { Alert, AlertTitle } from "@material-ui/lab";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import {
+  useFirestore,
+  useFirestoreCollectionData,
+  useFirestoreDocData,
+  useUser,
+} from "reactfire";
 import ActionDialog from "../components/action-dialog";
 import ActionsMenu from "../components/actions-menu";
 import BeansRoastInfo from "../components/beans/beans-details/beans-roast-info";
 import BeansTerroirBlend from "../components/beans/beans-details/beans-terroir-blend";
 import BeansTerroirSingleOrigin from "../components/beans/beans-details/beans-terroir-single-origin";
+import BrewCard from "../components/brew/brew-card";
+import EspressoCard from "../components/espresso/espresso-card";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SimpleDialog from "../components/simple-dialog";
@@ -47,8 +55,8 @@ const BeansDetails = () => {
   const {
     data: { uid: userId },
   } = useUser();
-  const commonStyles = useCommonStyles();
   const classes = useStyles();
+  const commonStyles = useCommonStyles();
 
   // delete dialog state
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -67,6 +75,35 @@ const BeansDetails = () => {
     .collection("beans")
     .doc(beansId);
   const { status, data: beans } = useFirestoreDocData<Beans>(beansRef);
+
+  const shortRef = firestore.collection("beans").doc(beansId);
+
+  // retrieve brews and espressos
+  const brewsRef = firestore
+    .collection("users")
+    .doc(userId)
+    .collection("brews")
+    .where("beans", "==", shortRef)
+    .orderBy("date", "desc");
+  const { status: brewsStatus, data: brews } = useFirestoreCollectionData<Brew>(
+    brewsRef,
+    {
+      idField: "id",
+    }
+  );
+  console.log(brews);
+
+  const espressosListRef = firestore
+    .collection("users")
+    .doc(userId)
+    .collection("espresso")
+    .where("beans", "==", shortRef)
+    .orderBy("date", "desc");
+  const { status: espressoListStatus, data: espressoList } =
+    useFirestoreCollectionData<Espresso>(espressosListRef, {
+      idField: "id",
+    });
+  console.log(espressoList);
 
   const removeCheck = async () => {
     // TODO refactor this when getting brews/espressos to view as a list
@@ -98,7 +135,11 @@ const BeansDetails = () => {
 
   const title = "Beans details";
 
-  if (status === "loading") {
+  if (
+    status === "loading" ||
+    brewsStatus === "loading" ||
+    espressoListStatus === "loading"
+  ) {
     return (
       <>
         <PageProgress />
@@ -207,6 +248,47 @@ const BeansDetails = () => {
       ) : beans.origin === "blend" ? (
         <BeansTerroirBlend beans={beans} />
       ) : null}
+
+      {brews.length > 0 && (
+        <>
+          <Typography
+            variant="h5"
+            gutterBottom
+            className={commonStyles.listTitle}
+          >
+            Brews
+          </Typography>
+          <Grid container spacing={2}>
+            {brews.map((brew) => (
+              <Grid item xs={12} sm={6} key={brew.id}>
+                <BrewCard brew={brew} beansLabel="Will remove this" />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+
+      {espressoList.length > 0 && (
+        <>
+          <Typography
+            variant="h5"
+            gutterBottom
+            className={commonStyles.listTitle}
+          >
+            Espressos
+          </Typography>
+          <Grid container spacing={2}>
+            {espressoList.map((espresso) => (
+              <Grid item xs={12} sm={6} key={espresso.id}>
+                <EspressoCard
+                  espresso={espresso}
+                  beansLabel="Will remove this"
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
     </Layout>
   );
 };
