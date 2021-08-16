@@ -13,8 +13,7 @@ const NewChip = (
 );
 
 const EspressoCard: FunctionComponent<Props> = ({ espresso, beansLabel }) => {
-  const rating =
-    espresso.rating && espresso.rating !== 0 ? espresso.rating : undefined;
+  const rating = !!espresso.rating ? espresso.rating : undefined;
   const profileName = espresso.profileName
     ? espresso.profileName
     : "Unknown profile";
