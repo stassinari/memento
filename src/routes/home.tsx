@@ -21,6 +21,9 @@ import V60Icon2 from "../components/icons/v60";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import { SkeletonHomePage } from "../components/skeletons";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
+import { Espresso } from "../database/types/espresso";
 import {
   buildBeansIdLabelMap,
   buildBeansLabel,
@@ -137,9 +140,10 @@ const Home: FunctionComponent = () => {
             <EmptyListPlaceholder type="brews" />
           ) : (
             brews.map((brew) => {
-              const firstLine = `${brew.method} - ${
-                beansIdLabelMap[brew.beans!.id]
-              }`;
+              const firstLine = [
+                brew.method,
+                brew.beans?.id && beansIdLabelMap[brew.beans?.id],
+              ].join(" - ");
               let secondLine = format(toDate(brew.date), "yyyy/MM/dd @ HH:mm");
               if (brew.rating) {
                 secondLine = secondLine + " - " + brew.rating + "/10 ☆";
@@ -179,10 +183,15 @@ const Home: FunctionComponent = () => {
             espressos.map((espresso) => {
               const firstLine = espresso.fromDecent
                 ? espresso.profileName
-                : `${beansIdLabelMap[espresso.beans?.id]} - ${
-                    espresso.actualWeight
-                  }g/${espresso.beansWeight}g ⇨ ${espresso.actualTime}s
-            `;
+                : espresso.beans?.id
+                ? `${[
+                    beansIdLabelMap[espresso.beans?.id],
+                    espresso.actualWeight,
+                  ].join(" - ")}g/${espresso.beansWeight}g ⇨ ${
+                    espresso.actualTime
+                  }s
+            `
+                : undefined;
               let secondLine = format(
                 toDate(espresso.date),
                 "yyyy/MM/dd @ HH:mm"

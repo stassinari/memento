@@ -25,6 +25,8 @@ import Markdown from "../components/markdown";
 import PageProgress from "../components/page-progress";
 import useCommonStyles from "../config/use-common-styles";
 import { deleteBrew } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
 import { buildBeansLabel } from "../utils/beans";
 import { renderDate } from "../utils/dates";
 

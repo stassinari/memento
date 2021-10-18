@@ -1,12 +1,13 @@
 import React, { FunctionComponent } from "react";
 import { useHistory } from "react-router-dom";
-
-import { addBrew } from "../database/queries";
-import PageProgress from "../components/page-progress";
-import Layout from "../components/layout";
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import BrewForm, { emptyValues } from "../components/brew/brew-form";
-import { useUser, useFirestore, useFirestoreCollectionData } from "reactfire";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { addBrew } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew, BrewPrep } from "../database/types/brew";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 const BrewAdd: FunctionComponent = () => {
   const {
@@ -53,7 +54,7 @@ const BrewAdd: FunctionComponent = () => {
   // cherrypick the values of the equipment
   const latestBrew =
     brews.length !== 0 ? (brews[0] as Brew) : (emptyValues as Brew);
-  const newValues = {
+  const newValues: BrewPrep = {
     ...emptyValues,
     beans: beans.length === 1 ? beans[0] : null, // autoselect beans if only one bean bag is present
     filterType: latestBrew.filterType,

@@ -1,3 +1,4 @@
+import { Beans, RoastStyle } from "../database/types/beans";
 import { toDate } from "./dates";
 import { capitalise } from "./string";
 

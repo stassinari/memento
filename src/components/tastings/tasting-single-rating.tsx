@@ -10,9 +10,9 @@ import {
 } from "@material-ui/core";
 import { Field, FormikValues } from "formik";
 import React, { FunctionComponent } from "react";
+import { TastingPrep, TastingVariable } from "../../database/types/tasting";
 import Flavours from "../flavours";
 import FlavourNotes from "./flavour-notes";
-
 import FlavourSlider from "./flavour-slider";
 
 interface Props {

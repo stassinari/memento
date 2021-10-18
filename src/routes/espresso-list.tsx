@@ -7,6 +7,8 @@ import Fab from "../components/fab";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
+import { Beans } from "../database/types/beans";
+import { Espresso } from "../database/types/espresso";
 import { buildBeansIdLabelMap } from "../utils/beans";
 
 const EspressoList = () => {
@@ -67,7 +69,10 @@ const EspressoList = () => {
                 <EspressoCard
                   espresso={espresso}
                   beansLabel={
-                    espresso.beans ? beansIdLabelMap[espresso.beans.id] : ""
+                    (espresso.beans &&
+                      espresso.beans.id &&
+                      beansIdLabelMap[espresso.beans.id]) ||
+                    undefined
                   }
                 />
               </Grid>

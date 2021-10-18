@@ -10,6 +10,7 @@ import AcUnitIcon from "@material-ui/icons/AcUnit";
 import EventIcon from "@material-ui/icons/Event";
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
+import { Beans } from "../../../database/types/beans";
 import { areBeansFrozen, areBeansThawed } from "../../../utils/beans";
 import { renderDate } from "../../../utils/dates";
 import { capitalise } from "../../../utils/string";

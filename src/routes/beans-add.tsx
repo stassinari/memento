@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { useHistory } from "react-router-dom";
-
+import { useFirestore, useUser } from "reactfire";
 import BeansForm from "../components/beans/beans-form";
 import Layout from "../components/layout";
 import { addBeans } from "../database/queries";
-import { useFirestore, useUser } from "reactfire";
+import { Beans } from "../database/types/beans";
 
 const BeansAdd: FunctionComponent = () => {
   const {

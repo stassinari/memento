@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import { Brew } from "../../database/types/brew";
 import Card, { CardRating } from "../card";
 import BeanIcon from "../icons/bean";
 

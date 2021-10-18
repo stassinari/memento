@@ -1,7 +1,8 @@
-import React, { FunctionComponent } from "react";
-import { Field, FormikProps } from "formik";
-import { TextField, Grid, Box } from "@material-ui/core";
+import { Box, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Field, FormikProps } from "formik";
+import React, { FunctionComponent } from "react";
+import { BrewPrep } from "../../../../database/types/brew";
 
 interface Props {
   formik: FormikProps<BrewPrep>;

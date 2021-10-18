@@ -1,13 +1,14 @@
-import React, { FunctionComponent } from "react";
 import { makeStyles, useTheme } from "@material-ui/core";
+import React, { FunctionComponent } from "react";
 import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   ResponsiveContainer,
 } from "recharts";
+import { TastingScores } from "../database/types/common";
 
 interface Props {
   tastingScores: TastingScores;

@@ -1,19 +1,23 @@
+import { Typography } from "@material-ui/core";
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Typography } from "@material-ui/core";
-
-import Layout from "../components/layout";
-import { updateTastingSamples } from "../database/queries";
-import PageProgress from "../components/page-progress";
-
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
-import { TastingPrepForm } from "../components/tastings/tasting-prep-form";
 import {
-  useUser,
   useFirestore,
   useFirestoreCollectionData,
   useFirestoreDocData,
+  useUser,
 } from "reactfire";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { TastingPrepForm } from "../components/tastings/tasting-prep-form";
+import { updateTastingSamples } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
+import {
+  Tasting,
+  TastingPrep as ITastingPrep,
+} from "../database/types/tasting";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 interface RouteParams {
   id: string;
@@ -75,7 +79,7 @@ const TastingPrep = () => {
       idField: "id",
     });
 
-  const handleSubmit = (values: TastingPrep) => {
+  const handleSubmit = (values: ITastingPrep) => {
     // create all tasting samples
     const samples = tasting?.samples.map((s) => ({
       ...s,

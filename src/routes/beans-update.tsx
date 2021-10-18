@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from "react";
 import { useHistory, useParams } from "react-router-dom";
-
-import { toDate } from "../utils/dates";
-import Layout from "../components/layout";
-import PageProgress from "../components/page-progress";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import BeansForm, { emptyValues } from "../components/beans/beans-form";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
 import { addBeans, updateBeans } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { toDate } from "../utils/dates";
 
 interface RouteParams {
   id: string;

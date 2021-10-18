@@ -1,18 +1,19 @@
 import React, { FunctionComponent } from "react";
-import { useParams, useHistory } from "react-router-dom";
-
-import { addBrew, updateBrew } from "../database/queries";
-import PageProgress from "../components/page-progress";
-import { toDate } from "../utils/dates";
-import Layout from "../components/layout";
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
-import BrewForm, { emptyValues } from "../components/brew/brew-form";
+import { useHistory, useParams } from "react-router-dom";
 import {
-  useUser,
   useFirestore,
-  useFirestoreDocData,
   useFirestoreCollectionData,
+  useFirestoreDocData,
+  useUser,
 } from "reactfire";
+import BrewForm, { emptyValues } from "../components/brew/brew-form";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { addBrew, updateBrew } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew, BrewPrep } from "../database/types/brew";
+import { toDate } from "../utils/dates";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 interface RouteParams {
   id: string;
