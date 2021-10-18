@@ -6,7 +6,7 @@ import Card, { CardRating } from "../card";
 import BeanIcon from "../icons/bean";
 interface Props {
   espresso: Espresso;
-  beansLabel?: string | null;
+  beansLabel?: string;
 }
 
 const NewChip = (
@@ -31,7 +31,7 @@ const EspressoCard: FunctionComponent<Props> = ({ espresso, beansLabel }) => {
     // custom card for decent shots
     <Card
       title={profileName}
-      secondLine={beansLabel || undefined}
+      secondLine={beansLabel}
       SecondLineIcon={BeanIcon}
       link={`/espresso/${espresso.id}`}
       aside={
@@ -55,7 +55,7 @@ const EspressoCard: FunctionComponent<Props> = ({ espresso, beansLabel }) => {
           </CardRating>
         )
       }
-      secondLine={beansLabel || undefined}
+      secondLine={beansLabel}
       SecondLineIcon={BeanIcon}
       date={espresso.date}
       datePrefix="Pulled on"

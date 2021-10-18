@@ -140,7 +140,10 @@ const Home: FunctionComponent = () => {
             <EmptyListPlaceholder type="brews" />
           ) : (
             brews.map((brew) => {
-              const firstLine = [brew.method, brew.beans?.id].join(" - ");
+              const firstLine = [
+                brew.method,
+                brew.beans?.id && beansIdLabelMap[brew.beans?.id],
+              ].join(" - ");
               let secondLine = format(toDate(brew.date), "yyyy/MM/dd @ HH:mm");
               if (brew.rating) {
                 secondLine = secondLine + " - " + brew.rating + "/10 ☆";

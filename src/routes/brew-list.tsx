@@ -164,9 +164,10 @@ const BrewList: FunctionComponent = () => {
                   <BrewCard
                     brew={brew}
                     beansLabel={
-                      brew.beans &&
-                      brew.beans.id &&
-                      beansIdLabelMap[brew.beans.id]
+                      (brew.beans &&
+                        brew.beans.id &&
+                        beansIdLabelMap[brew.beans.id]) ||
+                      undefined
                     }
                   />
                 </Grid>

@@ -69,9 +69,10 @@ const EspressoList = () => {
                 <EspressoCard
                   espresso={espresso}
                   beansLabel={
-                    espresso.beans &&
-                    espresso.beans.id &&
-                    beansIdLabelMap[espresso.beans.id]
+                    (espresso.beans &&
+                      espresso.beans.id &&
+                      beansIdLabelMap[espresso.beans.id]) ||
+                    undefined
                   }
                 />
               </Grid>

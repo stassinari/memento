@@ -5,7 +5,7 @@ import BeanIcon from "../icons/bean";
 
 interface Props {
   brew: Brew;
-  beansLabel?: string | null;
+  beansLabel?: string;
 }
 
 const BrewCard: FunctionComponent<Props> = ({ brew, beansLabel }) => (
@@ -19,7 +19,7 @@ const BrewCard: FunctionComponent<Props> = ({ brew, beansLabel }) => (
         </CardRating>
       )
     }
-    secondLine={beansLabel || undefined}
+    secondLine={beansLabel}
     SecondLineIcon={BeanIcon}
     date={brew.date}
     datePrefix="Brewed on"
