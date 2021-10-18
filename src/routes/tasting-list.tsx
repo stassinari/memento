@@ -72,8 +72,10 @@ const TastingList = () => {
               );
               if (tasting.variable === "beans") {
                 tastingVariables = tastingVariables.map(
-                  // @ts-ignore
-                  (v) => beansIdLabelMap[v.id]
+                  (v) =>
+                    beansIdLabelMap[
+                      (v as firebase.default.firestore.DocumentReference).id
+                    ]
                 );
               }
               return (

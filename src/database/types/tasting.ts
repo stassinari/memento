@@ -1,5 +1,3 @@
-import { Beans } from "./beans";
-
 export type TastingVariable =
   | "beans"
   | "method"
@@ -18,7 +16,7 @@ export interface Tasting {
 }
 
 export interface TastingSample {
-  variableValue: string | firebase.default.firestore.DocumentReference | Beans;
+  variableValue: string | firebase.default.firestore.DocumentReference;
   prep?: TastingPrep;
   rating?: TastingRating;
 }
