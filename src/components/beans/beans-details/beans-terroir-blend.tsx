@@ -8,6 +8,7 @@ import {
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
+import { Beans, BeansBlendPart } from "../../../database/types/beans";
 
 const useStyles = makeStyles((theme) => ({
   root: {

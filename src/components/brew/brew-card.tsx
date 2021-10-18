@@ -1,10 +1,11 @@
 import React, { FunctionComponent } from "react";
+import { Brew } from "../../database/types/brew";
 import Card, { CardRating } from "../card";
 import BeanIcon from "../icons/bean";
 
 interface Props {
   brew: Brew;
-  beansLabel?: string;
+  beansLabel?: string | null;
 }
 
 const BrewCard: FunctionComponent<Props> = ({ brew, beansLabel }) => (
@@ -18,7 +19,7 @@ const BrewCard: FunctionComponent<Props> = ({ brew, beansLabel }) => (
         </CardRating>
       )
     }
-    secondLine={beansLabel}
+    secondLine={beansLabel || undefined}
     SecondLineIcon={BeanIcon}
     date={brew.date}
     datePrefix="Brewed on"

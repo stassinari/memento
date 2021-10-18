@@ -1,5 +1,3 @@
-import React, { FunctionComponent } from "react";
-import { Field, Form, Formik } from "formik";
 import {
   Box,
   Button,
@@ -9,13 +7,17 @@ import {
   Paper,
   TextField,
 } from "@material-ui/core";
+import { Field, Form, Formik } from "formik";
+import React, { FunctionComponent } from "react";
 import * as Yup from "yup";
-
+import useCommonStyles from "../../config/use-common-styles";
+import { Beans } from "../../database/types/beans";
+import { Brew } from "../../database/types/brew";
+import { TastingPrep, TastingVariable } from "../../database/types/tasting";
 import { extractSuggestions } from "../../utils/form";
 import BeansRadioDialog from "../beans-radio-dialog";
-import RecentSuggestions from "../recent-suggestions";
-import useCommonStyles from "../../config/use-common-styles";
 import ConditionalWrapper from "../conditional-wrapper";
+import RecentSuggestions from "../recent-suggestions";
 
 interface Props {
   handleSubmit: (arg0: TastingPrep) => void;

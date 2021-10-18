@@ -1,4 +1,3 @@
-import React, { FunctionComponent, useState } from "react";
 import {
   Avatar,
   Button,
@@ -17,37 +16,46 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import {
-  useRouteMatch,
-  Route,
-  Switch,
-  NavLink,
-  useParams,
-  Link,
-  useLocation,
-  useHistory,
-} from "react-router-dom";
-import { Form, Formik } from "formik";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import EditIcon from "@material-ui/icons/Edit";
-
-import Layout from "../components/layout";
-import { updateTastingSamples } from "../database/queries";
-import PageProgress from "../components/page-progress";
-import { tastingVariablesList } from "../utils/constants";
-import TastingSingleRating from "../components/tastings/tasting-single-rating";
-import { buildBeansLabel } from "../utils/beans";
 import { Alert } from "@material-ui/lab";
-import { AutoSave } from "../components/autosave";
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
-import { TastingPrepForm } from "../components/tastings/tasting-prep-form";
+import { Form, Formik } from "formik";
+import React, { FunctionComponent, useState } from "react";
 import {
-  useUser,
+  Link,
+  NavLink,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
+import {
   useFirestore,
   useFirestoreCollectionData,
   useFirestoreDocData,
+  useUser,
 } from "reactfire";
+import { AutoSave } from "../components/autosave";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { TastingPrepForm } from "../components/tastings/tasting-prep-form";
+import TastingSingleRating from "../components/tastings/tasting-single-rating";
+import { updateTastingSamples } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
+import {
+  Tasting,
+  TastingPrep,
+  TastingRating,
+  TastingSample,
+  TastingVariable,
+} from "../database/types/tasting";
+import { buildBeansLabel } from "../utils/beans";
+import { tastingVariablesList } from "../utils/constants";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 interface RouteParams {
   id: string;

@@ -16,6 +16,7 @@ import Fab from "../components/fab";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
+import { Beans } from "../database/types/beans";
 import { areBeansFrozen, sortBeansByRoastDate } from "../utils/beans";
 
 const useStyles = makeStyles((theme) => {

@@ -1,11 +1,5 @@
 import React, { FunctionComponent } from "react";
 import { useHistory, useParams } from "react-router-dom";
-
-import { addEspresso, updateEspresso } from "../database/queries";
-import { toDate } from "../utils/dates";
-import PageProgress from "../components/page-progress";
-import Layout from "../components/layout";
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 import {
   useFirestore,
   useFirestoreCollectionData,
@@ -15,6 +9,13 @@ import {
 import EspressoForm, {
   emptyValues,
 } from "../components/espresso/espresso-form";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { addEspresso, updateEspresso } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Espresso, EspressoPrep } from "../database/types/espresso";
+import { toDate } from "../utils/dates";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 interface RouteParams {
   id: string;

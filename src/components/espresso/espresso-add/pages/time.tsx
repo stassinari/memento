@@ -1,4 +1,3 @@
-import React, { FunctionComponent, useState } from "react";
 import {
   FormControlLabel,
   InputAdornment,
@@ -7,7 +6,9 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Field, FormikProps } from "formik";
+import React, { FunctionComponent, useState } from "react";
 import useCommonStyles from "../../../../config/use-common-styles";
+import { EspressoPrep } from "../../../../database/types/espresso";
 import Stopwatch from "../../../brew/brew-add/fields/stopwatch";
 
 interface Props {

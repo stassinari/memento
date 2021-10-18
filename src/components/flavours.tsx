@@ -1,11 +1,11 @@
-import React, { FunctionComponent } from "react";
+import { TextField } from "@material-ui/core";
+import { FilterOptionsState } from "@material-ui/lab";
 import Autocomplete, {
   createFilterOptions,
 } from "@material-ui/lab/Autocomplete";
-import { FilterOptionsState } from "@material-ui/lab";
-import { TextField } from "@material-ui/core";
-
+import React, { FunctionComponent } from "react";
 import { default as tastingNotesArray } from "../database/tasting-notes";
+import { ITastingNotes } from "../database/types/common";
 
 interface Props {
   values: string[];

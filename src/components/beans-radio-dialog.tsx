@@ -1,26 +1,26 @@
-import React, { FunctionComponent, useState } from "react";
 import {
-  Radio,
-  RadioGroup,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormHelperText,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
-  FormHelperText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-  Typography,
   ListSubheader,
+  makeStyles,
+  Radio,
+  RadioGroup,
+  Typography,
 } from "@material-ui/core";
-import { Field } from "formik";
 import ListAltIcon from "@material-ui/icons/ListAlt";
-
-import { buildBeansSecondaryLabel, buildBeansLabel } from "../utils/beans";
-import { capitalise } from "../utils/string";
+import { Field } from "formik";
+import React, { FunctionComponent, useState } from "react";
 import { useFirestore } from "reactfire";
+import { Beans, RoastStyle } from "../database/types/beans";
+import { buildBeansLabel, buildBeansSecondaryLabel } from "../utils/beans";
+import { capitalise } from "../utils/string";
 
 interface Props {
   beansList: Beans[];

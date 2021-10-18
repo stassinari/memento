@@ -24,6 +24,9 @@ import BeansCheckbox from "../components/beans-checkbox";
 import Layout from "../components/layout";
 import TastingVariables from "../components/tastings/tasting-variables";
 import { addTasting } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
+import { Tasting, TastingVariable } from "../database/types/tasting";
 import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 const formSchema = Yup.object().shape({

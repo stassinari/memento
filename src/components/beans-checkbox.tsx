@@ -1,18 +1,18 @@
-import React, { FunctionComponent } from "react";
 import {
   Box,
+  Checkbox,
+  FormControl,
+  FormHelperText,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
-  Checkbox,
   ListSubheader,
-  FormControl,
-  FormHelperText,
+  makeStyles,
 } from "@material-ui/core";
-
-import { buildBeansSecondaryLabel, buildBeansLabel } from "../utils/beans";
+import React, { FunctionComponent } from "react";
+import { Beans } from "../database/types/beans";
+import { buildBeansLabel, buildBeansSecondaryLabel } from "../utils/beans";
 
 interface Props {
   title?: string;

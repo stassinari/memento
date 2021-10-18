@@ -1,11 +1,12 @@
 import { Chip } from "@material-ui/core";
 import NewReleasesIcon from "@material-ui/icons/NewReleases";
 import React, { FunctionComponent } from "react";
+import { Espresso } from "../../database/types/espresso";
 import Card, { CardRating } from "../card";
 import BeanIcon from "../icons/bean";
 interface Props {
   espresso: Espresso;
-  beansLabel?: string;
+  beansLabel?: string | null;
 }
 
 const NewChip = (
@@ -30,7 +31,7 @@ const EspressoCard: FunctionComponent<Props> = ({ espresso, beansLabel }) => {
     // custom card for decent shots
     <Card
       title={profileName}
-      secondLine={beansLabel}
+      secondLine={beansLabel || undefined}
       SecondLineIcon={BeanIcon}
       link={`/espresso/${espresso.id}`}
       aside={
@@ -54,7 +55,7 @@ const EspressoCard: FunctionComponent<Props> = ({ espresso, beansLabel }) => {
           </CardRating>
         )
       }
-      secondLine={beansLabel}
+      secondLine={beansLabel || undefined}
       SecondLineIcon={BeanIcon}
       date={espresso.date}
       datePrefix="Pulled on"

@@ -1,5 +1,3 @@
-import React, { FunctionComponent } from "react";
-import { Field, FormikProps } from "formik";
 import {
   Box,
   FormControl,
@@ -8,6 +6,9 @@ import {
   Radio,
   RadioGroup,
 } from "@material-ui/core";
+import { Field, FormikProps } from "formik";
+import React, { FunctionComponent } from "react";
+import { Beans } from "../../../../database/types/beans";
 
 interface Props {
   formik: FormikProps<Beans>;

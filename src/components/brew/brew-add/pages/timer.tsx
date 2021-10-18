@@ -1,10 +1,10 @@
-import React, { useState, FunctionComponent } from "react";
-import { Switch, FormControlLabel } from "@material-ui/core";
+import { FormControlLabel, Switch } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
+import { FormikProps } from "formik";
+import React, { FunctionComponent, useState } from "react";
+import { BrewPrep } from "../../../../database/types/brew";
 import Stopwatch from "../fields/stopwatch";
 import Time from "../fields/time";
-import { FormikProps } from "formik";
 
 interface Props {
   formik: FormikProps<BrewPrep>;

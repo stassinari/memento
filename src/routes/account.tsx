@@ -1,5 +1,3 @@
-import React, { FunctionComponent, useContext } from "react";
-import Layout from "../components/layout";
 import {
   Button,
   Divider,
@@ -12,18 +10,19 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-
-import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import PersonIcon from "@material-ui/icons/Person";
 import ErrorIcon from "@material-ui/icons/Error";
-
-import { ThemeContext } from "../components/app";
-import { ThemePreference } from "../config/mui-theme";
-import { generateSecretKey } from "../database/queries";
+import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
+import PersonIcon from "@material-ui/icons/Person";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import React, { FunctionComponent, useContext } from "react";
 import { Link } from "react-router-dom";
-import useCommonStyles from "../config/use-common-styles";
 import { useAuth, useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import { ThemeContext } from "../components/app";
+import Layout from "../components/layout";
+import { ThemePreference } from "../config/mui-theme";
+import useCommonStyles from "../config/use-common-styles";
+import { generateSecretKey } from "../database/queries";
+import { User } from "../database/types/common";
 
 const useStyles = makeStyles((theme) => ({
   root: {

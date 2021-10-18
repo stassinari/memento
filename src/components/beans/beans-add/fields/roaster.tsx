@@ -1,13 +1,13 @@
-import React, { FunctionComponent, useState } from "react";
-import { Field, FormikProps } from "formik";
 import { TextField } from "@material-ui/core";
-
-import RecentSuggestions from "../../../recent-suggestions";
-import { extractSuggestions } from "../../../../utils/form";
+import { Field, FormikProps } from "formik";
+import React, { FunctionComponent, useState } from "react";
 import useCommonStyles from "../../../../config/use-common-styles";
+import { Beans } from "../../../../database/types/beans";
+import { extractSuggestions } from "../../../../utils/form";
 import AdvancedSuggestionsDialog, {
   advancedSuggestiongInputAdornment,
 } from "../../../advanced-suggestions-dialog";
+import RecentSuggestions from "../../../recent-suggestions";
 
 interface Props {
   beansList: Beans[];

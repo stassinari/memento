@@ -1,14 +1,21 @@
 import {
+  Button,
+  Link as MuiLink,
+  makeStyles,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Link as MuiLink,
-  makeStyles,
-  Button,
 } from "@material-ui/core";
+import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  FileCopy as FileCopyIcon,
+  Star as StarIcon,
+} from "@material-ui/icons";
+import { Alert } from "@material-ui/lab";
 import React from "react";
 import {
   Link,
@@ -16,28 +23,22 @@ import {
   useHistory,
   useParams,
 } from "react-router-dom";
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  FileCopy as FileCopyIcon,
-  Star as StarIcon,
-} from "@material-ui/icons";
-
+import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import ActionDialog from "../components/action-dialog";
+import ActionsMenu from "../components/actions-menu";
+import DecentChart from "../components/espresso/decent-chart";
+import TemperaturesChart from "../components/espresso/temperatures-charts";
+import FlavoursChart from "../components/flavours-chart";
+import Layout from "../components/layout";
+import Markdown from "../components/markdown";
 import PageProgress from "../components/page-progress";
+import useCommonStyles from "../config/use-common-styles";
 import { deleteEspresso } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { DecentReadings, Espresso } from "../database/types/espresso";
 import { buildBeansLabel } from "../utils/beans";
 import { renderDate } from "../utils/dates";
 import { capitalise } from "../utils/string";
-import ActionsMenu from "../components/actions-menu";
-import useCommonStyles from "../config/use-common-styles";
-import ActionDialog from "../components/action-dialog";
-import Layout from "../components/layout";
-import DecentChart from "../components/espresso/decent-chart";
-import TemperaturesChart from "../components/espresso/temperatures-charts";
-import { Alert } from "@material-ui/lab";
-import Markdown from "../components/markdown";
-import FlavoursChart from "../components/flavours-chart";
-import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 
 interface RouteParams {
   id: string;

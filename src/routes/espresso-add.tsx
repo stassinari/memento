@@ -1,14 +1,15 @@
 import React, { FunctionComponent } from "react";
 import { useHistory } from "react-router-dom";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-
-import { addEspresso } from "../database/queries";
-import PageProgress from "../components/page-progress";
-import Layout from "../components/layout";
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 import EspressoForm, {
   emptyValues,
 } from "../components/espresso/espresso-form";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import { addEspresso } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Espresso, EspressoPrep } from "../database/types/espresso";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
 
 interface Props {
   update: boolean;
@@ -60,7 +61,7 @@ const EspressoAdd: FunctionComponent<Props> = ({ update, clone }) => {
     espressos.filter((e) => !e.partial).length !== 0
       ? (espressos[0] as EspressoPrep)
       : emptyValues;
-  const newValues = {
+  const newValues: EspressoPrep = {
     ...emptyValues,
     beans: beans.length === 1 ? beans[0] : null, // autoselect beans if only one bean bag is present
     machine: latestEspresso.machine

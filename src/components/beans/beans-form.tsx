@@ -1,33 +1,33 @@
-import React, { FunctionComponent } from "react";
-import { Formik, Form, Field } from "formik";
-import { Button, Box, Card, CardContent, Paper } from "@material-ui/core";
+import DateFnsUtils from "@date-io/date-fns";
+import { Box, Button, Card, CardContent, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  MuiPickersUtilsProvider,
   KeyboardDatePicker,
+  MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
-import * as Yup from "yup";
+import { Field, Form, Formik } from "formik";
+import React, { FunctionComponent } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-
-import Name from "./beans-add/fields/name";
-import Roaster from "./beans-add/fields/roaster";
-import RoastDate from "./beans-add/fields/roast-date";
+import * as Yup from "yup";
+import useCommonStyles from "../../config/use-common-styles";
+import { Beans } from "../../database/types/beans";
 import Flavours from "../flavours";
-import Country from "./beans-add/fields/country";
-import Region from "./beans-add/fields/region";
-import Varietal from "./beans-add/fields/varietal";
+import FormErrors from "../form-errors";
 import Altitude from "./beans-add/fields/altitude";
-import Process from "./beans-add/fields/process";
+import Blend from "./beans-add/fields/blend";
+import Country from "./beans-add/fields/country";
 import Farmer from "./beans-add/fields/farmer";
 import HarvestDate from "./beans-add/fields/harvest-date";
-import RoastStyle from "./beans-add/fields/roast-style";
-import FormErrors from "../form-errors";
+import Name from "./beans-add/fields/name";
 import Origin from "./beans-add/fields/origin";
-import Blend from "./beans-add/fields/blend";
+import Process from "./beans-add/fields/process";
+import Region from "./beans-add/fields/region";
+import RoastDate from "./beans-add/fields/roast-date";
 import RoastLevel from "./beans-add/fields/roast-level";
-import useCommonStyles from "../../config/use-common-styles";
+import RoastStyle from "./beans-add/fields/roast-style";
+import Roaster from "./beans-add/fields/roaster";
+import Varietal from "./beans-add/fields/varietal";
 
 interface Props {
   handleSubmit: (value: Beans) => void;
