@@ -68,7 +68,7 @@ const EspressoDecentUpload = () => {
   const classes = useStyles();
 
   const handleUpload = async (files: File[]) => {
-    const url = process.env.REACT_APP_DECENT_UPLOAD_ENDPOINT;
+    const url = import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
     if (!url) {
       throw new Error("decent upload enpoint not set");
     }

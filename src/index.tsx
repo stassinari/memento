@@ -1,14 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-
+import React from "react";
+import ReactDOM from "react-dom";
 import App from "./components/app";
+
 // import * as serviceWorker from "./serviceWorker";
 // import swConfig from "./config/swConfig";
 
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],
 
   // Set tracesSampleRate to 1.0 to capture 100%
