@@ -1,6 +1,7 @@
 node_modules
 serviceAccountKey*.json
 build/
+dist/
 .env*
 
 # Logs
@@ -14,3 +15,5 @@ build/
 
 backups/
 external/decent/shots
+
+.DS_Store
