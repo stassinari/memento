@@ -26,9 +26,6 @@ const config = {
   measurementId: VITE_FB_MEASUREMENT_ID,
 };
 
-console.log(config);
-console.log(import.meta.env);
-
 // initialize Firebase
 firebase.initializeApp(config);
 firebase.analytics();
