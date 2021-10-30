@@ -3,6 +3,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
 import countriesMap from "../../../database/countries";
+import { Beans } from "../../../database/types/beans";
 import { renderDate } from "../../../utils/dates";
 
 const useStyles = makeStyles((theme) => ({

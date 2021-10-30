@@ -1,21 +1,22 @@
-import React, { useState, FunctionComponent } from "react";
-import {
-  Switch,
-  Route,
-  Redirect,
-  useRouteMatch,
-  useLocation,
-} from "react-router-dom";
-import { Formik, Form, FormikErrors } from "formik";
 import { Paper } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { Form, Formik, FormikErrors } from "formik";
+import React, { FunctionComponent, useState } from "react";
+import {
+  Redirect,
+  Route,
+  Switch,
+  useLocation,
+  useRouteMatch,
+} from "react-router-dom";
 import * as Yup from "yup";
-
-import BaseInfo from "./brew-add/pages/base-info";
-import Timer from "./brew-add/pages/timer";
+import useCommonStyles from "../../config/use-common-styles";
+import { Beans } from "../../database/types/beans";
+import { Brew, BrewPrep } from "../../database/types/brew";
 import { MultiPageFormButtons, Stepper } from "../multi-page-form-buttons";
 import RatioForm from "../ratio-form";
-import useCommonStyles from "../../config/use-common-styles";
+import BaseInfo from "./brew-add/pages/base-info";
+import Timer from "./brew-add/pages/timer";
 
 interface Props {
   brews: Brew[];

@@ -1,4 +1,3 @@
-import React, { FunctionComponent, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,9 +10,12 @@ import {
 } from "@material-ui/core";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import firebase from "firebase";
-
-import { getBeans, getBrews, getEspressoList } from "../database/queries";
+import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useUser } from "reactfire";
+import { getBeans, getBrews, getEspressoList } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { BrewPrep } from "../database/types/brew";
+import { EspressoPrep } from "../database/types/espresso";
 
 const CustomListItem = withStyles((theme) => ({
   root: {

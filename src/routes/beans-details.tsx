@@ -36,6 +36,9 @@ import {
   canRemoveBeans,
   deleteBeans,
 } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
+import { Espresso } from "../database/types/espresso";
 
 interface RouteParams {
   id: string;

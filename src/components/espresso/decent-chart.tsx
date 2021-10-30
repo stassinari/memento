@@ -1,22 +1,22 @@
-import React, { FunctionComponent } from "react";
-import green from "@material-ui/core/colors/green";
+import { makeStyles, Typography, useTheme } from "@material-ui/core";
 import blue from "@material-ui/core/colors/blue";
 import brown from "@material-ui/core/colors/brown";
-import { makeStyles, Typography, useTheme } from "@material-ui/core";
+import green from "@material-ui/core/colors/green";
+import React, { FunctionComponent } from "react";
 import {
-  LineChart,
+  CartesianGrid,
+  Dot,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Dot,
 } from "recharts";
-
-import { default as CustomTooltip } from "./tooltip";
+import { DecentReadings } from "../../database/types/espresso";
 import { default as CustomLegend } from "./legend";
+import { default as CustomTooltip } from "./tooltip";
 
 interface Props {
   profileName?: string;

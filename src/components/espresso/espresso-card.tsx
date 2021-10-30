@@ -1,6 +1,7 @@
 import { Chip } from "@material-ui/core";
 import NewReleasesIcon from "@material-ui/icons/NewReleases";
 import React, { FunctionComponent } from "react";
+import { Espresso } from "../../database/types/espresso";
 import Card, { CardRating } from "../card";
 import BeanIcon from "../icons/bean";
 interface Props {

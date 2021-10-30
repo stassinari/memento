@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from "react";
-import { Field, FormikProps } from "formik";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import "date-fns";
+import { Field, FormikProps } from "formik";
+import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../../config/use-common-styles";
+import { Beans } from "../../../../database/types/beans";
 
 interface Props {
   formik: FormikProps<Beans>;

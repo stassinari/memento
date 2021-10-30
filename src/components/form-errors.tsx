@@ -1,7 +1,10 @@
-import React, { FunctionComponent } from "react";
-import { Alert, AlertTitle } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { FormikProps } from "formik";
+import React, { FunctionComponent } from "react";
+import { Beans } from "../database/types/beans";
+import { BrewPrep } from "../database/types/brew";
+import { EspressoPrep } from "../database/types/espresso";
 
 interface Props {
   formik:

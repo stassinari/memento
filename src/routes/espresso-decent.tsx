@@ -11,23 +11,24 @@ import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { Field, Form, Formik } from "formik";
 import React, { FunctionComponent } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import * as Yup from "yup";
-
-import { completeDecentEspresso } from "../database/queries";
-import PageProgress from "../components/page-progress";
-import Layout from "../components/layout";
-import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
-import { filterBeans } from "../utils/beans";
-import BeansRadioDialog from "../components/beans-radio-dialog";
-import useCommonStyles from "../config/use-common-styles";
-import { capitalise } from "../utils/string";
-import ExpandableFormSection from "../components/expandable-form-section";
 import {
   useFirestore,
   useFirestoreCollectionData,
   useFirestoreDocData,
   useUser,
 } from "reactfire";
+import * as Yup from "yup";
+import BeansRadioDialog from "../components/beans-radio-dialog";
+import ExpandableFormSection from "../components/expandable-form-section";
+import Layout from "../components/layout";
+import PageProgress from "../components/page-progress";
+import useCommonStyles from "../config/use-common-styles";
+import { completeDecentEspresso } from "../database/queries";
+import { Beans } from "../database/types/beans";
+import { Espresso, EspressoPrep } from "../database/types/espresso";
+import { filterBeans } from "../utils/beans";
+import { SUGGESTIONS_HISTORY_LIMIT } from "../utils/form";
+import { capitalise } from "../utils/string";
 
 interface RouteParams {
   id: string;

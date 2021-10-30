@@ -1,27 +1,28 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import {
   Button,
+  FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
-  FormControl,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
+  ListSubheader,
   makeStyles,
   MenuItem,
   Select,
   TextField,
   Typography,
-  FormHelperText,
-  ListSubheader,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import useCommonStyles from "../../config/use-common-styles";
+import { Brew } from "../../database/types/brew";
+import { TastingVariable } from "../../database/types/tasting";
 import { tastingVariablesList } from "../../utils/constants";
-import RecentSuggestions from "../recent-suggestions";
 import { extractSuggestions } from "../../utils/form";
+import RecentSuggestions from "../recent-suggestions";
 
 interface Props {
   tastingVariable: TastingVariable | "";

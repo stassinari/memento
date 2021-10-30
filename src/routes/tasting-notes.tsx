@@ -1,20 +1,20 @@
-import React, { useState } from "react";
 import {
+  Chip,
+  IconButton,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-  IconButton,
   Paper,
-  Chip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AddIcon from "@material-ui/icons/Add";
-
-import tastingNotes from "../database/tasting-notes";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import React, { useState } from "react";
 import Layout from "../components/layout";
+import tastingNotes from "../database/tasting-notes";
+import { ITastingNotes } from "../database/types/common";
 
 const useStyles = makeStyles((theme) => ({
   root: {

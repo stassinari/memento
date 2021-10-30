@@ -11,6 +11,8 @@ import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
 import useCommonStyles from "../config/use-common-styles";
+import { Beans } from "../database/types/beans";
+import { Brew } from "../database/types/brew";
 import { buildBeansIdLabelMap } from "../utils/beans";
 import { keys } from "../utils/typescripts";
 
@@ -161,7 +163,12 @@ const BrewList: FunctionComponent = () => {
                 <Grid item xs={12} key={brew.id}>
                   <BrewCard
                     brew={brew}
-                    beansLabel={brew.beans && beansIdLabelMap[brew.beans.id]}
+                    beansLabel={
+                      (brew.beans &&
+                        brew.beans.id &&
+                        beansIdLabelMap[brew.beans.id]) ||
+                      undefined
+                    }
                   />
                 </Grid>
               ))}

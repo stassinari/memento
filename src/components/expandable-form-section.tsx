@@ -1,4 +1,3 @@
-import React, { FunctionComponent, useState } from "react";
 import {
   Button,
   Collapse,
@@ -6,17 +5,18 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-
-import useCommonStyles from "../config/use-common-styles";
 import { Field, FormikProps } from "formik";
-import RecentSuggestions from "./recent-suggestions";
+import React, { FunctionComponent, useState } from "react";
+import useCommonStyles from "../config/use-common-styles";
+import { BrewPrep } from "../database/types/brew";
+import { EspressoPrep } from "../database/types/espresso";
 import { extractSuggestions } from "../utils/form";
 import AdvancedSuggestionsDialog, {
   advancedSuggestiongInputAdornment,
 } from "./advanced-suggestions-dialog";
+import RecentSuggestions from "./recent-suggestions";
 
 interface Props {
   title: string;

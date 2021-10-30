@@ -8,6 +8,8 @@ import Layout from "../components/layout";
 import LoadingButton from "../components/loading-button";
 import PageProgress from "../components/page-progress";
 import SkeletonListPage from "../components/skeletons";
+import { Beans } from "../database/types/beans";
+import { Tasting } from "../database/types/tasting";
 import { buildBeansIdLabelMap } from "../utils/beans";
 import { tastingVariablesList } from "../utils/constants";
 
@@ -70,7 +72,10 @@ const TastingList = () => {
               );
               if (tasting.variable === "beans") {
                 tastingVariables = tastingVariables.map(
-                  (v) => beansIdLabelMap[v.id]
+                  (v) =>
+                    beansIdLabelMap[
+                      (v as firebase.default.firestore.DocumentReference).id
+                    ]
                 );
               }
               return (

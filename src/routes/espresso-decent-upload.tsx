@@ -17,6 +17,7 @@ import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
 import { generateSecretKey } from "../database/queries";
+import { User } from "../database/types/common";
 
 const useStyles = makeStyles((theme) => ({
   root: {

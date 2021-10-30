@@ -1,17 +1,20 @@
-import React, { useState, FunctionComponent } from "react";
-import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { Formik, Form, Field } from "formik";
-import { Paper, Button, TextField, Fade } from "@material-ui/core";
+import { Button, Fade, Paper, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { updateEspresso } from "../database/queries";
-import PageProgress from "../components/page-progress";
-import SimpleSlider from "../components/simple-slider";
-import Layout from "../components/layout";
 import { Alert, AlertTitle } from "@material-ui/lab";
+import { Field, Form, Formik } from "formik";
+import React, { FunctionComponent, useState } from "react";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
+import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import Layout from "../components/layout";
 import { PoweredBy } from "../components/markdown";
 import OutcomeFlavours from "../components/outcome-flavours";
-import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import PageProgress from "../components/page-progress";
+import SimpleSlider from "../components/simple-slider";
+import { updateEspresso } from "../database/queries";
+import {
+  EspressoOutcome as IEspressoOutcome,
+  EspressoPrep,
+} from "../database/types/espresso";
 
 interface RouteParams {
   id: string;
@@ -62,8 +65,9 @@ const EspressoOutcome: FunctionComponent = () => {
     .doc(userId)
     .collection("espresso")
     .doc(espressoId);
-  const { status, data: espresso } =
-    useFirestoreDocData<EspressoOutcome & Partial<EspressoPrep>>(espressoRef);
+  const { status, data: espresso } = useFirestoreDocData<
+    IEspressoOutcome & Partial<EspressoPrep>
+  >(espressoRef);
 
   const title = "Edit espresso outcome";
 

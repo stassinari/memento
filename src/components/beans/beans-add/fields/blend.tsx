@@ -1,5 +1,3 @@
-import { FormikProps } from "formik";
-import React, { FunctionComponent, useEffect, useState } from "react";
 import {
   Button,
   IconButton,
@@ -9,12 +7,14 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
-
+import { FormikProps } from "formik";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Beans, BeansBlendPart } from "../../../../database/types/beans";
 import Country from "./country";
-import Percentage from "./percentage";
-import Varietal from "./varietal";
 import Name from "./name";
+import Percentage from "./percentage";
 import Process from "./process";
+import Varietal from "./varietal";
 
 interface BlendProps {
   formik: FormikProps<Beans>;

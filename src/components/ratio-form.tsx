@@ -1,8 +1,9 @@
-import React, { FunctionComponent } from "react";
-
-import { Field, FormikProps } from "formik";
-import useCommonStyles from "../config/use-common-styles";
 import { InputAdornment, TextField, Typography } from "@material-ui/core";
+import { Field, FormikProps } from "formik";
+import React, { FunctionComponent } from "react";
+import useCommonStyles from "../config/use-common-styles";
+import { BrewPrep } from "../database/types/brew";
+import { EspressoPrep } from "../database/types/espresso";
 
 interface Props {
   formik: FormikProps<BrewPrep> | FormikProps<EspressoPrep>;

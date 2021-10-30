@@ -1,18 +1,20 @@
-import React, { FunctionComponent } from "react";
 import {
   Checkbox,
   List,
-  ListSubheader,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
+  ListItemText,
+  ListSubheader,
   Radio,
   RadioGroup,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { extractSortedArray } from "../utils/form";
+import React, { FunctionComponent } from "react";
+import { Beans } from "../database/types/beans";
+import { BrewPrep } from "../database/types/brew";
 import { buildBeansIdLabelMap } from "../utils/beans";
+import { extractSortedArray } from "../utils/form";
 
 interface Props {
   brews: BrewPrep[];

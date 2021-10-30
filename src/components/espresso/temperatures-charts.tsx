@@ -1,19 +1,20 @@
 import { makeStyles, useTheme } from "@material-ui/core";
+import amber from "@material-ui/core/colors/amber";
+import red from "@material-ui/core/colors/red";
 import React, { FunctionComponent } from "react";
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
-import red from "@material-ui/core/colors/red";
-import amber from "@material-ui/core/colors/amber";
-import { default as CustomTooltip } from "./tooltip";
+import { DecentReadings } from "../../database/types/espresso";
 import { default as CustomLegend } from "./legend";
+import { default as CustomTooltip } from "./tooltip";
 
 interface Props {
   readings?: DecentReadings;

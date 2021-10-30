@@ -1,17 +1,18 @@
-import React, { FunctionComponent, useState } from "react";
-import firebase from "firebase/app";
-
-import Date from "../fields/date";
-import BeansRadioDialog from "../../../beans-radio-dialog";
-import { Field, FormikProps } from "formik";
 import { TextField } from "@material-ui/core";
+import firebase from "firebase/app";
+import { Field, FormikProps } from "formik";
+import React, { FunctionComponent, useState } from "react";
 import useCommonStyles from "../../../../config/use-common-styles";
+import { Beans } from "../../../../database/types/beans";
+import { Brew, BrewPrep } from "../../../../database/types/brew";
 import { extractSuggestions } from "../../../../utils/form";
 import AdvancedSuggestionsDialog, {
   advancedSuggestiongInputAdornment,
 } from "../../../advanced-suggestions-dialog";
-import RecentSuggestions from "../../../recent-suggestions";
+import BeansRadioDialog from "../../../beans-radio-dialog";
 import ExpandableFormSection from "../../../expandable-form-section";
+import RecentSuggestions from "../../../recent-suggestions";
+import Date from "../fields/date";
 
 interface Props {
   brews: Brew[];
@@ -22,9 +23,8 @@ interface Props {
 const BaseInfo: FunctionComponent<Props> = ({ formik, brews, beans }) => {
   const commonStyles = useCommonStyles();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [advancedSuggestionsField, setAdvancedSuggestionsField] = useState<
-    keyof BrewPrep
-  >("filterType");
+  const [advancedSuggestionsField, setAdvancedSuggestionsField] =
+    useState<keyof BrewPrep>("filterType");
 
   if (beans.length === 0) {
     // TODO refactor into smaller components

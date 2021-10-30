@@ -1,21 +1,22 @@
-import React, { FunctionComponent, useState } from "react";
 import { Paper } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Form, Formik, FormikErrors } from "formik";
+import React, { FunctionComponent, useState } from "react";
 import {
-  useRouteMatch,
-  useLocation,
   Redirect,
   Route,
   Switch,
+  useLocation,
+  useRouteMatch,
 } from "react-router-dom";
 import * as Yup from "yup";
-
+import useCommonStyles from "../../config/use-common-styles";
+import { Beans } from "../../database/types/beans";
+import { Espresso, EspressoPrep } from "../../database/types/espresso";
 import { MultiPageFormButtons, Stepper } from "../multi-page-form-buttons";
+import RatioForm from "../ratio-form";
 import BaseInfo from "./espresso-add/pages/base-info";
 import Time from "./espresso-add/pages/time";
-import RatioForm from "../ratio-form";
-import useCommonStyles from "../../config/use-common-styles";
 
 interface Props {
   espressos: Espresso[];
