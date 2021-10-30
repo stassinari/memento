@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import Layout from "../components/layout";
 import {
   Button,
+  CircularProgress,
   Link,
+  Link as MuiLink,
   makeStyles,
   Paper,
   Typography,
-  Link as MuiLink,
-  CircularProgress,
 } from "@material-ui/core";
-import axios from "axios";
-import { useHistory, Link as RouterLink } from "react-router-dom";
-import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { Alert } from "@material-ui/lab";
-import { generateSecretKey } from "../database/queries";
-import { DropzoneArea } from "material-ui-dropzone";
+import axios from "axios";
 import clsx from "clsx";
+import { DropzoneArea } from "material-ui-dropzone";
+import React, { useState } from "react";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import Layout from "../components/layout";
 import PageProgress from "../components/page-progress";
+import { generateSecretKey } from "../database/queries";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,7 +67,7 @@ const EspressoDecentUpload = () => {
   const classes = useStyles();
 
   const handleUpload = async (files: File[]) => {
-    const url = process.env.REACT_APP_DECENT_UPLOAD_ENDPOINT;
+    const url = import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
     if (!url) {
       throw new Error("decent upload enpoint not set");
     }
