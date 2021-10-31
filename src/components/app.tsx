@@ -35,6 +35,7 @@ import TastingPrep from "../routes/tasting-prep";
 import TastingRatings from "../routes/tasting-ratings";
 import PrivateRoute from "./auth/private-route";
 import PublicRoute from "./auth/public-routes";
+import ReloadPrompt from "./reload-prompt";
 
 interface ThemeContextProps {
   themePref: ThemePreference;
@@ -166,6 +167,7 @@ const App = () => {
               </Route>
             </Switch>
           </BrowserRouter>
+          <ReloadPrompt />
         </ThemeProvider>
       </ThemeContext.Provider>
     </FirebaseAppProvider>
