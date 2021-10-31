@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from "react";
-import clsx from "clsx";
 import { Container, CssBaseline, makeStyles } from "@material-ui/core";
-
-import Header from "./header";
+import clsx from "clsx";
+import React, { FunctionComponent } from "react";
 import BottomNav from "./bottom-nav";
+import Header from "./header";
+import ReloadPrompt from "./reload-prompt";
 import Sidebar from "./sidebar";
 
 interface Props {
@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
   rootOpen: {
     display: "flex",
     "& .fab": {
+      left: theme.spacing(28),
+    },
+    "& .snackbar": {
       left: theme.spacing(28),
     },
   },
@@ -82,6 +85,8 @@ const Layout: FunctionComponent<Props> = ({
         {children && <Container maxWidth={maxWidth}>{children}</Container>}
       </main>
       {!hideMenu && <BottomNav />}
+
+      <ReloadPrompt />
     </div>
   );
 };

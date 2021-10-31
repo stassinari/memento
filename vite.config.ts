@@ -1,3 +1,4 @@
+import replace from "@rollup/plugin-replace";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -40,6 +41,10 @@ export default defineConfig({
           },
         ],
       },
+    }),
+    replace({
+      __DATE__: new Date().toISOString(),
+      __RELOAD_SW__: process.env.RELOAD_SW === "true",
     }),
   ],
 });

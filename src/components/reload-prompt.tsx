@@ -1,16 +1,48 @@
 // eslint-disable-next-line no-use-before-define
+import {
+  Button,
+  makeStyles,
+  Snackbar,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import React from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import "./reload-prompt.css";
 
+const useStyles = makeStyles((theme) => {
+  return {
+    anchorOriginTopCenter: {
+      top: theme.appBarHeight.default + theme.spacing(1),
+    },
+    anchorOriginBottomLeft: {
+      left: `calc(env(safe-area-inset-left) + ${
+        theme.spacing(9) + theme.spacing(3) + 1
+      }px)`,
+      transition: theme.transitions.create("left", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.shorter,
+      }),
+    },
+    contentRoot: {
+      backgroundColor: theme.palette.background.default,
+      [theme.breakpoints.up("md")]: {
+        backgroundColor: theme.palette.background.paper,
+      },
+    },
+    contentMessage: {
+      color: theme.palette.text.primary,
+    },
+  };
+});
+
 function ReloadPrompt() {
   // replaced dynamically
   const buildDate = "__DATE__";
-  // replaced dyanmicaly
+  // replaced dynamically
   const reloadSW = "__RELOAD_SW__";
 
   const {
-    offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
@@ -23,7 +55,6 @@ function ReloadPrompt() {
             r.update();
           }, 20000 /* 20s for testing purposes */);
       } else {
-        // eslint-disable-next-line prefer-template
         console.log("SW Registered: " + r);
       }
     },
@@ -32,39 +63,43 @@ function ReloadPrompt() {
     },
   });
 
-  const close = () => {
-    setOfflineReady(false);
+  const classes = useStyles();
+  const theme = useTheme();
+  const isBreakpointSm = useMediaQuery(theme.breakpoints.up("sm"));
+  const isBreakpointMd = useMediaQuery(theme.breakpoints.up("md"));
+
+  const handleClose = () => {
     setNeedRefresh(false);
   };
 
   return (
-    <div className="ReloadPrompt-container">
-      {(offlineReady || needRefresh) && (
-        <div className="ReloadPrompt-toast">
-          <div className="ReloadPrompt-message">
-            {offlineReady ? (
-              <span>App ready to work offline</span>
-            ) : (
-              <span>
-                New content available, click on reload button to update.
-              </span>
-            )}
-          </div>
-          {needRefresh && (
-            <button
-              className="ReloadPrompt-toast-button"
-              onClick={() => updateServiceWorker(true)}
-            >
-              Reload
-            </button>
-          )}
-          <button className="ReloadPrompt-toast-button" onClick={() => close()}>
-            Close
-          </button>
-        </div>
-      )}
-      <div className="ReloadPrompt-date">{buildDate}</div>
-    </div>
+    <Snackbar
+      className="snackbar"
+      classes={{
+        anchorOriginTopCenter: classes.anchorOriginTopCenter,
+        anchorOriginBottomLeft: classes.anchorOriginBottomLeft,
+      }}
+      anchorOrigin={{
+        vertical: isBreakpointSm ? "bottom" : "top",
+        horizontal: isBreakpointSm ? "left" : "center",
+      }}
+      ContentProps={{
+        classes: { root: classes.contentRoot, message: classes.contentMessage },
+      }}
+      open={needRefresh}
+      onClose={handleClose}
+      message="New content available, reload to update."
+      action={
+        <Button
+          color="primary"
+          variant="outlined"
+          size="small"
+          onClick={() => updateServiceWorker(true)}
+        >
+          Restart
+        </Button>
+      }
+    />
   );
 }
 

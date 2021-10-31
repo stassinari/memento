@@ -1,18 +1,17 @@
-import React, { FunctionComponent, useState } from "react";
-import clsx from "clsx";
-import { Link } from "react-router-dom";
 import { Fab as MuiFab, makeStyles, useMediaQuery } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
 import {
   SpeedDial as MuiSpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
 } from "@material-ui/lab";
-import { useTheme } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-
-import PortafilterIcon from "./icons/portafilter";
-import ChemexIcon from "./icons/chemex";
+import clsx from "clsx";
+import React, { FunctionComponent, useState } from "react";
+import { Link } from "react-router-dom";
 import BeansIcon from "./icons/beans";
+import ChemexIcon from "./icons/chemex";
+import PortafilterIcon from "./icons/portafilter";
 
 interface Props {
   link: string;
@@ -74,7 +73,7 @@ const Fab: FunctionComponent<Props> = ({
   return (
     <MuiFab
       color={isBreakpointMd ? "secondary" : "primary"}
-      className={clsx([classes.common, classes.fabOnly, " fab"])}
+      className={clsx([classes.common, classes.fabOnly, "fab"])}
       component={Link}
       to={link}
       size={isBreakpointSm ? "large" : "medium"}
