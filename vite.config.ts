@@ -1,8 +1,50 @@
+import replace from "@rollup/plugin-replace";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh(), svgr()],
+  plugins: [
+    reactRefresh(),
+    svgr(),
+    VitePWA({
+      includeAssets: [
+        "favicon.svg",
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+      ],
+      manifest: {
+        name: "Memento Coffee",
+        short_name: "Memento",
+        description: "Memento helps you keep track of everything coffee",
+        theme_color: "#e64a19",
+        display: "standalone",
+        icons: [
+          {
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
+          },
+        ],
+      },
+    }),
+    replace({
+      __DATE__: new Date().toISOString(),
+      __RELOAD_SW__: process.env.RELOAD_SW === "true",
+    }),
+  ],
 });
