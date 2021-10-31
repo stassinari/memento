@@ -8,7 +8,6 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import "./reload-prompt.css";
 
 const useStyles = makeStyles((theme) => {
   return {
