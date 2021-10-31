@@ -1,19 +1,18 @@
-import React, { FunctionComponent } from "react";
-import clsx from "clsx";
 import {
-  makeStyles,
   AppBar,
+  Badge,
+  IconButton,
+  makeStyles,
   Toolbar,
   Typography,
-  IconButton,
-  Badge,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import { Link } from "react-router-dom";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-
-import HomeIcon from "./icons/home";
+import MenuIcon from "@material-ui/icons/Menu";
+import clsx from "clsx";
+import React, { FunctionComponent } from "react";
+import { Link } from "react-router-dom";
 import { useUser } from "reactfire";
+import HomeIcon from "./icons/home";
 
 interface Props {
   open: boolean;
