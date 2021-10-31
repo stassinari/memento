@@ -43,7 +43,6 @@ export default defineConfig({
       },
     }),
     replace({
-      __DATE__: new Date().toISOString(),
       __RELOAD_SW__: process.env.RELOAD_SW === "true",
     }),
   ],

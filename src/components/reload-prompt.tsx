@@ -35,9 +35,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function ReloadPrompt() {
-  // replaced dynamically
-  const buildDate = "__DATE__";
+const ReloadPrompt = () => {
   // replaced dynamically
   const reloadSW = "__RELOAD_SW__";
 
@@ -100,6 +98,6 @@ function ReloadPrompt() {
       }
     />
   );
-}
+};
 
 export default ReloadPrompt;
