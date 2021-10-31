@@ -72,6 +72,7 @@
     ]
   },
   "devDependencies": {
-    "firebase-admin": "^9.5.0"
+    "firebase-admin": "^9.5.0",
+    "vite-plugin-pwa": "^0.11.3"
   }
 }
