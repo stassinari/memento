@@ -6,6 +6,8 @@ import {
   makeStyles,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloudOffIcon from "@material-ui/icons/CloudOff";
@@ -52,6 +54,11 @@ const useStyles = makeStyles((theme) => ({
   rightSide: {
     display: "flex",
     alignItems: "center",
+    [theme.breakpoints.up("md")]: {
+      minHeight: theme.appBarHeight.md,
+      alignItems: "flex-start",
+      paddingTop: theme.spacing(2.5),
+    },
   },
   userIcon: {
     [theme.breakpoints.up("sm")]: {
@@ -99,6 +106,8 @@ const Header: FunctionComponent<Props> = ({
   const { data: userData } = useUser();
   const isUserAnonymous = userData && userData.isAnonymous;
   const classes = useStyles();
+  const theme = useTheme();
+  const isBreakpointMd = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <AppBar
@@ -140,7 +149,7 @@ const Header: FunctionComponent<Props> = ({
           <Offline>
             <Chip
               label="Offline"
-              size="small"
+              size={isBreakpointMd ? "medium" : "small"}
               color="secondary"
               icon={<CloudOffIcon />}
             />
