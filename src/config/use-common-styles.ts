@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 
 export default makeStyles((theme) => ({
   pageTitle: {
@@ -105,7 +105,7 @@ export default makeStyles((theme) => ({
     },
   },
   expandableInfoLabel: {
-    lineHeight: `${theme.spacing(3)}px`,
+    lineHeight: theme.spacing(3),
     color: theme.palette.text.secondary,
   },
   expandableInfoValue: {

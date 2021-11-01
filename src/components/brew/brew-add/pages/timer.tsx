@@ -1,5 +1,5 @@
-import { FormControlLabel, Switch } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { FormControlLabel, Switch } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { FormikProps } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import { BrewPrep } from "../../../../database/types/brew";

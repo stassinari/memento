@@ -1,11 +1,8 @@
-import { Fab as MuiFab, makeStyles, useMediaQuery } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import {
-  SpeedDial as MuiSpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
-} from "@material-ui/lab";
+import { Fab as MuiFab, useMediaQuery } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from "@mui/material/styles";
+import AddIcon from "@mui/icons-material/Add";
+import { SpeedDial as MuiSpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
 import clsx from "clsx";
 import React, { FunctionComponent, useState } from "react";
 import { Link } from "react-router-dom";

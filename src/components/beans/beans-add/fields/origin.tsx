@@ -4,7 +4,7 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Field, FormikProps } from "formik";
 import React, { FunctionComponent } from "react";
 import { Beans } from "../../../../database/types/beans";

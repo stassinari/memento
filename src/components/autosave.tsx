@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { useFormikContext } from "formik";
 import debounce from "just-debounce-it";
-import { makeStyles, Tooltip, Typography } from "@material-ui/core";
+import { Tooltip, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { format } from "date-fns";
 
 interface Props {

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Field } from "formik";
-import { TextField, InputAdornment } from "@material-ui/core";
+import { TextField, InputAdornment } from "@mui/material";
 import useCommonStyles from "../../../../config/use-common-styles";
 
 const Altitude: FunctionComponent = () => {

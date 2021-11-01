@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { TextField } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core/styles";
+import { TextField } from "@mui/material";
+import { Autocomplete } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import countries from "../../../../database/countries";
 import { countryToFlag } from "../../../../utils/form";
 import useCommonStyles from "../../../../config/use-common-styles";

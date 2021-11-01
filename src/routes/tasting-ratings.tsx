@@ -10,16 +10,16 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  makeStyles,
   Paper,
   Typography,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import EditIcon from "@material-ui/icons/Edit";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import EditIcon from "@mui/icons-material/Edit";
+import { Alert } from '@mui/material';
 import { Form, Formik } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import {
@@ -217,7 +217,7 @@ const MobileNavigation: FunctionComponent<MobileNavigationProps> = ({
         to={`${url}/sample${activeIndex - 1}`}
         disabled={activeIndex === 0}
         aria-label="previous sample"
-      >
+        size="large">
         <ChevronLeftIcon />
       </IconButton>
       <div className={classes.mobileNavigationCentre}>
@@ -236,7 +236,7 @@ const MobileNavigation: FunctionComponent<MobileNavigationProps> = ({
         to={`${url}/sample${activeIndex + 1}`}
         disabled={activeIndex === numberOfSamples - 1}
         aria-label="next sample"
-      >
+        size="large">
         <ChevronRightIcon />
       </IconButton>
     </div>

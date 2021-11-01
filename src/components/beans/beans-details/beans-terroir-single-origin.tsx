@@ -1,5 +1,6 @@
-import { Divider, Grid, Paper, Typography } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Divider, Grid, Paper, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
 import countriesMap from "../../../database/countries";

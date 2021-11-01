@@ -1,6 +1,5 @@
-import { makeStyles, useTheme } from "@material-ui/core";
-import amber from "@material-ui/core/colors/amber";
-import red from "@material-ui/core/colors/red";
+import { useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FunctionComponent } from "react";
 import {
   CartesianGrid,
@@ -15,6 +14,8 @@ import {
 import { DecentReadings } from "../../database/types/espresso";
 import { default as CustomLegend } from "./legend";
 import { default as CustomTooltip } from "./tooltip";
+
+import { amber, red } from '@mui/material/colors';
 
 interface Props {
   readings?: DecentReadings;

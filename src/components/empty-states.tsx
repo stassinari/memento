@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { useTheme, useMediaQuery, Button, makeStyles } from "@material-ui/core";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import { useTheme, useMediaQuery, Button } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { Alert, AlertTitle } from '@mui/material';
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({

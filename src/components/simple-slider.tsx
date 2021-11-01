@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Field, FormikValues } from "formik";
-import { FormLabel, Slider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { FormLabel, Slider } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 
 interface Props {
   name: string;

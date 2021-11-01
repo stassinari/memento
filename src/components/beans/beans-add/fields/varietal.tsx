@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react";
 import Autocomplete, {
   createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
-import { TextField } from "@material-ui/core";
+} from '@mui/material/Autocomplete';
+import { TextField } from "@mui/material";
 
 import varietals from "../../../../database/varietals";
 import useCommonStyles from "../../../../config/use-common-styles";

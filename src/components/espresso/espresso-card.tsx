@@ -1,5 +1,5 @@
-import { Chip } from "@material-ui/core";
-import NewReleasesIcon from "@material-ui/icons/NewReleases";
+import { Chip } from "@mui/material";
+import NewReleasesIcon from "@mui/icons-material/NewReleases";
 import React, { FunctionComponent } from "react";
 import { Espresso } from "../../database/types/espresso";
 import Card, { CardRating } from "../card";

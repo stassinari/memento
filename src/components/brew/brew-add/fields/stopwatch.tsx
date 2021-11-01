@@ -1,11 +1,12 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import {
   PlayArrow as PlayArrowIcon,
   Stop as StopIcon,
   Clear as ClearIcon,
-} from "@material-ui/icons";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+} from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import NoSleep from "nosleep.js";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";

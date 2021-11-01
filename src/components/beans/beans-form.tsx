@@ -1,6 +1,6 @@
 import DateFnsUtils from "@date-io/date-fns";
-import { Box, Button, Card, CardContent, Paper } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Button, Card, CardContent, Paper } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,

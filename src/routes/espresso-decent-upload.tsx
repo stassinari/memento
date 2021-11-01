@@ -1,13 +1,6 @@
-import {
-  Button,
-  CircularProgress,
-  Link,
-  Link as MuiLink,
-  makeStyles,
-  Paper,
-  Typography,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Button, CircularProgress, Link, Link as MuiLink, Paper, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { Alert } from '@mui/material';
 import axios from "axios";
 import clsx from "clsx";
 import { DropzoneArea } from "material-ui-dropzone";

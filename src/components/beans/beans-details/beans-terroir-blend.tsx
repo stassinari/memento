@@ -4,8 +4,9 @@ import {
   Paper,
   Typography,
   useMediaQuery,
-} from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
 import { Beans, BeansBlendPart } from "../../../database/types/beans";
@@ -45,7 +46,7 @@ const BeansTerroirBlend: FunctionComponent<Props> = ({ beans }) => {
   const commonStyles = useCommonStyles();
   const classes = useStyles();
   const theme = useTheme();
-  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("xs"));
+  const isBreakpointXs = useMediaQuery(theme.breakpoints.down('sm'));
 
   const blend = beans.blend;
 

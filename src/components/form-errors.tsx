@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import makeStyles from '@mui/styles/makeStyles';
+import { Alert, AlertTitle } from '@mui/material';
 import { FormikProps } from "formik";
 import React, { FunctionComponent } from "react";
 import { Beans } from "../database/types/beans";

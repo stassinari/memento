@@ -1,13 +1,5 @@
-import {
-  Divider,
-  FormLabel,
-  Grid,
-  makeStyles,
-  Slider,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@material-ui/core";
+import { Divider, FormLabel, Grid, Slider, Typography, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Field, FormikValues } from "formik";
 import React, { FunctionComponent } from "react";
 import { TastingPrep, TastingVariable } from "../../database/types/tasting";

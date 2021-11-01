@@ -1,15 +1,10 @@
 import React, { FunctionComponent, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import clsx from "clsx";
-import {
-  Button,
-  TextField,
-  Typography,
-  Link as MuiLink,
-  makeStyles,
-} from "@material-ui/core";
+import { Button, TextField, Typography, Link as MuiLink } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Formik, Form, Field } from "formik";
-import EmailIcon from "@material-ui/icons/Email";
+import EmailIcon from "@mui/icons-material/Email";
 import * as Yup from "yup";
 import firebase from "firebase/app";
 

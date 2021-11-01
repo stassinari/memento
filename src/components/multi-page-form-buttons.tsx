@@ -1,5 +1,4 @@
 import {
-  makeStyles,
   useTheme,
   useMediaQuery,
   MobileStepper,
@@ -7,8 +6,9 @@ import {
   Button,
   StepLabel,
   Step,
-} from "@material-ui/core";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import React, { FunctionComponent } from "react";
 import { useRouteMatch, useHistory } from "react-router-dom";
 
@@ -106,7 +106,7 @@ export const MultiPageFormButtons: FunctionComponent<MultiPageFormButtonsProps> 
   let { url } = useRouteMatch();
   const history = useHistory();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
 
   const isLastStep = activeStep === steps.length - 1;
@@ -172,7 +172,7 @@ export const Stepper: FunctionComponent<StepperProps> = ({
   activeStep,
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   return !isMobile ? (
     <MuiStepper activeStep={activeStep} alternativeLabel>
       {steps.map((label) => (

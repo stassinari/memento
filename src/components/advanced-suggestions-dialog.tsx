@@ -6,9 +6,9 @@ import {
   List,
   ListItem,
   ListItemText,
-  withStyles,
-} from "@material-ui/core";
-import ListAltIcon from "@material-ui/icons/ListAlt";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import firebase from "firebase";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useUser } from "reactfire";
@@ -75,13 +75,14 @@ const AdvancedSuggestionsDialog: FunctionComponent<Props> = ({
   return (
     <Dialog
       onClose={handleClose}
-      onEnter={handleEnter}
       aria-labelledby="advanced-suggestions-dialog-title"
       open={open}
       maxWidth="xs"
       fullWidth={true}
       scroll="paper"
-    >
+      TransitionProps={{
+        onEnter: handleEnter
+      }}>
       <DialogTitle id="advanced-suggestions-dialog-title">
         Select {field}
       </DialogTitle>
@@ -103,7 +104,7 @@ export const advancedSuggestiongInputAdornment = (onClick: () => void) => ({
         aria-label="open advanced selection dialog"
         onClick={onClick}
         edge="end"
-      >
+        size="large">
         <ListAltIcon />
       </IconButton>
     </InputAdornment>

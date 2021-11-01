@@ -1,9 +1,7 @@
-import {
-  createStyles,
-  LinearProgress,
-  Theme,
-  withStyles,
-} from "@material-ui/core";
+import { LinearProgress, Theme } from "@mui/material";
+
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 
 const progressBarHeight = 4;
 

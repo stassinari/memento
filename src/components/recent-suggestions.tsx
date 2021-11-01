@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { Chip as MuiChip, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
+import { Chip as MuiChip, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AddIcon from "@mui/icons-material/Add";
 
 interface Chip {
   key: number;

@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
-import { Button, withStyles } from "@material-ui/core";
+import { Button } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import firebase from "firebase/app";
 
 import GoogleIcon from "../../components/icons/google";

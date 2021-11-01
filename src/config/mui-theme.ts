@@ -1,11 +1,9 @@
-import { createMuiTheme, Theme } from "@material-ui/core/styles";
-import deepOrange from "@material-ui/core/colors/deepOrange";
-import orange from "@material-ui/core/colors/orange";
-import blueGrey from "@material-ui/core/colors/blueGrey";
+import { createTheme, Theme, adaptV4Theme } from "@mui/material/styles";
+import { deepOrange, orange, blueGrey } from '@mui/material/colors';
 
 export type ThemePreference = "light" | "dark" | "auto";
 
-declare module "@material-ui/core/styles/createMuiTheme" {
+declare module "@mui/material/styles/createMuiTheme" {
   interface Theme {
     gradient: {
       bgImage: string;
@@ -20,7 +18,7 @@ declare module "@material-ui/core/styles/createMuiTheme" {
     };
   }
   // allow configuration using `createMuiTheme`
-  interface ThemeOptions {
+  interface DeprecatedThemeOptions {
     gradient?: {
       bgImage?: string;
       start?: number[];
@@ -43,7 +41,7 @@ const dzDark =
   "repeating-linear-gradient(-45deg, #424242, #424242 25px, rgba(255, 255, 255, 0.12) 25px, rgba(255, 255, 255, 0.12) 50px)";
 
 const buildTheme = (themeType: "light" | "dark"): Theme =>
-  createMuiTheme({
+  createTheme(adaptV4Theme({
     overrides: {
       MuiAppBar: {
         colorPrimary: {
@@ -60,7 +58,7 @@ const buildTheme = (themeType: "light" | "dark"): Theme =>
       },
     },
     palette: {
-      type: themeType,
+      mode: themeType,
       primary: {
         main: themeType === "light" ? deepOrange[900] : orange[500],
         light: deepOrange[100],
@@ -80,6 +78,6 @@ const buildTheme = (themeType: "light" | "dark"): Theme =>
       sm: 64,
       md: 96,
     },
-  });
+  }));
 
 export default buildTheme;

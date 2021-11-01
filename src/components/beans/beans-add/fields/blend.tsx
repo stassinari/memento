@@ -1,12 +1,7 @@
-import {
-  Button,
-  IconButton,
-  makeStyles,
-  Paper,
-  Tooltip,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
+import { Button, IconButton, Paper, Tooltip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { FormikProps } from "formik";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Beans, BeansBlendPart } from "../../../../database/types/beans";
@@ -88,7 +83,7 @@ const BlendItem: FunctionComponent<BlendItemProps> = ({
           className={classes.delete}
           aria-label="remove"
           onClick={() => remove()}
-        >
+          size="large">
           <DeleteIcon />
         </IconButton>
       </Tooltip>

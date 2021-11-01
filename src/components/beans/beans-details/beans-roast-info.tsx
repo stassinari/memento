@@ -1,13 +1,7 @@
-import {
-  Box,
-  Chip,
-  makeStyles,
-  Paper,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
-import AcUnitIcon from "@material-ui/icons/AcUnit";
-import EventIcon from "@material-ui/icons/Event";
+import { Box, Chip, Paper, Tooltip, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AcUnitIcon from "@mui/icons-material/AcUnit";
+import EventIcon from "@mui/icons-material/Event";
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
 import { Beans } from "../../../database/types/beans";

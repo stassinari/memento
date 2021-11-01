@@ -1,8 +1,8 @@
-import { TextField } from "@material-ui/core";
-import { FilterOptionsState } from "@material-ui/lab";
+import { TextField } from "@mui/material";
+import { FilterOptionsState } from '@mui/material/useAutocomplete';
 import Autocomplete, {
   createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
+} from '@mui/material/Autocomplete';
 import React, { FunctionComponent } from "react";
 import { default as tastingNotesArray } from "../database/tasting-notes";
 import { ITastingNotes } from "../database/types/common";
