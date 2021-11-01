@@ -36,24 +36,12 @@ const useStyles = makeStyles((theme) => {
 });
 
 const ReloadPrompt = () => {
-  // replaced dynamically
-  const reloadSW = "__RELOAD_SW__";
-
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {
-      // @ts-ignore
-      if (reloadSW === "true") {
-        r &&
-          setInterval(() => {
-            console.log("Checking for sw update");
-            r.update();
-          }, 20000 /* 20s for testing purposes */);
-      } else {
-        console.log("SW Registered: " + r);
-      }
+      console.log("SW Registered: " + r);
     },
     onRegisterError(error) {
       console.log("SW registration error", error);

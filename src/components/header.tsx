@@ -1,15 +1,18 @@
 import {
   AppBar,
   Badge,
+  Chip,
   IconButton,
   makeStyles,
   Toolbar,
   Typography,
 } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import CloudOffIcon from "@material-ui/icons/CloudOff";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React, { FunctionComponent } from "react";
+import { Offline } from "react-detect-offline";
 import { Link } from "react-router-dom";
 import { useUser } from "reactfire";
 import HomeIcon from "./icons/home";
@@ -47,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   rightSide: {
+    display: "flex",
+    alignItems: "center",
+  },
+  userIcon: {
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
@@ -129,23 +136,33 @@ const Header: FunctionComponent<Props> = ({
             {title}
           </Typography>
         </div>
-        {userData && (
-          <IconButton
-            className={classes.rightSide}
-            color="inherit"
-            component={Link}
-            edge="end"
-            to="/account"
-          >
-            <Badge
-              badgeContent="!"
+        <div className={classes.rightSide}>
+          <Offline>
+            <Chip
+              label="Offline"
+              size="small"
               color="secondary"
-              invisible={!isUserAnonymous}
+              icon={<CloudOffIcon />}
+            />
+          </Offline>
+          {userData && (
+            <IconButton
+              className={classes.userIcon}
+              color="inherit"
+              component={Link}
+              edge="end"
+              to="/account"
             >
-              <AccountCircleIcon />
-            </Badge>
-          </IconButton>
-        )}
+              <Badge
+                badgeContent="!"
+                color="secondary"
+                invisible={!isUserAnonymous}
+              >
+                <AccountCircleIcon />
+              </Badge>
+            </IconButton>
+          )}
+        </div>
       </Toolbar>
     </AppBar>
   );
