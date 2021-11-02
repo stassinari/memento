@@ -87,14 +87,14 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
             <Grid item xs={4}>
               <div className={classes.countryContainer}>
                 <img
-                  src={`${process.env.PUBLIC_URL}/images/maps/${
+                  src={`/images/maps/${
                     theme.isDark ? "dark" : "light"
                   }/${countriesMap[country].toLowerCase()}.svg`}
                   className={classes.countryMap}
                   alt={`${country} map outline`}
                 />
                 <img
-                  src={`${process.env.PUBLIC_URL}/images/flags/${countriesMap[
+                  src={`/images/flags/${countriesMap[
                     country
                   ].toLowerCase()}.svg`}
                   className={classes.countryFlag}
