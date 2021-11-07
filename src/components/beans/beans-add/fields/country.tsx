@@ -26,18 +26,21 @@ const Country: FunctionComponent<Props> = ({ value, setValue }) => {
   return (
     <Autocomplete
       className={commonStyles.formFieldWidth}
-      options={Object.keys(countries)}
+      options={countries}
       clearOnBlur={false}
       classes={{
         option: classes.option,
       }}
       value={value}
-      renderOption={(props, option) => (
-        <li {...props}>
-          <span>{countryToFlag(countries[option])}</span>
-          {option}
-        </li>
-      )}
+      renderOption={(props, option) => {
+        console.log(option);
+        return (
+          <li {...props}>
+            <span>{countryToFlag(option.code)}</span>
+            {option.label}
+          </li>
+        );
+      }}
       renderInput={(params) => (
         <TextField
           {...params}
