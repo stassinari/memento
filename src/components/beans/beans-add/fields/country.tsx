@@ -1,10 +1,9 @@
+import { Autocomplete, TextField } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent } from "react";
-import { TextField } from "@mui/material";
-import { Autocomplete } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import useCommonStyles from "../../../../config/use-common-styles";
 import countries from "../../../../database/countries";
 import { countryToFlag } from "../../../../utils/form";
-import useCommonStyles from "../../../../config/use-common-styles";
 
 interface Props {
   value: any;
@@ -33,11 +32,11 @@ const Country: FunctionComponent<Props> = ({ value, setValue }) => {
         option: classes.option,
       }}
       value={value}
-      renderOption={(option) => (
-        <>
+      renderOption={(props, option) => (
+        <li {...props}>
           <span>{countryToFlag(countries[option])}</span>
           {option}
-        </>
+        </li>
       )}
       renderInput={(params) => (
         <TextField
