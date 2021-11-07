@@ -1,9 +1,7 @@
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import "date-fns";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { TextField, TextFieldProps } from "@mui/material";
 import { Field, FormikProps } from "formik";
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../../config/use-common-styles";
@@ -16,27 +14,28 @@ interface Props {
 const RoastDate: FunctionComponent<Props> = ({ formik }) => {
   const commonStyles = useCommonStyles();
   return (
-    <div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Field
-          as={KeyboardDatePicker}
-          className={commonStyles.formFieldWidth}
-          InputAdornmentProps={{ position: "end" }}
-          KeyboardButtonProps={{ edge: "end" }}
-          name="roastDate"
-          autoOk
-          label="Roast date"
-          format="dd/MM/yyyy"
-          inputVariant="outlined"
-          margin="normal"
-          placeholder="E.g 10/10/2018"
-          disableFuture={true}
-          onChange={(value: React.ChangeEvent<{}>) => {
-            formik.setFieldValue("roastDate", value);
-          }}
-        />
-      </MuiPickersUtilsProvider>
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Field
+        as={DatePicker}
+        className={commonStyles.formFieldWidth}
+        name="roastDate"
+        renderInput={(props: TextFieldProps) => (
+          <TextField
+            {...props}
+            className={commonStyles.formFieldWidth}
+            margin="normal"
+            placeholder="E.g 10/10/2018"
+          />
+        )}
+        label="Roast date"
+        inputFormat="dd/MM/yyyy"
+        mask="__/__/____"
+        disableFuture={true}
+        onChange={(value: React.ChangeEvent<{}>) => {
+          formik.setFieldValue("roastDate", value);
+        }}
+      />
+    </LocalizationProvider>
   );
 };
 

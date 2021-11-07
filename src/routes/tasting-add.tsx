@@ -1,4 +1,3 @@
-import DateFnsUtils from "@date-io/date-fns";
 import {
   Button,
   FormControl,
@@ -10,17 +9,14 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import {
-  KeyboardDateTimePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+import makeStyles from "@mui/styles/makeStyles";
 import "date-fns";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import * as Yup from "yup";
 import BeansCheckbox from "../components/beans-checkbox";
+import { default as DateField } from "../components/brew/brew-add/fields/date";
 import Layout from "../components/layout";
 import TastingVariables from "../components/tastings/tasting-variables";
 import { addTasting } from "../database/queries";
@@ -178,29 +174,16 @@ const TastingAdd = () => {
       <Typography variant="h5" component="h1" gutterBottom>
         Step 1: tasting variable
       </Typography>
-      <div>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDateTimePicker
-            value={date}
-            ampm={false}
-            InputAdornmentProps={{ position: "end" }}
-            KeyboardButtonProps={{ edge: "end" }}
-            name="date"
-            autoOk
-            label="Date"
-            format="dd/MM/yyyy @ HH:mm"
-            inputVariant="outlined"
-            margin="normal"
-            placeholder="E.g 10/10/2018 @ 08:34"
-            disableFuture={true}
-            onChange={(date: Date | null) => {
-              setDate(date);
-            }}
-            error={!!formErrors.date}
-            helperText={formErrors.beans}
-          />
-        </MuiPickersUtilsProvider>
-      </div>
+
+      <DateField
+        value={date}
+        setValue={(date: Date | null) => {
+          setDate(date);
+        }}
+        showError={!!formErrors.date}
+        helperText={formErrors.date}
+      />
+
       <FormControl
         component="fieldset"
         className={classes.checkboxContainer}
