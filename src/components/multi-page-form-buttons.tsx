@@ -1,16 +1,16 @@
-import {
-  useTheme,
-  useMediaQuery,
-  MobileStepper,
-  Stepper as MuiStepper,
-  Button,
-  StepLabel,
-  Step,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import {
+  Button,
+  MobileStepper,
+  Step,
+  StepLabel,
+  Stepper as MuiStepper,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent } from "react";
-import { useRouteMatch, useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 interface MultiPageFormButtonsProps {
   nextButtonFinalLabel: string;
@@ -22,10 +22,6 @@ interface MultiPageFormButtonsProps {
 
 const useStyles = makeStyles((theme) => {
   return {
-    stepper: {
-      backgroundColor: theme.palette.background.paper,
-      width: "100%",
-    },
     buttonContainer: {
       display: "flex",
       justifyContent: "space-between",
@@ -96,71 +92,72 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
   </>
 );
 
-export const MultiPageFormButtons: FunctionComponent<MultiPageFormButtonsProps> = ({
-  nextButtonFinalLabel,
-  steps,
-  activeStep,
-  isStepValid,
-  setDisplayFormError,
-}) => {
-  let { url } = useRouteMatch();
-  const history = useHistory();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const classes = useStyles();
+export const MultiPageFormButtons: FunctionComponent<MultiPageFormButtonsProps> =
+  ({
+    nextButtonFinalLabel,
+    steps,
+    activeStep,
+    isStepValid,
+    setDisplayFormError,
+  }) => {
+    let { url } = useRouteMatch();
+    const history = useHistory();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const classes = useStyles();
 
-  const isLastStep = activeStep === steps.length - 1;
+    const isLastStep = activeStep === steps.length - 1;
 
-  const handleNext = () => {
-    if (!isStepValid()) {
-      setDisplayFormError(true);
-      return;
-    }
-    setDisplayFormError(false);
+    const handleNext = () => {
+      if (!isStepValid()) {
+        setDisplayFormError(true);
+        return;
+      }
+      setDisplayFormError(false);
 
-    if (!isLastStep) {
-      history.push(`${url}/step${activeStep + 1}`);
-    }
+      if (!isLastStep) {
+        history.push(`${url}/step${activeStep + 1}`);
+      }
+    };
+    const handleBack = () => {
+      setDisplayFormError(false);
+      history.push(`${url}/step${activeStep - 1}`);
+    };
+
+    const Next = (
+      <NextButton
+        handleClick={handleNext}
+        isLastStep={isLastStep}
+        finalLabel={nextButtonFinalLabel}
+      />
+    );
+
+    const Back = (
+      <BackButton
+        handleClick={handleBack}
+        disabled={activeStep === 0}
+        style={classes.backButton}
+      />
+    );
+
+    return (
+      <div className={classes.buttonContainer}>
+        {!isMobile && Back}
+        {isMobile && (
+          <MobileStepper
+            sx={{ backgroundColor: "transparent", width: "100%" }}
+            steps={steps.length}
+            position="static"
+            variant="dots"
+            activeStep={activeStep}
+            backButton={Back}
+            nextButton={Next}
+          />
+        )}
+        {!isMobile && Next}
+      </div>
+    );
   };
-  const handleBack = () => {
-    setDisplayFormError(false);
-    history.push(`${url}/step${activeStep - 1}`);
-  };
-
-  const Next = (
-    <NextButton
-      handleClick={handleNext}
-      isLastStep={isLastStep}
-      finalLabel={nextButtonFinalLabel}
-    />
-  );
-
-  const Back = (
-    <BackButton
-      handleClick={handleBack}
-      disabled={activeStep === 0}
-      style={classes.backButton}
-    />
-  );
-
-  return (
-    <div className={classes.buttonContainer}>
-      {!isMobile && Back}
-      {isMobile && (
-        <MobileStepper
-          className={classes.stepper}
-          steps={steps.length}
-          position="static"
-          variant="dots"
-          activeStep={activeStep}
-          backButton={Back}
-          nextButton={Next}
-        />
-      )}
-      {!isMobile && Next}
-    </div>
-  );
-};
 
 interface StepperProps {
   steps: string[];
@@ -172,9 +169,9 @@ export const Stepper: FunctionComponent<StepperProps> = ({
   activeStep,
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return !isMobile ? (
-    <MuiStepper activeStep={activeStep} alternativeLabel>
+    <MuiStepper activeStep={activeStep} alternativeLabel sx={{ padding: 3 }}>
       {steps.map((label) => (
         <Step key={label}>
           <StepLabel>{label}</StepLabel>

@@ -1,12 +1,6 @@
-import {
-  Button,
-  Collapse,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Button, Collapse, Paper, TextField, Typography } from "@mui/material";
 import { Field, FormikProps } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import useCommonStyles from "../config/use-common-styles";
@@ -14,7 +8,7 @@ import { BrewPrep } from "../database/types/brew";
 import { EspressoPrep } from "../database/types/espresso";
 import { extractSuggestions } from "../utils/form";
 import AdvancedSuggestionsDialog, {
-  advancedSuggestiongInputAdornment,
+  advancedSuggestionsInputAdornment,
 } from "./advanced-suggestions-dialog";
 import RecentSuggestions from "./recent-suggestions";
 
@@ -106,7 +100,7 @@ const ExpandableFormSection: FunctionComponent<Props> = ({
                   placeholder={field.placeholder}
                   variant="outlined"
                   margin="normal"
-                  InputProps={advancedSuggestiongInputAdornment(() => {
+                  InputProps={advancedSuggestionsInputAdornment(() => {
                     setAdvancedSuggestionsField(
                       field.name as keyof EspressoPrep
                     );
