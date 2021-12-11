@@ -77,7 +77,7 @@ const EspressoRecent: FunctionComponent = () => {
         today.getTime()
   );
 
-  const lastWeeksEspressos = espressoList.filter(
+  const pastWeeksEspressos = espressoList.filter(
     (espresso) =>
       (espresso.date as firebase.firestore.Timestamp).toMillis() >
         lastWeek.getTime() &&
@@ -85,7 +85,7 @@ const EspressoRecent: FunctionComponent = () => {
         yesterday.getTime()
   );
 
-  const lastMonthsEspressos = espressoList.filter(
+  const pastMonthsEspressos = espressoList.filter(
     (espresso) =>
       (espresso.date as firebase.firestore.Timestamp).toMillis() >
         lastMonth.getTime() &&
@@ -103,12 +103,12 @@ const EspressoRecent: FunctionComponent = () => {
       espressoList: yesterdaysEspressos,
     },
     {
-      title: "Last week",
-      espressoList: lastWeeksEspressos,
+      title: "Past week",
+      espressoList: pastWeeksEspressos,
     },
     {
-      title: "Last month",
-      espressoList: lastMonthsEspressos,
+      title: "Past month",
+      espressoList: pastMonthsEspressos,
     },
   ];
 

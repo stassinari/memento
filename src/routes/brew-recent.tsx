@@ -77,7 +77,7 @@ const BrewRecent: FunctionComponent = () => {
       (brew.date as firebase.firestore.Timestamp).toMillis() < today.getTime()
   );
 
-  const lastWeeksBrews = brews.filter(
+  const pastWeeksBrews = brews.filter(
     (brew) =>
       (brew.date as firebase.firestore.Timestamp).toMillis() >
         lastWeek.getTime() &&
@@ -85,7 +85,7 @@ const BrewRecent: FunctionComponent = () => {
         yesterday.getTime()
   );
 
-  const lastMonthsBrews = brews.filter(
+  const pastMonthsBrews = brews.filter(
     (brew) =>
       (brew.date as firebase.firestore.Timestamp).toMillis() >
         lastMonth.getTime() &&
@@ -103,12 +103,12 @@ const BrewRecent: FunctionComponent = () => {
       brews: yesterdaysBrews,
     },
     {
-      title: "Last week",
-      brews: lastWeeksBrews,
+      title: "Past week",
+      brews: pastWeeksBrews,
     },
     {
-      title: "Last month",
-      brews: lastMonthsBrews,
+      title: "Past month",
+      brews: pastMonthsBrews,
     },
   ];
 
