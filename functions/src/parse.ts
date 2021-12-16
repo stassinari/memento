@@ -1,4 +1,5 @@
 import { Stream } from "stream";
+import { Espresso } from ".";
 
 export interface DecentReadings {
   time: number[];
@@ -37,7 +38,7 @@ const properties: TclJsConversion[] = [
 
 const bracesRegex = /\{(.*?)\}/g;
 
-export const parseShotFile = (data: Stream): string[] =>
+const parseShotFile = (data: Stream): string[] =>
   data
     .toString()
     .split("\n")
@@ -45,7 +46,7 @@ export const parseShotFile = (data: Stream): string[] =>
       return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
     });
 
-export const extractDate = (lines: string[]): Date => {
+const extractDate = (lines: string[]): Date => {
   const stringTs =
     lines.find((line) => line.startsWith("clock"))?.split(" ")[1] + "000";
   if (!stringTs) {
@@ -64,7 +65,7 @@ export const extractProfileName = (lines: string[]): string => {
   }
 };
 
-export const extractTargetWeight = (lines: string[]): number => {
+const extractTargetWeight = (lines: string[]): number => {
   const raw = lines
     .find((line) => line.includes("target_weight"))
     ?.slice(0, -1);
@@ -76,7 +77,7 @@ export const extractTargetWeight = (lines: string[]): number => {
   }
 };
 
-export const extractTotalWeight = (lines: string[]): number => {
+const extractTotalWeight = (lines: string[]): number => {
   const stringTs = lines
     .find((line) => line.trim().startsWith("final_espresso_weight"))
     ?.trim()
@@ -87,7 +88,7 @@ export const extractTotalWeight = (lines: string[]): number => {
   return parseFloat(stringTs);
 };
 
-export const extractTimeSeries = (lines: string[]): DecentReadings =>
+const extractTimeSeries = (lines: string[]): DecentReadings =>
   properties.reduce((obj, prop) => {
     const nums = lines.find((s) => s.startsWith(prop.tcl))?.match(bracesRegex);
     const arr =
@@ -99,5 +100,49 @@ export const extractTimeSeries = (lines: string[]): DecentReadings =>
     return arr ? { ...obj, [prop.js]: arr } : obj;
   }, {} as DecentReadings);
 
-export const extractTotalTime = (readings: DecentReadings): number =>
+const extractTotalTime = (readings: DecentReadings): number =>
   Math.round(readings["time"][readings["time"].length - 1] * 10) / 10;
+
+export const extractEspresso = async (
+  data: Stream,
+  admin: any,
+  uid: string
+) => {
+  const lines = parseShotFile(data);
+  const date = extractDate(lines);
+  // check if shot was uploaded before by matching dates
+  const alreadyExists = await admin
+    .firestore()
+    .collection("users")
+    .doc(uid)
+    .collection("espresso")
+    .where("date", "==", date)
+    .where("fromDecent", "==", true)
+    .get()
+    .then((espressoList: any) => espressoList.size > 0);
+  if (alreadyExists) {
+    throw {
+      code: "ALREADY_EXISTS",
+      message: "the uploaded shot already exists",
+    };
+  }
+  // extract all the things
+  const profileName = extractProfileName(lines);
+  const targetWeight = extractTargetWeight(lines);
+  const timeSeries: DecentReadings = extractTimeSeries(lines);
+  const actualTime = extractTotalTime(timeSeries);
+  const actualWeight = extractTotalWeight(lines);
+
+  const espresso: Espresso = {
+    partial: true,
+    fromDecent: true,
+    profileName,
+    date,
+    targetWeight,
+    actualTime,
+    actualWeight,
+    uploadedAt: new Date(),
+  };
+
+  return { espresso, timeSeries };
+};
