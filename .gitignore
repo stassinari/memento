@@ -16,4 +16,6 @@ dist/
 backups/
 external/decent/shots
 
+tmp/
+
 .DS_Store
