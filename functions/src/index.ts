@@ -4,7 +4,8 @@ import * as express from "express";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { Stream } from "stream";
-import { extractEspresso } from "./parse";
+import { extractJsonShot } from "./parseJson";
+import { extractTclShot } from "./parseTcl";
 
 admin.initializeApp();
 
@@ -30,6 +31,19 @@ export interface Espresso {
   actualTime: number;
   actualWeight: number;
   uploadedAt: Date;
+}
+
+export interface DecentReadings {
+  time: number[];
+  pressure: number[];
+  weightTotal: number[];
+  flow: number[];
+  weightFlow: number[];
+  temperatureBasket: number[];
+  temperatureMix: number[];
+  pressureGoal: number[];
+  temperatureGoal: number[];
+  flowGoal: number[];
 }
 
 app.post("/", async (req, res) => {
@@ -90,31 +104,33 @@ app.post("/", async (req, res) => {
         console.log({ fieldname, filename, encoding, mimetype });
 
         try {
+          let espresso: Espresso;
+          let timeSeries: DecentReadings;
           if (mimetype === "application/octet-stream") {
-            // old Tcl shot file
-            // parse body, return espresso obj
-            const { espresso, timeSeries } = await extractEspresso(
-              data,
-              admin,
-              uid
-            );
+            // -------- old Tcl shot file
 
-            const docRef = await admin
-              .firestore()
-              .collection("users")
-              .doc(uid)
-              .collection("espresso")
-              .add(espresso);
-            await docRef
-              .collection("decentReadings")
-              .doc("decentReadings")
-              .set(timeSeries);
+            const shot = await extractTclShot(data, admin, uid);
+            espresso = shot.espresso;
+            timeSeries = shot.timeSeries;
           } else if (mimetype === "application/json") {
-            // new Json shot file
-            const jsonShot = JSON.parse(data.toString());
+            // -------- new Json shot file
+            const shot = await extractJsonShot(data, admin, uid);
+            espresso = shot.espresso;
+            timeSeries = shot.timeSeries;
           } else {
             res.status(415).json({ error: "unsupported file" });
+            return;
           }
+          const docRef = await admin
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("espresso")
+            .add(espresso);
+          await docRef
+            .collection("decentReadings")
+            .doc("decentReadings")
+            .set(timeSeries);
         } catch (error) {
           console.log(error);
           return;

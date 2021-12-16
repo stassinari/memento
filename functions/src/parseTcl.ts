@@ -1,18 +1,5 @@
 import { Stream } from "stream";
-import { Espresso } from ".";
-
-export interface DecentReadings {
-  time: number[];
-  pressure: number[];
-  weightTotal: number[];
-  flow: number[];
-  weightFlow: number[];
-  temperatureBasket: number[];
-  temperatureMix: number[];
-  pressureGoal: number[];
-  temperatureGoal: number[];
-  flowGoal: number[];
-}
+import { DecentReadings, Espresso } from ".";
 
 interface TclJsConversion {
   tcl: string;
@@ -21,19 +8,19 @@ interface TclJsConversion {
 
 const properties: TclJsConversion[] = [
   { tcl: "clock", js: "" },
-  { tcl: "espresso_elapsed", js: "time" },
-  { tcl: "espresso_pressure", js: "pressure" },
-  { tcl: "espresso_weight", js: "weightTotal" },
-  { tcl: "espresso_flow", js: "flow" },
-  { tcl: "espresso_flow_weight", js: "weightFlow" },
-  { tcl: "espresso_temperature_basket", js: "temperatureBasket" },
-  { tcl: "espresso_temperature_mix", js: "temperatureMix" },
-  { tcl: "espresso_pressure_goal", js: "pressureGoal" },
-  { tcl: "espresso_temperature_goal", js: "temperatureGoal" },
-  { tcl: "espresso_flow_goal", js: "flowGoal" },
   { tcl: `"title":`, js: "" },
   { tcl: `"target_weight":`, js: "" },
   { tcl: "final_espresso_weight", js: "" },
+  { tcl: "espresso_elapsed", js: "time" },
+  { tcl: "espresso_flow", js: "flow" },
+  { tcl: "espresso_flow_goal", js: "flowGoal" },
+  { tcl: "espresso_flow_weight", js: "weightFlow" },
+  { tcl: "espresso_pressure", js: "pressure" },
+  { tcl: "espresso_pressure_goal", js: "pressureGoal" },
+  { tcl: "espresso_temperature_basket", js: "temperatureBasket" },
+  { tcl: "espresso_temperature_goal", js: "temperatureGoal" },
+  { tcl: "espresso_temperature_mix", js: "temperatureMix" },
+  { tcl: "espresso_weight", js: "weightTotal" },
 ];
 
 const bracesRegex = /\{(.*?)\}/g;
@@ -103,14 +90,12 @@ const extractTimeSeries = (lines: string[]): DecentReadings =>
 const extractTotalTime = (readings: DecentReadings): number =>
   Math.round(readings["time"][readings["time"].length - 1] * 10) / 10;
 
-export const extractEspresso = async (
-  data: Stream,
-  admin: any,
-  uid: string
-) => {
+export const extractTclShot = async (data: Stream, admin: any, uid: string) => {
   const lines = parseShotFile(data);
   const date = extractDate(lines);
+
   // check if shot was uploaded before by matching dates
+  // TODO refactor this to own func
   const alreadyExists = await admin
     .firestore()
     .collection("users")
@@ -126,6 +111,7 @@ export const extractEspresso = async (
       message: "the uploaded shot already exists",
     };
   }
+
   // extract all the things
   const profileName = extractProfileName(lines);
   const targetWeight = extractTargetWeight(lines);
