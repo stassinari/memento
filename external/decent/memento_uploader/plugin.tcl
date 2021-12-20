@@ -132,7 +132,7 @@ namespace eval ::plugins::${plugin_name} {
                     # set url "https://$settings(memento_url)/$settings(memento_endpoint)"
                     set url "$settings(memento_url)/$settings(memento_endpoint)"
 
-                    set contentHeader "Content-Disposition: form-data; name=\"file\"; filename=\"file.shot\"\r\nContent-Type: application/octet-stream\r\n"
+                    set contentHeader "Content-Disposition: form-data; name=\"file\"; filename=\"file.json\"\r\nContent-Type: application/json\r\n"
                     set body "--$boundary\r\n$contentHeader\r\n$content\r\n--$boundary--\r\n"
 
                     if {[catch {
