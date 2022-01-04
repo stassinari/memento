@@ -1,13 +1,16 @@
+import AcUnitIcon from "@mui/icons-material/AcUnit";
+import TuneIcon from "@mui/icons-material/Tune";
 import {
   Chip,
   FormControlLabel,
   FormGroup,
   Grid,
+  IconButton,
+  Popover,
   Switch,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import AcUnitIcon from "@mui/icons-material/AcUnit";
+import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import Card, { CardRating } from "../components/card";
@@ -22,7 +25,6 @@ import { areBeansFrozen, sortBeansByRoastDate } from "../utils/beans";
 const useStyles = makeStyles((theme) => {
   return {
     buttonContainer: {
-      marginBottom: theme.spacing(2),
       display: "flex",
       justifyContent: "flex-end",
     },
@@ -31,6 +33,12 @@ const useStyles = makeStyles((theme) => {
     },
     title: {
       marginBottom: theme.spacing(2),
+    },
+    popover: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
     },
   };
 });
@@ -42,7 +50,20 @@ const BeansList = () => {
 
   const classes = useStyles();
 
-  const [hideFinished, setHideFinished] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const [showFinished, setShowFinished] = useState(false);
+  const [showFrozen, setShowFrozen] = useState(true);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "sort-and-filter-beans" : undefined;
 
   let beansQuery = useFirestore()
     .collection("users")
@@ -50,8 +71,8 @@ const BeansList = () => {
     .collection("beans")
     .orderBy("roastDate", "desc");
 
-  if (hideFinished) {
-    beansQuery.where("isFinished", "==", false);
+  if (showFinished) {
+    beansQuery.where("isFinished", "==", true);
   }
   const { status, data: beansList } = useFirestoreCollectionData<Beans>(
     beansQuery,
@@ -62,9 +83,11 @@ const BeansList = () => {
 
   const openedBeans = beansList
     ?.filter((b) => !b.isFinished)
+    .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .sort(sortBeansByRoastDate);
   const finishedBeans = beansList
     ?.filter((b) => b.isFinished)
+    .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .sort(sortBeansByRoastDate);
 
   const title = "Beans";
@@ -84,19 +107,51 @@ const BeansList = () => {
     <Layout title={title}>
       <Fab link="/beans/add" label="Add beans" />
       <div className={classes.buttonContainer}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={hideFinished}
-                onChange={() => setHideFinished(!hideFinished)}
-                name="showFinished"
-              />
-            }
-            label="Show finished"
-          />
-        </FormGroup>
+        <IconButton aria-describedby={id} onClick={handleClick}>
+          <TuneIcon />
+        </IconButton>
       </div>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <div className={classes.popover}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showFinished}
+                  onChange={() => setShowFinished(!showFinished)}
+                  name="showFinished"
+                />
+              }
+              label="Show finished"
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showFrozen}
+                  onChange={() => setShowFrozen(!showFrozen)}
+                  name="showFrozen"
+                />
+              }
+              label="Show frozen"
+            />
+          </FormGroup>
+        </div>
+      </Popover>
       {beansList.length === 0 ? (
         <EmptyList type="beans" />
       ) : (
@@ -104,7 +159,7 @@ const BeansList = () => {
           {openedBeans.length > 0 && (
             <CardsList title="Opened beans" list={openedBeans} />
           )}
-          {hideFinished && finishedBeans.length > 0 && (
+          {showFinished && finishedBeans.length > 0 && (
             <CardsList title="Finished beans" list={finishedBeans} />
           )}
         </>
