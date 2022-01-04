@@ -1,20 +1,11 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
 import * as Busboy from "busboy";
-import { Stream } from "stream";
-import * as express from "express";
 import * as cors from "cors";
-
-import {
-  extractProfileName,
-  extractDate,
-  extractTimeSeries,
-  extractTotalTime,
-  parseShotFile,
-  extractTotalWeight,
-  extractTargetWeight,
-  DecentReadings,
-} from "./parse";
+import * as express from "express";
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { Stream } from "stream";
+import { extractJsonShot } from "./parseJson";
+import { extractTclShot } from "./parseTcl";
 
 admin.initializeApp();
 
@@ -26,7 +17,12 @@ interface DbUser {
   secretKey?: string;
 }
 
-interface Espresso {
+export interface AlreadyExistsError {
+  code: "ALREADY_EXISTS";
+  message: string;
+}
+
+export interface Espresso {
   partial: boolean;
   fromDecent: boolean;
   profileName: string;
@@ -35,6 +31,19 @@ interface Espresso {
   actualTime: number;
   actualWeight: number;
   uploadedAt: Date;
+}
+
+export interface DecentReadings {
+  time: number[];
+  pressure: number[];
+  weightTotal: number[];
+  flow: number[];
+  weightFlow: number[];
+  temperatureBasket: number[];
+  temperatureMix: number[];
+  pressureGoal: number[];
+  temperatureGoal: number[];
+  flowGoal: number[];
 }
 
 app.post("/", async (req, res) => {
@@ -87,56 +96,51 @@ app.post("/", async (req, res) => {
 
   // handle data from POST
   try {
+    //@ts-ignore
     const busboy = new Busboy({ headers: req.headers });
 
     busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
       file.on("data", async (data: Stream) => {
-        const lines = parseShotFile(data);
-        const date = extractDate(lines);
-        // check if shot was uploaded before by matching dates
-        const alreadyExists = await admin
-          .firestore()
-          .collection("users")
-          .doc(uid)
-          .collection("espresso")
-          .where("date", "==", date)
-          .where("fromDecent", "==", true)
-          .get()
-          .then((espressoList) => espressoList.size > 0);
-        if (alreadyExists) {
+        console.log({ fieldname, filename, encoding, mimetype });
+
+        try {
+          let espresso: Espresso;
+          let timeSeries: DecentReadings;
+          if (mimetype === "application/octet-stream") {
+            // -------- old Tcl shot file
+
+            const shot = await extractTclShot(data, admin, uid);
+            espresso = shot.espresso;
+            timeSeries = shot.timeSeries;
+          } else if (mimetype === "application/json") {
+            // -------- new Json shot file
+            const shot = await extractJsonShot(data, admin, uid);
+            espresso = shot.espresso;
+            timeSeries = shot.timeSeries;
+          } else {
+            res.status(415).json({ error: "unsupported file" });
+            return;
+          }
+          const docRef = await admin
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("espresso")
+            .add(espresso);
+          await docRef
+            .collection("decentReadings")
+            .doc("decentReadings")
+            .set(timeSeries);
+        } catch (error) {
+          console.log(error);
           return;
         }
-        // extract all the things
-        const profileName = extractProfileName(lines);
-        const targetWeight = extractTargetWeight(lines);
-        const timeSeries: DecentReadings = extractTimeSeries(lines);
-        const actualTime = extractTotalTime(timeSeries);
-        const actualWeight = extractTotalWeight(lines);
-
-        const espresso: Espresso = {
-          partial: true,
-          fromDecent: true,
-          profileName,
-          date,
-          targetWeight,
-          actualTime,
-          actualWeight,
-          uploadedAt: new Date(),
-        };
-
-        const docRef = await admin
-          .firestore()
-          .collection("users")
-          .doc(uid)
-          .collection("espresso")
-          .add(espresso);
-        await docRef
-          .collection("decentReadings")
-          .doc("decentReadings")
-          .set(timeSeries);
       });
       file.on("end", () => {
-        // finished succesfully
+        // finished successfully
+      });
+      file.on("error", (err) => {
+        console.log(err);
       });
     });
 
@@ -148,6 +152,7 @@ app.post("/", async (req, res) => {
     busboy.end(req.body);
   } catch (error) {
     res.status(500).json({ error: "Parsing error" });
+    console.log(error);
     return;
   }
 });

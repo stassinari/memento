@@ -3,6 +3,8 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Divider,
+  FormControlLabel,
   FormHelperText,
   List,
   ListItem,
@@ -11,6 +13,7 @@ import {
   ListSubheader,
   Radio,
   RadioGroup,
+  Switch,
   Typography,
 } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
@@ -19,7 +22,11 @@ import { Field } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore } from "reactfire";
 import { Beans, RoastStyle } from "../database/types/beans";
-import { buildBeansLabel, buildBeansSecondaryLabel } from "../utils/beans";
+import {
+  areBeansFrozen,
+  buildBeansLabel,
+  buildBeansSecondaryLabel,
+} from "../utils/beans";
 import { capitalise } from "../utils/string";
 
 interface Props {
@@ -51,6 +58,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  toggleContainer: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+  },
+  toggle: {
+    marginTop: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
+  },
 }));
 
 type ListCategory = RoastStyle | "unknown roast";
@@ -72,6 +88,7 @@ const BeansRadioDialog: FunctionComponent<Props> = ({
 }) => {
   const firestore = useFirestore();
   const [openDialog, setOpenDialog] = useState(false);
+  const [showFrozen, setShowFrozen] = useState(false);
   const classes = useStyles();
   const handleClose = () => setOpenDialog(false);
 
@@ -79,6 +96,7 @@ const BeansRadioDialog: FunctionComponent<Props> = ({
 
   const beansRoastMap = beansList
     .sort((a, b) => -b.name.localeCompare(a.name))
+    .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .reduce((obj, currentValue) => {
       const currentRoastStyle = currentValue.roastStyle
         ? currentValue.roastStyle
@@ -130,6 +148,8 @@ const BeansRadioDialog: FunctionComponent<Props> = ({
       <Dialog
         open={openDialog}
         onClose={handleClose}
+        fullWidth
+        maxWidth="xs"
         aria-labelledby="alert-dialog-title"
       >
         <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>
@@ -159,6 +179,20 @@ const BeansRadioDialog: FunctionComponent<Props> = ({
             </List>
           </Field>
         </DialogContent>
+        <div className={classes.toggleContainer}>
+          <Divider />
+          <FormControlLabel
+            className={classes.toggle}
+            control={
+              <Switch
+                size="small"
+                checked={showFrozen}
+                onChange={() => setShowFrozen(!showFrozen)}
+              />
+            }
+            label="Show frozen"
+          />
+        </div>
       </Dialog>
       <div>
         <Typography variant="body2" color="textSecondary" gutterBottom>

@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
-  lodaingOverlay: {
+  loadingOverlay: {
     opacity: 0.3,
   },
   progressIndicator: {
@@ -109,11 +109,11 @@ const EspressoDecentUpload = () => {
         )}
         <Paper
           className={clsx(classes.paper, {
-            [classes.lodaingOverlay]: loading,
+            [classes.loadingOverlay]: loading,
           })}
         >
           <Typography variant="body2" gutterBottom>
-            Manually upload your Decent Espresso .shot files.
+            Manually upload your Decent Espresso shot files.
           </Typography>
           <Typography variant="body2" gutterBottom>
             If you'd like to enable automatic uploads,{" "}
@@ -163,7 +163,7 @@ const EspressoDecentUpload = () => {
                 setLoading(true);
                 handleUpload(acceptedFiles);
               }}
-              acceptedFiles={[".shot"]}
+              acceptedFiles={[".shot", ".json"]}
               dropzoneText="Drag and drop your shot files"
               dropzoneClass={classes.dropzone}
               filesLimit={20}
