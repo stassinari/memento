@@ -1,6 +1,6 @@
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { Drawer, Grid, IconButton, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import BrewCard from "../components/brew/brew-card";
@@ -57,7 +57,7 @@ const BrewList: FunctionComponent = () => {
 
   const commonStyles = useCommonStyles();
   const theme = useTheme();
-  const isBreakpointXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [drawerState, setDrawerState] = useState(false);
 
@@ -141,7 +141,8 @@ const BrewList: FunctionComponent = () => {
             color="inherit"
             disabled={brews.length === 0}
             onClick={toggleDrawer(true)}
-            size="large">
+            size="large"
+          >
             <FilterListIcon />
           </IconButton>
         </div>
@@ -177,7 +178,12 @@ const BrewList: FunctionComponent = () => {
         </Grid>
       )}
       {isBreakpointXs && (
-        <Drawer anchor="right" open={drawerState} onClose={toggleDrawer(false)}>
+        <Drawer
+          sx={{ zIndex: 1250 }}
+          anchor="right"
+          open={drawerState}
+          onClose={toggleDrawer(false)}
+        >
           <FilterSidebar />
         </Drawer>
       )}

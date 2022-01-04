@@ -1,5 +1,5 @@
 import { Container, CssBaseline } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
 import React, { FunctionComponent } from "react";
 import BottomNav from "./bottom-nav";
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     minHeight: "100vh",
+    backgroundColor: theme.isDark ? "#303030" : "#fafafa",
   },
   rootOpen: {
     display: "flex",
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(9),
   },
   main: {
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       marginTop: `calc(env(safe-area-inset-top) + ${theme.mixins.toolbar.minHeight}px)`,
       marginBottom: `calc(env(safe-area-inset-bottom) + ${theme.mixins.toolbar.minHeight}px)`,
       overflowX: "hidden",

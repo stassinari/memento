@@ -56,6 +56,7 @@ const BackButton: FunctionComponent<BackButtonProps> = ({
   <Button
     onClick={handleClick}
     variant="contained"
+    color="secondary"
     className={style}
     disabled={disabled}
   >

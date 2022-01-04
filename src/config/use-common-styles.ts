@@ -1,4 +1,4 @@
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 export default makeStyles((theme) => ({
   pageTitle: {
@@ -70,6 +70,7 @@ export default makeStyles((theme) => ({
     gridColumnStart: 3,
   },
   ratioContainer: {
+    fontSize: "0.875rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -105,10 +106,12 @@ export default makeStyles((theme) => ({
     },
   },
   expandableInfoLabel: {
+    fontSize: "0.875rem",
     lineHeight: theme.spacing(3),
     color: theme.palette.text.secondary,
   },
   expandableInfoValue: {
+    fontSize: "0.875rem",
     paddingLeft: theme.spacing(2),
   },
   // FORM TOGGLES

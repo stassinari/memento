@@ -1,13 +1,13 @@
-import React, { useState, useEffect, FunctionComponent } from "react";
-import { Button } from "@mui/material";
 import {
+  Clear as ClearIcon,
   PlayArrow as PlayArrowIcon,
   Stop as StopIcon,
-  Clear as ClearIcon,
 } from "@mui/icons-material";
+import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import NoSleep from "nosleep.js";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
@@ -130,8 +130,8 @@ const Stopwatch: FunctionComponent<Props> = ({
       </div>
       <div className={classes.buttonContainer}>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outlined"
+          color="primary"
           className={classes.startPauseButton}
           disabled={disabled}
           onClick={toggle}
@@ -140,7 +140,8 @@ const Stopwatch: FunctionComponent<Props> = ({
           {isRunning ? "Stop" : "Start"}
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
+          color="secondary"
           disabled={disabled}
           onClick={reset}
           startIcon={<ClearIcon />}

@@ -9,7 +9,7 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent } from "react";
 import { Beans } from "../database/types/beans";
 import { BrewPrep } from "../database/types/brew";

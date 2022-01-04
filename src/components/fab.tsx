@@ -1,8 +1,13 @@
-import { Fab as MuiFab, useMediaQuery } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { useTheme } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
-import { SpeedDial as MuiSpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
+import {
+  Fab as MuiFab,
+  SpeedDial as MuiSpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
 import React, { FunctionComponent, useState } from "react";
 import { Link } from "react-router-dom";
@@ -22,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2),
     bottom: `calc(${theme.mixins.toolbar.minHeight}px + ${theme.spacing(
       2
-    )}px + env(safe-area-inset-bottom))`,
+    )} + env(safe-area-inset-bottom))`,
     zIndex: theme.zIndex["appBar"],
     [theme.breakpoints.up("sm")]: {
       bottom: theme.spacing(2),
@@ -74,7 +79,7 @@ const Fab: FunctionComponent<Props> = ({
       component={Link}
       to={link}
       size={isBreakpointSm ? "large" : "medium"}
-      variant={isBreakpointSm ? "extended" : "round"}
+      variant={isBreakpointSm ? "extended" : "circular"}
       disabled={disabled}
       {...props}
     >

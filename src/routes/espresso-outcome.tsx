@@ -1,6 +1,12 @@
-import { Button, Fade, Paper, TextField } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { Alert, AlertTitle } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Fade,
+  Paper,
+  TextField,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { Field, Form, Formik } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
@@ -132,6 +138,7 @@ const EspressoOutcome: FunctionComponent = () => {
 
                   <div className={classes.buttonContainer}>
                     <Button
+                      color="secondary"
                       className={classes.backButton}
                       component={Link}
                       to={`/espresso/${params.id}`}
