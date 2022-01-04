@@ -1,5 +1,5 @@
-import { Typography } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+import { Typography } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import firebase from "firebase/app";
 import { FormikProps } from "formik";
 import React, { FunctionComponent } from "react";

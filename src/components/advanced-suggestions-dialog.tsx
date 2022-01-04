@@ -1,3 +1,4 @@
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import {
   Dialog,
   DialogTitle,
@@ -5,10 +6,9 @@ import {
   InputAdornment,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
-  withStyles,
-} from "@material-ui/core";
-import ListAltIcon from "@material-ui/icons/ListAlt";
+} from "@mui/material";
 import firebase from "firebase";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useUser } from "reactfire";
@@ -16,13 +16,6 @@ import { getBeans, getBrews, getEspressoList } from "../database/queries";
 import { Beans } from "../database/types/beans";
 import { BrewPrep } from "../database/types/brew";
 import { EspressoPrep } from "../database/types/espresso";
-
-const CustomListItem = withStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(3),
-    paddingRight: theme.spacing(3),
-  },
-}))(ListItem);
 
 interface Props {
   open: boolean;
@@ -75,28 +68,35 @@ const AdvancedSuggestionsDialog: FunctionComponent<Props> = ({
   return (
     <Dialog
       onClose={handleClose}
-      onEnter={handleEnter}
       aria-labelledby="advanced-suggestions-dialog-title"
       open={open}
       maxWidth="xs"
       fullWidth={true}
       scroll="paper"
+      TransitionProps={{
+        onEnter: handleEnter,
+      }}
     >
       <DialogTitle id="advanced-suggestions-dialog-title">
         Select {field}
       </DialogTitle>
       <List dense={true}>
         {values.map((v: string) => (
-          <CustomListItem button onClick={onClose(v)} key={v}>
-            <ListItemText primary={v} />
-          </CustomListItem>
+          <ListItem key={v} disablePadding>
+            <ListItemButton
+              onClick={onClose(v)}
+              sx={{ paddingLeft: 3, paddingRight: 3 }}
+            >
+              <ListItemText primary={v} />
+            </ListItemButton>
+          </ListItem>
         ))}
       </List>
     </Dialog>
   );
 };
 
-export const advancedSuggestiongInputAdornment = (onClick: () => void) => ({
+export const advancedSuggestionsInputAdornment = (onClick: () => void) => ({
   endAdornment: (
     <InputAdornment position="end">
       <IconButton

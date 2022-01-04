@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
-import { makeStyles, Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   NameType,
   Payload,

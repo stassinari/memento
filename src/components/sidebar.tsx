@@ -7,14 +7,14 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
   useMediaQuery,
   useTheme,
-  withStyles,
-} from "@material-ui/core";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import clsx from "clsx";
 import React, { FunctionComponent } from "react";
 import { NavLink } from "react-router-dom";
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: `calc(env(safe-area-inset-left) + ${theme.spacing(9) + 1}px)`,
+      width: `calc(env(safe-area-inset-left) + calc(${theme.spacing(9)} + 1px))`,
     },
   },
   toolbar: {
@@ -103,7 +103,7 @@ const CustomListItem = withStyles((theme) => {
       "&.active svg": {
         color: theme.palette.primary.main,
       },
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('md')]: {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -118,7 +118,7 @@ const CustomListItem = withStyles((theme) => {
 const CustomListItemIcon = withStyles((theme) => {
   return {
     root: {
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('md')]: {
         marginTop: theme.spacing(1),
         minWidth: "auto",
       },
@@ -141,136 +141,134 @@ const Sidebar: FunctionComponent<Props> = ({ open, setOpen }) => {
     color: theme.palette.primary.main,
   };
 
-  return (
-    <>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
+  return <>
+    <Drawer
+      variant="permanent"
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: open,
+        [classes.drawerClose]: !open,
+      })}
+      classes={{
+        paper: clsx({
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={() => setOpen(false)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider className={classes.divider} />
-        <div className={classes.menuContainer}>
-          <div>
-            <List>
-              <CustomListItem
-                dense
-                button
-                component={NavLink}
-                to="/"
-                exact
-                activeStyle={activeNavLinkStyles}
-              >
-                <CustomListItemIcon>
-                  <HomeIcon />
-                </CustomListItemIcon>
-                <ListItemText primary="Home" />
-              </CustomListItem>
-              <CustomListItem
-                dense
-                button
-                component={NavLink}
-                to="/brews"
-                activeStyle={activeNavLinkStyles}
-              >
-                <CustomListItemIcon>
-                  <ChemexIcon />
-                </CustomListItemIcon>
-                <ListItemText primary="Brews" />
-              </CustomListItem>
-              <CustomListItem
-                dense
-                button
-                component={NavLink}
-                to="/espresso"
-                activeStyle={activeNavLinkStyles}
-              >
-                <CustomListItemIcon>
-                  <PortafilterIcon />
-                </CustomListItemIcon>
-                <ListItemText primary="Espresso" />
-              </CustomListItem>
-              <CustomListItem
-                dense
-                button
-                component={NavLink}
-                to="/tastings"
-                activeStyle={activeNavLinkStyles}
-              >
-                <CustomListItemIcon>
-                  <SpoonIcon />
-                </CustomListItemIcon>
-                <ListItemText primary="Tastings" />
-              </CustomListItem>
-              <CustomListItem
-                dense
-                button
-                component={NavLink}
-                to="/beans"
-                activeStyle={activeNavLinkStyles}
-              >
-                <CustomListItemIcon>
-                  <BeansIcon />
-                </CustomListItemIcon>
-                <ListItemText primary="Beans" />
-              </CustomListItem>
-            </List>
-            {isBreakpointMd && (
-              <>
-                <Divider className={classes.divider} />
-                <List>
-                  <CustomListItem
-                    dense
-                    button
-                    component={NavLink}
-                    to="/decent-upload"
-                    activeStyle={activeNavLinkStyles}
-                  >
-                    <CustomListItemIcon>
-                      <CloudUploadIcon />
-                    </CustomListItemIcon>
-                    <ListItemText primary="DE Upload" />
-                  </CustomListItem>
-                </List>
-              </>
-            )}
-          </div>
+        }),
+      }}
+    >
+      <div className={classes.toolbar}>
+        <IconButton onClick={() => setOpen(false)} size="large">
+          <ChevronLeftIcon />
+        </IconButton>
+      </div>
+      <Divider className={classes.divider} />
+      <div className={classes.menuContainer}>
+        <div>
           <List>
             <CustomListItem
               dense
               button
               component={NavLink}
-              to="/account"
+              to="/"
+              exact
               activeStyle={activeNavLinkStyles}
             >
               <CustomListItemIcon>
-                <Badge
-                  badgeContent="!"
-                  color="primary"
-                  invisible={!isUserAnonymous}
-                >
-                  <AccountCircleIcon />
-                </Badge>
+                <HomeIcon />
               </CustomListItemIcon>
-              <ListItemText primary="Account" />
+              <ListItemText primary="Home" />
+            </CustomListItem>
+            <CustomListItem
+              dense
+              button
+              component={NavLink}
+              to="/brews"
+              activeStyle={activeNavLinkStyles}
+            >
+              <CustomListItemIcon>
+                <ChemexIcon />
+              </CustomListItemIcon>
+              <ListItemText primary="Brews" />
+            </CustomListItem>
+            <CustomListItem
+              dense
+              button
+              component={NavLink}
+              to="/espresso"
+              activeStyle={activeNavLinkStyles}
+            >
+              <CustomListItemIcon>
+                <PortafilterIcon />
+              </CustomListItemIcon>
+              <ListItemText primary="Espresso" />
+            </CustomListItem>
+            <CustomListItem
+              dense
+              button
+              component={NavLink}
+              to="/tastings"
+              activeStyle={activeNavLinkStyles}
+            >
+              <CustomListItemIcon>
+                <SpoonIcon />
+              </CustomListItemIcon>
+              <ListItemText primary="Tastings" />
+            </CustomListItem>
+            <CustomListItem
+              dense
+              button
+              component={NavLink}
+              to="/beans"
+              activeStyle={activeNavLinkStyles}
+            >
+              <CustomListItemIcon>
+                <BeansIcon />
+              </CustomListItemIcon>
+              <ListItemText primary="Beans" />
             </CustomListItem>
           </List>
+          {isBreakpointMd && (
+            <>
+              <Divider className={classes.divider} />
+              <List>
+                <CustomListItem
+                  dense
+                  button
+                  component={NavLink}
+                  to="/decent-upload"
+                  activeStyle={activeNavLinkStyles}
+                >
+                  <CustomListItemIcon>
+                    <CloudUploadIcon />
+                  </CustomListItemIcon>
+                  <ListItemText primary="DE Upload" />
+                </CustomListItem>
+              </List>
+            </>
+          )}
         </div>
-      </Drawer>
-    </>
-  );
+        <List>
+          <CustomListItem
+            dense
+            button
+            component={NavLink}
+            to="/account"
+            activeStyle={activeNavLinkStyles}
+          >
+            <CustomListItemIcon>
+              <Badge
+                badgeContent="!"
+                color="primary"
+                invisible={!isUserAnonymous}
+              >
+                <AccountCircleIcon />
+              </Badge>
+            </CustomListItemIcon>
+            <ListItemText primary="Account" />
+          </CustomListItem>
+        </List>
+      </div>
+    </Drawer>
+  </>;
 };
 
 export default Sidebar;

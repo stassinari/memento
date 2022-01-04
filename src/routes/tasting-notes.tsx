@@ -6,11 +6,11 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Paper,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AddIcon from "@mui/icons-material/Add";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import React, { useState } from "react";
 import Layout from "../components/layout";
 import tastingNotes from "../database/tasting-notes";
@@ -97,7 +97,7 @@ function TastingNotes() {
           >
             <ListItemText primary="Back" />
             <ListItemSecondaryAction>
-              <IconButton edge="start">
+              <IconButton edge="start" size="large">
                 <ChevronLeftIcon />
               </IconButton>
             </ListItemSecondaryAction>
@@ -106,7 +106,7 @@ function TastingNotes() {
             <ListItem key={group.name} button onClick={setOnClick(group)}>
               <ListItemText primary={group.name} />
               <ListItemSecondaryAction>
-                <IconButton edge="end">
+                <IconButton edge="end" size="large">
                   {group.children ? <ChevronRightIcon /> : <AddIcon />}
                 </IconButton>
               </ListItemSecondaryAction>

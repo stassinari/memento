@@ -1,19 +1,19 @@
 import {
   Link as MuiLink,
-  makeStyles,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   FileCopy as FileCopyIcon,
   Star as StarIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import React, { FunctionComponent } from "react";
 import { Link as RouterLink, useHistory, useParams } from "react-router-dom";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";

@@ -1,10 +1,16 @@
-import DateFnsUtils from "@date-io/date-fns";
-import { Box, Button, Card, CardContent, Paper } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Paper,
+  TextField,
+  TextFieldProps,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import "date-fns";
 import { Field, Form, Formik } from "formik";
 import React, { FunctionComponent } from "react";
@@ -132,44 +138,51 @@ const BeansForm: FunctionComponent<Props> = ({
             {update && (
               <Card className={classes.spacedCard}>
                 <CardContent>
-                  <div>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <Field
-                        as={KeyboardDatePicker}
-                        className={commonStyles.formFieldWidth}
-                        name="freezeDate"
-                        autoOk
-                        label="Freeze date"
-                        format="dd/MM/yyyy"
-                        inputVariant="outlined"
-                        margin="normal"
-                        placeholder="E.g 10/10/2018"
-                        disableFuture={true}
-                        onChange={(value: React.ChangeEvent<{}>) => {
-                          formik.setFieldValue("freezeDate", value);
-                        }}
-                      />
-                    </MuiPickersUtilsProvider>
-                  </div>
-                  <div>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <Field
-                        as={KeyboardDatePicker}
-                        className={commonStyles.formFieldWidth}
-                        name="thawDate"
-                        autoOk
-                        label="Thaw date"
-                        format="dd/MM/yyyy"
-                        inputVariant="outlined"
-                        margin="normal"
-                        placeholder="E.g 10/10/2018"
-                        disableFuture={true}
-                        onChange={(value: React.ChangeEvent<{}>) => {
-                          formik.setFieldValue("thawDate", value);
-                        }}
-                      />
-                    </MuiPickersUtilsProvider>
-                  </div>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Field
+                      as={DatePicker}
+                      className={commonStyles.formFieldWidth}
+                      name="freezeDate"
+                      renderInput={(props: TextFieldProps) => (
+                        <TextField
+                          {...props}
+                          className={commonStyles.formFieldWidth}
+                          margin="normal"
+                          placeholder="E.g 10/10/2018"
+                        />
+                      )}
+                      label="Freeze date"
+                      inputFormat="dd/MM/yyyy"
+                      mask="__/__/____"
+                      disableFuture={true}
+                      onChange={(value: React.ChangeEvent<{}>) => {
+                        formik.setFieldValue("freezeDate", value);
+                      }}
+                    />
+                  </LocalizationProvider>
+
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Field
+                      as={DatePicker}
+                      className={commonStyles.formFieldWidth}
+                      name="thawDate"
+                      renderInput={(props: TextFieldProps) => (
+                        <TextField
+                          {...props}
+                          className={commonStyles.formFieldWidth}
+                          margin="normal"
+                          placeholder="E.g 10/10/2018"
+                        />
+                      )}
+                      label="Thaw date"
+                      inputFormat="dd/MM/yyyy"
+                      mask="__/__/____"
+                      disableFuture={true}
+                      onChange={(value: React.ChangeEvent<{}>) => {
+                        formik.setFieldValue("thawDate", value);
+                      }}
+                    />
+                  </LocalizationProvider>
                 </CardContent>
               </Card>
             )}

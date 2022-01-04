@@ -1,5 +1,6 @@
-import { Grid, Typography, useMediaQuery } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Grid, Typography, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AcUnit as AcUnitIcon,
   Archive as ArchiveIcon,
@@ -7,8 +8,8 @@ import {
   Edit as EditIcon,
   FileCopy as FileCopyIcon,
   Unarchive as UnarchiveIcon,
-} from "@material-ui/icons";
-import { Alert, AlertTitle } from "@material-ui/lab";
+} from "@mui/icons-material";
+import { Alert, AlertTitle } from '@mui/material';
 import clsx from "clsx";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";

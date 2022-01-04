@@ -1,6 +1,12 @@
-import { Button, Fade, Paper, TextField } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Fade,
+  Paper,
+  TextField,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { Field, Form, Formik } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
@@ -124,6 +130,7 @@ const BrewOutcome: FunctionComponent = () => {
 
                 <div className={classes.buttonContainer}>
                   <Button
+                    color="secondary"
                     className={classes.backButton}
                     component={Link}
                     to={`/brews/${params.id}`}

@@ -1,17 +1,17 @@
 import {
+  Alert,
   Button,
   CircularProgress,
   Link,
   Link as MuiLink,
-  makeStyles,
   Paper,
   Typography,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import axios from "axios";
 import clsx from "clsx";
-import { DropzoneArea } from "material-ui-dropzone";
 import React, { useState } from "react";
+import { DropzoneArea } from "react-mui-dropzone";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import Layout from "../components/layout";

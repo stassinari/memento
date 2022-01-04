@@ -1,17 +1,10 @@
 import React, { FunctionComponent, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import {
-  Button,
-  Paper,
-  TextField,
-  Typography,
-  Link as MuiLink,
-  makeStyles,
-  Divider,
-} from "@material-ui/core";
+import { Button, Paper, TextField, Typography, Link as MuiLink, Divider } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 import Layout from "../components/layout";
 import useCommonStyles from "../config/use-common-styles";

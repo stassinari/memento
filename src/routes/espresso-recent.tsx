@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography } from "@mui/material";
 import { subDays, subMonths, subWeeks } from "date-fns/esm";
 import firebase from "firebase/app";
 import React, { FunctionComponent } from "react";

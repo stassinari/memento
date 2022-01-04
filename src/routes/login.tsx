@@ -1,12 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import {
-  Paper,
-  Typography,
-  Link as MuiLink,
-  makeStyles,
-  Divider,
-} from "@material-ui/core";
+import { Paper, Typography, Link as MuiLink, Divider } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import Layout from "../components/layout";
 import EmailPasswordForm from "../components/auth/email-password-form";

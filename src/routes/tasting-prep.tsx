@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {

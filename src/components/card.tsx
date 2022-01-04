@@ -1,12 +1,6 @@
-import {
-  Box,
-  Card as MuiCard,
-  CardActionArea,
-  CardContent,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import EventIcon from "@material-ui/icons/Event";
+import { Box, Card as MuiCard, CardActionArea, CardContent, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import EventIcon from "@mui/icons-material/Event";
 import clsx from "clsx";
 import { format } from "date-fns";
 import firebase from "firebase/app";

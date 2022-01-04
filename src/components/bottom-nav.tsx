@@ -2,8 +2,10 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   useMediaQuery,
-} from "@material-ui/core";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
+import withStyles from "@mui/styles/withStyles";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import BeansIcon from "./icons/beans";
@@ -43,7 +45,7 @@ const CustomBottomNavigationAction = withStyles((theme) => {
 
 const BottomNav = () => {
   const theme = useTheme();
-  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("xs"));
+  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
   const location = useLocation();
   const topLevelPage = location.pathname.split("/")[1];
@@ -53,6 +55,7 @@ const BottomNav = () => {
     <>
       {isBreakpointXs && (
         <BottomNavigation
+          sx={{ backgroundColor: theme.isDark ? "#424242" : "inherit" }}
           className={classes.container}
           value={value}
           onChange={(event, newValue) => {

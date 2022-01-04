@@ -1,11 +1,6 @@
 // eslint-disable-next-line no-use-before-define
-import {
-  Button,
-  makeStyles,
-  Snackbar,
-  useMediaQuery,
-  useTheme,
-} from "@material-ui/core";
+import { Button, Snackbar, useMediaQuery, useTheme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 

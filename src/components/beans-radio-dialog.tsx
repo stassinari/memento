@@ -11,13 +11,13 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  makeStyles,
   Radio,
   RadioGroup,
   Switch,
   Typography,
-} from "@material-ui/core";
-import ListAltIcon from "@material-ui/icons/ListAlt";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Field } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore } from "reactfire";

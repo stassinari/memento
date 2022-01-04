@@ -6,10 +6,10 @@ import {
   ListItemAvatar,
   ListItemText,
   ListSubheader,
-  makeStyles,
   Paper,
-} from "@material-ui/core";
-import ErrorIcon from "@material-ui/icons/Error";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import ErrorIcon from "@mui/icons-material/Error";
 import { format } from "date-fns";
 import React, { FunctionComponent } from "react";
 import { Link, useHistory } from "react-router-dom";

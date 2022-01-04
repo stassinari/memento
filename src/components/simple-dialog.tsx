@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 interface Props {
   onClose: () => void;

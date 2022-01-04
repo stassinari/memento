@@ -1,4 +1,4 @@
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 import firebase from "firebase/app";
 import { Field, FormikProps } from "formik";
 import React, { FunctionComponent, useState } from "react";
@@ -7,7 +7,7 @@ import { Beans } from "../../../../database/types/beans";
 import { Brew, BrewPrep } from "../../../../database/types/brew";
 import { extractSuggestions } from "../../../../utils/form";
 import AdvancedSuggestionsDialog, {
-  advancedSuggestiongInputAdornment,
+  advancedSuggestionsInputAdornment,
 } from "../../../advanced-suggestions-dialog";
 import BeansRadioDialog from "../../../beans-radio-dialog";
 import ExpandableFormSection from "../../../expandable-form-section";
@@ -67,7 +67,7 @@ const BaseInfo: FunctionComponent<Props> = ({ formik, brews, beans }) => {
           className={commonStyles.formFieldWidth}
           error={showMethodError}
           helperText={showMethodError && formik.errors.method}
-          InputProps={advancedSuggestiongInputAdornment(() => {
+          InputProps={advancedSuggestionsInputAdornment(() => {
             setAdvancedSuggestionsField("method");
             setDialogOpen(true);
           })}

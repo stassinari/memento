@@ -1,5 +1,5 @@
-import { Paper } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Paper } from "@mui/material";
+import { Alert } from '@mui/material';
 import { Form, Formik, FormikErrors } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import {

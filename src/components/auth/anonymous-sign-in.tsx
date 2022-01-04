@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { Button, makeStyles } from "@material-ui/core";
-import PersonIcon from "@material-ui/icons/Person";
+import { Button } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import PersonIcon from "@mui/icons-material/Person";
 import clsx from "clsx";
 
 import useCommonStyles from "../../config/use-common-styles";

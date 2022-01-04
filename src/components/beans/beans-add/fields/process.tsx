@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from "react";
 import Autocomplete, {
   createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
-import { TextField } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from '@mui/material/Autocomplete';
+import { TextField } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 
 import processes from "../../../../database/processes";
 import useCommonStyles from "../../../../config/use-common-styles";

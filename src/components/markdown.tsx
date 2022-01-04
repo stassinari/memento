@@ -1,12 +1,10 @@
-import { Box } from "@material-ui/core";
-import Link from "@material-ui/core/Link";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  withStyles,
-} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { Box } from "@mui/material";
+import Link from "@mui/material/Link";
+import { Theme } from "@mui/material/styles";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+import Typography from "@mui/material/Typography";
 import ReactMarkdown from "markdown-to-jsx";
 import React, { FunctionComponent } from "react";
 

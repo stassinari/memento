@@ -5,9 +5,9 @@ import {
   Grid,
   Switch,
   Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import AcUnitIcon from "@material-ui/icons/AcUnit";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AcUnitIcon from "@mui/icons-material/AcUnit";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import Card, { CardRating } from "../components/card";

@@ -3,17 +3,17 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
-  makeStyles,
   Paper,
   Radio,
   RadioGroup,
   TextField,
   Typography,
-} from "@material-ui/core";
-import ErrorIcon from "@material-ui/icons/Error";
-import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
-import PersonIcon from "@material-ui/icons/Person";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import ErrorIcon from "@mui/icons-material/Error";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import PersonIcon from "@mui/icons-material/Person";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import React, { FunctionComponent, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useAuth, useFirestore, useFirestoreDocData, useUser } from "reactfire";

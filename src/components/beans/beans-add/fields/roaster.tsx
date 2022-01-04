@@ -1,11 +1,11 @@
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 import { Field, FormikProps } from "formik";
 import React, { FunctionComponent, useState } from "react";
 import useCommonStyles from "../../../../config/use-common-styles";
 import { Beans } from "../../../../database/types/beans";
 import { extractSuggestions } from "../../../../utils/form";
 import AdvancedSuggestionsDialog, {
-  advancedSuggestiongInputAdornment,
+  advancedSuggestionsInputAdornment,
 } from "../../../advanced-suggestions-dialog";
 import RecentSuggestions from "../../../recent-suggestions";
 
@@ -30,7 +30,7 @@ const Roaster: FunctionComponent<Props> = ({ beansList, formik }) => {
         margin="normal"
         error={showError}
         helperText={showError && formik.errors.roaster}
-        InputProps={advancedSuggestiongInputAdornment(() =>
+        InputProps={advancedSuggestionsInputAdornment(() =>
           setDialogOpen(true)
         )}
       />

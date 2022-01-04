@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Typography,
-  makeStyles,
   useMediaQuery,
   useTheme,
   Paper,
@@ -14,8 +13,9 @@ import {
   ListSubheader,
   ListItemAvatar,
   Box,
-} from "@material-ui/core";
-import { Skeleton } from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -79,7 +79,7 @@ const SkeletonList: FunctionComponent<SkeletonListProps> = ({ complex }) => (
         <ListItemAvatar>
           <Skeleton
             animation={animation}
-            variant="circle"
+            variant="circular"
             width={40}
             height={40}
           />
@@ -95,7 +95,7 @@ const SkeletonList: FunctionComponent<SkeletonListProps> = ({ complex }) => (
         <ListItemAvatar>
           <Skeleton
             animation={animation}
-            variant="circle"
+            variant="circular"
             width={40}
             height={40}
           />
@@ -111,7 +111,7 @@ const SkeletonList: FunctionComponent<SkeletonListProps> = ({ complex }) => (
         <ListItemAvatar>
           <Skeleton
             animation={animation}
-            variant="circle"
+            variant="circular"
             width={40}
             height={40}
           />
@@ -127,43 +127,41 @@ const SkeletonList: FunctionComponent<SkeletonListProps> = ({ complex }) => (
 
 export const SkeletonHomePage = () => {
   const classes = useStyles();
-  return (
-    <>
-      <Paper className={classes.marginBottom}>
-        <SkeletonList complex={true} />
-        <Box mx={2} pb={2}>
-          <Skeleton
-            variant="rect"
-            width={128}
-            height={36}
-            animation={animation}
-          ></Skeleton>
-        </Box>
-      </Paper>
-      <Paper className={classes.marginBottom}>
-        <SkeletonList complex={true} />
-        <Box mx={2} pb={2}>
-          <Skeleton
-            variant="rect"
-            width={128}
-            height={36}
-            animation={animation}
-          ></Skeleton>
-        </Box>
-      </Paper>
-      <Paper className={classes.marginBottom}>
-        <SkeletonList complex={true} />
-        <Box mx={2} pb={2}>
-          <Skeleton
-            variant="rect"
-            width={128}
-            height={36}
-            animation={animation}
-          ></Skeleton>
-        </Box>
-      </Paper>
-    </>
-  );
+  return <>
+    <Paper className={classes.marginBottom}>
+      <SkeletonList complex={true} />
+      <Box mx={2} pb={2}>
+        <Skeleton
+          variant="rectangular"
+          width={128}
+          height={36}
+          animation={animation}
+        ></Skeleton>
+      </Box>
+    </Paper>
+    <Paper className={classes.marginBottom}>
+      <SkeletonList complex={true} />
+      <Box mx={2} pb={2}>
+        <Skeleton
+          variant="rectangular"
+          width={128}
+          height={36}
+          animation={animation}
+        ></Skeleton>
+      </Box>
+    </Paper>
+    <Paper className={classes.marginBottom}>
+      <SkeletonList complex={true} />
+      <Box mx={2} pb={2}>
+        <Skeleton
+          variant="rectangular"
+          width={128}
+          height={36}
+          animation={animation}
+        ></Skeleton>
+      </Box>
+    </Paper>
+  </>;
 };
 
 interface SkeletonListPageProps {
@@ -175,7 +173,7 @@ const SkeletonListPage: FunctionComponent<SkeletonListPageProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("xs"));
+  const isBreakpointXs = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Grid container spacing={4}>
       {sidebar && !isBreakpointXs && (

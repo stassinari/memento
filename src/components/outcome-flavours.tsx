@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Button, Collapse } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Button, Collapse } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import SimpleSlider from "../components/simple-slider";
 

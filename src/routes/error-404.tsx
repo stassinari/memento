@@ -1,5 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import stain from "../static/coffee-stain.png";
 import Layout from "../components/layout";

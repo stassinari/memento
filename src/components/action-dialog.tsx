@@ -6,7 +6,7 @@ import {
   DialogActions,
   Button,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { FunctionComponent } from "react";
 
 interface Props {

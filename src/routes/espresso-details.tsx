@@ -1,21 +1,21 @@
 import {
   Button,
   Link as MuiLink,
-  makeStyles,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   FileCopy as FileCopyIcon,
   Star as StarIcon,
-} from "@material-ui/icons";
-import { Alert } from "@material-ui/lab";
+} from "@mui/icons-material";
+import { Alert } from '@mui/material';
 import React from "react";
 import {
   Link,

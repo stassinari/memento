@@ -1,8 +1,9 @@
-import { Divider, Grid, Paper, Typography } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Divider, Grid, Paper, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent } from "react";
 import useCommonStyles from "../../../config/use-common-styles";
-import countriesMap from "../../../database/countries";
+import countries from "../../../database/countries";
 import { Beans } from "../../../database/types/beans";
 import { renderDate } from "../../../utils/dates";
 
@@ -59,6 +60,10 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
   const procezz = beans.process;
   const varietals = beans.varietals && beans.varietals.join(", ");
 
+  const countryCode = countries
+    .find((c) => c.label === country)
+    ?.code.toLowerCase();
+
   const hideComponent =
     !country &&
     !region &&
@@ -89,14 +94,12 @@ const BeansTerroirSingleOrigin: FunctionComponent<Props> = ({ beans }) => {
                 <img
                   src={`/images/maps/${
                     theme.isDark ? "dark" : "light"
-                  }/${countriesMap[country].toLowerCase()}.svg`}
+                  }/${countryCode}.svg`}
                   className={classes.countryMap}
                   alt={`${country} map outline`}
                 />
                 <img
-                  src={`/images/flags/${countriesMap[
-                    country
-                  ].toLowerCase()}.svg`}
+                  src={`/images/flags/${countryCode}.svg`}
                   className={classes.countryFlag}
                   alt={`${country} flag`}
                 />

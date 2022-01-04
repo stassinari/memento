@@ -1,13 +1,13 @@
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
-  useTheme,
-  useMediaQuery,
   Button,
-  Menu,
-  MenuItem,
   ListItemIcon,
   ListItemText,
-} from "@material-ui/core";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React, { FunctionComponent } from "react";
 import { Link } from "react-router-dom";
 import useCommonStyles from "../config/use-common-styles";
@@ -32,7 +32,7 @@ const ActionsMenu: FunctionComponent<Props> = ({
 }) => {
   const commonStyles = useCommonStyles();
   const theme = useTheme();
-  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("xs"));
+  const isBreakpointXs = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,7 +57,6 @@ const ActionsMenu: FunctionComponent<Props> = ({
       <Menu
         id="actions-menu"
         anchorEl={menuAnchor}
-        getContentAnchorEl={null}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",

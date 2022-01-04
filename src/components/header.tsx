@@ -1,17 +1,17 @@
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CloudOffIcon from "@mui/icons-material/CloudOff";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Badge,
   Chip,
   IconButton,
-  makeStyles,
   Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import CloudOffIcon from "@material-ui/icons/CloudOff";
-import MenuIcon from "@material-ui/icons/Menu";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
 import React, { FunctionComponent } from "react";
 import { Offline } from "react-detect-offline";
@@ -127,6 +127,7 @@ const Header: FunctionComponent<Props> = ({
               className={clsx(classes.menuButton, {
                 [classes.hide]: open,
               })}
+              size="large"
             >
               <MenuIcon />
             </IconButton>
@@ -138,6 +139,7 @@ const Header: FunctionComponent<Props> = ({
             to="/"
             edge="start"
             className={classes.homeButton}
+            size="large"
           >
             <HomeIcon />
           </IconButton>
@@ -161,6 +163,7 @@ const Header: FunctionComponent<Props> = ({
               component={Link}
               edge="end"
               to="/account"
+              size="large"
             >
               <Badge
                 badgeContent="!"

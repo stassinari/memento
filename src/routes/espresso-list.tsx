@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import React from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import { EmptyBeans, EmptyList } from "../components/empty-states";
