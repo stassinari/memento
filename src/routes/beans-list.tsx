@@ -1,18 +1,9 @@
 import AcUnitIcon from "@mui/icons-material/AcUnit";
-import TuneIcon from "@mui/icons-material/Tune";
-import {
-  Chip,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  IconButton,
-  Popover,
-  Switch,
-  Typography,
-} from "@mui/material";
+import { Chip, Grid, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import BeansListOptions from "../components/beans/beans-list-options";
 import Card, { CardRating } from "../components/card";
 import { EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
@@ -24,21 +15,11 @@ import { areBeansFrozen, sortBeansByRoastDate } from "../utils/beans";
 
 const useStyles = makeStyles((theme) => {
   return {
-    buttonContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-    },
     grid: {
       marginBottom: theme.spacing(4),
     },
     title: {
       marginBottom: theme.spacing(2),
-    },
-    popover: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-      marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(2),
     },
   };
 });
@@ -49,21 +30,8 @@ const BeansList = () => {
   } = useUser();
 
   const classes = useStyles();
-
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
   const [showFinished, setShowFinished] = useState(false);
   const [showFrozen, setShowFrozen] = useState(true);
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "sort-and-filter-beans" : undefined;
 
   let beansQuery = useFirestore()
     .collection("users")
@@ -106,52 +74,14 @@ const BeansList = () => {
   return (
     <Layout title={title}>
       <Fab link="/beans/add" label="Add beans" />
-      <div className={classes.buttonContainer}>
-        <IconButton aria-describedby={id} onClick={handleClick}>
-          <TuneIcon />
-        </IconButton>
-      </div>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <div className={classes.popover}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={showFinished}
-                  onChange={() => setShowFinished(!showFinished)}
-                  name="showFinished"
-                />
-              }
-              label="Show finished"
-            />
-          </FormGroup>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={showFrozen}
-                  onChange={() => setShowFrozen(!showFrozen)}
-                  name="showFrozen"
-                />
-              }
-              label="Show frozen"
-            />
-          </FormGroup>
-        </div>
-      </Popover>
+
+      <BeansListOptions
+        showFrozen={showFrozen}
+        showFinished={showFinished}
+        setShowFrozen={setShowFrozen}
+        setShowFinished={setShowFinished}
+      />
+
       {beansList.length === 0 ? (
         <EmptyList type="beans" />
       ) : (
