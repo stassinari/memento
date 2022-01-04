@@ -99,7 +99,9 @@ export default makeStyles((theme) => ({
   },
   // EXPANDABLE INFO PANE
   expandableInfo: {
-    padding: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     "&:hover": {
       cursor: "pointer",
       backgroundColor: theme.palette.action.hover,

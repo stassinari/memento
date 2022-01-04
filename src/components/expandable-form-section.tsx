@@ -1,4 +1,4 @@
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Button, Collapse, Paper, TextField, Typography } from "@mui/material";
 import { Field, FormikProps } from "formik";
@@ -78,12 +78,21 @@ const ExpandableFormSection: FunctionComponent<Props> = ({
                     {field.label}:
                   </td>
                   <td className={commonStyles.expandableInfoValue}>
-                    {field.value}
+                    {field.value ? field.value : <em>Tap to edit</em>}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <div
+            style={{
+              display: "inline-block",
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            <ExpandMoreIcon />
+          </div>
         </Paper>
       </Collapse>
       <Collapse in={equipmentExpanded}>
@@ -118,20 +127,14 @@ const ExpandableFormSection: FunctionComponent<Props> = ({
             )}
           </div>
         ))}
+        <Button
+          color="secondary"
+          onClick={handleClick}
+          endIcon={<KeyboardArrowUpIcon />}
+        >
+          Hide
+        </Button>
       </Collapse>
-
-      <Button
-        onClick={handleClick}
-        endIcon={
-          equipmentExpanded ? (
-            <KeyboardArrowUpIcon />
-          ) : (
-            <KeyboardArrowDownIcon />
-          )
-        }
-      >
-        {equipmentExpanded ? "Hide" : "Show"}
-      </Button>
     </>
   );
 };
