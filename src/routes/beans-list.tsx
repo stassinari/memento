@@ -1,6 +1,7 @@
 import AcUnitIcon from "@mui/icons-material/AcUnit";
-import { Chip, Grid, Typography } from "@mui/material";
+import { Alert, AlertTitle, Chip, Grid, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import Fuse from "fuse.js";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import BeansListOptions from "../components/beans/beans-list-options";
@@ -29,9 +30,9 @@ const BeansList = () => {
     data: { uid: userId },
   } = useUser();
 
-  const classes = useStyles();
   const [showFinished, setShowFinished] = useState(false);
   const [showFrozen, setShowFrozen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   let beansQuery = useFirestore()
     .collection("users")
@@ -49,11 +50,22 @@ const BeansList = () => {
     }
   );
 
-  const openedBeans = beansList
+  const options = {
+    includeScore: true,
+    keys: ["name", "roaster"],
+  };
+
+  const fuse = new Fuse(beansList || [], options);
+
+  const filteredBeansList = searchQuery
+    ? fuse.search(searchQuery).map((r) => r.item)
+    : beansList;
+
+  const openedBeans = filteredBeansList
     ?.filter((b) => !b.isFinished)
     .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .sort(sortBeansByRoastDate);
-  const finishedBeans = beansList
+  const finishedBeans = filteredBeansList
     ?.filter((b) => b.isFinished)
     .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .sort(sortBeansByRoastDate);
@@ -80,10 +92,17 @@ const BeansList = () => {
         showFinished={showFinished}
         setShowFrozen={setShowFrozen}
         setShowFinished={setShowFinished}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
 
       {beansList.length === 0 ? (
         <EmptyList type="beans" />
+      ) : filteredBeansList.length === 0 ? (
+        <Alert severity="warning">
+          <AlertTitle>No beans to display</AlertTitle>
+          Your search doesn't match any name or roaster.
+        </Alert>
       ) : (
         <>
           {openedBeans.length > 0 && (
