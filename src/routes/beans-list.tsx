@@ -1,15 +1,10 @@
-import {
-  Chip,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  Switch,
-  Typography,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import AcUnitIcon from "@mui/icons-material/AcUnit";
+import { Alert, AlertTitle, Chip, Grid, Typography } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import Fuse from "fuse.js";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import BeansListOptions from "../components/beans/beans-list-options";
 import Card, { CardRating } from "../components/card";
 import { EmptyList } from "../components/empty-states";
 import Fab from "../components/fab";
@@ -21,11 +16,6 @@ import { areBeansFrozen, sortBeansByRoastDate } from "../utils/beans";
 
 const useStyles = makeStyles((theme) => {
   return {
-    buttonContainer: {
-      marginBottom: theme.spacing(2),
-      display: "flex",
-      justifyContent: "flex-end",
-    },
     grid: {
       marginBottom: theme.spacing(4),
     },
@@ -40,9 +30,9 @@ const BeansList = () => {
     data: { uid: userId },
   } = useUser();
 
-  const classes = useStyles();
-
-  const [hideFinished, setHideFinished] = useState(false);
+  const [showFinished, setShowFinished] = useState(false);
+  const [showFrozen, setShowFrozen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   let beansQuery = useFirestore()
     .collection("users")
@@ -50,8 +40,8 @@ const BeansList = () => {
     .collection("beans")
     .orderBy("roastDate", "desc");
 
-  if (hideFinished) {
-    beansQuery.where("isFinished", "==", false);
+  if (showFinished) {
+    beansQuery.where("isFinished", "==", true);
   }
   const { status, data: beansList } = useFirestoreCollectionData<Beans>(
     beansQuery,
@@ -60,11 +50,24 @@ const BeansList = () => {
     }
   );
 
-  const openedBeans = beansList
+  const options = {
+    includeScore: true,
+    keys: ["name", "roaster"],
+  };
+
+  const fuse = new Fuse(beansList || [], options);
+
+  const filteredBeansList = searchQuery
+    ? fuse.search(searchQuery).map((r) => r.item)
+    : beansList;
+
+  const openedBeans = filteredBeansList
     ?.filter((b) => !b.isFinished)
+    .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .sort(sortBeansByRoastDate);
-  const finishedBeans = beansList
+  const finishedBeans = filteredBeansList
     ?.filter((b) => b.isFinished)
+    .filter((b) => (showFrozen ? true : !areBeansFrozen(b)))
     .sort(sortBeansByRoastDate);
 
   const title = "Beans";
@@ -83,28 +86,29 @@ const BeansList = () => {
   return (
     <Layout title={title}>
       <Fab link="/beans/add" label="Add beans" />
-      <div className={classes.buttonContainer}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={hideFinished}
-                onChange={() => setHideFinished(!hideFinished)}
-                name="showFinished"
-              />
-            }
-            label="Show finished"
-          />
-        </FormGroup>
-      </div>
+
+      <BeansListOptions
+        showFrozen={showFrozen}
+        showFinished={showFinished}
+        setShowFrozen={setShowFrozen}
+        setShowFinished={setShowFinished}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+
       {beansList.length === 0 ? (
         <EmptyList type="beans" />
+      ) : filteredBeansList.length === 0 ? (
+        <Alert severity="warning">
+          <AlertTitle>No beans to display</AlertTitle>
+          Your search doesn't match any name or roaster.
+        </Alert>
       ) : (
         <>
           {openedBeans.length > 0 && (
             <CardsList title="Opened beans" list={openedBeans} />
           )}
-          {hideFinished && finishedBeans.length > 0 && (
+          {showFinished && finishedBeans.length > 0 && (
             <CardsList title="Finished beans" list={finishedBeans} />
           )}
         </>
