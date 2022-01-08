@@ -1,6 +1,7 @@
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import { Alert, AlertTitle, Chip, Grid, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import useLocalStorage from "@rehooks/local-storage";
 import Fuse from "fuse.js";
 import React, { FunctionComponent, useState } from "react";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
@@ -30,8 +31,11 @@ const BeansList = () => {
     data: { uid: userId },
   } = useUser();
 
-  const [showFinished, setShowFinished] = useState(false);
-  const [showFrozen, setShowFrozen] = useState(true);
+  const [showFinished, setShowFinished] = useLocalStorage(
+    "showFinished",
+    false
+  );
+  const [showFrozen, setShowFrozen] = useLocalStorage("showFrozen", true);
   const [searchQuery, setSearchQuery] = useState("");
 
   let beansQuery = useFirestore()

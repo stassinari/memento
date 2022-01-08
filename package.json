@@ -9,6 +9,7 @@
     "@mui/lab": "^5.0.0-alpha.53",
     "@mui/material": "^5.0.6",
     "@mui/styles": "^5.0.2",
+    "@rehooks/local-storage": "^2.4.4",
     "@sentry/react": "^6.3.0",
     "@sentry/tracing": "^6.3.0",
     "axios": "^0.21.2",

@@ -14,9 +14,9 @@ import React, { FunctionComponent, useState } from "react";
 
 interface Props {
   showFrozen: boolean;
-  setShowFrozen: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowFrozen: (newValue: boolean) => void;
   showFinished: boolean;
-  setShowFinished: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowFinished: (newValue: boolean) => void;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
