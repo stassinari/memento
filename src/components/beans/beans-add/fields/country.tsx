@@ -6,8 +6,8 @@ import countries from "../../../../database/countries";
 import { countryToFlag } from "../../../../utils/form";
 
 interface Props {
-  value: any;
-  setValue: (arg0: any) => void;
+  value: string | null;
+  setValue: (arg0: string) => void;
 }
 
 const useStyles = makeStyles({
@@ -31,15 +31,16 @@ const Country: FunctionComponent<Props> = ({ value, setValue }) => {
       classes={{
         option: classes.option,
       }}
-      value={value}
-      renderOption={(props, option) => {
-        console.log(option);
-        return (
-          <li {...props}>
-            <span>{countryToFlag(option.code)}</span>
-            {option.label}
-          </li>
-        );
+      defaultValue={{ label: value, code: "" }}
+      getOptionLabel={(option) => option.label || ""}
+      renderOption={(props, option) => (
+        <li {...props}>
+          <span>{countryToFlag(option.code)}</span>
+          {option.label}
+        </li>
+      )}
+      isOptionEqualToValue={(option, value) => {
+        return option.label === value.label || !option.label;
       }}
       renderInput={(params) => (
         <TextField
@@ -53,8 +54,11 @@ const Country: FunctionComponent<Props> = ({ value, setValue }) => {
           }}
         />
       )}
-      onChange={(event: React.ChangeEvent<{}>, value: string | null) => {
-        setValue(value);
+      onChange={(
+        event: React.ChangeEvent<{}>,
+        value: { code: string; label: string | null } | null
+      ) => {
+        setValue(value?.label || "");
       }}
     />
   );
