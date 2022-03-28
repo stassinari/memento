@@ -124,6 +124,10 @@ const countries = [
     code: "MX",
   },
   {
+    label: "Myanmar",
+    code: "MM",
+  },
+  {
     label: "Nicaragua",
     code: "NI",
   },
