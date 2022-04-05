@@ -36,7 +36,7 @@ const RoastStyle: FunctionComponent<Props> = ({ formik }) => (
           control={<Radio />}
           name="roastStyle"
           id="espresso"
-          label="Epresso"
+          label="Espresso"
         />
         <FormControlLabel
           value="omni-roast"
