@@ -7,7 +7,7 @@ export interface EspressoPrep {
   id?: string;
   date: firebase.default.firestore.Timestamp | Date;
   beans: firebase.default.firestore.DocumentReference | Beans | null;
-  beansWeight: string;
+  beansWeight: string; // FIXME wtf is this type? :O
   targetWeight: string;
   waterTemperature: string;
   grindSetting: string;

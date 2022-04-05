@@ -9,7 +9,7 @@ export interface BrewPrep {
   date: firebase.default.firestore.Timestamp | Date;
   beans: firebase.default.firestore.DocumentReference | Beans | null;
   waterWeight: string;
-  beansWeight: string;
+  beansWeight: string; // FIXME wtf is this type? :O
   waterTemperature: string;
   grinder: string;
   grinderBurrs: string;
@@ -24,4 +24,6 @@ export interface BrewOutcome {
   rating: number;
   notes: string;
   tastingScores: TastingScores;
+  tds?: number;
+  finalBrewWeight?: number;
 }

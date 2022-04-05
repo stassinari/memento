@@ -1,4 +1,10 @@
 import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  FileCopy as FileCopyIcon,
+  Star as StarIcon,
+} from "@mui/icons-material";
+import {
   Link as MuiLink,
   Paper,
   Table,
@@ -7,18 +13,13 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  FileCopy as FileCopyIcon,
-  Star as StarIcon,
-} from "@mui/icons-material";
+import makeStyles from "@mui/styles/makeStyles";
 import React, { FunctionComponent } from "react";
 import { Link as RouterLink, useHistory, useParams } from "react-router-dom";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import ActionDialog from "../components/action-dialog";
 import ActionsMenu from "../components/actions-menu";
+import ExtractionYield from "../components/extraction-yield";
 import FlavoursChart from "../components/flavours-chart";
 import Layout from "../components/layout";
 import Markdown from "../components/markdown";
@@ -157,6 +158,13 @@ const BrewDetails: FunctionComponent = () => {
                   )}
                 </TableCell>
               </TableRow>
+
+              <ExtractionYield
+                tds={brew.tds}
+                weight={brew.finalBrewWeight}
+                dose={Number(brew.beansWeight)}
+              />
+
               <TableRow>
                 <TableCell className={commonStyles.label}>Notes</TableCell>
                 <TableCell>

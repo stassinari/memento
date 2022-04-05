@@ -3,8 +3,10 @@ import {
   AlertTitle,
   Button,
   Fade,
+  InputAdornment,
   Paper,
   TextField,
+  Typography,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Field, Form, Formik } from "formik";
@@ -16,6 +18,7 @@ import { PoweredBy } from "../components/markdown";
 import OutcomeFlavours from "../components/outcome-flavours";
 import PageProgress from "../components/page-progress";
 import SimpleSlider from "../components/simple-slider";
+import useCommonStyles from "../config/use-common-styles";
 import { updateBrew } from "../database/queries";
 import { Brew } from "../database/types/brew";
 
@@ -45,6 +48,8 @@ const emptyValues = {
   rating: 0,
   notes: "",
   tastingScores: { aroma: 0, acidity: 0, sweetness: 0, body: 0, finish: 0 },
+  tds: 0,
+  finalBrewWeight: 0,
 };
 
 const BrewOutcome: FunctionComponent = () => {
@@ -53,6 +58,7 @@ const BrewOutcome: FunctionComponent = () => {
   } = useUser();
   const firestore = useFirestore();
   const classes = useStyles();
+  const commonStyles = useCommonStyles();
 
   const params = useParams<RouteParams>();
   const brewId = params.id;
@@ -109,6 +115,13 @@ const BrewOutcome: FunctionComponent = () => {
             </Fade>
             <Paper className={classes.formContainer}>
               <Form>
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  className={commonStyles.equipmentHeading}
+                >
+                  Tasting notes
+                </Typography>
                 <SimpleSlider name="rating" label="Rating" step={0.5} />
                 <div>
                   <Field
@@ -127,6 +140,54 @@ const BrewOutcome: FunctionComponent = () => {
                 <PoweredBy />
 
                 <OutcomeFlavours />
+
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  className={commonStyles.equipmentHeading}
+                >
+                  Extraction
+                </Typography>
+
+                <div>
+                  <Field
+                    as={TextField}
+                    className={commonStyles.formFieldWidth}
+                    type="number"
+                    inputMode="decimal"
+                    name="tds"
+                    margin="normal"
+                    label="TDS"
+                    placeholder="E.g: 1.3"
+                    inputProps={{ step: "any" }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ),
+                    }}
+                    variant="outlined"
+                  />
+                </div>
+
+                <div>
+                  <Field
+                    as={TextField}
+                    className={commonStyles.formFieldWidth}
+                    type="number"
+                    inputMode="decimal"
+                    name="finalBrewWeight"
+                    margin="normal"
+                    label="Final brew weight"
+                    placeholder="E.g: 210"
+                    inputProps={{ step: "any" }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">g</InputAdornment>
+                      ),
+                    }}
+                    variant="outlined"
+                  />
+                </div>
 
                 <div className={classes.buttonContainer}>
                   <Button
