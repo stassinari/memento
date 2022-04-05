@@ -1,4 +1,11 @@
 import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  FileCopy as FileCopyIcon,
+  Star as StarIcon,
+} from "@mui/icons-material";
+import {
+  Alert,
   Button,
   Link as MuiLink,
   Paper,
@@ -8,14 +15,7 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  FileCopy as FileCopyIcon,
-  Star as StarIcon,
-} from "@mui/icons-material";
-import { Alert } from '@mui/material';
+import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
 import {
   Link,
@@ -28,6 +28,7 @@ import ActionDialog from "../components/action-dialog";
 import ActionsMenu from "../components/actions-menu";
 import DecentChart from "../components/espresso/decent-chart";
 import TemperaturesChart from "../components/espresso/temperatures-charts";
+import ExtractionYield from "../components/extraction-yield";
 import FlavoursChart from "../components/flavours-chart";
 import Layout from "../components/layout";
 import Markdown from "../components/markdown";
@@ -255,6 +256,15 @@ const EspressoDetails = () => {
                       )}
                     </TableCell>
                   </TableRow>
+
+                  <ExtractionYield
+                    tds={espresso.tds}
+                    weight={Number(
+                      espresso.actualWeight || espresso.targetWeight
+                    )}
+                    dose={Number(espresso.beansWeight)}
+                  />
+
                   <TableRow>
                     <TableCell className={commonStyles.label}>Notes</TableCell>
                     <TableCell>

@@ -129,7 +129,9 @@ const BrewOutcome: FunctionComponent = () => {
                 >
                   Tasting notes
                 </Typography>
+
                 <SimpleSlider name="rating" label="Rating" step={0.5} />
+
                 <div>
                   <Field
                     as={TextField}

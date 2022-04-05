@@ -27,6 +27,7 @@ export interface EspressoOutcome {
   rating: number;
   notes: string;
   tastingScores: TastingScores;
+  tds?: number;
 }
 
 export interface DecentReadings {
