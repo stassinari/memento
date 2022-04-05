@@ -161,7 +161,11 @@ const BrewDetails: FunctionComponent = () => {
 
               <ExtractionYield
                 tds={brew.tds}
-                weight={brew.finalBrewWeight}
+                weight={
+                  brew.extractionType === "immersion"
+                    ? Number(brew.waterWeight)
+                    : brew.finalBrewWeight
+                }
                 dose={Number(brew.beansWeight)}
               />
 

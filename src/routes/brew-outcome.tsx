@@ -1,10 +1,16 @@
 import {
   Alert,
   AlertTitle,
+  Box,
   Button,
   Fade,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
   InputAdornment,
   Paper,
+  Radio,
+  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
@@ -50,6 +56,7 @@ const emptyValues = {
   tastingScores: { aroma: 0, acidity: 0, sweetness: 0, body: 0, finish: 0 },
   tds: 0,
   finalBrewWeight: 0,
+  extractionType: "percolation",
 };
 
 const BrewOutcome: FunctionComponent = () => {
@@ -99,7 +106,7 @@ const BrewOutcome: FunctionComponent = () => {
           });
         }}
       >
-        {() => (
+        {(formik) => (
           <>
             <Fade in={alertOpen} unmountOnExit>
               <Alert
@@ -148,6 +155,34 @@ const BrewOutcome: FunctionComponent = () => {
                 >
                   Extraction
                 </Typography>
+
+                <Box mt={1}>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Extraction type</FormLabel>
+                    <Field
+                      as={RadioGroup}
+                      aria-label="extraction type"
+                      row
+                      name="extractionType"
+                      value={formik.values.extractionType}
+                    >
+                      <FormControlLabel
+                        value="percolation"
+                        control={<Radio size="small" />}
+                        name="extractionType"
+                        id="percolation"
+                        label="Percolation"
+                      />
+                      <FormControlLabel
+                        value="immersion"
+                        control={<Radio size="small" />}
+                        name="extractionType"
+                        id="immersion"
+                        label="Immersion"
+                      />
+                    </Field>
+                  </FormControl>
+                </Box>
 
                 <div>
                   <Field

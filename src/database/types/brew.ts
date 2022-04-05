@@ -26,4 +26,5 @@ export interface BrewOutcome {
   tastingScores: TastingScores;
   tds?: number;
   finalBrewWeight?: number;
+  extractionType?: string; // "percolation" | "immersion"
 }
