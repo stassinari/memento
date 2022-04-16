@@ -8,7 +8,10 @@ export const extractJsonShot = async (
 ) => {
   const jsonShot = JSON.parse(data.toString());
 
-  const date = new Date(Date.parse(jsonShot.date));
+  const date = new Date(parseInt(`${jsonShot.timestamp}000`));
+
+  console.log("[JSON] shot parsed, checking if it already exists");
+  console.log({ date });
 
   // check if shot was uploaded before by matching dates
   // TODO refactor this to own func
@@ -27,6 +30,8 @@ export const extractJsonShot = async (
       message: "the uploaded shot already exists",
     };
   }
+
+  console.log("[JSON] shot is new, parsing all the things");
 
   const profileName = jsonShot.profile.title;
   const targetWeight = parseFloat(jsonShot.profile["target_weight"]);
@@ -71,6 +76,8 @@ export const extractJsonShot = async (
     temperatureGoal,
     flowGoal,
   };
+
+  console.log("[JSON] parsed all the things, skipping timeSeries log");
 
   return { espresso, timeSeries };
 };

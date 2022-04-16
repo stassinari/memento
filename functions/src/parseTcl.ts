@@ -94,6 +94,9 @@ export const extractTclShot = async (data: Stream, admin: any, uid: string) => {
   const lines = parseShotFile(data);
   const date = extractDate(lines);
 
+  console.log("[TCL] shot parsed, checking if it already exists");
+  console.log({ date });
+
   // check if shot was uploaded before by matching dates
   // TODO refactor this to own func
   const alreadyExists = await admin
@@ -112,6 +115,8 @@ export const extractTclShot = async (data: Stream, admin: any, uid: string) => {
     };
   }
 
+  console.log("[TCL] shot is new, parsing all the things");
+
   // extract all the things
   const profileName = extractProfileName(lines);
   const targetWeight = extractTargetWeight(lines);
@@ -129,6 +134,8 @@ export const extractTclShot = async (data: Stream, admin: any, uid: string) => {
     actualWeight,
     uploadedAt: new Date(),
   };
+
+  console.log("[TCL] parsed all the things, skipping timeSeries log");
 
   return { espresso, timeSeries };
 };
