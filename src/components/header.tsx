@@ -148,12 +148,18 @@ const Header: FunctionComponent<Props> = ({
           </Typography>
         </div>
         <div className={classes.rightSide}>
+          <Chip
+            label="Next"
+            color="primary"
+            size={isBreakpointMd ? "medium" : "small"}
+          />
           <Offline>
             <Chip
               label="Offline"
               size={isBreakpointMd ? "medium" : "small"}
               color="secondary"
               icon={<CloudOffIcon />}
+              sx={{ marginLeft: 2 }}
             />
           </Offline>
           {userData && (
