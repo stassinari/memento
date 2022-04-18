@@ -1,3 +1,3 @@
 export const App = () => {
-  return <div>Hic sunt lolz</div>;
+  return <div>Hic sunt (React XVIII) lolz</div>;
 };

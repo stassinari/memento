@@ -1,7 +1,6 @@
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { App } from "./components/App";
 
 Sentry.init({
@@ -12,4 +11,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+const container = document.querySelector("#root");
+const root = createRoot(container!);
+
+root.render(<App />);
