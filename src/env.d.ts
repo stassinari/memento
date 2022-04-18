@@ -1,3 +1,4 @@
+// environment variables type
 interface ImportMetaEnv
   extends Readonly<Record<string, string | boolean | undefined>> {
   readonly VITE_SENTRY_DSN: string;

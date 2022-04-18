@@ -19,3 +19,6 @@ external/decent/shots
 tmp/
 
 .DS_Store
+
+# temporary while rebuilding the whole app
+srcOld/
