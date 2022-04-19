@@ -3,6 +3,7 @@ import { BrowserTracing } from "@sentry/tracing";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./components/App";
+import "./config.css";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
