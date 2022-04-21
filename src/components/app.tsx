@@ -3,6 +3,7 @@ import {
   enableIndexedDbPersistence,
   initializeFirestore,
 } from "firebase/firestore";
+import { Suspense } from "react";
 import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom";
 import { FirestoreProvider, useInitFirestore } from "reactfire";
 import tw from "twin.macro";
@@ -35,39 +36,29 @@ export const App = () => {
     return <div>Initializing...</div>;
   }
 
-  // enableIndexedDbPersistence(firestoreInstance).catch(function (err) {
-  //   if (err.code === "failed-precondition") {
-  //     // Multiple tabs open, persistence can only be enabled
-  //     // in one tab at a a time.
-  //     console.log("failed-precondition");
-  //   } else if (err.code === "unimplemented") {
-  //     // The current browser does not support all of the
-  //     // features required to enable persistence
-  //     console.log("unimplemented");
-  //   }
-  // });
-
   return (
-    <FirestoreProvider sdk={firestoreInstance}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="lolz" element={<Lolz />} />
-            <Route
-              path="gags"
-              element={
-                <div>
-                  Hic sunt brutte gags
-                  <button className="" css={[tw`btn btn-sm`]}>
-                    Button
-                  </button>
-                </div>
-              }
-            />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </FirestoreProvider>
+    <Suspense fallback={<div>loading ALL THE THINGS</div>}>
+      <FirestoreProvider sdk={firestoreInstance}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="lolz" element={<Lolz />} />
+              <Route
+                path="gags"
+                element={
+                  <div>
+                    Hic sunt brutte gags
+                    <button className="" css={[tw`btn btn-sm`]}>
+                      Button
+                    </button>
+                  </div>
+                }
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </FirestoreProvider>
+    </Suspense>
   );
 };
 
@@ -95,7 +86,9 @@ const Layout = () => {
         70%
       </div>
       <div className="content">
-        <Outlet />
+        <Suspense>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   );

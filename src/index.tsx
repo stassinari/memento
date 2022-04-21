@@ -20,7 +20,7 @@ const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+    <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
       <App />
     </FirebaseAppProvider>
   </React.StrictMode>
