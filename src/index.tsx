@@ -2,8 +2,10 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { FirebaseAppProvider } from "reactfire";
 import { App } from "./components/App";
 import "./config.css";
+import firebaseConfig from "./firebaseConfig";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -18,6 +20,8 @@ const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <App />
+    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+      <App />
+    </FirebaseAppProvider>
   </React.StrictMode>
 );
