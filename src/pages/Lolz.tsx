@@ -9,14 +9,14 @@ export const Lolz: React.FC = () => {
   const { status, data } = useFirestoreDocData(burritoRef);
 
   if (status === "loading") {
-    return <p>Fetching burrito flavor...</p>;
+    return <p>Fetching burrito flavour...</p>;
   }
 
   console.log(data);
 
   return (
     <div>
-      Hic sunt (React XVIII) lolz... {data.testing}
+      Lolz are public
       <button tw="btn btn-xs">Button</button>
     </div>
   );

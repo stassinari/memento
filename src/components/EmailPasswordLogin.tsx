@@ -1,10 +1,15 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "reactfire";
 import "twin.macro";
+import { useRedirectTo } from "./hooks/useRedirectTo";
 
 export const EmailPasswordLogin = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
+
+  const redirectTo = useRedirectTo();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,9 +39,10 @@ export const EmailPasswordLogin = () => {
       </div>
       <button
         tw="my-4 btn btn-block"
-        onClick={async () =>
-          await signInWithEmailAndPassword(auth, email, password)
-        }
+        onClick={async () => {
+          await signInWithEmailAndPassword(auth, email, password);
+          navigate(redirectTo ? redirectTo : "/");
+        }}
       >
         Log in
       </button>

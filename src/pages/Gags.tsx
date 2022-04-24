@@ -7,7 +7,7 @@ export const Gags = () => {
 
   return (
     <div>
-      Hic sunt brutte gags
+      Gags are private
       <button className="" css={[tw`btn btn-sm`]}>
         Button
       </button>
