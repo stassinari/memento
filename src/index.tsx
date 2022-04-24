@@ -3,7 +3,7 @@ import { BrowserTracing } from "@sentry/tracing";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { FirebaseAppProvider } from "reactfire";
-import { App } from "./components/App";
+import { App } from "./components/App2";
 import "./config.css";
 import firebaseConfig from "./firebaseConfig";
 
