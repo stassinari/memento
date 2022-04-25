@@ -1,9 +1,16 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "reactfire";
 import "twin.macro";
+import tw from "twin.macro";
 import { useRedirectTo } from "./hooks/useRedirectTo";
+
+type Inputs = {
+  email: string;
+  password: string;
+};
 
 export const EmailPasswordLogin = () => {
   const auth = useAuth();
@@ -11,21 +18,37 @@ export const EmailPasswordLogin = () => {
 
   const redirectTo = useRedirectTo();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const methods = useForm<Inputs>();
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = methods;
+  const onSubmit: SubmitHandler<Inputs> = async ({ email, password }) => {
+    await signInWithEmailAndPassword(auth, email, password);
+    navigate(redirectTo ? redirectTo : "/");
+  };
 
   return (
-    <>
-      <div tw="w-full form-control">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div tw="w-full">
         <label tw="label">
           <span tw="label-text">Email</span>
         </label>
         <input
           type="email"
           placeholder="E.g. pippo@franco.com"
-          tw="w-full input input-bordered"
-          onChange={(e) => setEmail(e.target.value)}
+          css={[
+            tw`w-full input input-bordered`,
+            errors.email && tw`input-error`,
+          ]}
+          {...register("email", { required: true })}
         />
+        {errors.email && (
+          <label tw="label">
+            <span tw="label-text text-error">Please enter your email</span>
+          </label>
+        )}
       </div>
       <div tw="w-full form-control">
         <label tw="label">
@@ -33,19 +56,19 @@ export const EmailPasswordLogin = () => {
         </label>
         <input
           type="password"
-          tw="w-full input input-bordered"
-          onChange={(e) => setPassword(e.target.value)}
+          css={[
+            tw`w-full input input-bordered`,
+            errors.password && tw`input-error`,
+          ]}
+          {...register("password", { required: true })}
         />
+        {errors.password && (
+          <label tw="label">
+            <span tw="label-text text-error">Please enter your password</span>
+          </label>
+        )}
       </div>
-      <button
-        tw="my-4 btn btn-block"
-        onClick={async () => {
-          await signInWithEmailAndPassword(auth, email, password);
-          navigate(redirectTo ? redirectTo : "/");
-        }}
-      >
-        Log in
-      </button>
-    </>
+      <button tw="my-4 btn btn-block">Log in</button>
+    </form>
   );
 };
