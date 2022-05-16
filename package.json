@@ -13,7 +13,8 @@
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.30.0",
     "react-router-dom": "^6.3.0",
-    "reactfire": "^4.2.1"
+    "reactfire": "^4.2.1",
+    "tslib": "2.1.0"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.9.2",
