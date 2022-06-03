@@ -19,7 +19,7 @@ export const GoogleLogin = () => {
 
   return (
     <button
-      tw="gap-2 btn btn-block"
+      tw="gap-2"
       onClick={async () => {
         await signInWithGoogle(auth);
         navigate(redirectTo ? redirectTo : "/");

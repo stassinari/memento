@@ -1,5 +1,4 @@
 import { useUser } from "reactfire";
-import tw from "twin.macro";
 
 export const Gags = () => {
   const { data: user } = useUser();
@@ -8,9 +7,7 @@ export const Gags = () => {
   return (
     <div>
       Gags are private
-      <button className="" css={[tw`btn btn-sm`]}>
-        Button
-      </button>
+      <button>Button</button>
     </div>
   );
 };

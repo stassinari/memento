@@ -52,7 +52,7 @@ export const EmailPasswordLogin = () => {
         requiredMsg="Please enter your password"
       />
 
-      <button tw="my-4 btn btn-block">Log in</button>
+      <button tw="my-4">Log in</button>
     </form>
   );
 };

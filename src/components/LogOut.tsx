@@ -9,7 +9,7 @@ export const LogOut = () => {
   const auth = useAuth();
 
   return (
-    <button tw="btn btn-block" onClick={() => signOut(auth)}>
+    <button tw="" onClick={() => signOut(auth)}>
       Sign out
     </button>
   );

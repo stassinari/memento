@@ -17,7 +17,7 @@ export const Lolz: React.FC = () => {
   return (
     <div>
       Lolz are public
-      <button tw="btn btn-xs">Button</button>
+      <button>Button</button>
     </div>
   );
 };
