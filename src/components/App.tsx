@@ -11,9 +11,10 @@ import {
   useFirebaseApp,
   useInitFirestore,
 } from "reactfire";
-import { Gags } from "../pages/Gags";
 import { LogIn } from "../pages/LogIn";
-import { Lolz } from "../pages/Lolz";
+import { NoAuthPageExample } from "../pages/NoAuthPageExample";
+import { PublicPageExample } from "../pages/PublicPageExample";
+import { Test } from "../pages/Test";
 import { RequireAuth } from "./auth/RequireAuth";
 import { RequireNoAuth } from "./auth/RequireNoAuth";
 import { Layout } from "./Layout";
@@ -50,14 +51,18 @@ export const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Layout />}>
-                <Route path="lolz" element={<Lolz />} />
-
                 <Route element={<RequireNoAuth />}>
                   <Route path="login" element={<LogIn />} />
                 </Route>
 
                 <Route element={<RequireAuth />}>
-                  <Route path="gags" element={<Gags />} />
+                  <Route path="test" element={<Test />} />
+                </Route>
+
+                <Route path="public" element={<PublicPageExample />} />
+
+                <Route element={<RequireNoAuth />}>
+                  <Route path="no-auth" element={<NoAuthPageExample />} />
                 </Route>
               </Route>
             </Routes>
