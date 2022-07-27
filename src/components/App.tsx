@@ -4,6 +4,7 @@ import {
   initializeFirestore,
 } from "firebase/firestore";
 import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   AuthProvider,
@@ -13,6 +14,7 @@ import {
 } from "reactfire";
 import { LogIn } from "../pages/LogIn";
 import { NoAuthPageExample } from "../pages/NoAuthPageExample";
+import { NotFound } from "../pages/NotFound";
 import { PublicPageExample } from "../pages/PublicPageExample";
 import { Test } from "../pages/Test";
 import { RequireAuth } from "./auth/RequireAuth";
@@ -45,30 +47,30 @@ export const App = () => {
   });
 
   return (
-    <AuthProvider sdk={auth}>
-      <Suspense fallback={<div>Initializing...</div>}>
-        <FirestoreProvider sdk={firestoreInstance}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route element={<RequireNoAuth />}>
-                  <Route path="login" element={<LogIn />} />
+    <ErrorBoundary FallbackComponent={() => <div>ruh roh</div>}>
+      <AuthProvider sdk={auth}>
+        <Suspense fallback={<div>Initializing...</div>}>
+          <FirestoreProvider sdk={firestoreInstance}>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route path="*" element={<NotFound />} />
+                  <Route element={<RequireNoAuth />}>
+                    <Route path="login" element={<LogIn />} />
+                  </Route>
+                  <Route element={<RequireAuth />}>
+                    <Route path="test" element={<Test />} />
+                  </Route>
+                  <Route path="public" element={<PublicPageExample />} />
+                  <Route element={<RequireNoAuth />}>
+                    <Route path="no-auth" element={<NoAuthPageExample />} />
+                  </Route>
                 </Route>
-
-                <Route element={<RequireAuth />}>
-                  <Route path="test" element={<Test />} />
-                </Route>
-
-                <Route path="public" element={<PublicPageExample />} />
-
-                <Route element={<RequireNoAuth />}>
-                  <Route path="no-auth" element={<NoAuthPageExample />} />
-                </Route>
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </FirestoreProvider>
-      </Suspense>
-    </AuthProvider>
+              </Routes>
+            </BrowserRouter>
+          </FirestoreProvider>
+        </Suspense>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 };
