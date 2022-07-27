@@ -94,14 +94,16 @@
     "vite-plugin-svgr": "^0.4.0"
   },
   "scripts": {
-    "OLD-start": "env-cmd -f ./.env.dev vite",
-    "OLD-start:prod": "env-cmd -f ./.env.prod vite",
     "start": "vite",
     "start:prod": "env-cmd -f ./.env.production vite",
     "build": "vite build",
     "serve": "vite preview",
     "type-check": "tsc --noEmit",
     "type-watch": "tsc --noEmit --watch"
+  },
+  "engines": {
+    "npm": ">=6.14.13",
+    "node": ">=14.18.0"
   },
   "eslintConfig": {
     "extends": "react-app"

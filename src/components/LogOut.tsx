@@ -8,9 +8,5 @@ const signOut = (auth: Auth) =>
 export const LogOut = () => {
   const auth = useAuth();
 
-  return (
-    <button tw="" onClick={() => signOut(auth)}>
-      Sign out
-    </button>
-  );
+  return <button onClick={() => signOut(auth)}>Sign out</button>;
 };
