@@ -25,7 +25,13 @@ export const Beans = () => {
         </div>
       ))}
       <Input label="Roaster" placeholder="E.g La Cabra" />
-      <Button />
+      <div>
+        <Button label="Button xs" size="xs" />
+        <Button label="Button sm" size="sm" />
+        <Button label="Button md" />
+        <Button label="Button lg" size="lg" />
+        <Button label="Button xl" size="xl" />
+      </div>
     </div>
   );
 };
