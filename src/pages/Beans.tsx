@@ -1,3 +1,4 @@
+import { PlusCircleIcon } from "@heroicons/react/solid";
 import { collection, orderBy, query } from "firebase/firestore";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import { Button } from "../components/Button";
@@ -31,6 +32,13 @@ export const Beans = () => {
         <Button label="Button md" />
         <Button label="Button lg" size="lg" />
         <Button label="Button xl" size="xl" />
+      </div>
+      <div>
+        <Button label="Button xs" size="xs" Icon={PlusCircleIcon} />
+        <Button label="Button sm" size="sm" Icon={PlusCircleIcon} />
+        <Button label="Button md" Icon={PlusCircleIcon} />
+        <Button label="Button lg" size="lg" Icon={PlusCircleIcon} />
+        <Button label="Button xl" size="xl" Icon={PlusCircleIcon} />
       </div>
     </div>
   );

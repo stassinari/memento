@@ -1,12 +1,13 @@
-import React from "react";
+import React, { SVGProps } from "react";
 import tw from "twin.macro";
 
 interface ButtonProps {
   label: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
+  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
 }
 
-export const Button: React.FC<ButtonProps> = ({ label, size = "md" }) => {
+export const Button: React.FC<ButtonProps> = ({ label, size = "md", Icon }) => {
   return (
     <button
       type="button"
@@ -26,6 +27,20 @@ export const Button: React.FC<ButtonProps> = ({ label, size = "md" }) => {
           : null,
       ]}
     >
+      {Icon && (
+        <Icon
+          css={[
+            size === "xs" || size === "sm"
+              ? tw`-ml-0.5 mr-2 h-4 w-4`
+              : size === "md"
+              ? tw`w-5 h-5 mr-2 -ml-1`
+              : size === "lg" || size === "xl"
+              ? tw`w-5 h-5 mr-3 -ml-1`
+              : null,
+          ]}
+          aria-hidden="true"
+        />
+      )}
       {label}
     </button>
   );
