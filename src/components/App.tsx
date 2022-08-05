@@ -12,6 +12,7 @@ import {
   useFirebaseApp,
   useInitFirestore,
 } from "reactfire";
+import { Beans } from "../pages/Beans";
 import { LogIn } from "../pages/LogIn";
 import { NoAuthPageExample } from "../pages/NoAuthPageExample";
 import { NotFound } from "../pages/NotFound";
@@ -57,6 +58,9 @@ export const App = () => {
                   <Route path="*" element={<NotFound />} />
                   <Route element={<RequireNoAuth />}>
                     <Route path="login" element={<LogIn />} />
+                  </Route>
+                  <Route element={<RequireAuth />}>
+                    <Route path="beans" element={<Beans />} />
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="test" element={<Test />} />

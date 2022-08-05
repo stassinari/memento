@@ -16,6 +16,9 @@ export const Layout = () => {
               <Link to="test">Test</Link>
             </li>
             <li>
+              <Link to="beans">Beans</Link>
+            </li>
+            <li>
               <Link to="public">Public page</Link>
             </li>
             <li>
