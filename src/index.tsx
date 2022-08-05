@@ -2,10 +2,12 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { ErrorBoundary } from "react-error-boundary";
 import { FirebaseAppProvider } from "reactfire";
 import { App } from "./components/App";
-import "./config.css";
 import firebaseConfig from "./firebaseConfig";
+import "./styles/config.css";
+import { GlobalStyles } from "./styles/GlobalStyles";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -20,8 +22,12 @@ const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-      <App />
-    </FirebaseAppProvider>
+    {/* Better errors LOL */}
+    <ErrorBoundary FallbackComponent={() => <div>ruh roh</div>}>
+      <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+        <GlobalStyles />
+        <App />
+      </FirebaseAppProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
