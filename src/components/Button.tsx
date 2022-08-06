@@ -12,8 +12,8 @@ export const Button: React.FC<ButtonProps> = ({ label, size = "md", Icon }) => {
     <button
       type="button"
       css={[
-        tw`inline-flex items-center font-medium text-white bg-indigo-600 border border-transparent shadow-sm`,
-        tw`hover:bg-indigo-700 focus:(outline-none ring-2 ring-offset-2 ring-indigo-500)`,
+        tw`inline-flex items-center font-medium text-white bg-orange-600 border border-transparent shadow-sm`,
+        tw`hover:bg-orange-700 focus:(outline-none ring-2 ring-offset-2 ring-orange-500)`,
         size === "xs"
           ? tw`px-2.5 py-1.5 text-xs rounded`
           : size === "sm"
