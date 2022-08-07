@@ -27,9 +27,7 @@ export const FormInput: React.FC<FormInputProps> = ({
 }) => {
   return (
     <div>
-      <label htmlFor={label} tw="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
+      <Input.Label htmlFor={name}>{label}</Input.Label>
       <div tw="mt-1">
         <Input
           {...register(name, { required })}
@@ -38,20 +36,20 @@ export const FormInput: React.FC<FormInputProps> = ({
           placeholder={placeholder}
           id={name}
           aria-invalid={error ? "true" : "false"}
-          aria-describedby={`${name}-description`}
+          aria-describedby={
+            error
+              ? `${name}-error`
+              : helperText
+              ? `${name}-description`
+              : undefined
+          }
           {...inputProps}
         />
       </div>
       {helperText && !error && (
-        <p tw="mt-2 text-sm text-gray-500" id={`${name}-description`}>
-          {helperText}
-        </p>
+        <Input.Helper id={`${name}-description`}>{helperText}</Input.Helper>
       )}
-      {error && (
-        <label role="alert">
-          <span>{error.message}</span>
-        </label>
-      )}
+      {error && <Input.Error id={`${name}-error`}>{error.message}</Input.Error>}
     </div>
   );
 };
