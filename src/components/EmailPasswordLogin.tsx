@@ -33,22 +33,25 @@ export const EmailPasswordLogin = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormInput
         label="Email"
-        name="email"
-        inputProps={{ type: "email", autoFocus: true }}
-        placeholder="Enter your email"
-        error={errors.email}
-        register={register}
-        requiredMsg="Please enter your email"
+        id="email"
+        inputProps={{
+          ...register("email", { required: "Please enter your email" }),
+          type: "email",
+          autoFocus: true,
+          placeholder: "example@email.com",
+        }}
+        error={errors.email?.message}
       />
 
       <FormInput
         label="Password"
-        name="password"
-        inputProps={{ type: "password" }}
-        placeholder="Enter your password"
-        error={errors.password}
-        register={register}
-        requiredMsg="Please enter your password"
+        id="password"
+        inputProps={{
+          ...register("password", { required: "Please enter your password" }),
+          type: "password",
+          placeholder: "Enter your password",
+        }}
+        error={errors.password?.message}
       />
 
       <Button label="Log in" type="submit" />

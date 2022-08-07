@@ -1,55 +1,40 @@
 import { InputHTMLAttributes } from "react";
-import { FieldError } from "react-hook-form";
 import "twin.macro";
 import { Input } from "../Input";
 
 interface FormInputProps {
   label: string;
-  name: string;
-  placeholder?: string;
+  id: string;
   helperText?: string;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
-
-  error?: FieldError;
-  register?: any;
-  requiredMsg?: string;
+  error?: string;
 }
 
 export const FormInput: React.FC<FormInputProps> = ({
-  register,
   label,
-  name,
-  placeholder,
+  id,
   helperText,
-  requiredMsg: required,
   error,
   inputProps,
 }) => {
   return (
     <div>
-      <Input.Label htmlFor={name}>{label}</Input.Label>
+      <Input.Label htmlFor={id}>{label}</Input.Label>
       <div tw="mt-1">
         <Input
-          {...register(name, { required })}
           type="text"
-          name={name}
-          placeholder={placeholder}
-          id={name}
+          id={id}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={
-            error
-              ? `${name}-error`
-              : helperText
-              ? `${name}-description`
-              : undefined
+            error ? `${id}-error` : helperText ? `${id}-description` : undefined
           }
           {...inputProps}
         />
       </div>
       {helperText && !error && (
-        <Input.Helper id={`${name}-description`}>{helperText}</Input.Helper>
+        <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>
       )}
-      {error && <Input.Error id={`${name}-error`}>{error.message}</Input.Error>}
+      {error && <Input.Error id={`${id}-error`}>{error}</Input.Error>}
     </div>
   );
 };
