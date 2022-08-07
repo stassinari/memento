@@ -2,7 +2,6 @@ import { PlusCircleIcon } from "@heroicons/react/solid";
 import { collection, orderBy, query } from "firebase/firestore";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import { Button } from "../components/Button";
-import { Input } from "../components/Input";
 
 export const Beans = () => {
   const { data: user } = useUser();
@@ -25,7 +24,7 @@ export const Beans = () => {
           {b.name} - {b.roaster}
         </div>
       ))}
-      <Input label="Roaster" placeholder="E.g La Cabra" />
+      {/* <FormInput label="Roaster" name="roaster" placeholder="E.g La Cabra" /> */}
       <div>
         <Button label="Button xs" size="xs" />
         <Button label="Button sm" size="sm" />

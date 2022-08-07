@@ -2,6 +2,7 @@ import { Auth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "reactfire";
 import "twin.macro";
+import { Button } from "./Button";
 import { useRedirectTo } from "./hooks/useRedirectTo";
 import { GoogleIcon } from "./icons/GoogleIcon";
 
@@ -18,15 +19,13 @@ export const GoogleLogin = () => {
   const redirectTo = useRedirectTo();
 
   return (
-    <button
-      tw="gap-2"
+    <Button
+      label="Sign in with Google"
+      Icon={GoogleIcon}
       onClick={async () => {
         await signInWithGoogle(auth);
         navigate(redirectTo ? redirectTo : "/");
       }}
-    >
-      <GoogleIcon />
-      Sign in with Google
-    </button>
+    />
   );
 };

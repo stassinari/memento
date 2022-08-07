@@ -1,11 +1,11 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "reactfire";
 import "twin.macro";
+import { Button } from "./Button";
+import { FormInput } from "./form/FormInput";
 import { useRedirectTo } from "./hooks/useRedirectTo";
-import { InputField } from "./InputField";
 
 type Inputs = {
   email: string;
@@ -31,28 +31,27 @@ export const EmailPasswordLogin = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <InputField
+      <FormInput
         label="Email"
         name="email"
-        type="text"
+        inputProps={{ type: "email", autoFocus: true }}
         placeholder="Enter your email"
         error={errors.email}
         register={register}
         requiredMsg="Please enter your email"
-        autoFocus
       />
 
-      <InputField
+      <FormInput
         label="Password"
         name="password"
-        type="password"
+        inputProps={{ type: "password" }}
         placeholder="Enter your password"
         error={errors.password}
         register={register}
         requiredMsg="Please enter your password"
       />
 
-      <button tw="my-4">Log in</button>
+      <Button label="Log in" type="submit" />
     </form>
   );
 };

@@ -1,13 +1,18 @@
-import React, { SVGProps } from "react";
+import React, { ButtonHTMLAttributes, SVGProps } from "react";
 import tw from "twin.macro";
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
 }
 
-export const Button: React.FC<ButtonProps> = ({ label, size = "md", Icon }) => {
+export const Button: React.FC<ButtonProps> = ({
+  label,
+  size = "md",
+  Icon,
+  ...rest
+}) => {
   return (
     <button
       type="button"
@@ -26,6 +31,7 @@ export const Button: React.FC<ButtonProps> = ({ label, size = "md", Icon }) => {
           ? tw`px-6 py-3 text-base rounded-md`
           : null,
       ]}
+      {...rest}
     >
       {Icon && (
         <Icon
