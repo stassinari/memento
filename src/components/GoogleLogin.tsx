@@ -21,6 +21,7 @@ export const GoogleLogin = () => {
   return (
     <Button
       label="Sign in with Google"
+      width="full"
       Icon={GoogleIcon}
       onClick={async () => {
         await signInWithGoogle(auth);

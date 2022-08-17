@@ -3,9 +3,12 @@ import React from "react";
 import tw, { css, GlobalStyles as BaseStyles, theme } from "twin.macro";
 
 const customStyles = css({
+  html: {
+    ...tw`h-full bg-gray-50`,
+  },
   body: {
     WebkitTapHighlightColor: theme`colors.transparent`,
-    ...tw`antialiased`,
+    ...tw`h-full antialiased`,
   },
 });
 

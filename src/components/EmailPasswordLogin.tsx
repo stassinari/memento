@@ -30,7 +30,7 @@ export const EmailPasswordLogin = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} tw="space-y-6">
       <FormInput
         label="Email"
         id="email"
@@ -54,7 +54,18 @@ export const EmailPasswordLogin = () => {
         error={errors.password?.message}
       />
 
-      <Button label="Log in" type="submit" />
+      <div className="flex items-center justify-end">
+        <div className="text-sm">
+          <a
+            href="#"
+            className="font-medium text-orange-600 hover:text-orange-500"
+          >
+            Forgot your password?
+          </a>
+        </div>
+      </div>
+
+      <Button label="Log in" type="submit" width="full" />
     </form>
   );
 };
