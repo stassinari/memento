@@ -3,6 +3,7 @@ import tw from "twin.macro";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
+  variant: "primary" | "secondary" | "white";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   width?: "auto" | "full";
   Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
@@ -10,6 +11,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button: React.FC<ButtonProps> = ({
   label,
+  variant,
   size = "md",
   width = "auto",
   Icon,
@@ -19,8 +21,15 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       type="button"
       css={[
-        tw`inline-flex items-center justify-center font-medium text-white bg-orange-600 border border-transparent shadow-sm`,
-        tw`hover:bg-orange-700 focus:(outline-none ring-2 ring-offset-2 ring-orange-500)`,
+        tw`inline-flex items-center justify-center font-medium border`,
+        tw`focus:(outline-none ring-2 ring-offset-2 ring-orange-500)`,
+        variant === "primary"
+          ? tw`text-white bg-orange-600 border-transparent shadow-sm hover:bg-orange-700`
+          : variant === "secondary"
+          ? tw`text-orange-700 bg-orange-100 border-transparent hover:bg-orange-200`
+          : variant === "white"
+          ? tw`text-gray-700 bg-white border-gray-300 shadow-sm hover:bg-gray-50`
+          : null,
         size === "xs"
           ? tw`px-2.5 py-1.5 text-xs rounded`
           : size === "sm"

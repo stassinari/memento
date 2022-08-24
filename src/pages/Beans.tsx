@@ -26,18 +26,52 @@ export const Beans = () => {
       ))}
       {/* <FormInput label="Roaster" name="roaster" placeholder="E.g La Cabra" /> */}
       <div>
-        <Button label="Button xs" size="xs" />
-        <Button label="Button sm" size="sm" />
-        <Button label="Button md" />
-        <Button label="Button lg" size="lg" />
-        <Button label="Button xl" size="xl" />
+        <Button variant="primary" label="Button xs" size="xs" />
+        <Button variant="primary" label="Button sm" size="sm" />
+        <Button variant="primary" label="Button md" />
+        <Button variant="primary" label="Button lg" size="lg" />
+        <Button variant="primary" label="Button xl" size="xl" />
       </div>
       <div>
-        <Button label="Button xs" size="xs" Icon={PlusCircleIcon} />
-        <Button label="Button sm" size="sm" Icon={PlusCircleIcon} />
-        <Button label="Button md" Icon={PlusCircleIcon} />
-        <Button label="Button lg" size="lg" Icon={PlusCircleIcon} />
-        <Button label="Button xl" size="xl" Icon={PlusCircleIcon} />
+        <Button variant="secondary" label="Button xs" size="xs" />
+        <Button variant="secondary" label="Button sm" size="sm" />
+        <Button variant="secondary" label="Button md" />
+        <Button variant="secondary" label="Button lg" size="lg" />
+        <Button variant="secondary" label="Button xl" size="xl" />
+      </div>
+      <div>
+        <Button variant="white" label="Button xs" size="xs" />
+        <Button variant="white" label="Button sm" size="sm" />
+        <Button variant="white" label="Button md" />
+        <Button variant="white" label="Button lg" size="lg" />
+        <Button variant="white" label="Button xl" size="xl" />
+      </div>
+      <div>
+        <Button
+          variant="primary"
+          label="Button xs"
+          size="xs"
+          Icon={PlusCircleIcon}
+        />
+        <Button
+          variant="primary"
+          label="Button sm"
+          size="sm"
+          Icon={PlusCircleIcon}
+        />
+        <Button variant="primary" label="Button md" Icon={PlusCircleIcon} />
+        <Button
+          variant="primary"
+          label="Button lg"
+          size="lg"
+          Icon={PlusCircleIcon}
+        />
+        <Button
+          variant="primary"
+          label="Button xl"
+          size="xl"
+          Icon={PlusCircleIcon}
+        />
       </div>
     </div>
   );
