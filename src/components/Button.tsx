@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, SVGProps } from "react";
+import React, { ButtonHTMLAttributes, ReactNode } from "react";
 import tw from "twin.macro";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,7 +6,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant: "primary" | "secondary" | "white";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   width?: "auto" | "full";
-  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon?: ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -46,7 +46,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...rest}
     >
       {Icon && (
-        <Icon
+        <span
           css={[
             size === "xs" || size === "sm"
               ? tw`-ml-0.5 mr-2 h-4 w-4`
@@ -57,7 +57,9 @@ export const Button: React.FC<ButtonProps> = ({
               : null,
           ]}
           aria-hidden="true"
-        />
+        >
+          {Icon}
+        </span>
       )}
       {label}
     </button>

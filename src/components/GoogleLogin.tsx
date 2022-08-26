@@ -23,7 +23,7 @@ export const GoogleLogin = () => {
       label="Sign in with Google"
       width="full"
       variant="white"
-      Icon={GoogleIcon}
+      Icon={<GoogleIcon />}
       onClick={async () => {
         await signInWithGoogle(auth);
         navigate(redirectTo ? redirectTo : "/");
