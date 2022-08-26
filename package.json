@@ -15,6 +15,7 @@
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
     "react-hook-form": "^7.33.1",
+    "react-polymorphic-box": "^3.0.3",
     "react-router-dom": "^6.3.0",
     "reactfire": "^4.2.1",
     "tslib": "^2.4.0"

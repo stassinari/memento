@@ -65,7 +65,9 @@ export const EmailPasswordLogin = () => {
         </div>
       </div>
 
-      <Button variant="primary" label="Log in" type="submit" width="full" />
+      <Button variant="primary" type="submit" width="full">
+        Log in
+      </Button>
     </form>
   );
 };

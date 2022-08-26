@@ -22,18 +22,14 @@ export const ErrorFallback: React.FC<FallbackProps> = ({
             <pre tw="max-w-xl overflow-scroll mx-auto mt-4 bg-gray-100 rounded px-4 py-2">
               {error.message}
             </pre>
-            <div tw="mt-6">
-              <Button
-                label="Try again"
-                variant="primary"
-                onClick={resetErrorBoundary}
-              />
-              <a
-                href="/"
-                tw="text-base font-medium text-indigo-600 hover:text-indigo-500"
-              >
+            <div tw="mt-6 inline-flex gap-4">
+              <Button variant="primary" onClick={resetErrorBoundary}>
+                Try again
+              </Button>
+              <Button as="a" href="/" variant="secondary">
                 Go back home<span aria-hidden="true"> &rarr;</span>
-              </a>
+              </Button>
+              {/* <Link to="/">Go back home</Link> */}
             </div>
           </div>
         </div>

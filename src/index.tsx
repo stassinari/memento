@@ -23,7 +23,6 @@ const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    {/* Better errors LOL */}
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
         <GlobalStyles />

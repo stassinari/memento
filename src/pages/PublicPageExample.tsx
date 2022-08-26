@@ -5,11 +5,9 @@ export const PublicPageExample: React.FC = () => {
   return (
     <div>
       This is an example of a public page. No Firebase here!
-      <Button
-        variant="primary"
-        label="Test"
-        onClick={() => console.log("tes")}
-      />
+      <Button variant="primary" onClick={() => console.log("test")}>
+        Test
+      </Button>
     </div>
   );
 };

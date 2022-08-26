@@ -24,112 +24,101 @@ export const Beans = () => {
           {b.name} - {b.roaster}
         </div>
       ))}
-      {/* <FormInput label="Roaster" name="roaster" placeholder="E.g La Cabra" /> */}
       <div>
-        <Button variant="primary" label="Button xs" size="xs" />
-        <Button variant="primary" label="Button sm" size="sm" />
-        <Button variant="primary" label="Button md" />
-        <Button variant="primary" label="Button lg" size="lg" />
-        <Button variant="primary" label="Button xl" size="xl" />
+        <Button variant="primary" size="xs">
+          Button xs
+        </Button>
+        <Button variant="primary" size="sm">
+          Button sm
+        </Button>
+        <Button variant="primary">Button md</Button>
+        <Button variant="primary" size="lg">
+          Button lg
+        </Button>
+        <Button variant="primary" size="xl">
+          Button xl
+        </Button>
       </div>
       <div>
-        <Button variant="secondary" label="Button xs" size="xs" />
-        <Button variant="secondary" label="Button sm" size="sm" />
-        <Button variant="secondary" label="Button md" />
-        <Button variant="secondary" label="Button lg" size="lg" />
-        <Button variant="secondary" label="Button xl" size="xl" />
+        <Button variant="secondary" size="xs">
+          Button xs
+        </Button>
+        <Button variant="secondary" size="sm">
+          Button sm
+        </Button>
+        <Button variant="secondary">Button md</Button>
+        <Button variant="secondary" size="lg">
+          Button lg
+        </Button>
+        <Button variant="secondary" size="xl">
+          Button xl
+        </Button>
       </div>
       <div>
-        <Button variant="white" label="Button xs" size="xs" />
-        <Button variant="white" label="Button sm" size="sm" />
-        <Button variant="white" label="Button md" />
-        <Button variant="white" label="Button lg" size="lg" />
-        <Button variant="white" label="Button xl" size="xl" />
+        <Button variant="white" size="xs">
+          Button xs
+        </Button>
+        <Button variant="white" size="sm">
+          Button sm
+        </Button>
+        <Button variant="white">Button md</Button>
+        <Button variant="white" size="lg">
+          Button lg
+        </Button>
+        <Button variant="white" size="xl">
+          Button xl
+        </Button>
       </div>
       <div>
-        <Button
-          variant="primary"
-          label="Button xs"
-          size="xs"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="primary"
-          label="Button sm"
-          size="sm"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button variant="primary" label="Button md" Icon={<PlusCircleIcon />} />
-        <Button
-          variant="primary"
-          label="Button lg"
-          size="lg"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="primary"
-          label="Button xl"
-          size="xl"
-          Icon={<PlusCircleIcon />}
-        />
+        <Button variant="primary" size="xs" Icon={<PlusCircleIcon />}>
+          Button xs
+        </Button>
+        <Button variant="primary" size="sm" Icon={<PlusCircleIcon />}>
+          Button sm
+        </Button>
+        <Button variant="primary" Icon={<PlusCircleIcon />}>
+          Button md asdasdasdasd
+        </Button>
+        <Button variant="primary" size="lg" Icon={<PlusCircleIcon />}>
+          Button lg
+        </Button>
+        <Button variant="primary" size="xl" Icon={<PlusCircleIcon />}>
+          Button xl
+        </Button>
       </div>
       <div>
-        <Button
-          variant="secondary"
-          label="Button xs"
-          size="xs"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="secondary"
-          label="Button sm"
-          size="sm"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="secondary"
-          label="Button md"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="secondary"
-          label="Button lg"
-          size="lg"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="secondary"
-          label="Button xl"
-          size="xl"
-          Icon={<PlusCircleIcon />}
-        />
+        <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
+          Button xs
+        </Button>
+        <Button variant="secondary" size="sm" Icon={<PlusCircleIcon />}>
+          Button sm
+        </Button>
+        <Button variant="secondary" Icon={<PlusCircleIcon />}>
+          Button md
+        </Button>
+        <Button variant="secondary" size="lg" Icon={<PlusCircleIcon />}>
+          Button lg
+        </Button>
+        <Button variant="secondary" size="xl" Icon={<PlusCircleIcon />}>
+          Button xl
+        </Button>
       </div>
       <div>
-        <Button
-          variant="white"
-          label="Button xs"
-          size="xs"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="white"
-          label="Button sm"
-          size="sm"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button variant="white" label="Button md" Icon={<PlusCircleIcon />} />
-        <Button
-          variant="white"
-          label="Button lg"
-          size="lg"
-          Icon={<PlusCircleIcon />}
-        />
-        <Button
-          variant="white"
-          label="Button xl"
-          size="xl"
-          Icon={<PlusCircleIcon />}
-        />
+        <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
+          Button xs
+        </Button>
+        <Button variant="white" size="sm" Icon={<PlusCircleIcon />}>
+          Button sm
+        </Button>
+        <Button variant="white" Icon={<PlusCircleIcon />}>
+          Button md asdasdasdasdasd
+        </Button>
+        <Button variant="white" size="lg" Icon={<PlusCircleIcon />}>
+          Button lg
+        </Button>
+        <Button variant="white" size="xl" Icon={<PlusCircleIcon />}>
+          Button xl
+        </Button>
       </div>
     </div>
   );

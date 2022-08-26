@@ -20,7 +20,6 @@ export const GoogleLogin = () => {
 
   return (
     <Button
-      label="Sign in with Google"
       width="full"
       variant="white"
       Icon={<GoogleIcon />}
@@ -28,6 +27,8 @@ export const GoogleLogin = () => {
         await signInWithGoogle(auth);
         navigate(redirectTo ? redirectTo : "/");
       }}
-    />
+    >
+      Sign in with Google
+    </Button>
   );
 };

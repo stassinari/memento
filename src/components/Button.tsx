@@ -1,7 +1,8 @@
 import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
 import tw from "twin.macro";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonOldProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   variant: "primary" | "secondary" | "white";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
@@ -9,17 +10,36 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   Icon?: ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  label,
-  variant,
-  size = "md",
-  width = "auto",
-  Icon,
-  ...rest
-}) => {
-  return (
-    <button
-      type="button"
+// Component-specific props specified separately
+export type ButtonOwnProps = {
+  variant: "primary" | "secondary" | "white";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  width?: "auto" | "full";
+  Icon?: ReactNode;
+};
+
+// Merge own props with others inherited from the underlying element type
+export type ButtonProps<E extends React.ElementType> =
+  PolymorphicComponentProps<E, ButtonOwnProps>;
+
+const defaultElement = "button";
+
+export const Button: <E extends React.ElementType = typeof defaultElement>(
+  props: ButtonProps<E>
+) => React.ReactElement | null = React.forwardRef(
+  <E extends React.ElementType = typeof defaultElement>(
+    {
+      variant,
+      size = "md",
+      width = "auto",
+      Icon,
+      children,
+      ...restProps
+    }: ButtonProps<E>,
+    ref: typeof restProps.ref
+  ) => (
+    <Box
+      as={defaultElement}
       css={[
         tw`inline-flex items-center justify-center font-medium border`,
         tw`focus:(outline-none ring-2 ring-offset-2 ring-orange-500)`,
@@ -43,7 +63,8 @@ export const Button: React.FC<ButtonProps> = ({
           : null,
         width === "full" && tw`w-full`,
       ]}
-      {...rest}
+      ref={ref}
+      {...restProps}
     >
       {Icon && (
         <span
@@ -61,7 +82,7 @@ export const Button: React.FC<ButtonProps> = ({
           {Icon}
         </span>
       )}
-      {label}
-    </button>
-  );
-};
+      {children}
+    </Box>
+  )
+);
