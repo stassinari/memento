@@ -6,6 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { FirebaseAppProvider } from "reactfire";
 import { App } from "./components/App";
 import firebaseConfig from "./firebaseConfig";
+import { ErrorFallback } from "./pages/ErrorFallback";
 import "./styles/config.css";
 import { GlobalStyles } from "./styles/GlobalStyles";
 
@@ -23,7 +24,7 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     {/* Better errors LOL */}
-    <ErrorBoundary FallbackComponent={() => <div>ruh roh</div>}>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
       <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
         <GlobalStyles />
         <App />
