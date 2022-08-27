@@ -54,18 +54,14 @@ export const App = () => {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route path="*" element={<NotFound />} />
+                <Route path="public" element={<PublicPageExample />} />
                 <Route element={<RequireNoAuth />}>
                   <Route path="login" element={<LogIn />} />
+                  <Route path="no-auth" element={<NoAuthPageExample />} />
                 </Route>
                 <Route element={<RequireAuth />}>
                   <Route path="beans" element={<Beans />} />
-                </Route>
-                <Route element={<RequireAuth />}>
                   <Route path="test" element={<Test />} />
-                </Route>
-                <Route path="public" element={<PublicPageExample />} />
-                <Route element={<RequireNoAuth />}>
-                  <Route path="no-auth" element={<NoAuthPageExample />} />
                 </Route>
               </Route>
             </Routes>
