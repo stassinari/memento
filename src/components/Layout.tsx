@@ -35,7 +35,7 @@ const navigation = [
   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
 ];
 
-export default function Layout() {
+export const Layout = () => {
   return (
     <React.Fragment>
       {/*
@@ -48,7 +48,7 @@ export default function Layout() {
       */}
       <div>
         {/* Static sidebar for desktop */}
-        <div tw="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+        <div tw="hidden md:flex md:(w-64 flex-col fixed inset-y-0)">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div tw="flex flex-col flex-1 min-h-0 bg-white border-r border-gray-200">
             <div tw="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
@@ -131,4 +131,4 @@ export default function Layout() {
       </div>
     </React.Fragment>
   );
-}
+};
