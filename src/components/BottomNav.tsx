@@ -6,7 +6,7 @@ import {
   FolderIcon,
   HomeIcon,
   UserIcon,
-} from "@heroicons/react/outline";
+} from "@heroicons/react/24/outline";
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "twin.macro";

@@ -1,4 +1,4 @@
-import { PhotographIcon } from "@heroicons/react/outline";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import tw from "twin.macro";
 import { BottomNavItemProps, navigation } from "./BottomNav";
@@ -46,7 +46,7 @@ export const SidebarNav = () => {
       ? [
           ...navigation,
           {
-            Icon: <PhotographIcon />,
+            Icon: <PhotoIcon />,
             label: "Design library",
             linkTo: "/design-library",
           },
