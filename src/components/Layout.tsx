@@ -2,34 +2,11 @@ import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import "twin.macro";
 import { BottomNav } from "./BottomNav";
-import { Header } from "./Header";
 import { SidebarNav } from "./SidebarNav";
-
-export const LayoutOld = () => {
-  return (
-    <div tw="container mx-auto sm:px-6 lg:px-8">
-      <Header />
-
-      <div tw="mt-16">
-        <Suspense>
-          <Outlet />
-        </Suspense>
-      </div>
-    </div>
-  );
-};
 
 export const Layout = () => {
   return (
     <React.Fragment>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <SidebarNav />
         <div tw="md:pl-64">

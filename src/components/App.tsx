@@ -16,6 +16,7 @@ import { BeansDetails } from "../pages/BeansDetails";
 import { DesignLibrary } from "../pages/DesignLibrary";
 import { LogIn } from "../pages/LogIn";
 import { NotFound } from "../pages/NotFound";
+import { Profile } from "../pages/Profile";
 import { RequireAuth } from "./auth/RequireAuth";
 import { RequireNoAuth } from "./auth/RequireNoAuth";
 import { Layout } from "./Layout";
@@ -64,6 +65,7 @@ export const App = () => {
                 <Route element={<RequireAuth />}>
                   <Route path="beans" element={<BeansList />} />
                   <Route path="beans/:beansId" element={<BeansDetails />} />
+                  <Route path="profile" element={<Profile />} />
                   <Route path="design-library" element={<DesignLibrary />} />
                 </Route>
               </Route>
