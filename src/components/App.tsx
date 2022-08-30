@@ -11,7 +11,8 @@ import {
   useFirebaseApp,
   useInitFirestore,
 } from "reactfire";
-import { Beans } from "../pages/Beans";
+import { BeansList } from "../pages/Beans";
+import { BeansDetails } from "../pages/BeansDetails";
 import { DesignLibrary } from "../pages/DesignLibrary";
 import { LogIn } from "../pages/LogIn";
 import { NotFound } from "../pages/NotFound";
@@ -61,7 +62,8 @@ export const App = () => {
 
                 {/* Add routes that REQUIRE the user to be logged in */}
                 <Route element={<RequireAuth />}>
-                  <Route path="beans" element={<Beans />} />
+                  <Route path="beans" element={<BeansList />} />
+                  <Route path="beans/:beansId" element={<BeansDetails />} />
                   <Route path="design-library" element={<DesignLibrary />} />
                 </Route>
               </Route>
