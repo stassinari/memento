@@ -12,11 +12,9 @@ import {
   useInitFirestore,
 } from "reactfire";
 import { Beans } from "../pages/Beans";
+import { DesignLibrary } from "../pages/DesignLibrary";
 import { LogIn } from "../pages/LogIn";
-import { NoAuthPageExample } from "../pages/NoAuthPageExample";
 import { NotFound } from "../pages/NotFound";
-import { PublicPageExample } from "../pages/PublicPageExample";
-import { Test } from "../pages/Test";
 import { RequireAuth } from "./auth/RequireAuth";
 import { RequireNoAuth } from "./auth/RequireNoAuth";
 import { Layout } from "./Layout";
@@ -53,15 +51,18 @@ export const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Layout />}>
+                {/* Add routes that display no matter the auth status */}
                 <Route path="*" element={<NotFound />} />
-                <Route path="public" element={<PublicPageExample />} />
+
+                {/* Add routes that require the user NOT to be logged in */}
                 <Route element={<RequireNoAuth />}>
                   <Route path="login" element={<LogIn />} />
-                  <Route path="no-auth" element={<NoAuthPageExample />} />
                 </Route>
+
+                {/* Add routes that REQUIRE the user to be logged in */}
                 <Route element={<RequireAuth />}>
                   <Route path="beans" element={<Beans />} />
-                  <Route path="test" element={<Test />} />
+                  <Route path="design-library" element={<DesignLibrary />} />
                 </Route>
               </Route>
             </Routes>

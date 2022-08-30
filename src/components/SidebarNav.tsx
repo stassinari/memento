@@ -1,23 +1,7 @@
-import {
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  UsersIcon,
-} from "@heroicons/react/outline";
+import { PhotographIcon } from "@heroicons/react/outline";
 import { Link, useLocation } from "react-router-dom";
 import tw from "twin.macro";
 import { BottomNavItemProps, navigation } from "./BottomNav";
-
-const navigationOg = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: InboxIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
-];
 
 const SidebarNavItem: React.FC<BottomNavItemProps> = ({
   Icon,
@@ -57,6 +41,17 @@ const SidebarNavItem: React.FC<BottomNavItemProps> = ({
 };
 
 export const SidebarNav = () => {
+  const navItems =
+    process.env.NODE_ENV === "development"
+      ? [
+          ...navigation,
+          {
+            Icon: <PhotographIcon />,
+            label: "Design library",
+            linkTo: "/design-library",
+          },
+        ]
+      : navigation;
   return (
     <div tw="hidden md:flex md:(w-64 flex-col fixed inset-y-0)">
       {/* Sidebar component, swap this element with another sidebar if you like */}
@@ -70,7 +65,7 @@ export const SidebarNav = () => {
             />
           </div>
           <nav tw="flex-1 px-2 mt-5 space-y-1 bg-white">
-            {navigation.map(({ Icon, label, linkTo, nested }) => (
+            {navItems.map(({ Icon, label, linkTo, nested }) => (
               <SidebarNavItem
                 key={label}
                 Icon={Icon}
