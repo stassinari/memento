@@ -52,16 +52,16 @@ export const App = () => {
         <FirestoreProvider sdk={firestoreInstance}>
           <BrowserRouter>
             <Routes>
+              {/* Add routes that display no matter the auth status */}
+              <Route path="*" element={<NotFound />} />
+
+              {/* Add routes that require the user NOT to be logged in */}
+              <Route element={<RequireNoAuth />}>
+                <Route path="login" element={<LogIn />} />
+              </Route>
+
+              {/* Add routes that REQUIRE the user to be logged in */}
               <Route path="/" element={<Layout />}>
-                {/* Add routes that display no matter the auth status */}
-                <Route path="*" element={<NotFound />} />
-
-                {/* Add routes that require the user NOT to be logged in */}
-                <Route element={<RequireNoAuth />}>
-                  <Route path="login" element={<LogIn />} />
-                </Route>
-
-                {/* Add routes that REQUIRE the user to be logged in */}
                 <Route element={<RequireAuth />}>
                   <Route path="beans" element={<BeansList />} />
                   <Route path="beans/:beansId" element={<BeansDetails />} />
