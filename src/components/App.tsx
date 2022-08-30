@@ -63,6 +63,7 @@ export const App = () => {
               {/* Add routes that REQUIRE the user to be logged in */}
               <Route path="/" element={<Layout />}>
                 <Route element={<RequireAuth />}>
+                  <Route path="/" element={<Homepage />} />
                   <Route path="beans" element={<BeansList />} />
                   <Route path="beans/:beansId" element={<BeansDetails />} />
                   <Route path="profile" element={<Profile />} />
@@ -76,3 +77,5 @@ export const App = () => {
     </AuthProvider>
   );
 };
+
+const Homepage = () => <div>Dis da homepage, brah</div>;
