@@ -1,67 +1,100 @@
-import { ChartBarIcon, FolderIcon, HomeIcon } from "@heroicons/react/outline";
+import {
+  ChartBarIcon,
+  CurrencyEuroIcon,
+  CurrencyPoundIcon,
+  CurrencyYenIcon,
+  FolderIcon,
+  HomeIcon,
+  UserIcon,
+} from "@heroicons/react/outline";
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "twin.macro";
 import tw from "twin.macro";
 
-const mobileNavigation: BottomNavItemProps[] = [
-  { Icon: <HomeIcon />, label: "Home", to: "/", current: true },
-  { Icon: <FolderIcon />, label: "Beans", to: "/beans" },
-  { Icon: <ChartBarIcon />, label: "Test", to: "/test" },
+export const navigation: BottomNavItemProps[] = [
+  { Icon: <HomeIcon />, label: "Home", linkTo: "/" },
+  { Icon: <FolderIcon />, label: "Beans", linkTo: "/beans" },
+  { Icon: <ChartBarIcon />, label: "Drinks", linkTo: "/test" },
+  {
+    Icon: <CurrencyEuroIcon />,
+    label: "Brews",
+    linkTo: "/test/brews",
+    nested: true,
+  },
+  {
+    Icon: <CurrencyPoundIcon />,
+    label: "Espressos",
+    linkTo: "/test/espressos",
+    nested: true,
+  },
+  {
+    Icon: <CurrencyYenIcon />,
+    label: "Tastings",
+    linkTo: "/test/tastings",
+    nested: true,
+  },
+  { Icon: <UserIcon />, label: "Profile", linkTo: "/profile" },
 ];
 
 export const BottomNav = () => (
   <nav tw="fixed inset-x-0 bottom-0 z-10 bg-white shadow-2xl md:hidden ">
     <ol tw="flex justify-between">
-      {mobileNavigation.map(({ Icon, label, to }) => (
-        <BottomNavItem key={label} Icon={Icon} label={label} to={to} />
-      ))}
+      {navigation
+        .filter((item) => !item.nested)
+        .map(({ Icon, label, linkTo: to }) => (
+          <BottomNavItem key={label} Icon={Icon} label={label} linkTo={to} />
+        ))}
     </ol>
   </nav>
 );
 
-interface BottomNavItemProps {
+export interface BottomNavItemProps {
   Icon: ReactNode;
   label: string;
-  to: string;
-  current?: boolean;
+  linkTo: string;
+  nested?: boolean;
 }
 
 const BottomNavItem: React.FC<BottomNavItemProps> = ({
   Icon,
   label,
-  to,
-  current,
-}) => (
-  <li tw="inline-flex items-center justify-center w-full p-1 text-center h-14 ">
-    <Link
-      className="group"
-      to={to}
-      css={[
-        tw`flex flex-col gap-0.5 w-full h-full justify-center rounded-md`,
-        current ? tw`hover:bg-gray-100` : tw`hover:bg-gray-50`,
-      ]}
-    >
-      <span
+  linkTo,
+}) => {
+  const { pathname } = useLocation();
+  const isActive = pathname === linkTo;
+
+  return (
+    <li tw="inline-flex items-center justify-center w-full p-1 text-center h-14 ">
+      <Link
+        className="group"
+        to={linkTo}
         css={[
-          tw`w-6 h-6 mx-auto`,
-          current
-            ? tw`text-gray-500`
-            : tw`text-gray-400 group-hover:text-gray-500`,
+          tw`flex flex-col gap-0.5 w-full h-full justify-center rounded-md hover:bg-gray-100`,
+          isActive ? tw`bg-gray-50` : tw``,
         ]}
       >
-        {Icon}
-      </span>
-      <span
-        css={[
-          tw`text-xs font-medium`,
-          current
-            ? tw`text-gray-900`
-            : tw`text-gray-600 group-hover:text-gray-900`,
-        ]}
-      >
-        {label}
-      </span>
-    </Link>
-  </li>
-);
+        <span
+          css={[
+            tw`w-6 h-6 mx-auto`,
+            isActive
+              ? tw`text-orange-600`
+              : tw`text-gray-400 group-hover:text-gray-500`,
+          ]}
+        >
+          {Icon}
+        </span>
+        <span
+          css={[
+            tw`text-xs font-medium`,
+            isActive
+              ? tw`text-orange-600`
+              : tw`text-gray-600 group-hover:text-gray-900`,
+          ]}
+        >
+          {label}
+        </span>
+      </Link>
+    </li>
+  );
+};
