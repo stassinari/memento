@@ -5,8 +5,8 @@ import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import { FirebaseAppProvider } from "reactfire";
 import { App } from "./components/App";
+import { ErrorFallback } from "./components/ErrorFallback";
 import firebaseConfig from "./firebaseConfig";
-import { ErrorFallback } from "./pages/ErrorFallback";
 import "./styles/config.css";
 import { GlobalStyles } from "./styles/GlobalStyles";
 

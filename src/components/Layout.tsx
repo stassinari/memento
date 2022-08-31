@@ -9,7 +9,9 @@ export const layoutContainerStyles = [
   tw`min-h-screen md:pb-0`,
   css`
     padding-top: env(safe-area-inset-top);
-    padding-bottom: calc(env(safe-area-inset-bottom) + 3.5rem);
+    padding-bottom: calc(
+      env(safe-area-inset-bottom) + 3.5rem // look into using proper TW value
+    );
   `,
 ];
 

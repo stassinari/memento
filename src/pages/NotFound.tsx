@@ -1,5 +1,8 @@
-import { layoutContainerStyles } from "../components/Layout";
+import { ErrorPage } from "./ErrorPage";
 
 export const NotFound = () => (
-  <div css={layoutContainerStyles}>No lolz given</div>
+  <ErrorPage
+    title="404"
+    description="Sorry, we couldn’t find the page you’re looking for."
+  />
 );
