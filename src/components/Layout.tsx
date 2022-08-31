@@ -8,7 +8,7 @@ import { SidebarNav } from "./SidebarNav";
 export const Layout = () => {
   return (
     <React.Fragment>
-      <div>
+      <div tw="min-h-screen">
         <SidebarNav />
         <div tw="md:pl-64">
           <BottomNav />
