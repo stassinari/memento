@@ -1,1 +1,5 @@
-export const NotFound = () => <div>No lolz given</div>;
+import { layoutContainerStyles } from "../components/Layout";
+
+export const NotFound = () => (
+  <div css={layoutContainerStyles}>No lolz given</div>
+);

@@ -42,7 +42,7 @@ const SidebarNavItem: React.FC<BottomNavItemProps> = ({
 };
 
 export const SidebarNav = () => {
-  const navItems =
+  const navItems: BottomNavItemProps[] =
     process.env.NODE_ENV === "development"
       ? [
           ...navigation,
@@ -53,6 +53,7 @@ export const SidebarNav = () => {
           },
         ]
       : navigation;
+
   return (
     <div tw="hidden md:(flex w-64 flex-col fixed inset-y-0)">
       {/* Sidebar component, swap this element with another sidebar if you like */}
