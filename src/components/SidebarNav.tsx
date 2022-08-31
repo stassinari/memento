@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import tw from "twin.macro";
@@ -53,9 +54,16 @@ export const SidebarNav = () => {
         ]
       : navigation;
   return (
-    <div tw="hidden md:flex md:(w-64 flex-col fixed inset-y-0)">
+    <div tw="hidden md:(flex w-64 flex-col fixed inset-y-0)">
       {/* Sidebar component, swap this element with another sidebar if you like */}
-      <div tw="flex flex-col flex-1 min-h-0 bg-white border-r border-gray-200">
+      <div
+        css={[
+          tw`flex flex-col flex-1 min-h-0 bg-white border-r border-gray-200`,
+          css`
+            padding-left: env(safe-area-inset-left);
+          `,
+        ]}
+      >
         <div tw="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
           <div tw="flex items-center flex-shrink-0 px-4">
             <img

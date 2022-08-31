@@ -17,6 +17,7 @@ export const Layout = () => {
             css={[
               tw`flex-1 md:pb-0`,
               css`
+                padding-top: env(safe-area-inset-top);
                 padding-bottom: calc(env(safe-area-inset-bottom) + 3.5rem);
               `,
             ]}
