@@ -18,7 +18,13 @@ export const Profile = () => {
     <div>
       WIP profile page
       <div>Logged in as: {user.email}</div>
-      <Button variant="secondary" onClick={() => signOut(auth)}>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          signOut(auth);
+          window.location.reload(); // firebase auth permission fix
+        }}
+      >
         Sign out
       </Button>
     </div>
