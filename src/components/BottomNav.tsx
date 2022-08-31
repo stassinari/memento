@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import {
   ChartBarIcon,
   CurrencyEuroIcon,
@@ -38,8 +39,16 @@ export const navigation: BottomNavItemProps[] = [
 ];
 
 export const BottomNav = () => (
-  <nav tw="fixed inset-x-0 bottom-0 z-10 bg-white shadow-2xl md:hidden ">
-    <ol tw="flex justify-between">
+  <nav
+    css={[
+      tw`fixed inset-x-0 bottom-0 z-10 bg-white shadow-2xl md:hidden`,
+      css`
+        height: calc(env(safe-area-inset-bottom) + 3.5rem);
+        padding-bottom: env(safe-area-inset-bottom);
+      `,
+    ]}
+  >
+    <ol tw="flex justify-between h-full">
       {navigation
         .filter((item) => !item.nested)
         .map(({ Icon, label, linkTo: to }) => (
@@ -65,7 +74,7 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({
   const isActive = pathname === linkTo;
 
   return (
-    <li tw="inline-flex items-center justify-center w-full p-1 text-center h-14 ">
+    <li tw="inline-flex items-center justify-center w-full p-1 text-center">
       <Link
         className="group"
         to={linkTo}
