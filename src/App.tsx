@@ -11,15 +11,19 @@ import {
   useFirebaseApp,
   useInitFirestore,
 } from "reactfire";
-import { BeansList } from "../pages/Beans";
-import { BeansDetails } from "../pages/BeansDetails";
-import { DesignLibrary } from "../pages/DesignLibrary";
-import { LogIn } from "../pages/LogIn";
-import { NotFound } from "../pages/NotFound";
-import { Profile } from "../pages/Profile";
-import { RequireAuth } from "./auth/RequireAuth";
-import { RequireNoAuth } from "./auth/RequireNoAuth";
-import { Layout } from "./Layout";
+import { RequireAuth } from "./components/auth/RequireAuth";
+import { RequireNoAuth } from "./components/auth/RequireNoAuth";
+import { Layout } from "./components/Layout";
+import { BeansList } from "./pages/Beans";
+import { BeansDetails } from "./pages/BeansDetails";
+import { BrewsPage } from "./pages/BrewsPage";
+import { DesignLibrary } from "./pages/DesignLibrary";
+import { DrinksPage } from "./pages/DrinksPage";
+import { EspressosPage } from "./pages/EspressosPage";
+import { LogIn } from "./pages/LogIn";
+import { NotFound } from "./pages/NotFound";
+import { Profile } from "./pages/Profile";
+import { TastingsPage } from "./pages/TastingsPage";
 
 export const App = () => {
   const firebaseApp = useFirebaseApp();
@@ -66,6 +70,10 @@ export const App = () => {
                   <Route path="/" element={<Homepage />} />
                   <Route path="beans" element={<BeansList />} />
                   <Route path="beans/:beansId" element={<BeansDetails />} />
+                  <Route path="drinks" element={<DrinksPage />} />
+                  <Route path="drinks/brews" element={<BrewsPage />} />
+                  <Route path="drinks/espressos" element={<EspressosPage />} />
+                  <Route path="drinks/tastings" element={<TastingsPage />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="design-library" element={<DesignLibrary />} />
                 </Route>

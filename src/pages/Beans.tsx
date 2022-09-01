@@ -4,8 +4,8 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import { Link } from "react-router-dom";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
+import { Link } from "../components/Link";
 import { Beans } from "../types/beans";
 
 export const BeansList = () => {

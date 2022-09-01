@@ -16,23 +16,23 @@ import tw from "twin.macro";
 export const navigation: BottomNavItemProps[] = [
   { Icon: <HomeIcon />, label: "Home", linkTo: "/" },
   { Icon: <FolderIcon />, label: "Beans", linkTo: "/beans" },
-  { Icon: <ChartBarIcon />, label: "Drinks", linkTo: "/test" },
+  { Icon: <ChartBarIcon />, label: "Drinks", linkTo: "/drinks" },
   {
     Icon: <CurrencyEuroIcon />,
     label: "Brews",
-    linkTo: "/test/brews",
+    linkTo: "/drinks/brews",
     nested: true,
   },
   {
     Icon: <CurrencyPoundIcon />,
     label: "Espressos",
-    linkTo: "/test/espressos",
+    linkTo: "/drinks/espressos",
     nested: true,
   },
   {
     Icon: <CurrencyYenIcon />,
     label: "Tastings",
-    linkTo: "/test/tastings",
+    linkTo: "/drinks/tastings",
     nested: true,
   },
   { Icon: <UserIcon />, label: "Profile", linkTo: "/profile" },

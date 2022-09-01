@@ -4,7 +4,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import { FirebaseAppProvider } from "reactfire";
-import { App } from "./components/App";
+import { App } from "./App";
 import { ErrorFallback } from "./components/ErrorFallback";
 import firebaseConfig from "./firebaseConfig";
 import "./styles/config.css";
