@@ -9,9 +9,10 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "twin.macro";
 import tw from "twin.macro";
+import { useActiveRoute } from "./hooks/useActiveRoute";
 
 export const navigation: BottomNavItemProps[] = [
   { Icon: <HomeIcon />, label: "Home", linkTo: "/" },
@@ -70,8 +71,7 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({
   label,
   linkTo,
 }) => {
-  const { pathname } = useLocation();
-  const isActive = pathname === linkTo;
+  const isActive = useActiveRoute(linkTo);
 
   return (
     <li tw="inline-flex items-center justify-center w-full p-1 text-center">

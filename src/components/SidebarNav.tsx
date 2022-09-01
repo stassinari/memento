@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import { BottomNavItemProps, navigation } from "./BottomNav";
+import { useActiveRoute } from "./hooks/useActiveRoute";
 
 const SidebarNavItem: React.FC<BottomNavItemProps> = ({
   Icon,
@@ -10,8 +11,7 @@ const SidebarNavItem: React.FC<BottomNavItemProps> = ({
   linkTo,
   nested,
 }) => {
-  const { pathname } = useLocation();
-  const isActive = pathname === linkTo;
+  const isActive = useActiveRoute(linkTo);
 
   return (
     <Link
