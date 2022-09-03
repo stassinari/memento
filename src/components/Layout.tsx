@@ -24,11 +24,11 @@ export const Layout = () => {
 
         <main css={tw`flex-1`}>
           <div tw="py-6">
-            <div tw="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
+            {/* <div tw="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
               <h1 tw="text-2xl font-semibold text-gray-900">
                 {"{Put title here!}"}
               </h1>
-            </div>
+            </div> */}
             <div tw="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
               {/* /End replace */}
               <Suspense fallback={<Fallback />}>

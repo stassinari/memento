@@ -7,16 +7,22 @@ import {
   QueryConstraint,
   where,
 } from "firebase/firestore";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import tw from "twin.macro";
 import { Beans } from "../types/beans";
+import { isNotFrozenOrIsThawed } from "../util";
 
-const tabs = [
+const tabs: {
+  name: string;
+  filters: QueryConstraint[];
+  removeFrozen?: boolean;
+}[] = [
   {
     name: "Open",
     filters: [orderBy("roastDate", "desc"), where("isFinished", "==", false)],
+    removeFrozen: true,
   },
   {
     name: "Frozen",
@@ -34,34 +40,48 @@ const tabs = [
 ];
 
 export const BeansPage = () => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const { data: user } = useUser();
+  const firestore = useFirestore();
+  const beansRef = collection(
+    firestore,
+    "users",
+    user?.uid || "",
+    "beans"
+  ) as CollectionReference<Beans>;
+  const beansQuery = query(beansRef, ...tabs[selectedIndex].filters);
+  const { data: beans } = useFirestoreCollectionData(beansQuery, {
+    idField: "id",
+  });
+
   return (
     <div>
-      {/* <BeansTab filters={[]} /> */}
       <div>
-        <Tab.Group>
+        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
           <Tab.List tw="flex -mb-px">
-            {tabs.map(({ name }) => (
-              <Tab key={name} as={Fragment}>
-                {({ selected }) => (
-                  <button
-                    css={[
-                      tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
-                      selected
-                        ? tw`text-orange-600 border-orange-500`
-                        : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
-                    ]}
-                  >
-                    {name}
-                  </button>
-                )}
+            {tabs.map(({ name }, i) => (
+              <Tab
+                key={name}
+                css={[
+                  tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
+                  selectedIndex === i
+                    ? tw`text-orange-600 border-orange-500`
+                    : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
+                ]}
+              >
+                {name}
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels>
+          <Tab.Panels tw="mt-4">
             {tabs.map((t, i) => (
-              <Tab.Panel>
-                Tab {i + 1}
-                {/* <BeansTab filters={t.filters} /> */}
+              <Tab.Panel key={t.name}>
+                <BeansTab
+                  beans={
+                    t.removeFrozen ? beans.filter(isNotFrozenOrIsThawed) : beans
+                  }
+                />
               </Tab.Panel>
             ))}
           </Tab.Panels>
@@ -72,26 +92,10 @@ export const BeansPage = () => {
 };
 
 interface BeansTabProps {
-  filters: QueryConstraint[];
+  beans: Beans[];
 }
 
-const BeansTab: React.FC<BeansTabProps> = ({ filters }) => {
-  const { data: user } = useUser();
-  const firestore = useFirestore();
-  const beansRef = collection(
-    firestore,
-    "users",
-    user?.uid || "",
-    "beans"
-  ) as CollectionReference<Beans>;
-  const beansQuery = query(beansRef, ...filters);
-
-  console.log("orderBy");
-  const { data: beans } = useFirestoreCollectionData(beansQuery, {
-    idField: "id",
-  });
-  console.log("useFirestoreCollectionData");
-
+const BeansTab: React.FC<BeansTabProps> = ({ beans }) => {
   return (
     <Fragment>
       {beans.map((b) => (
