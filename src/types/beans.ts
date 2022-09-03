@@ -8,25 +8,25 @@ export type Beans = BeansCommon & BeansSingleOrigin & BeansBlend;
 interface BeansCommon {
   id?: string;
   name: string;
-  isFinished: boolean;
+  isFinished?: boolean;
   roaster: string;
   roastDate: Timestamp | null;
   roastStyle: RoastStyle | null;
   roastLevel?: number | null;
   roastingNotes: never[];
-  origin: Origin;
+  origin?: Origin;
   freezeDate: Timestamp | null;
   thawDate: Timestamp | null;
 }
 
 interface BeansSingleOrigin {
   country: string | null;
-  region: string;
-  varietals: never[];
-  altitude: string;
-  process: string;
-  farmer: string;
-  harvestDate: null;
+  region?: string;
+  varietals: string[];
+  altitude?: string;
+  process?: string;
+  farmer?: string;
+  harvestDate: Timestamp | null;
 }
 
 interface BeansBlend {

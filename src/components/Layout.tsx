@@ -31,7 +31,7 @@ export const Layout = () => {
             </div> */}
             <div tw="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
               {/* /End replace */}
-              <Suspense fallback={<Fallback />}>
+              <Suspense>
                 <Outlet />
               </Suspense>
             </div>
