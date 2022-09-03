@@ -10,8 +10,8 @@ export const layoutContainerStyles = [
   css`
     padding-top: env(safe-area-inset-top);
     padding-bottom: calc(
-      env(safe-area-inset-bottom) + 3.5rem // look into using proper TW value
-    );
+      env(safe-area-inset-bottom) + 3.5rem
+    ); /*  look into using proper TW value */
   `,
 ];
 
