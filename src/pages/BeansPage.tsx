@@ -3,14 +3,18 @@ import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
 import {
   collection,
   CollectionReference,
+  getDocs,
   orderBy,
   query,
   QueryConstraint,
   where,
 } from "firebase/firestore";
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
+import { userAtom } from "../App";
+import { db } from "../firebaseConfig";
 import { Beans } from "../types/beans";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "../util";
 
@@ -41,14 +45,32 @@ const tabs: {
 
 export const BeansPage = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [user] = useAtom(userAtom);
 
-  const beansRef = collection(
-    db,
-    "users",
-    user?.uid || "",
-    "beans"
-  ) as CollectionReference<Beans>;
-  const beansQuery = query(beansRef, ...tabs[selectedIndex].filters);
+  const [beans, setBeans] = useState<Beans[]>([]);
+
+  useEffect(() => {
+    const fetchBeans = async () => {
+      const beansRef = collection(
+        db,
+        "users",
+        user?.uid || "lol",
+        "beans"
+      ) as CollectionReference<Beans>;
+      const beansQuery = query(beansRef, ...tabs[selectedIndex].filters);
+      const querySnapshot = await getDocs(beansQuery);
+
+      let beansArr: Beans[] = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        beansArr.push({ ...doc.data(), id: doc.id });
+      });
+      setBeans(beansArr);
+    };
+
+    fetchBeans().catch(console.error);
+  }, [selectedIndex]);
 
   return (
     <div>
