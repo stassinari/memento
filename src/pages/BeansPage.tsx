@@ -18,11 +18,13 @@ import { db } from "../firebaseConfig";
 import { Beans } from "../types/beans";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "../util";
 
-const tabs: {
+interface Lolz {
   name: string;
   filters: QueryConstraint[];
   removeFrozen?: boolean;
-}[] = [
+}
+
+const tabs: Lolz[] = [
   {
     name: "Open",
     filters: [orderBy("roastDate", "desc"), where("isFinished", "==", false)],
@@ -45,31 +47,6 @@ const tabs: {
 
 export const BeansPage = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [user] = useAtom(userAtom);
-
-  const [beansList, setBeansList] = useState<Beans[]>([]);
-
-  useEffect(() => {
-    const fetchBeans = async () => {
-      const beansRef = collection(
-        db,
-        "users",
-        user?.uid || "lol",
-        "beans"
-      ) as CollectionReference<Beans>;
-      const beansQuery = query(beansRef, ...tabs[selectedIndex].filters);
-      const querySnapshot = await getDocs(beansQuery);
-
-      let beansArr: Beans[] = [];
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        beansArr.push({ ...doc.data(), id: doc.id });
-      });
-      setBeansList(beansArr);
-    };
-
-    fetchBeans().catch(console.error);
-  }, [selectedIndex]);
 
   return (
     <div>
@@ -94,11 +71,8 @@ export const BeansPage = () => {
             {tabs.map((t, i) => (
               <Tab.Panel key={t.name}>
                 <BeansTab
-                  beans={
-                    t.removeFrozen
-                      ? beansList.filter(isNotFrozenOrIsThawed)
-                      : beansList
-                  }
+                  filters={tabs[i].filters}
+                  removeFrozen={tabs[i].removeFrozen}
                 />
               </Tab.Panel>
             ))}
@@ -110,14 +84,43 @@ export const BeansPage = () => {
 };
 
 interface BeansTabProps {
-  beans: Beans[];
+  filters: QueryConstraint[];
+  removeFrozen?: boolean;
 }
 
-const BeansTab: React.FC<BeansTabProps> = ({ beans }) => {
+const BeansTab: React.FC<BeansTabProps> = ({ filters, removeFrozen }) => {
+  const [user] = useAtom(userAtom);
+
+  const [beansList, setBeansList] = useState<Beans[]>([]);
+
+  useEffect(() => {
+    const fetchBeans = async () => {
+      const beansRef = collection(
+        db,
+        "users",
+        user?.uid || "lol",
+        "beans"
+      ) as CollectionReference<Beans>;
+      const beansQuery = query(beansRef, ...filters);
+      const querySnapshot = await getDocs(beansQuery);
+
+      let beansArr: Beans[] = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        beansArr.push({ ...doc.data(), id: doc.id });
+      });
+      setBeansList(
+        removeFrozen ? beansArr.filter(isNotFrozenOrIsThawed) : beansArr
+      );
+    };
+
+    fetchBeans().catch(console.error);
+  }, []);
+
   return (
     <div tw="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" tw="divide-y divide-gray-200">
-        {beans.map((b) => (
+        {beansList.map((b) => (
           <li key={b.id}>
             <Link to={`/beans/${b.id}`} tw="block hover:bg-gray-50">
               <div tw="px-4 py-4 sm:px-6">
