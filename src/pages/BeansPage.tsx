@@ -10,7 +10,6 @@ import {
 } from "firebase/firestore";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import tw from "twin.macro";
 import { Beans } from "../types/beans";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "../util";
@@ -43,18 +42,13 @@ const tabs: {
 export const BeansPage = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const { data: user } = useUser();
-  const firestore = useFirestore();
   const beansRef = collection(
-    firestore,
+    db,
     "users",
     user?.uid || "",
     "beans"
   ) as CollectionReference<Beans>;
   const beansQuery = query(beansRef, ...tabs[selectedIndex].filters);
-  const { data: beans } = useFirestoreCollectionData(beansQuery, {
-    idField: "id",
-  });
 
   return (
     <div>

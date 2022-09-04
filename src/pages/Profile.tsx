@@ -1,23 +1,19 @@
 import { Auth } from "firebase/auth";
-import { useAuth, useUser } from "reactfire";
+import { useAtom } from "jotai";
+import { userAtom } from "../App";
 import { Button } from "../components/Button";
+import { auth } from "../firebaseConfig";
 
 const signOut = (auth: Auth) =>
   auth.signOut().then(() => console.log("signed out"));
 
 export const Profile = () => {
-  const { data: user } = useUser();
-  const auth = useAuth();
-
-  if (!user)
-    throw new Error(
-      "Impossible state: user is logged in but no user object was found."
-    );
+  const [user] = useAtom(userAtom);
 
   return (
     <div>
       WIP profile page
-      <div>Logged in as: {user.email}</div>
+      <div>Logged in as: {user?.email}</div>
       <Button
         variant="secondary"
         onClick={() => {

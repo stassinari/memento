@@ -1,8 +1,8 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "reactfire";
 import "twin.macro";
+import { auth } from "../firebaseConfig";
 import { useRedirectTo } from "../hooks/useRedirectTo";
 import { Button } from "./Button";
 import { FormInput } from "./form/FormInput";
@@ -13,7 +13,6 @@ type Inputs = {
 };
 
 export const EmailPasswordLogin = () => {
-  const auth = useAuth();
   const navigate = useNavigate();
 
   const redirectTo = useRedirectTo();

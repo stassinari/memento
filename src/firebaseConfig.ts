@@ -1,5 +1,6 @@
-import "firebase/analytics";
-import "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const {
   VITE_FB_API_KEY,
@@ -24,4 +25,9 @@ const config = {
   measurementId: VITE_FB_MEASUREMENT_ID,
 };
 
-export default config;
+const app = initializeApp(config);
+
+export const db = getFirestore(app);
+export const auth = getAuth();
+export const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });

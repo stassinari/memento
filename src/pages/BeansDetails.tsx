@@ -1,6 +1,5 @@
 import { doc, DocumentReference } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { Details } from "../components/Details";
 import { Beans } from "../types/beans";
 

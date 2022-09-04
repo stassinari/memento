@@ -1,12 +1,11 @@
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { Provider } from "jotai";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
-import { FirebaseAppProvider } from "reactfire";
 import { App } from "./App";
 import { ErrorFallback } from "./components/ErrorFallback";
-import firebaseConfig from "./firebaseConfig";
 import "./styles/config.css";
 import { GlobalStyles } from "./styles/GlobalStyles";
 
@@ -24,10 +23,10 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-        <GlobalStyles />
+      <GlobalStyles />
+      <Provider>
         <App />
-      </FirebaseAppProvider>
+      </Provider>
     </ErrorBoundary>
   </React.StrictMode>
 );

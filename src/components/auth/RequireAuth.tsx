@@ -1,13 +1,14 @@
-import React from "react";
 import { Location, Navigate, Outlet, useLocation } from "react-router-dom";
-import { useUser } from "reactfire";
+import { auth } from "../../firebaseConfig";
 
 export interface LocationState {
   from: Location;
 }
 
 export const RequireAuth = () => {
-  const { data: user } = useUser();
+  // const { data: user } = useUser();
+  const user = auth.currentUser;
+
   const location = useLocation();
 
   if (!user) {
