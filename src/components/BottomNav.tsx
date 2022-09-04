@@ -12,7 +12,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "twin.macro";
 import tw from "twin.macro";
-import { useActiveRoute } from "./hooks/useActiveRoute";
+import { useActiveRoute } from "../hooks/useActiveRoute";
 
 export const navigation: BottomNavItemProps[] = [
   { Icon: <HomeIcon />, label: "Home", linkTo: "/" },

@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { LocationState } from "../auth/RequireAuth";
+import { LocationState } from "../components/auth/RequireAuth";
 
 export const useRedirectTo = () => {
   const location = useLocation();

@@ -2,8 +2,8 @@ import { Auth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "reactfire";
 import "twin.macro";
+import { useRedirectTo } from "../hooks/useRedirectTo";
 import { Button } from "./Button";
-import { useRedirectTo } from "./hooks/useRedirectTo";
 import { GoogleIcon } from "./icons/GoogleIcon";
 
 const signInWithGoogle = async (auth: Auth) => {

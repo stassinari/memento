@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
+import { useActiveRoute } from "../hooks/useActiveRoute";
 import { BottomNavItemProps, navigation } from "./BottomNav";
-import { useActiveRoute } from "./hooks/useActiveRoute";
 
 const SidebarNavItem: React.FC<BottomNavItemProps> = ({
   Icon,
