@@ -47,7 +47,7 @@ export const BeansPage = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user] = useAtom(userAtom);
 
-  const [beans, setBeans] = useState<Beans[]>([]);
+  const [beansList, setBeansList] = useState<Beans[]>([]);
 
   useEffect(() => {
     const fetchBeans = async () => {
@@ -63,10 +63,9 @@ export const BeansPage = () => {
       let beansArr: Beans[] = [];
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
         beansArr.push({ ...doc.data(), id: doc.id });
       });
-      setBeans(beansArr);
+      setBeansList(beansArr);
     };
 
     fetchBeans().catch(console.error);
@@ -96,7 +95,9 @@ export const BeansPage = () => {
               <Tab.Panel key={t.name}>
                 <BeansTab
                   beans={
-                    t.removeFrozen ? beans.filter(isNotFrozenOrIsThawed) : beans
+                    t.removeFrozen
+                      ? beansList.filter(isNotFrozenOrIsThawed)
+                      : beansList
                   }
                 />
               </Tab.Panel>
