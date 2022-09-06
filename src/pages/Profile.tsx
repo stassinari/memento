@@ -1,8 +1,8 @@
 import { Auth } from "firebase/auth";
 import { useAtom } from "jotai";
-import { userAtom } from "../App";
 import { Button } from "../components/Button";
 import { auth } from "../firebaseConfig";
+import { userAtom } from "../hooks/useInitUser";
 
 const signOut = (auth: Auth) =>
   auth.signOut().then(() => console.log("signed out"));

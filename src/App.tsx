@@ -1,12 +1,10 @@
-import { onAuthStateChanged, User } from "firebase/auth";
-import { atom, useAtom } from "jotai";
 import { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
 import { Layout } from "./components/Layout";
-import { auth } from "./firebaseConfig";
+import { useInitUser } from "./hooks/useInitUser";
 import { BeansDetails } from "./pages/BeansDetails";
 import { BeansPage } from "./pages/BeansPage";
 import { BrewsPage } from "./pages/BrewsPage";
@@ -20,26 +18,9 @@ import { TastingsPage } from "./pages/TastingsPage";
 
 const queryClient = new QueryClient();
 
-export const userAtom = atom<User | null>(null);
-
 export const App = () => {
-  const [user, setUser] = useAtom(userAtom);
-  console.log(user);
-  onAuthStateChanged(auth, (user) => {
-    setUser(user);
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = user.uid;
-      console.log("user is signed in");
-      console.log(user);
-      // ...
-    } else {
-      // User is signed out
-      // ...
-      console.log("user is signed out");
-    }
-  });
+  const isUserLoading = useInitUser();
+  if (isUserLoading) return null;
 
   return (
     <QueryClientProvider client={queryClient}>

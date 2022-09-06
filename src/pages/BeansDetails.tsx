@@ -2,9 +2,9 @@ import { doc, DocumentReference, getDoc } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { userAtom } from "../App";
 import { Details } from "../components/Details";
 import { db } from "../firebaseConfig";
+import { userAtom } from "../hooks/useInitUser";
 import { Beans } from "../types/beans";
 
 export const BeansDetails = () => {

@@ -13,8 +13,8 @@ import { useAtom } from "jotai";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
-import { userAtom } from "../App";
 import { db } from "../firebaseConfig";
+import { userAtom } from "../hooks/useInitUser";
 import { Beans } from "../types/beans";
 import { getTimeAgo } from "../util";
 
