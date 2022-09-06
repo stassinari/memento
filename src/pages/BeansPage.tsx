@@ -101,7 +101,7 @@ const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
   const beansQuery = query(beansRef, ...filters);
 
   const { data: beansList } = useFirestoreQueryData(
-    [`beansList-${name}`],
+    ["beansList", name],
     beansQuery,
     {
       idField: "id",

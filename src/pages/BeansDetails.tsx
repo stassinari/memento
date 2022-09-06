@@ -1,6 +1,6 @@
-import { doc, DocumentReference, getDoc } from "firebase/firestore";
+import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
+import { doc, DocumentReference } from "firebase/firestore";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Details } from "../components/Details";
 import { db } from "../firebaseConfig";
@@ -9,28 +9,20 @@ import { Beans } from "../types/beans";
 
 export const BeansDetails = () => {
   const { beansId } = useParams();
-
-  const [beans, setBeans] = useState<Beans | undefined>();
   const [user] = useAtom(userAtom);
 
-  useEffect(() => {
-    const fetchBeans = async () => {
-      const ref = doc(
-        db,
-        "users",
-        user?.uid || "",
-        "beans",
-        beansId || ""
-      ) as DocumentReference<Beans>;
-      const docSnapshot = await getDoc(ref);
+  const ref = doc(
+    db,
+    "users",
+    user?.uid || "",
+    "beans",
+    beansId || ""
+  ) as DocumentReference<Beans>;
 
-      if (docSnapshot.exists()) {
-        setBeans(docSnapshot.data());
-      }
-    };
-
-    fetchBeans().catch(console.error);
-  }, []);
+  const { data: beans } = useFirestoreDocumentData(
+    ["beansDetails", beansId],
+    ref
+  );
 
   if (!beans) {
     return null;
