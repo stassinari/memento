@@ -14,7 +14,6 @@ type Inputs = {
 
 export const EmailPasswordLogin = () => {
   const navigate = useNavigate();
-
   const redirectTo = useRedirectTo();
 
   const methods = useForm<Inputs>();
