@@ -1,22 +1,22 @@
 import { Tab } from "@headlessui/react";
 import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { useFirestoreQueryData } from "@react-query-firebase/firestore";
 import {
   collection,
   CollectionReference,
-  getDocs,
   orderBy,
   query,
   QueryConstraint,
   where,
 } from "firebase/firestore";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import { userAtom } from "../App";
 import { db } from "../firebaseConfig";
 import { Beans } from "../types/beans";
-import { getTimeAgo, isNotFrozenOrIsThawed } from "../util";
+import { getTimeAgo } from "../util";
 
 interface Lolz {
   name: string;
@@ -71,6 +71,7 @@ export const BeansPage = () => {
             {tabs.map((t, i) => (
               <Tab.Panel key={t.name}>
                 <BeansTab
+                  name={tabs[i].name}
                   filters={tabs[i].filters}
                   removeFrozen={tabs[i].removeFrozen}
                 />
@@ -88,34 +89,26 @@ interface BeansTabProps {
   removeFrozen?: boolean;
 }
 
-const BeansTab: React.FC<BeansTabProps> = ({ filters, removeFrozen }) => {
+const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
   const [user] = useAtom(userAtom);
 
-  const [beansList, setBeansList] = useState<Beans[]>([]);
+  const beansRef = collection(
+    db,
+    "users",
+    user?.uid || "lol",
+    "beans"
+  ) as CollectionReference<Beans>;
+  const beansQuery = query(beansRef, ...filters);
 
-  useEffect(() => {
-    const fetchBeans = async () => {
-      const beansRef = collection(
-        db,
-        "users",
-        user?.uid || "lol",
-        "beans"
-      ) as CollectionReference<Beans>;
-      const beansQuery = query(beansRef, ...filters);
-      const querySnapshot = await getDocs(beansQuery);
+  const { data: beansList } = useFirestoreQueryData(
+    [`beansList-${name}`],
+    beansQuery,
+    {
+      idField: "id",
+    }
+  );
 
-      let beansArr: Beans[] = [];
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        beansArr.push({ ...doc.data(), id: doc.id });
-      });
-      setBeansList(
-        removeFrozen ? beansArr.filter(isNotFrozenOrIsThawed) : beansArr
-      );
-    };
-
-    fetchBeans().catch(console.error);
-  }, []);
+  if (!beansList) return null;
 
   return (
     <div tw="overflow-hidden bg-white shadow sm:rounded-md">

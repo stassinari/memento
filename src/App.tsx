@@ -1,6 +1,7 @@
 import { onAuthStateChanged, User } from "firebase/auth";
 import { atom, useAtom } from "jotai";
 import { Suspense } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
@@ -16,6 +17,8 @@ import { LogIn } from "./pages/LogIn";
 import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
 import { TastingsPage } from "./pages/TastingsPage";
+
+const queryClient = new QueryClient();
 
 export const userAtom = atom<User | null>(null);
 
@@ -39,34 +42,36 @@ export const App = () => {
   });
 
   return (
-    <Suspense fallback={<div>Initializing...</div>}>
-      <BrowserRouter>
-        <Routes>
-          {/* Add routes that display no matter the auth status */}
-          <Route path="*" element={<NotFound />} />
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<div>Initializing...</div>}>
+        <BrowserRouter>
+          <Routes>
+            {/* Add routes that display no matter the auth status */}
+            <Route path="*" element={<NotFound />} />
 
-          {/* Add routes that require the user NOT to be logged in */}
-          <Route element={<RequireNoAuth />}>
-            <Route path="login" element={<LogIn />} />
-          </Route>
-
-          {/* Add routes that REQUIRE the user to be logged in */}
-          <Route path="/" element={<Layout />}>
-            <Route element={<RequireAuth />}>
-              <Route path="/" element={<Homepage />} />
-              <Route path="beans" element={<BeansPage />} />
-              <Route path="beans/:beansId" element={<BeansDetails />} />
-              <Route path="drinks" element={<DrinksPage />} />
-              <Route path="drinks/brews" element={<BrewsPage />} />
-              <Route path="drinks/espressos" element={<EspressosPage />} />
-              <Route path="drinks/tastings" element={<TastingsPage />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="design-library" element={<DesignLibrary />} />
+            {/* Add routes that require the user NOT to be logged in */}
+            <Route element={<RequireNoAuth />}>
+              <Route path="login" element={<LogIn />} />
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Suspense>
+
+            {/* Add routes that REQUIRE the user to be logged in */}
+            <Route path="/" element={<Layout />}>
+              <Route element={<RequireAuth />}>
+                <Route path="/" element={<Homepage />} />
+                <Route path="beans" element={<BeansPage />} />
+                <Route path="beans/:beansId" element={<BeansDetails />} />
+                <Route path="drinks" element={<DrinksPage />} />
+                <Route path="drinks/brews" element={<BrewsPage />} />
+                <Route path="drinks/espressos" element={<EspressosPage />} />
+                <Route path="drinks/tastings" element={<TastingsPage />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="design-library" element={<DesignLibrary />} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Suspense>
+    </QueryClientProvider>
   );
 };
 
