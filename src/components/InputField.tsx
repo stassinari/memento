@@ -1,4 +1,4 @@
-import React, { FC, InputHTMLAttributes } from "react";
+import { FC, InputHTMLAttributes } from "react";
 import { FieldError } from "react-hook-form";
 import tw from "twin.macro";
 
@@ -7,7 +7,6 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: FieldError;
   register?: any;
-  wrapperClass?: string;
   className?: string;
   requiredMsg?: string;
 }
@@ -17,12 +16,11 @@ export const InputField: FC<InputFieldProps> = ({
   name,
   error,
   label,
-  wrapperClass,
   requiredMsg: required,
   ...rest
 }) => {
   return (
-    <div className={wrapperClass}>
+    <div>
       <label htmlFor={name}>
         <span>{label}</span>
       </label>
