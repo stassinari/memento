@@ -17,7 +17,7 @@ import { Button } from "../components/Button";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 import { Beans } from "../types/beans";
-import { getTimeAgo } from "../util";
+import { getTimeAgo, isNotFrozenOrIsThawed } from "../util";
 
 interface Lolz {
   name: string;
@@ -118,8 +118,9 @@ const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
       <ul role="list" tw="divide-y divide-gray-200">
         {beansList
           .sort((a, b) =>
-            (a.roastDate?.toDate() || 0) < (b.roastDate?.toDate() || 0) ? -1 : 1
+            (a.roastDate?.toDate() || 0) < (b.roastDate?.toDate() || 0) ? 1 : -1
           )
+          .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true)
           .map((b) => (
             <li key={b.id}>
               <Link to={`/beans/${b.id}`} tw="block hover:bg-gray-50">

@@ -9,6 +9,7 @@ export default defineConfig({
       jsxImportSource: "@emotion/react",
       babel: {
         plugins: [
+          "babel-plugin-twin",
           "babel-plugin-macros",
           "@emotion/babel-plugin",
           "preval",
