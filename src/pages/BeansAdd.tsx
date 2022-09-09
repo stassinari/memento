@@ -3,10 +3,12 @@ import { collection } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import "twin.macro";
 import { Button } from "../components/Button";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
 import { FormInputMonthYear } from "../components/form/FormInputMonthYear";
+import { FormInputRange } from "../components/form/FormInputRange";
 import { FormRadio } from "../components/form/FormRadio";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
@@ -17,6 +19,7 @@ export type BeansAddInputs = {
   roaster: string;
   roastDate: Date | null;
   roastStyle: RoastStyle | null;
+  roastLevel: number | null;
   harvestDate: Date | null;
   isFinished?: boolean;
 };
@@ -27,8 +30,8 @@ export const emptyValues: BeansAddInputs = {
   roaster: "",
   roastDate: null,
   // roastingNotes: [],
-  // roastLevel: null,
   roastStyle: null,
+  roastLevel: null,
   // origin: "single-origin",
   // country: null,
   // farmer: "",
@@ -117,6 +120,8 @@ export const BeansAdd = () => {
             ]}
             // helperText="This is a helper text lol"
           />
+
+          <FormInputRange label="Roast level" id="roastLevel" />
 
           <FormInputMonthYear
             label="Harvest date"

@@ -21,6 +21,7 @@
     "react-hook-form": "^7.34.2",
     "react-polymorphic-box": "^3.0.3",
     "react-query": "^3.39.2",
+    "react-range": "^1.8.14",
     "react-router-dom": "^6.3.0",
     "tslib": "^2.4.0"
   },
@@ -36,7 +37,6 @@
     "autoprefixer": "^10.4.8",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-preval": "^5.1.0",
-    "babel-plugin-twin": "^1.0.2",
     "env-cmd": "^10.1.0",
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8",
