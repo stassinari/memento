@@ -71,7 +71,7 @@
 }
 
 .react-datepicker__day--disabled {
-  @apply cursor-not-allowed opacity-40 hover:bg-transparent !important;
+  @apply cursor-not-allowed text-gray-300 hover:bg-transparent !important;
 }
 
 .react-datepicker__day--outside-month {
@@ -104,4 +104,32 @@
 
 .react-datepicker__day--range-end {
   @apply bg-orange-500 text-white hover:text-gray-700 hover:bg-white;
+}
+
+.react-datepicker__month {
+  @apply flex flex-col gap-2;
+}
+
+.react-datepicker__month-wrapper {
+  @apply flex gap-8 items-center justify-center;
+}
+
+.react-datepicker__month-text {
+  @apply w-full h-full py-1  text-sm leading-loose transition text-gray-900 rounded-md text-center;
+}
+
+.react-datepicker__month-text:hover {
+  @apply bg-gray-200 cursor-pointer;
+}
+
+.react-datepicker__month-text--today {
+  @apply font-semibold text-orange-600;
+}
+
+.react-datepicker__month--selected {
+  @apply bg-orange-500 text-white font-semibold !important;
+}
+
+.react-datepicker__month--disabled {
+  @apply cursor-not-allowed text-gray-300 hover:bg-transparent !important;
 }

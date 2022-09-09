@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
+import { FormInputMonthYear } from "../components/form/FormInputMonthYear";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 
@@ -13,6 +14,7 @@ export type BeansAddInputs = {
   name: string;
   roaster: string;
   roastDate: Date | null;
+  harvestDate: Date | null;
   isFinished?: boolean;
 };
 
@@ -30,7 +32,7 @@ export const emptyValues: BeansAddInputs = {
   // region: "",
   // process: "",
   // varietals: [],
-  // harvestDate: null,
+  harvestDate: null,
   // altitude: "",
   // freezeDate: null,
   // thawDate: null,
@@ -95,7 +97,17 @@ export const BeansAdd = () => {
             error={errors.roaster?.message}
           />
 
-          <FormInputDate label="Roast date" id="roastDate" />
+          <FormInputDate
+            label="Roast date"
+            id="roastDate"
+            placeholder="Select roast date"
+          />
+
+          <FormInputMonthYear
+            label="Harvest date"
+            id="harvestDate"
+            placeholder="Select harvest date"
+          />
 
           <Button variant="primary" type="submit" disabled={mutation.isLoading}>
             Add
