@@ -7,13 +7,16 @@ import { Button } from "../components/Button";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
 import { FormInputMonthYear } from "../components/form/FormInputMonthYear";
+import { FormRadio } from "../components/form/FormRadio";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
+import { RoastStyle } from "../types/beans";
 
 export type BeansAddInputs = {
   name: string;
   roaster: string;
   roastDate: Date | null;
+  roastStyle: RoastStyle | null;
   harvestDate: Date | null;
   isFinished?: boolean;
 };
@@ -25,7 +28,7 @@ export const emptyValues: BeansAddInputs = {
   roastDate: null,
   // roastingNotes: [],
   // roastLevel: null,
-  // roastStyle: null,
+  roastStyle: null,
   // origin: "single-origin",
   // country: null,
   // farmer: "",
@@ -101,6 +104,18 @@ export const BeansAdd = () => {
             label="Roast date"
             id="roastDate"
             placeholder="Select roast date"
+          />
+
+          <FormRadio
+            id="roastStyle"
+            label="Roast profile"
+            inputProps={{ ...register("roastStyle") }}
+            options={[
+              { value: "filter", label: "Filter" },
+              { value: "espresso", label: "Espresso" },
+              { value: "omni-roast", label: "Omni-roast" },
+            ]}
+            // helperText="This is a helper text lol"
           />
 
           <FormInputMonthYear
