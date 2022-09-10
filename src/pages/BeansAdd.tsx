@@ -44,7 +44,7 @@ export const emptyValues: BeansAddInputs = {
   // thawDate: null,
 };
 
-export const BeansAdd = () => {
+export const BeansAdd: React.FC = () => {
   const [user] = useAtom(userAtom);
 
   const navigate = useNavigate();
@@ -137,3 +137,5 @@ export const BeansAdd = () => {
     </div>
   );
 };
+
+export default BeansAdd;

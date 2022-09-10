@@ -52,3 +52,5 @@ export const BeansDetails = () => {
     </div>
   );
 };
+
+export default BeansDetails;

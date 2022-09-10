@@ -1,21 +1,26 @@
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
 import { Layout } from "./components/Layout";
 import { useInitUser } from "./hooks/useInitUser";
-import { BeansAdd } from "./pages/BeansAdd";
-import { BeansDetails } from "./pages/BeansDetails";
-import { BeansPage } from "./pages/BeansPage";
+// import { BeansAdd } from "./pages/BeansAdd";
+// import { BeansDetails } from "./pages/BeansDetails";
+// import { BeansPage } from "./pages/BeansPage";
 import { BrewsPage } from "./pages/BrewsPage";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
 import { EspressosPage } from "./pages/EspressosPage";
-import { LogIn } from "./pages/LogIn";
+// import { LogIn } from "./pages/LogIn";
 import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
 import { TastingsPage } from "./pages/TastingsPage";
+
+const BeansAdd = React.lazy(() => import("./pages/BeansAdd"));
+const BeansDetails = React.lazy(() => import("./pages/BeansDetails"));
+const BeansPage = React.lazy(() => import("./pages/BeansPage"));
+const LogIn = React.lazy(() => import("./pages/LogIn"));
 
 const queryClient = new QueryClient();
 

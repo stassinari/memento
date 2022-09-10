@@ -179,3 +179,5 @@ const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
     </div>
   );
 };
+
+export default BeansPage;
