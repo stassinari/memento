@@ -5,6 +5,8 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
+import { emptyOption, Option } from "../components/Combobox";
+import { FormCombobox } from "../components/form/FormCombobox";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
 import { FormInputMonthYear } from "../components/form/FormInputMonthYear";
@@ -20,6 +22,7 @@ export type BeansAddInputs = {
   roastDate: Date | null;
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
+  country: Option;
   harvestDate: Date | null;
   isFinished?: boolean;
 };
@@ -33,7 +36,7 @@ export const emptyValues: BeansAddInputs = {
   roastStyle: null,
   roastLevel: null,
   // origin: "single-origin",
-  // country: null,
+  country: emptyOption, // FIXME this is NOT ok
   // farmer: "",
   // region: "",
   // process: "",
@@ -119,6 +122,12 @@ export const BeansAdd: React.FC = () => {
               { value: "omni-roast", label: "Omni-roast" },
             ]}
             // helperText="This is a helper text lol"
+          />
+
+          <FormCombobox
+            name="country"
+            label="Country"
+            options={[{ value: "ASD", label: "ASD country lol" }]}
           />
 
           <FormInputRange label="Roast level" id="roastLevel" />

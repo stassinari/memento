@@ -4,20 +4,28 @@ import React, { useState } from "react";
 import "twin.macro";
 import { labelStyles } from "./Input";
 
-interface Option {
+export interface Option {
   value: any;
   label: string;
 }
 
-const emptyState = { value: 0, label: "" };
+export const emptyOption = { value: 0, label: "" };
 
-interface ComboboxProps {
+export interface ComboboxProps {
   name: string;
   label: string;
   options: Option[];
+  value: any;
+  onChange: (...event: any[]) => void;
 }
 
-export const Combobox: React.FC<ComboboxProps> = ({ name, label, options }) => {
+export const Combobox: React.FC<ComboboxProps> = ({
+  name,
+  label,
+  options,
+  value,
+  onChange,
+}) => {
   const [query, setQuery] = useState("");
 
   const filteredOptions =
@@ -28,7 +36,7 @@ export const Combobox: React.FC<ComboboxProps> = ({ name, label, options }) => {
         });
 
   return (
-    <HuiCombobox as="div" defaultValue={emptyState} name={name}>
+    <HuiCombobox as="div" value={value} onChange={onChange} name={name}>
       <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
 
       <div tw="relative mt-1">
