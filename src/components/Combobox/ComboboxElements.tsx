@@ -5,11 +5,13 @@ import tw from "twin.macro";
 import { inputStyles } from "../Input";
 
 interface ComboboxInputProps {
+  placeholder?: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   displayValue?: (option: string) => string;
 }
 
 export const ComboboxInput: React.FC<ComboboxInputProps> = ({
+  placeholder,
   handleChange,
   displayValue = (option: string) => option,
 }) => (
@@ -21,6 +23,7 @@ export const ComboboxInput: React.FC<ComboboxInputProps> = ({
     onChange={handleChange}
     displayValue={displayValue}
     autoComplete="off"
+    placeholder={placeholder}
   />
 );
 

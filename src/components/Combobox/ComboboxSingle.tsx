@@ -16,6 +16,7 @@ export interface ComboboxSingleProps {
   options: string[];
   value: any;
   onChange: (...event: any[]) => void;
+  placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
 
@@ -25,6 +26,7 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
   options,
   value,
   onChange,
+  placeholder,
   renderOption = (option) => <TextOption text={option} />,
 }) => {
   const [query, setQuery] = useState("");
@@ -41,7 +43,10 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
       <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
 
       <div tw="relative mt-1">
-        <ComboboxInput handleChange={(event) => setQuery(event.target.value)} />
+        <ComboboxInput
+          handleChange={(event) => setQuery(event.target.value)}
+          placeholder={placeholder}
+        />
 
         <ComboboxButton />
 

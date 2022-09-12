@@ -133,6 +133,7 @@ export const BeansAdd: React.FC = () => {
             name="country"
             label="Country"
             options={countries.map(({ name }) => name)}
+            placeholder="Type country here..."
             renderOption={(country) => (
               <TextWithImageOption
                 text={country}

@@ -1,11 +1,12 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import React, { ReactElement, useState } from "react";
 import "twin.macro";
-import { labelStyles } from "../Input";
+import tw from "twin.macro";
+import { Badge } from "../Badge";
+import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../ListOption";
 import {
   ComboboxButton,
-  ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
 } from "./ComboboxElements";
@@ -16,6 +17,7 @@ export interface ComboboxMultiProps {
   options: string[];
   values: any[];
   onChange: (...event: any[]) => void;
+  placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
 
@@ -25,6 +27,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
   options,
   values,
   onChange,
+  placeholder,
   renderOption = (option) => <TextOption text={option} />,
 }) => {
   const [query, setQuery] = useState("");
@@ -47,10 +50,33 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
       <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
 
       <div tw="relative mt-1">
-        <ComboboxInput
-          handleChange={(event) => setQuery(event.target.value)}
-          displayValue={() => ""}
-        />
+        <div
+          css={[
+            inputStyles,
+            tw`relative py-2 pl-3 pr-10 bg-white border focus:(outline-none ring-1)`,
+          ]}
+        >
+          <div tw="min-h-[1.25rem]">
+            <div tw="flex flex-wrap gap-2">
+              {values.length > 0 &&
+                values.map((v) => <Badge key={v}>{v}</Badge>)}
+              <input
+                type="text"
+                placeholder={placeholder}
+                tw="flex-grow text-sm border-none p-0 focus:(outline-none border-none border-transparent ring-0)"
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        {/* <HuiCombobox.Input
+          css={[
+            inputStyles,
+            tw`relative py-2 pl-3 pr-10 bg-white border focus:(outline-none ring-1)`,
+          ]}
+          
+          autoComplete="off"
+        /> */}
 
         <ComboboxButton />
 
@@ -62,13 +88,6 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
           </ComboboxOptions>
         )}
       </div>
-      {values.length > 0 && (
-        <ul tw="flex gap-2">
-          {values.map((v) => (
-            <li key={v}>{v}</li>
-          ))}
-        </ul>
-      )}
     </HuiCombobox>
   );
 };

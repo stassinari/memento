@@ -27,6 +27,7 @@ export const DesignLibrary = () => {
           options={people}
           value={singleValue}
           onChange={(value) => setSingleValue(value)}
+          placeholder="Placeholder..."
         />
 
         <ComboboxMulti
@@ -34,6 +35,7 @@ export const DesignLibrary = () => {
           name="multi-testing"
           options={people}
           values={multiValues}
+          placeholder="Multi type here (TBD)..."
           onChange={(values: any[]) => setMultiValues(values)}
         />
       </div>
