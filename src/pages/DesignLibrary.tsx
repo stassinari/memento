@@ -1,8 +1,21 @@
 import { PlusCircleIcon } from "@heroicons/react/20/solid";
+import "twin.macro";
 import { Button } from "../components/Button";
+import { Combobox } from "../components/Combobox";
+
+const people = [
+  { value: 1, label: "Durward Reynolds" },
+  { value: 2, label: "Kenton Towne" },
+  { value: 3, label: "Therese Wunsch" },
+  { value: 4, label: "Benedict Kessler" },
+  { value: 5, label: "Katelyn Rohan" },
+];
 
 export const DesignLibrary = () => (
-  <div>
+  <div tw="space-y-8">
+    <div>
+      <Combobox label="Testing" name="testing" options={people} />
+    </div>
     <div>
       <Button variant="primary" size="xs">
         Button xs

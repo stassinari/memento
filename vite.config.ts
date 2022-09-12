@@ -11,7 +11,6 @@ export default defineConfig({
         plugins: [
           "babel-plugin-macros",
           "@emotion/babel-plugin",
-          "preval",
           [
             "@emotion/babel-plugin-jsx-pragmatic",
             {

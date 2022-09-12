@@ -3,10 +3,14 @@ import {
   InputHTMLAttributes,
   LabelHTMLAttributes,
 } from "react";
-import tw from "twin.macro";
+import tw, { styled } from "twin.macro";
+
+export const labelStyles = tw`block text-sm font-medium text-gray-700`;
 
 interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {}
-const Label: React.FC<LabelProps> = tw.label`block text-sm font-medium text-gray-700`;
+const Label: React.FC<LabelProps> = styled.label`
+  ${labelStyles}
+`;
 
 interface HelperProps extends HTMLAttributes<HTMLParagraphElement> {}
 const Helper: React.FC<HelperProps> = tw.p`mt-2 text-sm text-gray-500`;

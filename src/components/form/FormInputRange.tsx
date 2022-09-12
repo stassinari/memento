@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { getTrackBackground, Range } from "react-range";
 import "twin.macro";
-import { tailwindConfig } from "../../theme";
+import { theme } from "twin.macro";
 import { Input } from "../Input";
 
 interface FormInputRange {
@@ -36,8 +36,8 @@ export const FormInputRange: React.FC<FormInputRange> = ({ label, id }) => {
                     background: getTrackBackground({
                       values: [field.value],
                       colors: [
-                        tailwindConfig.theme?.colors.orange[400],
-                        tailwindConfig.theme?.colors.gray[200],
+                        theme`colors.orange.400`,
+                        theme`colors.gray.200`,
                       ],
                       min: 0,
                       max: 4,
