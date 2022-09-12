@@ -1,10 +1,10 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { Combobox, Option } from "../Combobox";
+import { Combobox } from "../Combobox";
 
 export interface FormComboboxProps {
   name: string;
   label: string;
-  options: Option[];
+  options: string[];
 }
 
 export const FormCombobox: React.FC<FormComboboxProps> = ({

@@ -5,13 +5,13 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
-import { emptyOption, Option } from "../components/Combobox";
 import { FormCombobox } from "../components/form/FormCombobox";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
 import { FormInputMonthYear } from "../components/form/FormInputMonthYear";
 import { FormInputRange } from "../components/form/FormInputRange";
 import { FormRadio } from "../components/form/FormRadio";
+import countries from "../data/countries";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 import { RoastStyle } from "../types/beans";
@@ -22,7 +22,7 @@ export type BeansAddInputs = {
   roastDate: Date | null;
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
-  country: Option;
+  country: string | null;
   harvestDate: Date | null;
   isFinished?: boolean;
 };
@@ -36,7 +36,7 @@ export const emptyValues: BeansAddInputs = {
   roastStyle: null,
   roastLevel: null,
   // origin: "single-origin",
-  country: emptyOption, // FIXME this is NOT ok
+  country: null,
   // farmer: "",
   // region: "",
   // process: "",
@@ -78,7 +78,11 @@ export const BeansAdd: React.FC = () => {
       adding beanz
       {/* Consider creating reusable components rather than relying on this Provider */}
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} tw="space-y-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          autoComplete="off"
+          tw="space-y-6"
+        >
           <FormInput
             label="Name"
             id="name"
@@ -127,7 +131,7 @@ export const BeansAdd: React.FC = () => {
           <FormCombobox
             name="country"
             label="Country"
-            options={[{ value: "ASD", label: "ASD country lol" }]}
+            options={countries.map(({ name }) => name)}
           />
 
           <FormInputRange label="Roast level" id="roastLevel" />

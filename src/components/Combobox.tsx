@@ -4,17 +4,17 @@ import React, { useState } from "react";
 import "twin.macro";
 import { labelStyles } from "./Input";
 
-export interface Option {
-  value: any;
-  label: string;
-}
+// export interface Option {
+//   value: any;
+//   label: string;
+// }
 
-export const emptyOption = { value: 0, label: "" };
+// export const emptyOption = { value: 0, label: "" };
 
 export interface ComboboxProps {
   name: string;
   label: string;
-  options: Option[];
+  options: string[];
   value: any;
   onChange: (...event: any[]) => void;
 }
@@ -32,7 +32,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
     query === ""
       ? options
       : options.filter((o) => {
-          return o.label.toLowerCase().includes(query.toLowerCase());
+          return o.toLowerCase().includes(query.toLowerCase());
         });
 
   return (
@@ -43,7 +43,8 @@ export const Combobox: React.FC<ComboboxProps> = ({
         <HuiCombobox.Input
           tw="w-full py-2 pl-3 pr-10 bg-white border border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm"
           onChange={(event) => setQuery(event.target.value)}
-          displayValue={(option: Option) => option.label}
+          displayValue={(option: string) => option}
+          autoComplete="off"
         />
         <HuiCombobox.Button tw="absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-none">
           <ChevronUpDownIcon tw="w-5 h-5 text-gray-400" aria-hidden="true" />
@@ -53,7 +54,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
           <HuiCombobox.Options tw="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredOptions.map((o) => (
               <HuiCombobox.Option
-                key={o.value}
+                key={o}
                 value={o}
                 className="ui-active:bg-orange-600 ui-active:text-white ui-not-active:text-gray-900"
                 tw="relative py-2 pl-3 cursor-default select-none pr-9 "
@@ -64,7 +65,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
                       className="ui-selected:font-semibold"
                       tw="block truncate"
                     >
-                      {o.label}
+                      {o}
                     </span>
 
                     {selected && (

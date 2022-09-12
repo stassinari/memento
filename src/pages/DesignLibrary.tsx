@@ -4,11 +4,11 @@ import { Button } from "../components/Button";
 import { Combobox } from "../components/Combobox";
 
 const people = [
-  { value: 1, label: "Durward Reynolds" },
-  { value: 2, label: "Kenton Towne" },
-  { value: 3, label: "Therese Wunsch" },
-  { value: 4, label: "Benedict Kessler" },
-  { value: 5, label: "Katelyn Rohan" },
+  "Durward Reynolds",
+  "Kenton Towne",
+  "Therese Wunsch",
+  "Benedict Kessler",
+  "Katelyn Rohan",
 ];
 
 export const DesignLibrary = () => (
