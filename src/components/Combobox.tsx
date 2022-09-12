@@ -1,6 +1,6 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import React, { useState } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
 import "twin.macro";
 import { labelStyles } from "./Input";
 
@@ -17,7 +17,35 @@ export interface ComboboxProps {
   options: string[];
   value: any;
   onChange: (...event: any[]) => void;
+  renderOption?: (option: string) => ReactElement;
 }
+
+interface TextOptionProps {
+  text: string;
+}
+
+const TextOption: React.FC<TextOptionProps> = ({ text }) => (
+  <span className="ui-selected:font-semibold" tw="block truncate">
+    {text}
+  </span>
+);
+
+interface TextWithImageOptionProps {
+  Image: ReactNode;
+  text: string;
+}
+
+export const TextWithImageOption: React.FC<TextWithImageOptionProps> = ({
+  Image,
+  text,
+}) => (
+  <React.Fragment>
+    <div tw="flex-shrink-0 w-6 overflow-hidden rounded">{Image}</div>
+    <span className="ui-selected:font-semibold" tw="ml-3 truncate">
+      {text}
+    </span>
+  </React.Fragment>
+);
 
 export const Combobox: React.FC<ComboboxProps> = ({
   name,
@@ -25,6 +53,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
   options,
   value,
   onChange,
+  renderOption = (option) => <TextOption text={option} />,
 }) => {
   const [query, setQuery] = useState("");
 
@@ -61,12 +90,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
               >
                 {({ selected }) => (
                   <React.Fragment>
-                    <span
-                      className="ui-selected:font-semibold"
-                      tw="block truncate"
-                    >
-                      {o}
-                    </span>
+                    <div className="flex items-center">{renderOption(o)}</div>
 
                     {selected && (
                       <span

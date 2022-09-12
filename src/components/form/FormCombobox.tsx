@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Combobox } from "../Combobox";
 
@@ -5,12 +6,14 @@ export interface FormComboboxProps {
   name: string;
   label: string;
   options: string[];
+  renderOption?: (option: string) => ReactElement;
 }
 
 export const FormCombobox: React.FC<FormComboboxProps> = ({
   name,
   label,
   options,
+  renderOption,
 }) => {
   const { control } = useFormContext();
   return (
@@ -24,6 +27,7 @@ export const FormCombobox: React.FC<FormComboboxProps> = ({
           options={options}
           value={field.value}
           onChange={(newValue) => field.onChange(newValue)}
+          renderOption={renderOption}
         />
       )}
     />

@@ -5,6 +5,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
+import { TextWithImageOption } from "../components/Combobox";
 import { FormCombobox } from "../components/form/FormCombobox";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
@@ -15,6 +16,7 @@ import countries from "../data/countries";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 import { RoastStyle } from "../types/beans";
+import { CountryOptionFlag } from "./BeansAdd/CountryOptionFlag";
 
 export type BeansAddInputs = {
   name: string;
@@ -125,13 +127,18 @@ export const BeansAdd: React.FC = () => {
               { value: "espresso", label: "Espresso" },
               { value: "omni-roast", label: "Omni-roast" },
             ]}
-            // helperText="This is a helper text lol"
           />
 
           <FormCombobox
             name="country"
             label="Country"
             options={countries.map(({ name }) => name)}
+            renderOption={(country) => (
+              <TextWithImageOption
+                text={country}
+                Image={<CountryOptionFlag country={country} />}
+              />
+            )}
           />
 
           <FormInputRange label="Roast level" id="roastLevel" />
