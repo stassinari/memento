@@ -64,9 +64,6 @@ export default defineConfig({
   esbuild: {
     logOverride: { "this-is-undefined-in-esm": "silent" },
   },
-  build: {
-    target: "es2020",
-  },
   optimizeDeps: {
     esbuildOptions: {
       target: "es2020",
