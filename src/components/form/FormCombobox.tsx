@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { Combobox } from "../Combobox";
+import { ComboboxSingle } from "../Combobox/ComboboxSingle";
 
 export interface FormComboboxProps {
   name: string;
@@ -21,7 +21,7 @@ export const FormCombobox: React.FC<FormComboboxProps> = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <Combobox
+        <ComboboxSingle
           name={name}
           label={label}
           options={options}

@@ -6,6 +6,7 @@ import {
 import tw, { styled } from "twin.macro";
 
 export const labelStyles = tw`block text-sm font-medium text-gray-700`;
+export const inputStyles = tw`block w-full border-gray-300 rounded-md shadow-sm focus:(ring-orange-500 border-orange-500) sm:text-sm`;
 
 interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {}
 const Label: React.FC<LabelProps> = styled.label`
@@ -19,6 +20,8 @@ interface ErrorProps extends HTMLAttributes<HTMLParagraphElement> {}
 const Error: React.FC<ErrorProps> = tw.p`mt-2 text-sm text-red-600`;
 
 interface InputRootProps extends InputHTMLAttributes<HTMLInputElement> {}
-const InputRoot: React.FC<InputRootProps> = tw.input`block w-full border-gray-300 rounded-md shadow-sm focus:(ring-orange-500 border-orange-500) sm:text-sm`;
+const InputRoot: React.FC<InputRootProps> = styled.input`
+  ${inputStyles}
+`;
 
 export const Input = Object.assign(InputRoot, { Helper, Label, Error });
