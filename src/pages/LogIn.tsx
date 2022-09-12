@@ -7,8 +7,8 @@ import { layoutContainerStyles } from "../components/Layout";
 export const LogIn = () => {
   return (
     <div css={layoutContainerStyles}>
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-3xl font-bold tracking-tight text-center text-gray-900">
+      <div tw="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 tw="mt-6 text-3xl font-bold tracking-tight text-center text-gray-900">
           Sign in to Memento
         </h2>
       </div>

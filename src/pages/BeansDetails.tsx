@@ -31,10 +31,10 @@ export const BeansDetails = () => {
   return (
     <div>
       <div>
-        <h3 className="text-lg font-medium leading-6 text-gray-900">
+        <h3 tw="text-lg font-medium leading-6 text-gray-900">
           Beans with id {beansId}
         </h3>
-        <p className="max-w-2xl mt-1 text-sm text-gray-500">
+        <p tw="max-w-2xl mt-1 text-sm text-gray-500">
           Subtitle in case it's needed.
         </p>
       </div>

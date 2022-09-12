@@ -52,12 +52,9 @@ export const EmailPasswordLogin = () => {
         error={errors.password?.message}
       />
 
-      <div className="flex items-center justify-end">
-        <div className="text-sm">
-          <a
-            href="#"
-            className="font-medium text-orange-600 hover:text-orange-500"
-          >
+      <div tw="flex items-center justify-end">
+        <div tw="text-sm">
+          <a href="#" tw="font-medium text-orange-600 hover:text-orange-500">
             Forgot your password?
           </a>
         </div>

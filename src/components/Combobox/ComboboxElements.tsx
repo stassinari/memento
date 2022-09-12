@@ -1,7 +1,6 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import React, { ReactElement, ReactNode } from "react";
-import "twin.macro";
 import tw from "twin.macro";
 import { inputStyles } from "../Input";
 
@@ -55,23 +54,15 @@ export const ComboboxOption: React.FC<ComboboxOptionProps> = ({
   <HuiCombobox.Option
     key={option}
     value={option}
-    className="ui-active:bg-orange-600 ui-active:text-white ui-not-active:text-gray-900"
-    tw="relative py-2 pl-3 cursor-default select-none pr-9 "
+    tw="relative py-2 pl-3 cursor-default select-none pr-9 ui-active:(bg-orange-600 text-white) ui-not-active:text-gray-900"
   >
     {({ selected }) => (
       <React.Fragment>
-        <div className="flex items-center">{renderOption(option)}</div>
+        <div tw="flex items-center">{renderOption(option)}</div>
 
         {selected && (
-          <span
-            className="ui-not-active:text-orange-600"
-            tw="absolute inset-y-0 right-0 flex items-center pr-4 "
-          >
-            <CheckIcon
-              className="ui-active:text-white"
-              tw="w-5 h-5"
-              aria-hidden="true"
-            />
+          <span tw="absolute inset-y-0 right-0 flex items-center pr-4 ui-not-active:text-orange-600">
+            <CheckIcon tw="w-5 h-5 ui-active:text-white" aria-hidden="true" />
           </span>
         )}
       </React.Fragment>
