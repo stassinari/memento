@@ -17,6 +17,7 @@ export interface ComboboxMultiProps {
   options: string[];
   values: any[];
   onChange: (...event: any[]) => void;
+  removeItem: (item: any) => void;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
@@ -27,6 +28,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
   options,
   values,
   onChange,
+  removeItem,
   placeholder,
   renderOption = (option) => <TextOption text={option} />,
 }) => {
@@ -59,8 +61,10 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
           <div tw="min-h-[1.25rem]">
             <div tw="flex flex-wrap gap-2">
               {values.length > 0 &&
-                values.map((v) => <Badge key={v}>{v}</Badge>)}
-              <input
+                values.map((v) => (
+                  <Badge key={v} label={v} onClick={() => removeItem(v)} />
+                ))}
+              <HuiCombobox.Input
                 type="text"
                 placeholder={placeholder}
                 tw="flex-grow text-sm border-none p-0 focus:(outline-none border-none border-transparent ring-0)"
@@ -69,14 +73,6 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
             </div>
           </div>
         </div>
-        {/* <HuiCombobox.Input
-          css={[
-            inputStyles,
-            tw`relative py-2 pl-3 pr-10 bg-white border focus:(outline-none ring-1)`,
-          ]}
-          
-          autoComplete="off"
-        /> */}
 
         <ComboboxButton />
 

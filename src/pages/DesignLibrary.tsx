@@ -35,7 +35,10 @@ export const DesignLibrary = () => {
           name="multi-testing"
           options={people}
           values={multiValues}
-          placeholder="Multi type here (TBD)..."
+          placeholder="Multi type here..."
+          removeItem={(item: string) =>
+            setMultiValues(multiValues.filter((value) => value !== item))
+          }
           onChange={(values: any[]) => setMultiValues(values)}
         />
       </div>
