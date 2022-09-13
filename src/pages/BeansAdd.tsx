@@ -14,7 +14,9 @@ import { FormInputRange } from "../components/form/FormInputRange";
 import { FormRadio } from "../components/form/FormRadio";
 import { TextWithImageOption } from "../components/ListOption";
 import countries from "../data/countries";
+import { processes } from "../data/processes";
 import { notesToOptions, tastingNotes } from "../data/tasting-notes";
+import { varietals } from "../data/varietals";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 import { RoastStyle } from "../types/beans";
@@ -28,6 +30,8 @@ export type BeansAddInputs = {
   roastLevel: number | null;
   roastingNotes: string[];
   country: string | null;
+  process: string | null;
+  varietals: string[];
   harvestDate: Date | null;
   isFinished?: boolean;
 };
@@ -44,8 +48,8 @@ export const emptyValues: BeansAddInputs = {
   country: null,
   // farmer: "",
   // region: "",
-  // process: "",
-  // varietals: [],
+  process: "",
+  varietals: [],
   harvestDate: null,
   // altitude: "",
   // freezeDate: null,
@@ -136,7 +140,7 @@ export const BeansAdd: React.FC = () => {
             name="country"
             label="Country"
             options={countries.map(({ name }) => name)}
-            placeholder="Type country here..."
+            placeholder="Ethiopia"
             renderOption={(country) => (
               <TextWithImageOption
                 text={country}
@@ -151,8 +155,22 @@ export const BeansAdd: React.FC = () => {
             label="Roasting notes"
             name="roastingNotes"
             options={notesToOptions(tastingNotes).map((note) => note.label)} // TODO see if we can have groups
+            placeholder="Search notes..."
           />
 
+          <FormComboboxSingle
+            label="Process"
+            name="process"
+            options={processes}
+            placeholder="Red honey"
+          />
+
+          <FormComboboxMulti
+            label="Varietal(s)"
+            name="varietals"
+            options={varietals}
+            placeholder="Search variety..."
+          />
           <FormInputMonthYear
             label="Harvest date"
             id="harvestDate"
