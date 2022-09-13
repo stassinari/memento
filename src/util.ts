@@ -4,6 +4,10 @@ export function isNotNullable<T>(x: T | null | undefined): x is T {
   return x != null;
 }
 
+export function immutableRemove<T>(array: T[], item: T) {
+  return array.filter((i) => i !== item);
+}
+
 export const isNotFrozenOrIsThawed = (beans: Beans): boolean =>
   !beans.freezeDate || (!!beans.freezeDate && !!beans.thawDate);
 

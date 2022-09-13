@@ -5,7 +5,8 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
-import { FormCombobox } from "../components/form/FormCombobox";
+import { FormComboboxMulti } from "../components/form/FormComboboxMulti";
+import { FormComboboxSingle } from "../components/form/FormComboboxSingle";
 import { FormInput } from "../components/form/FormInput";
 import { FormInputDate } from "../components/form/FormInputDate";
 import { FormInputMonthYear } from "../components/form/FormInputMonthYear";
@@ -13,6 +14,7 @@ import { FormInputRange } from "../components/form/FormInputRange";
 import { FormRadio } from "../components/form/FormRadio";
 import { TextWithImageOption } from "../components/ListOption";
 import countries from "../data/countries";
+import { notesToOptions, tastingNotes } from "../data/tasting-notes";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 import { RoastStyle } from "../types/beans";
@@ -24,6 +26,7 @@ export type BeansAddInputs = {
   roastDate: Date | null;
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
+  roastingNotes: string[];
   country: string | null;
   harvestDate: Date | null;
   isFinished?: boolean;
@@ -34,7 +37,7 @@ export const emptyValues: BeansAddInputs = {
   isFinished: false,
   roaster: "",
   roastDate: null,
-  // roastingNotes: [],
+  roastingNotes: [],
   roastStyle: null,
   roastLevel: null,
   // origin: "single-origin",
@@ -129,7 +132,7 @@ export const BeansAdd: React.FC = () => {
             ]}
           />
 
-          <FormCombobox
+          <FormComboboxSingle
             name="country"
             label="Country"
             options={countries.map(({ name }) => name)}
@@ -143,6 +146,12 @@ export const BeansAdd: React.FC = () => {
           />
 
           <FormInputRange label="Roast level" id="roastLevel" />
+
+          <FormComboboxMulti
+            label="Roasting notes"
+            name="roastingNotes"
+            options={notesToOptions(tastingNotes).map((note) => note.label)} // TODO see if we can have groups
+          />
 
           <FormInputMonthYear
             label="Harvest date"
