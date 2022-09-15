@@ -149,7 +149,13 @@ export const BeansAdd: React.FC = () => {
             )}
           />
 
-          <FormInputRange label="Roast level" id="roastLevel" />
+          <FormInputRange
+            label="Roast level"
+            id="roastLevel"
+            min={0}
+            max={50}
+            step={1}
+          />
 
           <FormComboboxMulti
             label="Roasting notes"
