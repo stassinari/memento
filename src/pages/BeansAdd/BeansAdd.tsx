@@ -10,7 +10,7 @@ import { FormComboboxSingle } from "../../components/form/FormComboboxSingle";
 import { FormInput } from "../../components/form/FormInput";
 import { FormInputDate } from "../../components/form/FormInputDate";
 import { FormInputMonthYear } from "../../components/form/FormInputMonthYear";
-import { FormInputRange } from "../../components/form/FormInputRange";
+import { FormInputSlider } from "../../components/form/FormInputSlider";
 import { FormRadio } from "../../components/form/FormRadio";
 import { TextWithImageOption } from "../../components/ListOption";
 import countries from "../../data/countries";
@@ -149,7 +149,7 @@ export const BeansAdd: React.FC = () => {
             )}
           />
 
-          <FormInputRange
+          <FormInputSlider
             label="Roast level"
             id="roastLevel"
             min={0}

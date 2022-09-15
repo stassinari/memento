@@ -3,7 +3,7 @@ import { getTrackBackground, Range } from "react-range";
 import "twin.macro";
 import tw, { theme } from "twin.macro";
 
-export interface InputRangeProps {
+export interface InputSliderProps {
   onChange: (values: number[]) => void;
   values: number[];
   step: number;
@@ -13,7 +13,7 @@ export interface InputRangeProps {
   hideThumbMarker?: boolean;
 }
 
-export const InputRange: React.FC<InputRangeProps> = ({
+export const InputSlider: React.FC<InputSliderProps> = ({
   min,
   max,
   step,

@@ -1,15 +1,16 @@
 import { Controller, useFormContext } from "react-hook-form";
 import "twin.macro";
 import { Input } from "../Input";
-import { InputRange, InputRangeProps } from "../InputRange";
+import { InputSlider, InputSliderProps } from "../InputSlider";
 
-interface FormInputRange extends Omit<InputRangeProps, "values" | "onChange"> {
+interface FormInputSlider
+  extends Omit<InputSliderProps, "values" | "onChange"> {
   label: string;
   id: string;
   helperText?: string;
 }
 
-export const FormInputRange: React.FC<FormInputRange> = ({
+export const FormInputSlider: React.FC<FormInputSlider> = ({
   label,
   id,
   ...rest
@@ -24,7 +25,7 @@ export const FormInputRange: React.FC<FormInputRange> = ({
           control={control}
           name={id}
           render={({ field }) => (
-            <InputRange
+            <InputSlider
               values={[field.value]}
               onChange={(values) => field.onChange(values[0])}
               {...rest}
