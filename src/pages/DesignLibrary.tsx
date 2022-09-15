@@ -4,6 +4,7 @@ import "twin.macro";
 import { Button } from "../components/Button";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
+import { InputRadio } from "../components/InputRadio";
 
 const people = [
   "Durward Reynolds",
@@ -21,6 +22,15 @@ export const DesignLibrary = () => {
   return (
     <div tw="space-y-8">
       <div tw="space-y-4">
+        <InputRadio
+          label="Test radio"
+          options={[
+            { label: "First label", value: "first" },
+            { label: "Second label", value: "second" },
+          ]}
+          inputProps={{ name: "test-radio" }}
+        />
+
         <ComboboxSingle
           label="Testing"
           name="testing"
