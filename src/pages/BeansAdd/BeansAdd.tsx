@@ -80,9 +80,7 @@ export const BeansAdd: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<BeansAddInputs> = async (data) => {
-    // const newData = { ...data, roastDate: Date.parse(data.roastDate || "") };
-    console.log(data);
-    // mutation.mutate({ ...emptyValues, ...data }); // fix this, add a hidden isFinished field I guess
+    mutation.mutate(data);
   };
 
   return (
