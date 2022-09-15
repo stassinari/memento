@@ -31,6 +31,8 @@ export type BeansAddInputs = {
   roastingNotes: string[];
   country: string | null;
   process: string | null;
+  farmer: string | null;
+  region: string | null;
   varietals: string[];
   harvestDate: Date | null;
   isFinished?: boolean;
@@ -46,8 +48,8 @@ export const emptyValues: BeansAddInputs = {
   roastLevel: null,
   // origin: "single-origin",
   country: null,
-  // farmer: "",
-  // region: "",
+  farmer: "",
+  region: "",
   process: "",
   varietals: [],
   harvestDate: null,
@@ -179,6 +181,27 @@ export const BeansAdd: React.FC = () => {
             options={varietals}
             placeholder="Search variety..."
           />
+
+          <FormInput
+            label="Farmer"
+            id="farmer"
+            inputProps={{
+              ...register("farmer"),
+              type: "text",
+              placeholder: "Cooperativa lollanza",
+            }}
+          />
+
+          <FormInput
+            label="Region"
+            id="region"
+            inputProps={{
+              ...register("region"),
+              type: "text",
+              placeholder: "Huila",
+            }}
+          />
+
           <FormInputMonthYear
             label="Harvest date"
             id="harvestDate"

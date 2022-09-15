@@ -80,7 +80,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
         {overrideLabels ? (
           <React.Fragment>
             {overrideLabels.map((l) => (
-              <span>{l}</span>
+              <span key={l}>{l}</span>
             ))}
           </React.Fragment>
         ) : (
