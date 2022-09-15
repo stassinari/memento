@@ -17,7 +17,7 @@ import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
 import { TastingsPage } from "./pages/TastingsPage";
 
-const BeansAdd = React.lazy(() => import("./pages/BeansAdd"));
+const BeansAdd = React.lazy(() => import("./pages/BeansAdd/BeansAdd"));
 const BeansDetails = React.lazy(() => import("./pages/BeansDetails"));
 const BeansPage = React.lazy(() => import("./pages/BeansPage"));
 const LogIn = React.lazy(() => import("./pages/LogIn"));
