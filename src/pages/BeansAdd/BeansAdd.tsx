@@ -33,6 +33,7 @@ export type BeansAddInputs = {
   process: string | null;
   farmer: string | null;
   region: string | null;
+  altitude: number | null;
   varietals: string[];
   harvestDate: Date | null;
   isFinished?: boolean;
@@ -48,12 +49,12 @@ export const emptyValues: BeansAddInputs = {
   roastLevel: null,
   // origin: "single-origin",
   country: null,
-  farmer: "",
-  region: "",
-  process: "",
+  farmer: null,
+  region: null,
+  process: null,
   varietals: [],
   harvestDate: null,
-  // altitude: "",
+  altitude: null,
   // freezeDate: null,
   // thawDate: null,
 };
@@ -199,6 +200,16 @@ export const BeansAdd: React.FC = () => {
               ...register("region"),
               type: "text",
               placeholder: "Huila",
+            }}
+          />
+
+          <FormInput
+            label="Altitude (masl)"
+            id="altitude"
+            inputProps={{
+              ...register("altitude", { valueAsNumber: true }),
+              type: "number",
+              placeholder: "1200",
             }}
           />
 
