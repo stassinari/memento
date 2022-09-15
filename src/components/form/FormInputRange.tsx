@@ -1,4 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
+import "twin.macro";
 import { Input } from "../Input";
 import { InputRange, InputRangeProps } from "../InputRange";
 
@@ -18,7 +19,7 @@ export const FormInputRange: React.FC<FormInputRange> = ({
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-4">
+      <div tw="mt-3">
         <Controller
           control={control}
           name={id}

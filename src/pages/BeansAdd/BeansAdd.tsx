@@ -153,8 +153,10 @@ export const BeansAdd: React.FC = () => {
             label="Roast level"
             id="roastLevel"
             min={0}
-            max={50}
+            max={4}
             step={1}
+            overrideLabels={["Light", "Medium", "Dark"]}
+            hideThumbMarker={true}
           />
 
           <FormComboboxMulti
