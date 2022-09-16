@@ -2,6 +2,7 @@ import { PlusCircleIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import "twin.macro";
 import { Button } from "../components/Button";
+import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
 import { InputRadio } from "../components/InputRadio";
@@ -29,6 +30,9 @@ export const DesignLibrary = () => {
 
   return (
     <div tw="space-y-8">
+      <div>
+        <Card>This is a card</Card>
+      </div>
       <div tw="space-y-4">
         <InputRadio
           label="Test radio"

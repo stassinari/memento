@@ -55,7 +55,7 @@ export const SidebarNav = () => {
       : navigation;
 
   return (
-    <div tw="hidden md:(flex w-64 flex-col fixed inset-y-0)">
+    <div tw="hidden md:(flex w-48 flex-col fixed inset-y-0) lg:w-64">
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <div
         css={[

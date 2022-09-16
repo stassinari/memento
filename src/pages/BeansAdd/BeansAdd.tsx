@@ -5,6 +5,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
+import { FormSection } from "../../components/Form";
 import { FormComboboxMulti } from "../../components/form/FormComboboxMulti";
 import { FormComboboxSingle } from "../../components/form/FormComboboxSingle";
 import { FormInput } from "../../components/form/FormInput";
@@ -87,151 +88,170 @@ export const BeansAdd: React.FC = () => {
 
   return (
     <div>
-      adding beanz
+      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">Add beans</h1>
       {/* Consider creating reusable components rather than relying on this Provider */}
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
-          tw="space-y-6"
+          tw="mt-6 space-y-6"
         >
-          <FormInput
-            label="Name"
-            id="name"
-            inputProps={{
-              ...register("name", {
-                required: "Please enter a name for your beans",
-              }),
-              type: "text",
-              autoFocus: true,
-              placeholder: "Kilimanjaro",
-            }}
-            error={errors.name?.message}
-          />
+          <FormSection
+            title="Roast information"
+            subtitle="This information is about things that were decided on the roaster's end."
+          >
+            <FormInput
+              label="Name *"
+              id="name"
+              inputProps={{
+                ...register("name", {
+                  required: "Please enter a name for your beans",
+                }),
+                type: "text",
+                autoFocus: true,
+                placeholder: "Kilimanjaro",
+              }}
+              error={errors.name?.message}
+            />
 
-          <FormInput
-            label="Roaster"
-            id="roaster"
-            inputProps={{
-              ...register("roaster", {
-                required: "Please enter your password",
-              }),
-              type: "text",
-              placeholder: "Square Mile",
-            }}
-            error={errors.roaster?.message}
-          />
+            <FormInput
+              label="Roaster *"
+              id="roaster"
+              inputProps={{
+                ...register("roaster", {
+                  required: "Please enter your password",
+                }),
+                type: "text",
+                placeholder: "Square Mile",
+              }}
+              error={errors.roaster?.message}
+            />
 
-          <FormInputDate
-            label="Roast date"
-            id="roastDate"
-            placeholder="Select roast date"
-          />
+            <FormInputDate
+              label="Roast date"
+              id="roastDate"
+              placeholder="Select roast date"
+            />
 
-          <FormInputRadio
-            id="roastStyle"
-            label="Roast profile"
-            inputProps={{ ...register("roastStyle") }}
-            options={[
-              { value: "filter", label: "Filter" },
-              { value: "espresso", label: "Espresso" },
-              { value: "omni-roast", label: "Omni-roast" },
-            ]}
-          />
+            <FormInputRadio
+              id="roastStyle"
+              label="Roast profile"
+              inputProps={{ ...register("roastStyle") }}
+              options={[
+                { value: "filter", label: "Filter" },
+                { value: "espresso", label: "Espresso" },
+                { value: "omni-roast", label: "Omni-roast" },
+              ]}
+            />
 
-          <FormComboboxSingle
-            name="country"
-            label="Country"
-            options={countries.map(({ name }) => name)}
-            placeholder="Ethiopia"
-            renderOption={(country) => (
-              <TextWithImageOption
-                text={country}
-                Image={<CountryOptionFlag country={country} />}
-              />
-            )}
-          />
+            <FormInputSlider
+              label="Roast level"
+              id="roastLevel"
+              min={0}
+              max={4}
+              step={1}
+              overrideLabels={["Light", "Medium", "Dark"]}
+              hideThumbMarker={true}
+            />
 
-          <FormInputSlider
-            label="Roast level"
-            id="roastLevel"
-            min={0}
-            max={4}
-            step={1}
-            overrideLabels={["Light", "Medium", "Dark"]}
-            hideThumbMarker={true}
-          />
+            <FormComboboxMulti
+              label="Roasting notes"
+              name="roastingNotes"
+              options={notesToOptions(tastingNotes).map((note) => note.label)} // TODO see if we can have groups
+              placeholder="Search notes..."
+            />
+          </FormSection>
 
-          <FormComboboxMulti
-            label="Roasting notes"
-            name="roastingNotes"
-            options={notesToOptions(tastingNotes).map((note) => note.label)} // TODO see if we can have groups
-            placeholder="Search notes..."
-          />
+          <FormSection
+            title="Terroir"
+            subtitle="This information is about where the beans came from."
+          >
+            <FormInputRadioButtonGroup
+              label="Origin"
+              name="origin"
+              options={[
+                { label: "Singe origin", value: "single-origin" },
+                { label: "Blend", value: "blend" },
+              ]}
+              variant="secondary"
+            />
 
-          <FormInputRadioButtonGroup
-            label="Origin"
-            name="origin"
-            options={[
-              { label: "Singe origin", value: "single-origin" },
-              { label: "Blend", value: "blend" },
-            ]}
-            variant="secondary"
-          />
+            <FormComboboxSingle
+              name="country"
+              label="Country"
+              options={countries.map(({ name }) => name)}
+              placeholder="Ethiopia"
+              renderOption={(country) => (
+                <TextWithImageOption
+                  text={country}
+                  Image={<CountryOptionFlag country={country} />}
+                />
+              )}
+            />
 
-          <FormComboboxSingle
-            label="Process"
-            name="process"
-            options={processes}
-            placeholder="Red honey"
-          />
+            <FormComboboxSingle
+              label="Process"
+              name="process"
+              options={processes}
+              placeholder="Red honey"
+            />
 
-          <FormComboboxMulti
-            label="Varietal(s)"
-            name="varietals"
-            options={varietals}
-            placeholder="Search variety..."
-          />
+            <FormComboboxMulti
+              label="Varietal(s)"
+              name="varietals"
+              options={varietals}
+              placeholder="Search variety..."
+            />
 
-          <FormInput
-            label="Farmer"
-            id="farmer"
-            inputProps={{
-              ...register("farmer"),
-              type: "text",
-              placeholder: "Cooperativa lollanza",
-            }}
-          />
+            <FormInput
+              label="Farmer"
+              id="farmer"
+              inputProps={{
+                ...register("farmer"),
+                type: "text",
+                placeholder: "Cooperativa lollanza",
+              }}
+            />
 
-          <FormInput
-            label="Region"
-            id="region"
-            inputProps={{
-              ...register("region"),
-              type: "text",
-              placeholder: "Huila",
-            }}
-          />
+            <FormInput
+              label="Region"
+              id="region"
+              inputProps={{
+                ...register("region"),
+                type: "text",
+                placeholder: "Huila",
+              }}
+            />
 
-          <FormInput
-            label="Altitude (masl)"
-            id="altitude"
-            inputProps={{
-              ...register("altitude", { valueAsNumber: true }),
-              type: "number",
-              placeholder: "1200",
-            }}
-          />
+            <FormInput
+              label="Altitude (masl)"
+              id="altitude"
+              inputProps={{
+                ...register("altitude", { valueAsNumber: true }),
+                type: "number",
+                placeholder: "1200",
+              }}
+            />
 
-          <FormInputMonthYear
-            label="Harvest date"
-            id="harvestDate"
-            placeholder="Select harvest date"
-          />
+            <FormInputMonthYear
+              label="Harvest date"
+              id="harvestDate"
+              placeholder="Select harvest date"
+            />
+          </FormSection>
 
-          <Button variant="primary" type="submit" disabled={mutation.isLoading}>
-            Add
-          </Button>
+          <div className="flex justify-end gap-4">
+            <Button variant="white" onClick={() => navigate(-1)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={mutation.isLoading}
+            >
+              Add
+            </Button>
+          </div>
         </form>
       </FormProvider>
     </div>

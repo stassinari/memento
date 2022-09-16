@@ -1,3 +1,4 @@
+import "twin.macro";
 import { Card } from "../components/Card";
 import { Divider } from "../components/Divider";
 import { EmailPasswordLogin } from "../components/EmailPasswordLogin";
@@ -8,15 +9,15 @@ export const LogIn = () => {
   return (
     <div css={layoutContainerStyles}>
       <div tw="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 tw="mt-6 text-3xl font-bold tracking-tight text-center text-gray-900">
+        <h2 tw="my-6 text-3xl font-bold tracking-tight text-center text-gray-900">
           Sign in to Memento
         </h2>
+        <Card>
+          <EmailPasswordLogin />
+          <Divider label="Or continue with" />
+          <GoogleLogin />
+        </Card>
       </div>
-      <Card>
-        <EmailPasswordLogin />
-        <Divider label="Or continue with" />
-        <GoogleLogin />
-      </Card>
     </div>
   );
 };

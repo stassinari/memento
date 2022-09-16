@@ -19,18 +19,12 @@ export const Layout = () => {
   return (
     <div css={layoutContainerStyles}>
       <SidebarNav />
-      <div tw="md:pl-64">
+      <div tw="md:pl-48 lg:pl-64">
         <BottomNav />
 
         <main css={tw`flex-1`}>
           <div tw="py-6">
-            {/* <div tw="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-              <h1 tw="text-2xl font-semibold text-gray-900">
-                {"{Put title here!}"}
-              </h1>
-            </div> */}
-            <div tw="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-              {/* /End replace */}
+            <div tw="mx-auto max-w-7xl sm:px-6 lg:px-16 2xl:px-32">
               <Suspense>
                 <Outlet />
               </Suspense>
