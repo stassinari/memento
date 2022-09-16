@@ -1,6 +1,6 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { RadioOption } from "../InputRadio";
-import { InputRadioCard } from "../InputRadioCard";
+import { InputRadioButtonGroup } from "../InputRadioButtonGroup";
 
 interface FormInputRadioCardProps {
   name: string;
@@ -20,7 +20,7 @@ export const FormInputRadioCard: React.FC<FormInputRadioCardProps> = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <InputRadioCard
+        <InputRadioButtonGroup
           label={label}
           options={options}
           value={field.value}

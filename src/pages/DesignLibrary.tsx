@@ -5,7 +5,7 @@ import { Button } from "../components/Button";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
 import { InputRadio } from "../components/InputRadio";
-import { InputRadioCard } from "../components/InputRadioCard";
+import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
 
 const people = [
   "Durward Reynolds",
@@ -36,7 +36,7 @@ export const DesignLibrary = () => {
           inputProps={{ name: "test-radio" }}
         />
 
-        <InputRadioCard
+        <InputRadioButtonGroup
           label="Test radio"
           options={radioOptions}
           value={radioCardValue}

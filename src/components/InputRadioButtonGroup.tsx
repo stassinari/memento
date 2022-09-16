@@ -3,14 +3,14 @@ import tw from "twin.macro";
 import { labelStyles } from "./Input";
 import { RadioOption } from "./InputRadio";
 
-export interface InputRadioCardProps {
+interface InputRadioButtonGroupProps {
   label: string;
   options: RadioOption[];
   value: any;
   onChange: (...event: any[]) => void;
 }
 
-export const InputRadioCard: React.FC<InputRadioCardProps> = ({
+export const InputRadioButtonGroup: React.FC<InputRadioButtonGroupProps> = ({
   label,
   options,
   value,

@@ -76,7 +76,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
         }}
       />
 
-      <div tw="flex justify-between mt-2 -mx-2 text-xs text-gray-700">
+      <div tw="flex justify-between mt-2 -mx-2 text-sm text-gray-700 sm:text-xs">
         {overrideLabels ? (
           <React.Fragment>
             {overrideLabels.map((l) => (
