@@ -3,7 +3,7 @@ import "twin.macro";
 import { Input } from "../Input";
 import { InputRadio, RadioOption } from "../InputRadio";
 
-interface FormRadioProps {
+interface FormInputRadioProps {
   label: string;
   id: string;
   options: RadioOption[];
@@ -12,7 +12,7 @@ interface FormRadioProps {
   error?: string;
 }
 
-export const FormRadio: React.FC<FormRadioProps> = ({
+export const FormInputRadio: React.FC<FormInputRadioProps> = ({
   label,
   id,
   options,

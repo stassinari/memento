@@ -5,6 +5,7 @@ import { Button } from "../components/Button";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
 import { InputRadio } from "../components/InputRadio";
+import { InputRadioCard } from "../components/InputRadioCard";
 
 const people = [
   "Durward Reynolds",
@@ -14,21 +15,32 @@ const people = [
   "Katelyn Rohan",
 ];
 
+const radioOptions = [
+  { label: "First label", value: "first" },
+  { label: "Second label", value: "second" },
+  { label: "Third label", value: "third" },
+];
+
 export const DesignLibrary = () => {
   const [singleValue, setSingleValue] = useState<string>();
   const [multiValues, setMultiValues] = useState<string[]>([]);
-  console.log(multiValues);
+
+  const [radioCardValue, setRadioCardValue] = useState<string>();
 
   return (
     <div tw="space-y-8">
       <div tw="space-y-4">
         <InputRadio
           label="Test radio"
-          options={[
-            { label: "First label", value: "first" },
-            { label: "Second label", value: "second" },
-          ]}
+          options={radioOptions}
           inputProps={{ name: "test-radio" }}
+        />
+
+        <InputRadioCard
+          label="Test radio"
+          options={radioOptions}
+          value={radioCardValue}
+          onChange={(v) => setRadioCardValue(v)}
         />
 
         <ComboboxSingle

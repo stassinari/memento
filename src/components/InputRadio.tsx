@@ -4,9 +4,10 @@ import "twin.macro";
 export type RadioOption = {
   value: string;
   label: string;
+  disabled?: boolean;
 };
 
-interface InputRadioProps {
+export interface InputRadioProps {
   label: string;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
   options: RadioOption[];
@@ -22,7 +23,7 @@ export const InputRadio: React.FC<InputRadioProps> = ({
       <legend tw="sr-only">{label}</legend>
       <div tw="space-y-4 sm:(flex items-center space-y-0 space-x-10)">
         {options.map(({ value, label }) => (
-          <div key={value} tw="flex items-center">
+          <div key={label} tw="flex items-center">
             <input
               {...inputProps}
               id={value}

@@ -10,8 +10,9 @@ import { FormComboboxSingle } from "../../components/form/FormComboboxSingle";
 import { FormInput } from "../../components/form/FormInput";
 import { FormInputDate } from "../../components/form/FormInputDate";
 import { FormInputMonthYear } from "../../components/form/FormInputMonthYear";
+import { FormInputRadio } from "../../components/form/FormInputRadio";
+import { FormInputRadioCard } from "../../components/form/FormInputRadioCard";
 import { FormInputSlider } from "../../components/form/FormInputSlider";
-import { FormRadio } from "../../components/form/FormRadio";
 import { TextWithImageOption } from "../../components/ListOption";
 import countries from "../../data/countries";
 import { processes } from "../../data/processes";
@@ -32,6 +33,7 @@ export type BeansAddInputs = {
   country: string | null;
   process: string | null;
   farmer: string | null;
+  origin: "single-origin" | "blend";
   region: string | null;
   altitude: number | null;
   varietals: string[];
@@ -47,7 +49,7 @@ export const emptyValues: BeansAddInputs = {
   roastingNotes: [],
   roastStyle: null,
   roastLevel: null,
-  // origin: "single-origin",
+  origin: "single-origin",
   country: null,
   farmer: null,
   region: null,
@@ -126,7 +128,7 @@ export const BeansAdd: React.FC = () => {
             placeholder="Select roast date"
           />
 
-          <FormRadio
+          <FormInputRadio
             id="roastStyle"
             label="Roast profile"
             inputProps={{ ...register("roastStyle") }}
@@ -165,6 +167,15 @@ export const BeansAdd: React.FC = () => {
             name="roastingNotes"
             options={notesToOptions(tastingNotes).map((note) => note.label)} // TODO see if we can have groups
             placeholder="Search notes..."
+          />
+
+          <FormInputRadioCard
+            label="Origin"
+            name="origin"
+            options={[
+              { label: "Singe origin", value: "single-origin" },
+              { label: "Blend", value: "blend" },
+            ]}
           />
 
           <FormComboboxSingle
