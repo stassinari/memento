@@ -1,18 +1,17 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { RadioOption } from "../InputRadio";
-import { InputRadioButtonGroup } from "../InputRadioButtonGroup";
+import {
+  InputRadioButtonGroup,
+  InputRadioButtonGroupProps,
+} from "../InputRadioButtonGroup";
 
-interface FormInputRadioCardProps {
+interface FormInputRadioButtonGroupProps
+  extends Pick<InputRadioButtonGroupProps, "label" | "options" | "variant"> {
   name: string;
-  label: string;
-  options: RadioOption[];
 }
 
-export const FormInputRadioCard: React.FC<FormInputRadioCardProps> = ({
-  name,
-  label,
-  options,
-}) => {
+export const FormInputRadioButtonGroup: React.FC<
+  FormInputRadioButtonGroupProps
+> = ({ name, ...rest }) => {
   const { control } = useFormContext();
 
   return (
@@ -21,8 +20,7 @@ export const FormInputRadioCard: React.FC<FormInputRadioCardProps> = ({
       name={name}
       render={({ field }) => (
         <InputRadioButtonGroup
-          label={label}
-          options={options}
+          {...rest}
           value={field.value}
           onChange={(newValue) => field.onChange(newValue)}
         />

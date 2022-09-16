@@ -37,10 +37,18 @@ export const DesignLibrary = () => {
         />
 
         <InputRadioButtonGroup
-          label="Test radio"
+          label="Test radio group"
           options={radioOptions}
           value={radioCardValue}
           onChange={(v) => setRadioCardValue(v)}
+        />
+
+        <InputRadioButtonGroup
+          label="Test radio secondary"
+          options={radioOptions}
+          value={radioCardValue}
+          onChange={(v) => setRadioCardValue(v)}
+          variant="secondary"
         />
 
         <ComboboxSingle

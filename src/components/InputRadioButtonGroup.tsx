@@ -3,11 +3,12 @@ import tw from "twin.macro";
 import { labelStyles } from "./Input";
 import { RadioOption } from "./InputRadio";
 
-interface InputRadioButtonGroupProps {
+export interface InputRadioButtonGroupProps {
   label: string;
   options: RadioOption[];
   value: any;
   onChange: (...event: any[]) => void;
+  variant?: "primary" | "secondary";
 }
 
 export const InputRadioButtonGroup: React.FC<InputRadioButtonGroupProps> = ({
@@ -15,6 +16,7 @@ export const InputRadioButtonGroup: React.FC<InputRadioButtonGroupProps> = ({
   options,
   value,
   onChange,
+  variant = "primary",
 }) => {
   return (
     <RadioGroup value={value} onChange={onChange} tw="mt-2">
@@ -27,7 +29,13 @@ export const InputRadioButtonGroup: React.FC<InputRadioButtonGroupProps> = ({
             value={option.value}
             css={[
               tw`flex items-center justify-center px-5 py-2 text-sm font-medium border focus:z-10 first:rounded-l-md last:rounded-r-md not-first:-ml-px`,
-              tw`ui-active:(ring-2 ring-offset-2 ring-orange-500) ui-checked:(bg-orange-600 border-transparent text-white hover:bg-orange-700) ui-not-checked:(bg-white border-gray-200 text-gray-700 hover:bg-gray-50)`,
+              tw`ui-active:(ring-orange-500)`,
+              tw`ui-not-checked:(bg-white border-gray-200 text-gray-700 hover:bg-gray-50)`,
+              variant === "primary"
+                ? tw`ui-checked:(bg-orange-600 border-transparent text-white hover:bg-orange-700) ui-active:(ring-2 ring-offset-2)`
+                : variant === "secondary"
+                ? tw`ui-checked:(text-orange-700 bg-orange-100 border-transparent hover:bg-orange-200) ui-not-checked:(focus:border-orange-500) ui-active:(ring-1 border-orange-500)`
+                : null,
               option.disabled
                 ? tw`opacity-25 cursor-not-allowed`
                 : tw`cursor-pointer focus:outline-none`,

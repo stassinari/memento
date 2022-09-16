@@ -11,7 +11,7 @@ import { FormInput } from "../../components/form/FormInput";
 import { FormInputDate } from "../../components/form/FormInputDate";
 import { FormInputMonthYear } from "../../components/form/FormInputMonthYear";
 import { FormInputRadio } from "../../components/form/FormInputRadio";
-import { FormInputRadioCard } from "../../components/form/FormInputRadioCard";
+import { FormInputRadioButtonGroup } from "../../components/form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../../components/form/FormInputSlider";
 import { TextWithImageOption } from "../../components/ListOption";
 import countries from "../../data/countries";
@@ -169,13 +169,14 @@ export const BeansAdd: React.FC = () => {
             placeholder="Search notes..."
           />
 
-          <FormInputRadioCard
+          <FormInputRadioButtonGroup
             label="Origin"
             name="origin"
             options={[
               { label: "Singe origin", value: "single-origin" },
               { label: "Blend", value: "blend" },
             ]}
+            variant="secondary"
           />
 
           <FormComboboxSingle
