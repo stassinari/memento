@@ -21,6 +21,9 @@ module.exports = {
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
+      spacing: {
+        "5/4": "125%",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), require("@headlessui/tailwindcss")],

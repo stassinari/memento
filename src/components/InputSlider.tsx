@@ -50,7 +50,11 @@ export const InputSlider: React.FC<InputSliderProps> = ({
         renderThumb={({ props, isDragged }) => (
           <div
             {...props}
-            tw="relative w-4 h-4 bg-white border border-gray-300 rounded-full shadow focus-visible:(outline-none ring-orange-500 border-orange-500 border)"
+            css={[
+              tw`relative w-4 h-4 bg-white border border-gray-300 rounded-full shadow`,
+              tw`before:(content rounded-full opacity-20 w-12 h-12 block -top-5/4 -left-5/4 absolute)`,
+              tw`focus:(outline-none ring-orange-500 border-orange-500)`,
+            ]}
             style={{
               transform: "translate(-8px, -4px)",
               ...props.style,
