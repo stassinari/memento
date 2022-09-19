@@ -12,20 +12,20 @@ interface BeansCommon {
   roaster: string;
   roastDate: Timestamp | null;
   roastStyle: RoastStyle | null;
-  roastLevel?: number | null;
+  roastLevel: number | null;
   roastingNotes: never[];
-  origin?: Origin;
+  origin: Origin;
   freezeDate: Timestamp | null;
   thawDate: Timestamp | null;
 }
 
 interface BeansSingleOrigin {
   country: string | null;
-  region?: string;
+  region: string | null;
   varietals: string[];
-  altitude?: string;
-  process?: string;
-  farmer?: string;
+  altitude: number | null;
+  process: string | null;
+  farmer: string | null;
   harvestDate: Timestamp | null;
 }
 

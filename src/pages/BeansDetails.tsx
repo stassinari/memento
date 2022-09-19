@@ -1,7 +1,8 @@
 import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
 import { doc, DocumentReference } from "firebase/firestore";
 import { useAtom } from "jotai";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { Button } from "../components/Button";
 import { Details } from "../components/Details";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
@@ -38,6 +39,10 @@ export const BeansDetails = () => {
           Subtitle in case it's needed.
         </p>
       </div>
+      <Button variant="primary" as={Link} to="edit">
+        Edit
+      </Button>
+
       <Details
         rows={[
           { label: "Name", value: beans.name },

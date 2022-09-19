@@ -15,7 +15,7 @@ export interface ComboboxMultiProps {
   name: string;
   label: string;
   options: string[];
-  values: any[];
+  values?: any[];
   onChange: (...event: any[]) => void;
   removeItem: (item: any) => void;
   placeholder?: string;
@@ -26,7 +26,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
   name,
   label,
   options,
-  values,
+  values = [],
   onChange,
   removeItem,
   placeholder,

@@ -24,7 +24,7 @@ export const Layout = () => {
 
         <main css={tw`flex-1`}>
           <div tw="py-6">
-            <div tw="mx-auto max-w-7xl sm:px-6 lg:px-16 2xl:px-32">
+            <div tw="px-4 mx-auto max-w-7xl sm:px-6 lg:px-16 2xl:px-32">
               <Suspense>
                 <Outlet />
               </Suspense>

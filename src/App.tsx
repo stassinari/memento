@@ -5,6 +5,7 @@ import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
 import { Layout } from "./components/Layout";
 import { useInitUser } from "./hooks/useInitUser";
+import { BeansEdit } from "./pages/BeansEdit";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
 // import { BeansPage } from "./pages/BeansPage";
@@ -48,11 +49,15 @@ export const App = () => {
                 <Route path="beans" element={<BeansPage />} />
                 <Route path="beans/add" element={<BeansAdd />} />
                 <Route path="beans/:beansId" element={<BeansDetails />} />
+                <Route path="beans/:beansId/edit" element={<BeansEdit />} />
+
                 <Route path="drinks" element={<DrinksPage />} />
                 <Route path="drinks/brews" element={<BrewsPage />} />
                 <Route path="drinks/espressos" element={<EspressosPage />} />
                 <Route path="drinks/tastings" element={<TastingsPage />} />
+
                 <Route path="profile" element={<Profile />} />
+
                 <Route path="design-library" element={<DesignLibrary />} />
               </Route>
             </Route>
