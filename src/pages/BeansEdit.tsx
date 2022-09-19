@@ -43,6 +43,7 @@ export const BeansEdit = () => {
     return null;
   }
 
+  // TODO find an automated way to do this
   const fromFirestore: BeansFormInputs = {
     ...beans,
     roastDate: beans.roastDate?.toDate() || null,
