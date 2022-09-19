@@ -97,7 +97,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
         >
           <FormSection
             title="Roast information"
-            subtitle="This information is about things that were decided on the roaster's end."
+            subtitle="This section is about things that were decided on the roaster's end."
           >
             <FormInput
               label="Name *"
@@ -165,7 +165,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
 
           <FormSection
             title="Terroir"
-            subtitle="This information is about where the beans came from."
+            subtitle="This section is about where the beans came from."
           >
             <FormInputRadioButtonGroup
               label="Origin"
