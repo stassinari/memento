@@ -39,7 +39,13 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
         });
 
   return (
-    <HuiCombobox as="div" value={value} onChange={onChange} name={name}>
+    <HuiCombobox
+      as="div"
+      value={value}
+      onChange={onChange}
+      name={name}
+      nullable
+    >
       <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
 
       <div tw="relative mt-1">
@@ -50,13 +56,17 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
 
         <ComboboxButton />
 
-        {filteredOptions.length > 0 && (
-          <ComboboxOptions>
-            {filteredOptions.map((o) => (
-              <ComboboxOption key={o} option={o} renderOption={renderOption} />
-            ))}
-          </ComboboxOptions>
-        )}
+        <ComboboxOptions>
+          {query.length > 0 && (
+            <ComboboxOption
+              option={query}
+              renderOption={(o) => <TextOption text={`Create "${o}"`} />}
+            />
+          )}
+          {filteredOptions.map((o) => (
+            <ComboboxOption key={o} option={o} renderOption={renderOption} />
+          ))}
+        </ComboboxOptions>
       </div>
     </HuiCombobox>
   );

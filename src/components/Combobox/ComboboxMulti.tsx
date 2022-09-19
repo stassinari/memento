@@ -76,13 +76,17 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
 
         <ComboboxButton />
 
-        {filteredOptions.length > 0 && (
-          <ComboboxOptions>
-            {filteredOptions.map((o) => (
-              <ComboboxOption key={o} option={o} renderOption={renderOption} />
-            ))}
-          </ComboboxOptions>
-        )}
+        <ComboboxOptions>
+          {query.length > 0 && (
+            <ComboboxOption
+              option={query}
+              renderOption={(o) => <TextOption text={`Create "${o}"`} />}
+            />
+          )}
+          {filteredOptions.map((o) => (
+            <ComboboxOption key={o} option={o} renderOption={renderOption} />
+          ))}
+        </ComboboxOptions>
       </div>
     </HuiCombobox>
   );
