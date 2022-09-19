@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import { Button } from "../components/Button";
+import { EmptyState } from "../components/EmptyState";
 import { db } from "../firebaseConfig";
 import { userAtom } from "../hooks/useInitUser";
 import { Beans } from "../types/beans";
@@ -112,6 +113,15 @@ const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
   );
 
   if (!beansList) return null;
+
+  if (beansList.length === 0)
+    return (
+      <EmptyState
+        title="No beans"
+        description="Get started by adding some coffee beans"
+        buttonLabel="Add beans"
+      />
+    );
 
   return (
     <div tw="overflow-hidden bg-white shadow sm:rounded-md">

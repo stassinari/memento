@@ -5,6 +5,7 @@ import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
 import { Layout } from "./components/Layout";
 import { useInitUser } from "./hooks/useInitUser";
+import { BeansClone } from "./pages/BeansClone";
 import { BeansEdit } from "./pages/BeansEdit";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
@@ -50,6 +51,7 @@ export const App = () => {
                 <Route path="beans/add" element={<BeansAdd />} />
                 <Route path="beans/:beansId" element={<BeansDetails />} />
                 <Route path="beans/:beansId/edit" element={<BeansEdit />} />
+                <Route path="beans/:beansId/clone" element={<BeansClone />} />
 
                 <Route path="drinks" element={<DrinksPage />} />
                 <Route path="drinks/brews" element={<BrewsPage />} />

@@ -1,3 +1,7 @@
+import {
+  DocumentDuplicateIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/20/solid";
 import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
 import { doc, DocumentReference } from "firebase/firestore";
 import { useAtom } from "jotai";
@@ -39,7 +43,20 @@ export const BeansDetails = () => {
           Subtitle in case it's needed.
         </p>
       </div>
-      <Button variant="primary" as={Link} to="edit">
+      <Button
+        variant="primary"
+        as={Link}
+        to="clone"
+        Icon={<DocumentDuplicateIcon />}
+      >
+        Clone
+      </Button>
+      <Button
+        variant="secondary"
+        as={Link}
+        to="edit"
+        Icon={<PencilSquareIcon />}
+      >
         Edit
       </Button>
 
