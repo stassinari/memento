@@ -25,7 +25,7 @@ export const BeansClone = () => {
   ) as DocumentReference<Beans>;
 
   const { data: beans } = useFirestoreDocumentData(
-    ["beansDetails", beansId],
+    ["beans", beansId],
     existingRef
   );
 

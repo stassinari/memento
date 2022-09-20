@@ -34,10 +34,7 @@ export const BeansEdit = () => {
     }
   );
 
-  const { data: beans } = useFirestoreDocumentData(
-    ["beansDetails", beansId],
-    ref
-  );
+  const { data: beans } = useFirestoreDocumentData(["beans", beansId], ref);
 
   if (!beans) {
     return null;

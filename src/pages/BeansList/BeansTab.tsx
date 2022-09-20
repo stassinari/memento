@@ -39,7 +39,7 @@ export const BeansTab: React.FC<BeansTabProps> = ({
   const beansQuery = query(beansRef, ...filters);
 
   const { data: beansList } = useFirestoreQueryData(
-    ["beansList", name],
+    ["beansTab", name],
     beansQuery,
     {
       idField: "id",
