@@ -2,34 +2,40 @@ import { Combobox as HuiCombobox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import React, { ReactElement, ReactNode } from "react";
 import tw from "twin.macro";
-import { inputStyles } from "../Input";
 
-interface ComboboxInputProps {
-  placeholder?: string;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  displayValue?: (option: string) => string;
-}
+// interface ComboboxInputProps {
+//   placeholder?: string;
+//   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+//   displayValue?: (option: string) => string;
+//   increasePadding?: boolean;
+// }
 
-export const ComboboxInput: React.FC<ComboboxInputProps> = ({
-  placeholder,
-  handleChange,
-  displayValue = (option: string) => option,
-}) => (
-  <HuiCombobox.Input
-    css={[
-      inputStyles,
-      tw`relative py-2 pl-3 pr-10 bg-white border focus:(outline-none ring-1)`,
-    ]}
-    onChange={handleChange}
-    displayValue={displayValue}
-    autoComplete="off"
-    placeholder={placeholder}
-  />
-);
+// export const ComboboxInput: React.FC<ComboboxInputProps> = ({
+//   placeholder,
+//   handleChange,
+//   displayValue = (option: string) => option,
+//   increasePadding,
+// }) => (
+//   <HuiCombobox.Input
+//     css={[
+//       inputStyles,
+//       tw`relative py-2 pl-3 pr-10 bg-white border focus:(outline-none ring-1)`,
+//       increasePadding && tw`pr-16`,
+//     ]}
+//     onChange={handleChange}
+//     displayValue={displayValue}
+//     autoComplete="off"
+//     placeholder={placeholder}
+//   />
+// );
+
+export const comboboxButtonStyles = tw`absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-none`;
+
+export const comboboxButtonIconStyles = tw`w-5 h-5 text-gray-400 hover:text-gray-600`;
 
 export const ComboboxButton = () => (
-  <HuiCombobox.Button tw="absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-none">
-    <ChevronUpDownIcon tw="w-5 h-5 text-gray-400" aria-hidden="true" />
+  <HuiCombobox.Button css={comboboxButtonStyles}>
+    <ChevronUpDownIcon css={comboboxButtonIconStyles} />
   </HuiCombobox.Button>
 );
 
@@ -48,16 +54,19 @@ export const ComboboxOptions: React.FC<ComboboxOptionsProps> = ({
 interface ComboboxOptionProps {
   option: string;
   renderOption: (option: string) => ReactElement;
+  handleClick?: VoidFunction;
 }
 
 export const ComboboxOption: React.FC<ComboboxOptionProps> = ({
   option,
   renderOption,
+  handleClick,
 }) => (
   <HuiCombobox.Option
     key={option}
     value={option}
     tw="relative py-2 pl-3 cursor-default select-none pr-9 ui-active:(bg-orange-600 text-white) ui-not-active:text-gray-900"
+    onClick={handleClick}
   >
     {({ selected }) => (
       <React.Fragment>

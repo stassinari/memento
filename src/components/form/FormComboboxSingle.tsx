@@ -17,7 +17,7 @@ export const FormComboboxSingle: React.FC<FormComboboxSingleProps> = ({
   placeholder,
   renderOption,
 }) => {
-  const { control } = useFormContext();
+  const { control, resetField } = useFormContext();
   return (
     <Controller
       control={control}
@@ -29,6 +29,7 @@ export const FormComboboxSingle: React.FC<FormComboboxSingleProps> = ({
           options={options}
           value={field.value}
           onChange={(newValue) => field.onChange(newValue)}
+          reset={() => resetField(name, { defaultValue: null })}
           placeholder={placeholder}
           renderOption={renderOption}
         />

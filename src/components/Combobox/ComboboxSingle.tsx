@@ -1,11 +1,14 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 import React, { ReactElement, useState } from "react";
 import "twin.macro";
-import { labelStyles } from "../Input";
+import tw from "twin.macro";
+import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../ListOption";
 import {
   ComboboxButton,
-  ComboboxInput,
+  comboboxButtonIconStyles,
+  comboboxButtonStyles,
   ComboboxOption,
   ComboboxOptions,
 } from "./ComboboxElements";
@@ -16,6 +19,7 @@ export interface ComboboxSingleProps {
   options: string[];
   value: any;
   onChange: (...event: any[]) => void;
+  reset: VoidFunction;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
@@ -26,10 +30,13 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
   options,
   value,
   onChange,
+  reset,
   placeholder,
   renderOption = (option) => <TextOption text={option} />,
 }) => {
   const [query, setQuery] = useState("");
+
+  const showResetButton = !!value;
 
   const filteredOptions =
     query === ""
@@ -49,24 +56,40 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
       <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
 
       <div tw="relative mt-1">
-        <ComboboxInput
-          handleChange={(event) => setQuery(event.target.value)}
+        <HuiCombobox.Input
+          css={[
+            inputStyles,
+            tw`relative py-2 pl-3 bg-white border focus:(outline-none ring-1)`,
+            showResetButton ? tw`pr-16` : tw`pr-10`,
+          ]}
+          onChange={(event) => {
+            onChange(event.target.value);
+            setQuery(event.target.value);
+          }}
+          autoComplete="off"
           placeholder={placeholder}
         />
 
+        {showResetButton && (
+          <button
+            onClick={reset}
+            type="button"
+            css={[comboboxButtonStyles, tw`right-6`]}
+            tabIndex={-1}
+          >
+            <XMarkIcon css={comboboxButtonIconStyles} />
+          </button>
+        )}
+
         <ComboboxButton />
 
-        <ComboboxOptions>
-          {query.length > 0 && (
-            <ComboboxOption
-              option={query}
-              renderOption={(o) => <TextOption text={`Create "${o}"`} />}
-            />
-          )}
-          {filteredOptions.map((o) => (
-            <ComboboxOption key={o} option={o} renderOption={renderOption} />
-          ))}
-        </ComboboxOptions>
+        {filteredOptions.length > 0 && (
+          <ComboboxOptions>
+            {filteredOptions.map((o) => (
+              <ComboboxOption key={o} option={o} renderOption={renderOption} />
+            ))}
+          </ComboboxOptions>
+        )}
       </div>
     </HuiCombobox>
   );

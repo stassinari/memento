@@ -61,6 +61,7 @@ export const DesignLibrary = () => {
           options={people}
           value={singleValue}
           onChange={(value) => setSingleValue(value)}
+          reset={() => console.log("slolz")}
           placeholder="Placeholder..."
         />
 

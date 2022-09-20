@@ -21,8 +21,8 @@ import { FormInputSlider } from "./form/FormInputSlider";
 import { TextWithImageOption } from "./ListOption";
 
 export interface BeansFormInputs {
-  name: string;
-  roaster: string;
+  name: string | null;
+  roaster: string | null;
   roastDate: Date | null;
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
@@ -39,9 +39,9 @@ export interface BeansFormInputs {
 }
 
 export const beansFormEmptyValues: BeansFormInputs = {
-  name: "",
+  name: null,
+  roaster: null,
   isFinished: false,
-  roaster: "",
   roastDate: null,
   roastingNotes: [],
   roastStyle: null,
