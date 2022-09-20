@@ -64,11 +64,27 @@ export const BeansDetails = () => {
         rows={[
           { label: "Name", value: beans.name },
           { label: "Roaster", value: beans.roaster },
-          { label: "Roast style", value: beans.roastStyle || "" },
           {
             label: "Roast date",
             value: beans.roastDate?.toDate().toLocaleDateString() || "",
           },
+          { label: "Roast style", value: beans.roastStyle || "" },
+          { label: "Roast level", value: beans.roastLevel?.toString() || "" },
+          { label: "Roasting notes", value: beans.roastingNotes.join(", ") },
+        ]}
+      />
+
+      <Details
+        rows={[
+          { label: "Country", value: beans.country || "" },
+          { label: "Region", value: beans.region || "" },
+          { label: "Farmer", value: beans.farmer || "" },
+          {
+            label: "Altitude",
+            value: beans.altitude ? `${beans.altitude} masl` : "",
+          },
+          { label: "Process", value: beans.process || "" },
+          { label: "Varietal(s)", value: beans.varietals.join(", ") },
         ]}
       />
     </div>

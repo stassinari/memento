@@ -27,14 +27,16 @@ export interface BeansFormInputs {
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
   roastingNotes: string[];
-  country: string | null;
-  process: string | null;
-  farmer: string | null;
+
   origin: "single-origin" | "blend";
+  country: string | null;
   region: string | null;
+  farmer: string | null;
   altitude: number | null;
+  process: string | null;
   varietals: string[];
   harvestDate: Date | null;
+
   isFinished?: boolean;
 }
 
