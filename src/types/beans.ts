@@ -3,7 +3,10 @@ import { Timestamp } from "firebase/firestore";
 export type RoastStyle = "filter" | "espresso" | "omni-roast";
 export type Origin = "single-origin" | "blend";
 
-export type Beans = BeansCommon & BeansSingleOrigin & BeansBlend;
+export type Beans = BeansSingleOrigin | BeansBlend;
+
+type BeansSingleOrigin = BeansCommon & TerroirSingleOrigin;
+type BeansBlend = BeansCommon & TerroirBlend;
 
 interface BeansCommon {
   id?: string;
@@ -14,7 +17,6 @@ interface BeansCommon {
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
   roastingNotes: string[];
-  origin: Origin;
 
   freezeDate: Timestamp | null;
   thawDate: Timestamp | null;
@@ -22,7 +24,16 @@ interface BeansCommon {
   isFinished?: boolean;
 }
 
-interface BeansSingleOrigin {
+export interface BeansBlendPart {
+  name: string | null;
+  country: string | null;
+  varietals: string[];
+  percentage: number | null;
+  process: string | null;
+}
+
+interface TerroirSingleOrigin {
+  origin: "single-origin";
   country: string | null;
   region: string | null;
   varietals: string[];
@@ -32,14 +43,7 @@ interface BeansSingleOrigin {
   harvestDate: Timestamp | null;
 }
 
-interface BeansBlend {
-  blend?: BeansBlendPart[];
-}
-
-export interface BeansBlendPart {
-  name: string | null;
-  country: string | null;
-  varietals: string[];
-  percentage: number | null;
-  process: string | null;
+interface TerroirBlend {
+  origin: "blend";
+  blend: BeansBlendPart[];
 }

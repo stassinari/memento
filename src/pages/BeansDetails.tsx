@@ -92,8 +92,7 @@ export const BeansDetails = () => {
             { label: "Varietal(s)", value: beans.varietals.join(", ") },
           ]}
         />
-      ) : // FIXME remove "beans.blend" condition after better types
-      beans.origin === "blend" && beans.blend ? (
+      ) : beans.origin === "blend" ? (
         <React.Fragment>
           {beans.blend.map((b, i) => (
             <Details
