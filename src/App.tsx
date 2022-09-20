@@ -9,7 +9,7 @@ import { BeansClone } from "./pages/BeansClone";
 import { BeansEdit } from "./pages/BeansEdit";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
-// import { BeansPage } from "./pages/BeansPage";
+// import { BeansList } from "./pages/BeansList";
 import { BrewsPage } from "./pages/BrewsPage";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
@@ -21,7 +21,7 @@ import { TastingsPage } from "./pages/TastingsPage";
 
 const BeansAdd = React.lazy(() => import("./pages/BeansAdd/BeansAdd"));
 const BeansDetails = React.lazy(() => import("./pages/BeansDetails"));
-const BeansPage = React.lazy(() => import("./pages/BeansPage"));
+const BeansList = React.lazy(() => import("./pages/BeansList/BeansList"));
 const LogIn = React.lazy(() => import("./pages/LogIn"));
 
 const queryClient = new QueryClient();
@@ -47,7 +47,7 @@ export const App = () => {
             <Route path="/" element={<Layout />}>
               <Route element={<RequireAuth />}>
                 <Route path="/" element={<Homepage />} />
-                <Route path="beans" element={<BeansPage />} />
+                <Route path="beans" element={<BeansList />} />
                 <Route path="beans/add" element={<BeansAdd />} />
                 <Route path="beans/:beansId" element={<BeansDetails />} />
                 <Route path="beans/:beansId/edit" element={<BeansEdit />} />

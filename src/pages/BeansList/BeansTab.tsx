@@ -1,98 +1,33 @@
-import { Tab } from "@headlessui/react";
 import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { useFirestoreQueryData } from "@react-query-firebase/firestore";
 import {
   collection,
   CollectionReference,
-  orderBy,
   query,
   QueryConstraint,
-  where,
 } from "firebase/firestore";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { Fragment, ReactNode } from "react";
 import { Link } from "react-router-dom";
-import tw from "twin.macro";
-import { Button } from "../components/Button";
-import { EmptyState } from "../components/EmptyState";
-import { db } from "../firebaseConfig";
-import { userAtom } from "../hooks/useInitUser";
-import { Beans } from "../types/beans";
-import { getTimeAgo, isNotFrozenOrIsThawed } from "../util";
+import "twin.macro";
+import { db } from "../../firebaseConfig";
+import { userAtom } from "../../hooks/useInitUser";
+import { Beans } from "../../types/beans";
+import { getTimeAgo, isNotFrozenOrIsThawed } from "../../util";
 
-interface Lolz {
-  name: string;
+export interface BeansTabProps {
+  name: "Archived" | "Frozen" | "Open";
   filters: QueryConstraint[];
   removeFrozen?: boolean;
+  EmptyState: ReactNode;
 }
 
-const tabs: Lolz[] = [
-  {
-    name: "Open",
-    filters: [where("isFinished", "==", false)],
-    removeFrozen: true,
-  },
-  {
-    name: "Frozen",
-    filters: [
-      orderBy("freezeDate", "desc"),
-      where("isFinished", "==", false),
-      where("freezeDate", "!=", null),
-      where("thawDate", "==", null),
-    ],
-  },
-  {
-    name: "Archived",
-    filters: [where("isFinished", "==", true)],
-  },
-];
-
-export const BeansPage = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  return (
-    <div>
-      <Button as={Link} to="add" variant="primary">
-        Add beanz
-      </Button>
-      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-        <Tab.List tw="flex -mb-px">
-          {tabs.map(({ name }, i) => (
-            <Tab
-              key={name}
-              css={[
-                tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
-                selectedIndex === i
-                  ? tw`text-orange-600 border-orange-500`
-                  : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
-              ]}
-            >
-              {name}
-            </Tab>
-          ))}
-        </Tab.List>
-        <Tab.Panels tw="mt-4">
-          {tabs.map((t, i) => (
-            <Tab.Panel key={t.name}>
-              <BeansTab
-                name={tabs[i].name}
-                filters={tabs[i].filters}
-                removeFrozen={tabs[i].removeFrozen}
-              />
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
-    </div>
-  );
-};
-
-interface BeansTabProps {
-  filters: QueryConstraint[];
-  removeFrozen?: boolean;
-}
-
-const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
+export const BeansTab: React.FC<BeansTabProps> = ({
+  name,
+  filters,
+  removeFrozen,
+  EmptyState,
+}) => {
   const [user] = useAtom(userAtom);
 
   const beansRef = collection(
@@ -114,14 +49,7 @@ const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
 
   if (!beansList) return null;
 
-  if (beansList.length === 0)
-    return (
-      <EmptyState
-        title="No beans"
-        description="Get started by adding some coffee beans"
-        buttonLabel="Add beans"
-      />
-    );
+  if (beansList.length === 0) return <Fragment>{EmptyState}</Fragment>;
 
   return (
     <div tw="overflow-hidden bg-white shadow sm:rounded-md">
@@ -189,5 +117,3 @@ const BeansTab: React.FC<Lolz> = ({ name, filters, removeFrozen }) => {
     </div>
   );
 };
-
-export default BeansPage;

@@ -28,7 +28,7 @@ export const InputRadioButtonGroup: React.FC<InputRadioButtonGroupProps> = ({
             key={option.label}
             value={option.value}
             css={[
-              tw`flex items-center justify-center px-5 py-2 text-sm font-medium border focus:z-10 first:rounded-l-md last:rounded-r-md not-first:-ml-px`,
+              tw`flex items-center justify-center px-5 py-2 text-sm font-medium border focus:z-10 first-of-type:rounded-l-md last-of-type:rounded-r-md not-first-of-type:-ml-px`,
               tw`ui-active:(ring-orange-500)`,
               tw`ui-not-checked:(bg-white border-gray-200 text-gray-700 hover:bg-gray-50)`,
               variant === "primary"
