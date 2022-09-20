@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import tw from "twin.macro";
+import tw, { theme } from "twin.macro";
 import { BottomNav } from "./BottomNav";
 import { SidebarNav } from "./SidebarNav";
 
@@ -9,9 +9,7 @@ export const layoutContainerStyles = [
   tw`min-h-screen md:pb-0`,
   css`
     padding-top: env(safe-area-inset-top);
-    padding-bottom: calc(
-      env(safe-area-inset-bottom) + 3.5rem
-    ); /*  look into using proper TW value */
+    padding-bottom: calc(env(safe-area-inset-bottom) + ${theme`spacing.14`});
   `,
 ];
 

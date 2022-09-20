@@ -11,7 +11,7 @@ import {
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "twin.macro";
-import tw from "twin.macro";
+import tw, { theme } from "twin.macro";
 import { useActiveRoute } from "../hooks/useActiveRoute";
 
 export const navigation: BottomNavItemProps[] = [
@@ -44,7 +44,7 @@ export const BottomNav = () => (
     css={[
       tw`fixed inset-x-0 bottom-0 z-10 bg-white shadow-2xl md:hidden`,
       css`
-        height: calc(env(safe-area-inset-bottom) + 3.5rem);
+        height: calc(env(safe-area-inset-bottom) + ${theme`spacing.14`});
         padding-bottom: env(safe-area-inset-bottom);
       `,
     ]}
