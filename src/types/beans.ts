@@ -7,16 +7,19 @@ export type Beans = BeansCommon & BeansSingleOrigin & BeansBlend;
 
 interface BeansCommon {
   id?: string;
+
   name: string;
-  isFinished?: boolean;
   roaster: string;
   roastDate: Timestamp | null;
   roastStyle: RoastStyle | null;
   roastLevel: number | null;
-  roastingNotes: never[];
+  roastingNotes: string[];
   origin: Origin;
+
   freezeDate: Timestamp | null;
   thawDate: Timestamp | null;
+
+  isFinished?: boolean;
 }
 
 interface BeansSingleOrigin {
@@ -34,9 +37,9 @@ interface BeansBlend {
 }
 
 export interface BeansBlendPart {
-  name?: string;
-  country?: string;
-  varietals?: string[];
-  percentage?: number;
-  process?: string;
+  name: string | null;
+  country: string | null;
+  varietals: string[];
+  percentage: number | null;
+  process: string | null;
 }

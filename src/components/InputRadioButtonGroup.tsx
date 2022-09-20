@@ -22,7 +22,6 @@ export const InputRadioButtonGroup: React.FC<InputRadioButtonGroupProps> = ({
     <RadioGroup value={value} onChange={onChange} tw="mt-2">
       <RadioGroup.Label css={labelStyles}>{label}</RadioGroup.Label>
       <div tw="inline-flex mt-1 ">
-        {/* <div tw="grid grid-cols-3 gap-3 mt-1 sm:grid-cols-6"> */}
         {options.map((option) => (
           <RadioGroup.Option
             key={option.label}

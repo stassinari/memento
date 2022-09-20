@@ -1,3 +1,4 @@
+import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
@@ -7,6 +8,7 @@ import { notesToOptions, tastingNotes } from "../data/tasting-notes";
 import { varietals } from "../data/varietals";
 import { CountryOptionFlag } from "../pages/BeansAdd/CountryOptionFlag";
 import { RoastStyle } from "../types/beans";
+import { BeansBlendForm } from "./BeansBlendForm";
 import { Button } from "./Button";
 import { Divider } from "./Divider";
 import { FormSection } from "./Form";
@@ -82,11 +84,14 @@ export const BeansForm: React.FC<BeansFormProps> = ({
     handleSubmit,
     formState: { errors },
     register,
+    watch,
   } = methods;
 
   const onSubmit: SubmitHandler<BeansFormInputs> = async (data) => {
     mutation.mutate(data);
   };
+
+  const isSingleOrigin = watch("origin") === "single-origin";
 
   return (
     <div>
@@ -179,68 +184,68 @@ export const BeansForm: React.FC<BeansFormProps> = ({
               variant="secondary"
             />
 
-            <FormComboboxSingle
-              name="country"
-              label="Country"
-              options={countries.map(({ name }) => name)}
-              placeholder="Ethiopia"
-              renderOption={(country) => (
-                <TextWithImageOption
-                  text={country}
-                  Image={<CountryOptionFlag country={country} />}
+            {isSingleOrigin ? (
+              <React.Fragment>
+                <FormComboboxSingle
+                  name="country"
+                  label="Country"
+                  options={countries.map(({ name }) => name)}
+                  placeholder="Ethiopia"
+                  renderOption={(country) => (
+                    <TextWithImageOption
+                      text={country}
+                      Image={<CountryOptionFlag country={country} />}
+                    />
+                  )}
                 />
-              )}
-            />
-
-            <FormComboboxSingle
-              label="Process"
-              name="process"
-              options={processes}
-              placeholder="Red honey"
-            />
-
-            <FormComboboxMulti
-              label="Varietal(s)"
-              name="varietals"
-              options={varietals}
-              placeholder="Search variety..."
-            />
-
-            <FormInput
-              label="Farmer"
-              id="farmer"
-              inputProps={{
-                ...register("farmer"),
-                type: "text",
-                placeholder: "Cooperativa lollanza",
-              }}
-            />
-
-            <FormInput
-              label="Region"
-              id="region"
-              inputProps={{
-                ...register("region"),
-                type: "text",
-                placeholder: "Huila",
-              }}
-            />
-
-            <FormInput
-              label="Altitude (masl)"
-              id="altitude"
-              inputProps={{
-                ...register("altitude", { valueAsNumber: true }),
-                type: "number",
-                placeholder: "1200",
-              }}
-            />
-
-            <FormInputMonthYear
-              label="Harvest date"
-              id="harvestDate"
-              placeholder="Select harvest date"
-            />
+                <FormComboboxSingle
+                  label="Process"
+                  name="process"
+                  options={processes}
+                  placeholder="Red honey"
+                />
+                <FormComboboxMulti
+                  label="Varietal(s)"
+                  name="varietals"
+                  options={varietals}
+                  placeholder="Search variety..."
+                />
+                <FormInput
+                  label="Farmer"
+                  id="farmer"
+                  inputProps={{
+                    ...register("farmer"),
+                    type: "text",
+                    placeholder: "Cooperativa lollanza",
+                  }}
+                />
+                <FormInput
+                  label="Region"
+                  id="region"
+                  inputProps={{
+                    ...register("region"),
+                    type: "text",
+                    placeholder: "Huila",
+                  }}
+                />
+                <FormInput
+                  label="Altitude (masl)"
+                  id="altitude"
+                  inputProps={{
+                    ...register("altitude", { valueAsNumber: true }),
+                    type: "number",
+                    placeholder: "1200",
+                  }}
+                />
+                <FormInputMonthYear
+                  label="Harvest date"
+                  id="harvestDate"
+                  placeholder="Select harvest date"
+                />
+              </React.Fragment>
+            ) : (
+              <BeansBlendForm />
+            )}
           </FormSection>
 
           <div className="flex justify-end gap-4">

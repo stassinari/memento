@@ -5,7 +5,9 @@ import {
 import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
 import { doc, DocumentReference } from "firebase/firestore";
 import { useAtom } from "jotai";
+import React from "react";
 import { Link, useParams } from "react-router-dom";
+import "twin.macro";
 import { Button } from "../components/Button";
 import { Details } from "../components/Details";
 import { db } from "../firebaseConfig";
@@ -34,7 +36,7 @@ export const BeansDetails = () => {
   }
 
   return (
-    <div>
+    <div tw="space-y-8">
       <div>
         <h3 tw="text-lg font-medium leading-6 text-gray-900">
           Beans with id {beansId}
@@ -61,6 +63,7 @@ export const BeansDetails = () => {
       </Button>
 
       <Details
+        title="Roast information"
         rows={[
           { label: "Name", value: beans.name },
           { label: "Roaster", value: beans.roaster },
@@ -74,19 +77,42 @@ export const BeansDetails = () => {
         ]}
       />
 
-      <Details
-        rows={[
-          { label: "Country", value: beans.country || "" },
-          { label: "Region", value: beans.region || "" },
-          { label: "Farmer", value: beans.farmer || "" },
-          {
-            label: "Altitude",
-            value: beans.altitude ? `${beans.altitude} masl` : "",
-          },
-          { label: "Process", value: beans.process || "" },
-          { label: "Varietal(s)", value: beans.varietals.join(", ") },
-        ]}
-      />
+      {beans.origin === "single-origin" ? (
+        <Details
+          title="Single-origin terroir"
+          rows={[
+            { label: "Country", value: beans.country || "" },
+            { label: "Region", value: beans.region || "" },
+            { label: "Farmer", value: beans.farmer || "" },
+            {
+              label: "Altitude",
+              value: beans.altitude ? `${beans.altitude} masl` : "",
+            },
+            { label: "Process", value: beans.process || "" },
+            { label: "Varietal(s)", value: beans.varietals.join(", ") },
+          ]}
+        />
+      ) : // FIXME remove "beans.blend" condition after better types
+      beans.origin === "blend" && beans.blend ? (
+        <React.Fragment>
+          {beans.blend.map((b, i) => (
+            <Details
+              key={i}
+              title={`Blend item ${i + 1}`}
+              rows={[
+                { label: "Name", value: b.name || "" },
+                {
+                  label: "Percentage",
+                  value: b.percentage ? `${b.percentage} %` : "",
+                },
+                { label: "Country", value: b.country || "" },
+                { label: "Process", value: b.process || "" },
+                { label: "Varietal(s)", value: b.varietals.join(", ") },
+              ]}
+            />
+          ))}
+        </React.Fragment>
+      ) : null}
     </div>
   );
 };
