@@ -1,31 +1,17 @@
-import {
-  useFirestoreDocumentData,
-  useFirestoreDocumentMutation,
-} from "@react-query-firebase/firestore";
-import { doc, DocumentReference } from "firebase/firestore";
-import { useAtom } from "jotai";
+import { useFirestoreDocumentMutation } from "@react-query-firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../components/BeansForm";
-import { db } from "../firebaseConfig";
-import { userAtom } from "../hooks/useInitUser";
-import { Beans } from "../types/beans";
+import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
 
 export const BeansEdit = () => {
   const { beansId } = useParams();
-  const [user] = useAtom(userAtom);
 
   const navigate = useNavigate();
 
-  const ref = doc(
-    db,
-    "users",
-    user?.uid || "",
-    "beans",
-    beansId || ""
-  ) as DocumentReference<Beans>;
+  const { beans, docRef } = useBeansDetails(beansId);
 
   const mutation = useFirestoreDocumentMutation(
-    ref,
+    docRef,
     {},
     {
       onSuccess() {
@@ -33,8 +19,6 @@ export const BeansEdit = () => {
       },
     }
   );
-
-  const { data: beans } = useFirestoreDocumentData(["beans", beansId], ref);
 
   if (!beans) {
     return null;

@@ -5,7 +5,12 @@ import { db } from "../../firebaseConfig";
 import { Beans } from "../../types/beans";
 import { userAtom } from "../useInitUser";
 
-export const useBeansDetails = (beansId?: string): Beans | null => {
+interface UseBeansReturn {
+  beans: Beans | null;
+  docRef: DocumentReference<Beans>;
+}
+
+export const useBeansDetails = (beansId?: string): UseBeansReturn => {
   const [user] = useAtom(userAtom);
 
   const [beans, setBeans] = useState<Beans | null>(null);
@@ -34,5 +39,5 @@ export const useBeansDetails = (beansId?: string): Beans | null => {
     fetchBeans();
   }, []);
 
-  return beans;
+  return { beans, docRef };
 };

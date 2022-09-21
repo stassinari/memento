@@ -1,14 +1,11 @@
-import {
-  useFirestoreCollectionMutation,
-  useFirestoreDocumentData,
-} from "@react-query-firebase/firestore";
-import { collection, doc, DocumentReference } from "firebase/firestore";
+import { useFirestoreCollectionMutation } from "@react-query-firebase/firestore";
+import { collection } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../components/BeansForm";
 import { db } from "../firebaseConfig";
+import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
 import { userAtom } from "../hooks/useInitUser";
-import { Beans } from "../types/beans";
 
 export const BeansClone = () => {
   const { beansId } = useParams();
@@ -16,18 +13,7 @@ export const BeansClone = () => {
 
   const navigate = useNavigate();
 
-  const existingRef = doc(
-    db,
-    "users",
-    user?.uid || "",
-    "beans",
-    beansId || ""
-  ) as DocumentReference<Beans>;
-
-  const { data: beans } = useFirestoreDocumentData(
-    ["beans", beansId],
-    existingRef
-  );
+  const { beans } = useBeansDetails(beansId);
 
   const addBeansRef = collection(db, "users", user?.uid || "lol", "beans");
   const mutation = useFirestoreCollectionMutation(addBeansRef, {

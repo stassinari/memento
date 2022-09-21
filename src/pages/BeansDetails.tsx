@@ -12,7 +12,7 @@ import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
 export const BeansDetails = () => {
   const { beansId } = useParams();
 
-  const beans = useBeansDetails(beansId);
+  const { beans } = useBeansDetails(beansId);
 
   if (!beans) {
     return null;
