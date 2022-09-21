@@ -2,31 +2,17 @@ import {
   DocumentDuplicateIcon,
   PencilSquareIcon,
 } from "@heroicons/react/20/solid";
-import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
-import { doc, DocumentReference } from "firebase/firestore";
-import { useAtom } from "jotai";
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
 import { Details } from "../components/Details";
-import { db } from "../firebaseConfig";
-import { userAtom } from "../hooks/useInitUser";
-import { Beans } from "../types/beans";
+import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
 
 export const BeansDetails = () => {
   const { beansId } = useParams();
-  const [user] = useAtom(userAtom);
 
-  const ref = doc(
-    db,
-    "users",
-    user?.uid || "",
-    "beans",
-    beansId || ""
-  ) as DocumentReference<Beans>;
-
-  const { data: beans } = useFirestoreDocumentData(["beans", beansId], ref);
+  const beans = useBeansDetails(beansId);
 
   if (!beans) {
     return null;
