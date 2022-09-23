@@ -8,6 +8,7 @@ import { userAtom } from "../useInitUser";
 interface UseBeansReturn {
   beans: Beans | null;
   isLoading: boolean;
+  docRef: DocumentReference<Beans>;
 }
 
 export const useBeansDetails = (beansId?: string): UseBeansReturn => {
@@ -39,5 +40,5 @@ export const useBeansDetails = (beansId?: string): UseBeansReturn => {
     fetchBeans();
   }, []);
 
-  return { beans, isLoading };
+  return { beans, isLoading, docRef };
 };

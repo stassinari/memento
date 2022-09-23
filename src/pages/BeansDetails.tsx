@@ -2,8 +2,14 @@ import {
   DocumentDuplicateIcon,
   PencilSquareIcon,
 } from "@heroicons/react/20/solid";
+import {
+  ArchiveBoxArrowDownIcon,
+  MoonIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline";
+import { serverTimestamp, updateDoc } from "firebase/firestore";
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
 import { Details } from "../components/Details";
@@ -12,8 +18,28 @@ import { NotFound } from "./NotFound";
 
 export const BeansDetails = () => {
   const { beansId } = useParams();
+  const navigate = useNavigate();
 
-  const { beans, isLoading } = useBeansDetails(beansId);
+  const { beans, isLoading, docRef } = useBeansDetails(beansId);
+
+  const handleArchive = async () => {
+    await updateDoc(docRef, {
+      isFinished: true,
+    });
+    navigate(`/beans`);
+  };
+
+  const handleFreeze = async () => {
+    await updateDoc(docRef, {
+      freezeDate: serverTimestamp(),
+    });
+  };
+
+  const handleThaw = async () => {
+    await updateDoc(docRef, {
+      thawDate: serverTimestamp(),
+    });
+  };
 
   if (isLoading) return null;
 
@@ -31,22 +57,35 @@ export const BeansDetails = () => {
           Subtitle in case it's needed.
         </p>
       </div>
-      <Button
-        variant="primary"
-        as={Link}
-        to="clone"
-        Icon={<DocumentDuplicateIcon />}
-      >
-        Clone
-      </Button>
-      <Button
-        variant="secondary"
-        as={Link}
-        to="edit"
-        Icon={<PencilSquareIcon />}
-      >
-        Edit
-      </Button>
+      <div tw="space-x-2">
+        <Button
+          variant="primary"
+          as={Link}
+          to="clone"
+          Icon={<DocumentDuplicateIcon />}
+        >
+          Clone
+        </Button>
+        <Button variant="white" as={Link} to="edit" Icon={<PencilSquareIcon />}>
+          Edit
+        </Button>
+        <Button
+          variant="white"
+          Icon={<ArchiveBoxArrowDownIcon />}
+          onClick={handleArchive}
+        >
+          Archive
+        </Button>
+        {!beans.freezeDate ? (
+          <Button variant="white" Icon={<MoonIcon />} onClick={handleFreeze}>
+            Freeze
+          </Button>
+        ) : !beans.thawDate ? (
+          <Button variant="white" Icon={<SunIcon />} onClick={handleThaw}>
+            Thaw
+          </Button>
+        ) : null}
+      </div>
 
       <Details
         title="Roast information"

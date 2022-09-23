@@ -39,6 +39,9 @@ export interface BeansFormInputs {
   varietals: string[];
   harvestDate: Date | null;
 
+  freezeDate: Date | null;
+  thawDate: Date | null;
+
   isFinished?: boolean;
 }
 
@@ -58,8 +61,8 @@ export const beansFormEmptyValues: BeansFormInputs = {
   varietals: [],
   harvestDate: null,
   altitude: null,
-  // freezeDate: null,
-  // thawDate: null,
+  freezeDate: null,
+  thawDate: null,
 };
 
 interface BeansFormProps {
