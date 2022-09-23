@@ -7,14 +7,14 @@ import { userAtom } from "../useInitUser";
 
 interface UseBeansReturn {
   beans: Beans | null;
-  docRef: DocumentReference<Beans>;
+  isLoading: boolean;
 }
 
 export const useBeansDetails = (beansId?: string): UseBeansReturn => {
   const [user] = useAtom(userAtom);
 
   const [beans, setBeans] = useState<Beans | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   const docRef = doc(
     db,
     "users",
@@ -33,10 +33,11 @@ export const useBeansDetails = (beansId?: string): UseBeansReturn => {
         // doc.data() will be undefined in this case
         console.log("No such document!");
       }
+      setIsLoading(false);
     };
 
     fetchBeans();
   }, []);
 
-  return { beans, docRef };
+  return { beans, isLoading };
 };

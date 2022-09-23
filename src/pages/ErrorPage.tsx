@@ -19,7 +19,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     <main tw="flex flex-col justify-center flex-grow w-full h-screen px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div tw="py-16">
         <div tw="text-center">
-          <p tw="text-base font-semibold text-indigo-600">Error</p>
+          <p tw="text-base font-semibold text-orange-600">Error</p>
           <h1 tw="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             {title}
           </h1>

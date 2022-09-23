@@ -8,14 +8,17 @@ import "twin.macro";
 import { Button } from "../components/Button";
 import { Details } from "../components/Details";
 import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
+import { NotFound } from "./NotFound";
 
 export const BeansDetails = () => {
   const { beansId } = useParams();
 
-  const { beans } = useBeansDetails(beansId);
+  const { beans, isLoading } = useBeansDetails(beansId);
+
+  if (isLoading) return null;
 
   if (!beans) {
-    return null;
+    return <NotFound />;
   }
 
   return (
