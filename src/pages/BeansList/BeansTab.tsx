@@ -14,14 +14,13 @@ export interface BeansTabProps {
 }
 
 export const BeansTab: React.FC<BeansTabProps> = ({
-  name,
   filters,
   removeFrozen,
   EmptyState,
 }) => {
-  const beansList = useBeansList(filters);
+  const { beansList, isLoading } = useBeansList(filters);
 
-  if (!beansList) return null;
+  if (!beansList || isLoading) return null;
 
   if (beansList.length === 0) return <Fragment>{EmptyState}</Fragment>;
 
