@@ -1,18 +1,9 @@
 import { CalendarIcon, MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { useFirestoreQueryData } from "@react-query-firebase/firestore";
-import {
-  collection,
-  CollectionReference,
-  query,
-  QueryConstraint,
-} from "firebase/firestore";
-import { useAtom } from "jotai";
+import { QueryConstraint } from "firebase/firestore";
 import { Fragment, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "twin.macro";
-import { db } from "../../firebaseConfig";
-import { userAtom } from "../../hooks/useInitUser";
-import { Beans } from "../../types/beans";
+import { useBeansList } from "../../hooks/firestore/useBeansList";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "../../util";
 
 export interface BeansTabProps {
@@ -28,24 +19,7 @@ export const BeansTab: React.FC<BeansTabProps> = ({
   removeFrozen,
   EmptyState,
 }) => {
-  const [user] = useAtom(userAtom);
-
-  const beansRef = collection(
-    db,
-    "users",
-    user?.uid || "lol",
-    "beans"
-  ) as CollectionReference<Beans>;
-  const beansQuery = query(beansRef, ...filters);
-
-  const { data: beansList } = useFirestoreQueryData(
-    ["beansTab", name],
-    beansQuery,
-    {
-      idField: "id",
-      subscribe: true,
-    }
-  );
+  const beansList = useBeansList(filters);
 
   if (!beansList) return null;
 

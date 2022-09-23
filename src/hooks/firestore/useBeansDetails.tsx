@@ -25,7 +25,7 @@ export const useBeansDetails = (beansId?: string): UseBeansReturn => {
 
   useEffect(() => {
     const fetchBeans = async () => {
-      const docSnap = await getDoc(docRef as DocumentReference<Beans>);
+      const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
         console.log("Document data:", docSnap.data());
