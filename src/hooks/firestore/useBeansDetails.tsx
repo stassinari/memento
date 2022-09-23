@@ -1,4 +1,4 @@
-import { doc, DocumentReference, getDoc } from "firebase/firestore";
+import { doc, DocumentReference, onSnapshot } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
@@ -25,19 +25,16 @@ export const useBeansDetails = (beansId?: string): UseBeansReturn => {
   ) as DocumentReference<Beans>;
 
   useEffect(() => {
-    const fetchBeans = async () => {
-      const docSnap = await getDoc(docRef);
-
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         setBeans(docSnap.data());
       } else {
-        // doc.data() will be undefined in this case
         console.log("No such document!");
+        setBeans(null);
       }
       setIsLoading(false);
-    };
-
-    fetchBeans();
+    });
+    return () => unsubscribe();
   }, []);
 
   return { beans, isLoading, docRef };

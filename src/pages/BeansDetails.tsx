@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/20/solid";
 import {
   ArchiveBoxArrowDownIcon,
+  ArchiveBoxXMarkIcon,
   MoonIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
@@ -27,6 +28,12 @@ export const BeansDetails = () => {
       isFinished: true,
     });
     navigate(`/beans`);
+  };
+
+  const handleUnarchive = async () => {
+    await updateDoc(docRef, {
+      isFinished: false,
+    });
   };
 
   const handleFreeze = async () => {
@@ -69,13 +76,23 @@ export const BeansDetails = () => {
         <Button variant="white" as={Link} to="edit" Icon={<PencilSquareIcon />}>
           Edit
         </Button>
-        <Button
-          variant="white"
-          Icon={<ArchiveBoxArrowDownIcon />}
-          onClick={handleArchive}
-        >
-          Archive
-        </Button>
+        {beans.isFinished ? (
+          <Button
+            variant="white"
+            Icon={<ArchiveBoxXMarkIcon />}
+            onClick={handleUnarchive}
+          >
+            Unarchive
+          </Button>
+        ) : (
+          <Button
+            variant="white"
+            Icon={<ArchiveBoxArrowDownIcon />}
+            onClick={handleArchive}
+          >
+            Archive
+          </Button>
+        )}
         {!beans.freezeDate ? (
           <Button variant="white" Icon={<MoonIcon />} onClick={handleFreeze}>
             Freeze
