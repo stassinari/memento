@@ -1,7 +1,7 @@
 import {
   collection,
   CollectionReference,
-  getDocs,
+  onSnapshot,
   query as fbQuery,
   QueryConstraint,
 } from "firebase/firestore";
@@ -34,20 +34,17 @@ export const useBeansList = (
   const query = fbQuery(collectionRef, ...filters);
 
   useEffect(() => {
-    const fetchBeansList = async () => {
-      const querySnapshot = await getDocs(query);
-
+    const unsubscribe = onSnapshot(query, (querySnap) => {
       let list: Beans[] = [];
 
-      querySnapshot.forEach((doc) => {
+      querySnap.forEach((doc) => {
         list.push({ id: doc.id, ...doc.data() });
       });
 
       setBeansList(list);
       setIsLoading(false);
-    };
-
-    fetchBeansList();
+    });
+    return () => unsubscribe();
   }, []);
 
   return { beansList, isLoading };
