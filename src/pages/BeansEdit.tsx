@@ -1,24 +1,31 @@
-import { useFirestoreDocumentMutation } from "@react-query-firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../components/BeansForm";
+import { db } from "../firebaseConfig";
 import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
+import { userAtom } from "../hooks/useInitUser";
 
 export const BeansEdit = () => {
+  const [user] = useAtom(userAtom);
   const { beansId } = useParams();
 
   const navigate = useNavigate();
 
-  const { beans, docRef } = useBeansDetails(beansId);
+  const { beans } = useBeansDetails(beansId);
 
-  const mutation = useFirestoreDocumentMutation(
-    docRef,
-    {},
-    {
-      onSuccess() {
-        navigate(`/beans/${beansId}`);
-      },
-    }
+  const existingBeansRef = doc(
+    db,
+    "users",
+    user?.uid || "",
+    "beans",
+    beansId || ""
   );
+
+  const editBeans = async (data: BeansFormInputs) => {
+    await setDoc(existingBeansRef, data);
+    navigate(`/beans/${beansId}`);
+  };
 
   if (!beans) {
     return null;
@@ -36,7 +43,7 @@ export const BeansEdit = () => {
       defaultValues={fromFirestore}
       title="Edit beans"
       buttonLabel="Edit"
-      mutation={mutation}
+      mutation={editBeans}
     />
   );
 };

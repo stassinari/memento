@@ -1,5 +1,4 @@
-import { useFirestoreCollectionMutation } from "@react-query-firebase/firestore";
-import { collection } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../components/BeansForm";
@@ -15,13 +14,11 @@ export const BeansClone = () => {
 
   const { beans } = useBeansDetails(beansId);
 
-  const addBeansRef = collection(db, "users", user?.uid || "lol", "beans");
-  const mutation = useFirestoreCollectionMutation(addBeansRef, {
-    onSuccess(data) {
-      console.log("new document with ID: ", data.id);
-      navigate(`/beans/${data.id}`);
-    },
-  });
+  const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "beans"));
+  const addBeans = async (data: BeansFormInputs) => {
+    await setDoc(newBeansRef, data);
+    navigate(`/beans/${newBeansRef.id}`);
+  };
 
   if (!beans) {
     return null;
@@ -39,7 +36,7 @@ export const BeansClone = () => {
       defaultValues={fromFirestore}
       title="Clone beans"
       buttonLabel="Clone"
-      mutation={mutation}
+      mutation={addBeans}
     />
   );
 };

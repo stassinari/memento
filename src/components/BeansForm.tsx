@@ -66,7 +66,7 @@ interface BeansFormProps {
   defaultValues: BeansFormInputs;
   title: string;
   buttonLabel: string;
-  mutation: any;
+  mutation: (data: BeansFormInputs) => Promise<void>;
 }
 
 export const BeansForm: React.FC<BeansFormProps> = ({
@@ -88,7 +88,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   } = methods;
 
   const onSubmit: SubmitHandler<BeansFormInputs> = async (data) => {
-    mutation.mutate(data);
+    mutation(data);
   };
 
   const isSingleOrigin = watch("origin") === "single-origin";

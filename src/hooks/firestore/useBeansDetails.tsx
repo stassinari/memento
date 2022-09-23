@@ -28,7 +28,6 @@ export const useBeansDetails = (beansId?: string): UseBeansReturn => {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
         setBeans(docSnap.data());
       } else {
         // doc.data() will be undefined in this case
