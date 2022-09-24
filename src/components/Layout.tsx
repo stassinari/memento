@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import tw, { theme } from "twin.macro";
 import { BottomNav } from "./BottomNav";
+import { ReloadPrompt } from "./ReloadPrompt";
 import { SidebarNav } from "./SidebarNav";
 
 export const layoutContainerStyles = [
@@ -26,6 +27,7 @@ export const Layout = () => {
               <Suspense>
                 <Outlet />
               </Suspense>
+              <ReloadPrompt />
             </div>
           </div>
         </main>
