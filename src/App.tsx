@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
@@ -29,6 +30,7 @@ export const App = () => {
 
   return (
     <Suspense fallback={<div>Initializing...</div>}>
+      <Toaster />
       <BrowserRouter>
         <Routes>
           {/* Add routes that display no matter the auth status */}

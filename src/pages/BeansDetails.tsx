@@ -50,6 +50,7 @@ export const BeansDetails = () => {
   };
 
   const handleDelete = async () => {
+    // TODO check if beans have brews/espressos/tastings
     deleteDoc(docRef);
     navigate(`/beans`);
   };

@@ -1,5 +1,9 @@
-import { PlusCircleIcon } from "@heroicons/react/20/solid";
+import {
+  ExclamationTriangleIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/20/solid";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import "twin.macro";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
@@ -21,6 +25,21 @@ const radioOptions = [
   { label: "Second label", value: "second" },
   { label: "Third label", value: "third" },
 ];
+
+const infiniteLoadingToast = () =>
+  toast.loading(
+    (t) => (
+      <span tw="flex gap-2.5 items-center">
+        The app need restarting
+        <Button variant="primary" size="xs" onClick={() => toast.dismiss(t.id)}>
+          Restart
+        </Button>
+      </span>
+    ),
+    {
+      icon: <ExclamationTriangleIcon tw="w-5 h-5" />,
+    }
+  );
 
 export const DesignLibrary = () => {
   const [singleValue, setSingleValue] = useState<string>();
@@ -76,6 +95,12 @@ export const DesignLibrary = () => {
           }
           onChange={(values: any[]) => setMultiValues(values)}
         />
+      </div>
+      <div>
+        Toast notifications
+        <Button variant="primary" onClick={infiniteLoadingToast}>
+          Try toast
+        </Button>
       </div>
       <div>
         <Button variant="primary" size="xs">
