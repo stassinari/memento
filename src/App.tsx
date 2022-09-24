@@ -67,4 +67,8 @@ export const App = () => {
   );
 };
 
-const Homepage = () => <div>Dis da homepage, brah</div>;
+const Homepage = () => (
+  <div>
+    Dis da homepage, brah. <p>Still I'm testing lolz</p>
+  </div>
+);
