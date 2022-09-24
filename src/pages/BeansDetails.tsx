@@ -7,8 +7,9 @@ import {
   ArchiveBoxXMarkIcon,
   MoonIcon,
   SunIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
-import { serverTimestamp, updateDoc } from "firebase/firestore";
+import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
@@ -46,6 +47,11 @@ export const BeansDetails = () => {
     await updateDoc(docRef, {
       thawDate: serverTimestamp(),
     });
+  };
+
+  const handleDelete = async () => {
+    deleteDoc(docRef);
+    navigate(`/beans`);
   };
 
   if (isLoading) return null;
@@ -102,6 +108,9 @@ export const BeansDetails = () => {
             Thaw
           </Button>
         ) : null}
+        <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
+          Delete
+        </Button>
       </div>
 
       <Details
