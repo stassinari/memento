@@ -8,7 +8,7 @@ import { layoutContainerStyles } from "../components/Layout";
 export const LogIn = () => {
   return (
     <div css={layoutContainerStyles}>
-      <div tw="sm:mx-auto sm:w-full sm:max-w-md">
+      <div tw="px-4 sm:(px-0 mx-auto max-w-md)">
         <h2 tw="my-6 text-3xl font-bold tracking-tight text-center text-gray-900">
           Sign in to Memento
         </h2>

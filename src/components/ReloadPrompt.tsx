@@ -17,6 +17,8 @@ export const ReloadPrompt = () => {
     },
   });
 
+  // FIXME toasts on iPhone
+
   const infiniteToast = () =>
     toast.loading(
       (t) => (
