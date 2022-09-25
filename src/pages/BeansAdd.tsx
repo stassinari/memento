@@ -28,6 +28,7 @@ export const BeansAdd: React.FC = () => {
       title="Add beans"
       buttonLabel="Add"
       mutation={addBeans}
+      showStorageSection={false}
     />
   );
 };

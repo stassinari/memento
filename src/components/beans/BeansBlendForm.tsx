@@ -31,7 +31,6 @@ export const BeansBlendForm = () => {
   const handleAppend = () => append(blendEmptyValues);
   const handleRemove = (index: number) => () => remove(index);
 
-  console.log(fields);
   return (
     <div tw="space-y-4">
       This is where we'll blend.

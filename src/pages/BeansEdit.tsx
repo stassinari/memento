@@ -35,6 +35,8 @@ export const BeansEdit = () => {
   const fromFirestore: BeansFormInputs = {
     ...beans,
     roastDate: beans.roastDate?.toDate() || null,
+    freezeDate: beans.freezeDate?.toDate() || null,
+    thawDate: beans.thawDate?.toDate() || null,
     harvestDate: beans.harvestDate?.toDate() || null,
   };
 

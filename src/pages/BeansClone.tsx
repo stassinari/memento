@@ -28,6 +28,8 @@ export const BeansClone = () => {
   const fromFirestore: BeansFormInputs = {
     ...beans,
     roastDate: beans.roastDate?.toDate() || null,
+    freezeDate: null,
+    thawDate: null,
     harvestDate: beans.harvestDate?.toDate() || null,
   };
 
@@ -37,6 +39,7 @@ export const BeansClone = () => {
       title="Clone beans"
       buttonLabel="Clone"
       mutation={addBeans}
+      showStorageSection={false}
     />
   );
 };

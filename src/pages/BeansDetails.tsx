@@ -129,6 +129,20 @@ export const BeansDetails = () => {
         ]}
       />
 
+      <Details
+        title="Storage"
+        rows={[
+          {
+            label: "Freeze date",
+            value: beans.freezeDate?.toDate().toLocaleDateString() || "",
+          },
+          {
+            label: "Thaw date",
+            value: beans.thawDate?.toDate().toLocaleDateString() || "",
+          },
+        ]}
+      />
+
       {beans.origin === "single-origin" ? (
         <Details
           title="Single-origin terroir"
@@ -142,6 +156,10 @@ export const BeansDetails = () => {
             },
             { label: "Process", value: beans.process || "" },
             { label: "Varietal(s)", value: beans.varietals.join(", ") },
+            {
+              label: "Harvest date",
+              value: beans.harvestDate?.toDate().toLocaleDateString() || "",
+            },
           ]}
         />
       ) : beans.origin === "blend" ? (

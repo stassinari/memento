@@ -48,11 +48,11 @@ export interface BeansFormInputs {
 export const beansFormEmptyValues: BeansFormInputs = {
   name: null,
   roaster: null,
-  isFinished: false,
   roastDate: null,
-  roastingNotes: [],
   roastStyle: null,
   roastLevel: null,
+  roastingNotes: [],
+
   origin: "single-origin",
   country: null,
   farmer: null,
@@ -61,8 +61,11 @@ export const beansFormEmptyValues: BeansFormInputs = {
   varietals: [],
   harvestDate: null,
   altitude: null,
+
   freezeDate: null,
   thawDate: null,
+
+  isFinished: false,
 };
 
 interface BeansFormProps {
@@ -70,6 +73,7 @@ interface BeansFormProps {
   title: string;
   buttonLabel: string;
   mutation: (data: BeansFormInputs) => Promise<void>;
+  showStorageSection?: boolean;
 }
 
 export const BeansForm: React.FC<BeansFormProps> = ({
@@ -77,6 +81,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   title,
   buttonLabel,
   mutation,
+  showStorageSection = true,
 }) => {
   const navigate = useNavigate();
 
@@ -173,6 +178,29 @@ export const BeansForm: React.FC<BeansFormProps> = ({
 
           <Divider tw="hidden sm:block" />
 
+          {showStorageSection && (
+            <React.Fragment>
+              <FormSection
+                title="Storage"
+                subtitle="In case the beans are frozen or thawed."
+              >
+                <FormInputDate
+                  label="Freeze date"
+                  id="freezeDate"
+                  placeholder="Select freeze date"
+                />
+
+                <FormInputDate
+                  label="Thaw date"
+                  id="thawDate"
+                  placeholder="Select thaw date"
+                />
+              </FormSection>
+
+              <Divider tw="hidden sm:block" />
+            </React.Fragment>
+          )}
+
           <FormSection
             title="Terroir"
             subtitle="This section is about where the beans came from."
@@ -258,7 +286,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
             <Button
               variant="primary"
               type="submit"
-              disabled={mutation.isLoading}
+              // disabled={mutation.isLoading} FIXME disabled buttons after first click
             >
               {buttonLabel}
             </Button>
