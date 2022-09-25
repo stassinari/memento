@@ -9,6 +9,7 @@ import {
   SunIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import dayjs from "dayjs";
 import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -121,7 +122,9 @@ export const BeansDetails = () => {
           { label: "Roaster", value: beans.roaster },
           {
             label: "Roast date",
-            value: beans.roastDate?.toDate().toLocaleDateString() || "",
+            value: beans.roastDate
+              ? dayjs(beans.roastDate.toDate()).format("DD MMM YYYY")
+              : "",
           },
           { label: "Roast style", value: beans.roastStyle || "" },
           { label: "Roast level", value: beans.roastLevel?.toString() || "" },
@@ -134,11 +137,15 @@ export const BeansDetails = () => {
         rows={[
           {
             label: "Freeze date",
-            value: beans.freezeDate?.toDate().toLocaleDateString() || "",
+            value: beans.freezeDate
+              ? dayjs(beans.freezeDate.toDate()).format("DD MMM YYYY")
+              : "",
           },
           {
             label: "Thaw date",
-            value: beans.thawDate?.toDate().toLocaleDateString() || "",
+            value: beans.thawDate
+              ? dayjs(beans.thawDate.toDate()).format("DD MMM YYYY")
+              : "",
           },
         ]}
       />
@@ -158,7 +165,9 @@ export const BeansDetails = () => {
             { label: "Varietal(s)", value: beans.varietals.join(", ") },
             {
               label: "Harvest date",
-              value: beans.harvestDate?.toDate().toLocaleDateString() || "",
+              value: beans.harvestDate
+                ? dayjs(beans.harvestDate.toDate()).format("MMMM YYYY")
+                : "",
             },
           ]}
         />
