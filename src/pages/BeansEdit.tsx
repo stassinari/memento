@@ -1,7 +1,7 @@
 import { doc, setDoc } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
-import { BeansForm, BeansFormInputs } from "../components/BeansForm";
+import { BeansForm, BeansFormInputs } from "../components/beans/BeansForm";
 import { db } from "../firebaseConfig";
 import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
 import { userAtom } from "../hooks/useInitUser";

@@ -6,9 +6,9 @@ import {
   BeansForm,
   beansFormEmptyValues,
   BeansFormInputs,
-} from "../../components/BeansForm";
-import { db } from "../../firebaseConfig";
-import { userAtom } from "../../hooks/useInitUser";
+} from "../components/beans/BeansForm";
+import { db } from "../firebaseConfig";
+import { userAtom } from "../hooks/useInitUser";
 
 export const BeansAdd: React.FC = () => {
   const [user] = useAtom(userAtom);

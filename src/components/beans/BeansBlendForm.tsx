@@ -1,15 +1,15 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import "twin.macro";
-import countries from "../data/countries";
-import { processes } from "../data/processes";
-import { varietals } from "../data/varietals";
-import { CountryOptionFlag } from "../pages/BeansAdd/CountryOptionFlag";
-import { Button } from "./Button";
-import { FormComboboxMulti } from "./form/FormComboboxMulti";
-import { FormComboboxSingle } from "./form/FormComboboxSingle";
-import { FormInput } from "./form/FormInput";
-import { TextWithImageOption } from "./ListOption";
+import countries from "../../data/countries";
+import { processes } from "../../data/processes";
+import { varietals } from "../../data/varietals";
+import { Button } from "../Button";
+import { FormComboboxMulti } from "../form/FormComboboxMulti";
+import { FormComboboxSingle } from "../form/FormComboboxSingle";
+import { FormInput } from "../form/FormInput";
+import { TextWithImageOption } from "../ListOption";
+import { CountryOptionFlag } from "./CountryOptionFlag";
 
 const blendEmptyValues = {
   name: "",
