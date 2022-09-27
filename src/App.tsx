@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
-import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequireNoAuth } from "./components/auth/RequireNoAuth";
 import { Layout } from "./components/Layout";
+import { NotificationContainer } from "./components/NotificationContainer";
 import { useInitUser } from "./hooks/useInitUser";
 import { BeansClone } from "./pages/BeansClone";
 import { BeansEdit } from "./pages/BeansEdit";
@@ -26,11 +26,12 @@ const LogIn = React.lazy(() => import("./pages/LogIn"));
 
 export const App = () => {
   const isUserLoading = useInitUser();
+
   if (isUserLoading) return null;
 
   return (
     <Suspense fallback={<div>Initializing...</div>}>
-      <Toaster />
+      <NotificationContainer />
       <BrowserRouter>
         <Routes>
           {/* Add routes that display no matter the auth status */}

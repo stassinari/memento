@@ -19,7 +19,7 @@ export const ReloadPrompt = () => {
 
   // FIXME toasts on iPhone
 
-  const infiniteToast = () =>
+  const showReloadToast = () =>
     toast.loading(
       (t) => (
         <span tw="flex gap-2.5 items-center">
@@ -44,7 +44,7 @@ export const ReloadPrompt = () => {
 
   useEffect(() => {
     if (needRefresh) {
-      infiniteToast();
+      showReloadToast();
     }
   }, [needRefresh]);
   return <React.Fragment />;
