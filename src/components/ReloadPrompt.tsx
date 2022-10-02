@@ -2,7 +2,7 @@ import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import { Button } from "./Button";
+import { notification } from "./Notification";
 
 export const ReloadPrompt = () => {
   const {
@@ -17,30 +17,22 @@ export const ReloadPrompt = () => {
     },
   });
 
-  // FIXME toasts on iPhone
-
   const showReloadToast = () =>
-    toast.loading(
-      (t) => (
-        <span tw="flex gap-2.5 items-center">
-          The app need restarting
-          <Button
-            variant="primary"
-            size="xs"
-            onClick={() => {
-              updateServiceWorker(true);
-              toast.dismiss(t.id);
-              setNeedRefresh(false);
-            }}
-          >
-            Restart
-          </Button>
-        </span>
-      ),
-      {
-        icon: <ArrowPathIcon tw="w-5 h-5" />,
-      }
-    );
+    notification({
+      title: "Reload",
+      subtitle: "There is a new version of Memento. Please restart.",
+      duration: Infinity,
+      Icon: <ArrowPathIcon />,
+      showClose: false,
+      primaryButton: {
+        label: "Reload",
+        onClick: (t) => {
+          updateServiceWorker(true);
+          toast.dismiss(t.id);
+          setNeedRefresh(false);
+        },
+      },
+    });
 
   useEffect(() => {
     if (needRefresh) {

@@ -1,6 +1,6 @@
-import { Transition } from "@headlessui/react";
 import { PlusCircleIcon } from "@heroicons/react/20/solid";
-import { Fragment, useState } from "react";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import "twin.macro";
 import { Button } from "../components/Button";
@@ -9,6 +9,7 @@ import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
+import { notification } from "../components/Notification";
 
 const people = [
   "Durward Reynolds",
@@ -23,57 +24,6 @@ const radioOptions = [
   { label: "Second label", value: "second" },
   { label: "Third label", value: "third" },
 ];
-
-const infiniteLoadingToast = () =>
-  toast.custom(
-    (t) => (
-      <Transition
-        show={t.visible}
-        as={Fragment}
-        enter="transform ease-out duration-300 transition"
-        enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-        enterTo="translate-y-0 opacity-100 sm:translate-x-0"
-        leave="transition ease-in duration-100"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <div className="flex w-full max-w-md bg-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
-          <div className="flex-1 w-0 p-4">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 pt-0.5">
-                <img
-                  className="w-10 h-10 rounded-full"
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                  alt=""
-                />
-              </div>
-              <div className="flex-1 w-0 ml-3">
-                <p className="text-sm font-medium text-gray-900">
-                  Emilia Gates
-                </p>
-                <p className="mt-1 text-sm text-gray-500">
-                  Sure! 8:30pm works great!
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="flex border-l border-gray-200">
-            <button
-              type="button"
-              className="flex items-center justify-center w-full p-4 text-sm font-medium text-indigo-600 border border-transparent rounded-none rounded-r-lg hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              onClick={() => toast.dismiss(t.id)}
-            >
-              Reply
-            </button>
-          </div>
-        </div>
-      </Transition>
-    ),
-    { duration: Infinity }
-    // {
-    //   icon: <ExclamationTriangleIcon tw="w-5 h-5" />,
-    // }
-  );
 
 export const DesignLibrary = () => {
   const [singleValue, setSingleValue] = useState<string>();
@@ -132,8 +82,31 @@ export const DesignLibrary = () => {
       </div>
       <div>
         Toast notifications
-        <Button variant="primary" onClick={infiniteLoadingToast}>
-          Try toast
+        <Button
+          variant="primary"
+          onClick={() => notification({ title: "Minimal notification" })}
+        >
+          Minimal
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() =>
+            notification({
+              title: "Reload",
+              subtitle: "There is a new version of Memento. Please restart.",
+              duration: Infinity,
+              Icon: <ArrowPathIcon />,
+              showClose: false,
+              primaryButton: {
+                label: "Reload",
+                onClick: (t) => {
+                  toast.dismiss(t.id);
+                },
+              },
+            })
+          }
+        >
+          Reload-like
         </Button>
         <Button
           variant="primary"
