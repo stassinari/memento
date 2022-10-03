@@ -286,6 +286,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
             <Button
               variant="primary"
               type="submit"
+              colour="accent"
               // disabled={mutation.isLoading} FIXME disabled buttons after first click
             >
               {buttonLabel}

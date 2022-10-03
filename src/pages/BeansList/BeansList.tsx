@@ -52,7 +52,7 @@ export const BeansList = () => {
 
   return (
     <div>
-      <Button as={Link} to="add" variant="primary">
+      <Button as={Link} to="add" variant="primary" colour="accent">
         Add beanz
       </Button>
       <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
