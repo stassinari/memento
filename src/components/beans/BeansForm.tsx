@@ -1,3 +1,4 @@
+import { limit, orderBy } from "firebase/firestore";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,7 @@ import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
 import { varietals } from "../../data/varietals";
+import { useBeansList } from "../../hooks/firestore/useBeansList";
 import { RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
@@ -18,6 +20,7 @@ import { FormInputMonthYear } from "../form/FormInputMonthYear";
 import { FormInputRadio } from "../form/FormInputRadio";
 import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
+import { extractSuggestions } from "../form/FormSuggestions";
 import { TextWithImageOption } from "../ListOption";
 import { BeansBlendForm } from "./BeansBlendForm";
 import { CountryOptionFlag } from "./CountryOptionFlag";
@@ -85,6 +88,8 @@ export const BeansForm: React.FC<BeansFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  const { beansList } = useBeansList([orderBy("roastDate", "desc"), limit(10)]);
+
   const methods = useForm<BeansFormInputs>({
     defaultValues,
   });
@@ -139,7 +144,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
                 placeholder: "Square Mile",
               }}
               error={errors.roaster?.message}
-              suggestions={["Bella", "la gag"]}
+              suggestions={extractSuggestions(beansList, "roaster")}
             />
 
             <FormInputDate
