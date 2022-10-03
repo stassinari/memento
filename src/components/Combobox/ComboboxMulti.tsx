@@ -2,7 +2,7 @@ import { Combobox as HuiCombobox } from "@headlessui/react";
 import React, { ReactElement, useState } from "react";
 import "twin.macro";
 import tw from "twin.macro";
-import { Badge } from "../Badge";
+import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../ListOption";
 import {
@@ -62,7 +62,16 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
             <div tw="flex flex-wrap gap-2">
               {values.length > 0 &&
                 values.map((v) => (
-                  <Badge key={v} label={v} onClick={() => removeItem(v)} />
+                  <Badge
+                    key={v}
+                    label={v}
+                    colour="orange"
+                    icon={{
+                      Element: <BadgeTimesIcon />,
+                      position: "right",
+                      onClick: () => removeItem(v),
+                    }}
+                  />
                 ))}
               <HuiCombobox.Input
                 type="text"

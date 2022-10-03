@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import "twin.macro";
 import { theme } from "twin.macro";
+import { Badge, BadgePlusIcon, BadgeTimesIcon } from "../components/Badge";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
@@ -122,17 +123,37 @@ export const DesignLibrary = () => {
             Primary <span tw="ml-3 uppercase">{theme`colors.orange.600`}</span>
           </div>
           <div tw="flex items-center h-12 pl-6 text-sm font-medium text-black bg-orange-300 w-72">
-            Primary alt{" "}
+            Primary alt
             <span tw="ml-3 uppercase">{theme`colors.orange.300`}</span>
           </div>
           <div tw="flex items-center h-12 pl-6 text-sm font-medium text-white bg-blue-600 w-72">
             Secondary <span tw="ml-3 uppercase">{theme`colors.blue.600`}</span>
           </div>
           <div tw="flex items-center h-12 pl-6 text-sm font-medium text-black bg-blue-300 w-72">
-            Secondary alt{" "}
+            Secondary alt
             <span tw="ml-3 uppercase">{theme`colors.blue.300`}</span>
           </div>
         </div>
+      </div>
+      <div>
+        <Badge label="Gray badge" />
+        <Badge label="Orange badge" colour="orange" />
+        <Badge
+          label="Icon left"
+          colour="orange"
+          icon={{ Element: <BadgeTimesIcon />, position: "left" }}
+        />
+        <Badge
+          label="Icon right"
+          colour="orange"
+          icon={{ Element: <BadgeTimesIcon />, position: "right" }}
+        />
+        <Badge
+          label="Suggestion"
+          colour="grey"
+          clickable={true}
+          icon={{ Element: <BadgePlusIcon />, position: "left" }}
+        />
       </div>
       <div>
         <Button variant="primary" size="xs">
