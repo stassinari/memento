@@ -1,4 +1,4 @@
-import { limit, orderBy } from "firebase/firestore";
+import { orderBy } from "firebase/firestore";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -88,7 +88,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { beansList } = useBeansList([orderBy("roastDate", "desc"), limit(10)]);
+  const { beansList } = useBeansList([orderBy("roastDate", "desc")]);
 
   const methods = useForm<BeansFormInputs>({
     defaultValues,
@@ -133,16 +133,14 @@ export const BeansForm: React.FC<BeansFormProps> = ({
               error={errors.name?.message}
             />
 
-            <FormInput
+            <FormComboboxSingle
               label="Roaster *"
-              id="roaster"
-              inputProps={{
-                ...register("roaster", {
-                  required: "Please enter your password",
-                }),
-                type: "text",
-                placeholder: "Square Mile",
-              }}
+              name="roaster"
+              options={[
+                ...new Set(beansList.map(({ roaster }) => roaster).sort()),
+              ]}
+              placeholder="Square mile"
+              requiredMsg="Please enter your password"
               error={errors.roaster?.message}
               suggestions={extractSuggestions(beansList, "roaster")}
             />

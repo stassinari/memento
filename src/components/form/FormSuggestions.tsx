@@ -9,11 +9,9 @@ interface FormSuggestionsProps {
   suggestions?: Suggestion[];
 }
 
-export const extractSuggestions = (arr: any[], field: string, limit = 3) => {
-  // TODO is this iffy af?
-  const sugSet = new Set(arr.map((b) => b[field]));
-  return Array.from(sugSet).slice(0, limit);
-};
+// TODO is this iffy af?
+export const extractSuggestions = (arr: any[], field: string, limit = 3) =>
+  [...new Set(arr.map((b) => b[field]))].slice(0, limit);
 
 export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
   suggestions,
