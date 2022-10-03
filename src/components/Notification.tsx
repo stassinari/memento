@@ -57,7 +57,7 @@ export const notification = ({
                   <div tw="flex mt-3 space-x-7">
                     {primaryButton && (
                       <button
-                        onClick={primaryButton.onClick}
+                        onClick={() => primaryButton.onClick(t)}
                         type="button"
                         tw="text-sm font-medium text-orange-600 bg-white rounded-md hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                       >
@@ -66,7 +66,7 @@ export const notification = ({
                     )}
                     {secondaryButton && (
                       <button
-                        onClick={secondaryButton.onClick}
+                        onClick={() => secondaryButton.onClick(t)}
                         type="button"
                         tw="text-sm font-medium text-gray-700 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                       >

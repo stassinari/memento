@@ -3,6 +3,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import "twin.macro";
+import { theme } from "twin.macro";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
@@ -116,6 +117,24 @@ export const DesignLibrary = () => {
         </Button>
       </div>
       <div>
+        <div tw="flex flex-col overflow-hidden rounded-md w-min">
+          <div tw="flex items-center h-12 pl-6 text-sm font-medium text-white bg-orange-600 w-72">
+            Primary <span tw="ml-3 uppercase">{theme`colors.orange.600`}</span>
+          </div>
+          <div tw="flex items-center h-12 pl-6 text-sm font-medium text-black bg-orange-300 w-72">
+            Primary alt{" "}
+            <span tw="ml-3 uppercase">{theme`colors.orange.300`}</span>
+          </div>
+          <div tw="flex items-center h-12 pl-6 text-sm font-medium text-white bg-blue-600 w-72">
+            Secondary <span tw="ml-3 uppercase">{theme`colors.blue.600`}</span>
+          </div>
+          <div tw="flex items-center h-12 pl-6 text-sm font-medium text-black bg-blue-300 w-72">
+            Secondary alt{" "}
+            <span tw="ml-3 uppercase">{theme`colors.blue.300`}</span>
+          </div>
+        </div>
+      </div>
+      <div>
         <Button variant="primary" size="xs">
           Button xs
         </Button>
@@ -142,6 +161,40 @@ export const DesignLibrary = () => {
           Button lg
         </Button>
         <Button variant="secondary" size="xl">
+          Button xl
+        </Button>
+      </div>
+      <div>
+        <Button colour="accent" variant="primary" size="xs">
+          Button xs
+        </Button>
+        <Button colour="accent" variant="primary" size="sm">
+          Button sm
+        </Button>
+        <Button colour="accent" variant="primary">
+          Button md
+        </Button>
+        <Button colour="accent" variant="primary" size="lg">
+          Button lg
+        </Button>
+        <Button colour="accent" variant="primary" size="xl">
+          Button xl
+        </Button>
+      </div>
+      <div>
+        <Button colour="accent" variant="secondary" size="xs">
+          Button xs
+        </Button>
+        <Button colour="accent" variant="secondary" size="sm">
+          Button sm
+        </Button>
+        <Button colour="accent" variant="secondary">
+          Button md
+        </Button>
+        <Button colour="accent" variant="secondary" size="lg">
+          Button lg
+        </Button>
+        <Button colour="accent" variant="secondary" size="xl">
           Button xl
         </Button>
       </div>

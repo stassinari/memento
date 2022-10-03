@@ -1,19 +1,12 @@
-import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
 import tw from "twin.macro";
-
-interface ButtonOldProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string;
-  variant: "primary" | "secondary" | "white";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-  width?: "auto" | "full";
-  Icon?: ReactNode;
-}
 
 // Component-specific props specified separately
 export type ButtonOwnProps = {
   variant: "primary" | "secondary" | "white";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
+  colour?: "main" | "accent";
   width?: "auto" | "full";
   Icon?: ReactNode;
 };
@@ -30,6 +23,7 @@ export const Button: <E extends React.ElementType = typeof defaultElement>(
   <E extends React.ElementType = typeof defaultElement>(
     {
       variant,
+      colour = "main",
       size = "md",
       width = "auto",
       Icon,
@@ -42,11 +36,29 @@ export const Button: <E extends React.ElementType = typeof defaultElement>(
       as={defaultElement}
       css={[
         tw`inline-flex items-center justify-center font-medium border`,
-        tw`focus:(outline-none ring-2 ring-offset-2 ring-orange-500)`,
+        tw`focus:(outline-none ring-2 ring-offset-2)`,
+        colour === "main"
+          ? variant === "primary"
+            ? tw`bg-orange-600 hover:bg-orange-700`
+            : variant === "secondary"
+            ? tw`text-orange-700 bg-orange-100 hover:bg-orange-200`
+            : null
+          : colour === "accent"
+          ? variant === "primary"
+            ? tw`bg-blue-600 hover:bg-blue-700`
+            : variant === "secondary"
+            ? tw`text-blue-700 bg-blue-100 hover:bg-blue-200`
+            : null
+          : null,
+        colour === "main"
+          ? tw`ring-orange-500`
+          : colour === "accent"
+          ? tw`ring-blue-500`
+          : null,
         variant === "primary"
-          ? tw`text-white bg-orange-600 border-transparent shadow-sm hover:bg-orange-700`
+          ? tw`text-white border-transparent shadow-sm `
           : variant === "secondary"
-          ? tw`text-orange-700 bg-orange-100 border-transparent hover:bg-orange-200`
+          ? tw`border-transparent `
           : variant === "white"
           ? tw`text-gray-700 bg-white border-gray-300 shadow-sm hover:bg-gray-50`
           : null,
