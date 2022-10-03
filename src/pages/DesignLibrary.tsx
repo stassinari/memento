@@ -152,7 +152,11 @@ export const DesignLibrary = () => {
           label="Suggestion"
           colour="grey"
           clickable={true}
-          icon={{ Element: <BadgePlusIcon />, position: "left" }}
+          icon={{
+            Element: <BadgePlusIcon />,
+            position: "left",
+            onClick: () => console.log("lolz"),
+          }}
         />
       </div>
       <div>

@@ -139,6 +139,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
                 placeholder: "Square Mile",
               }}
               error={errors.roaster?.message}
+              suggestions={["Bella", "la gag"]}
             />
 
             <FormInputDate

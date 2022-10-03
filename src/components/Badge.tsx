@@ -28,15 +28,17 @@ export const Badge: React.FC<BadgeProps> = ({
           onClick={icon.onClick}
           css={[
             tw`inline-flex items-center justify-center flex-shrink-0 w-4 h-4 rounded-full focus:outline-none`,
+            clickable &&
+              tw`after:(content block absolute w-full h-full left-0 rounded-full)`,
             icon.position === "left"
               ? tw`mr-0.5`
               : icon.position === "right"
               ? tw`ml-0.5`
               : null,
             colour === "grey"
-              ? tw`text-gray-400 bg-gray-100 hover:(text-gray-500 bg-gray-200) group-hover:(text-gray-500 bg-gray-200) focus:(bg-gray-500 text-white)`
+              ? tw`text-gray-400 bg-gray-100 hover:(text-gray-500 bg-gray-200) focus:(bg-gray-500 text-white)`
               : colour === "orange"
-              ? tw`text-orange-400 bg-orange-100 hover:(text-orange-500 bg-orange-200) group-hover:(text-orange-500 bg-orange-200) focus:(bg-orange-500 text-white)`
+              ? tw`text-orange-400 bg-orange-100 hover:(text-orange-500 bg-orange-200) focus:(bg-orange-500 text-white)`
               : null,
           ]}
         >
@@ -48,9 +50,8 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={clickable ? "group" : ""}
       css={[
-        tw`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium`,
+        tw`relative inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium`,
         colour === "grey"
           ? tw`text-gray-800 bg-gray-100`
           : colour === "orange"
@@ -63,9 +64,7 @@ export const Badge: React.FC<BadgeProps> = ({
             ? tw`pl-2 pr-0.5`
             : null
           : tw`px-2.5`,
-        clickable && tw`cursor-pointer`,
       ]}
-      onClick={clickable && !!icon?.onClick ? () => icon.onClick : undefined}
     >
       {icon?.position === "left" && iconElement}
 

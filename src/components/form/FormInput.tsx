@@ -1,6 +1,8 @@
 import { InputHTMLAttributes } from "react";
+import { useFormContext } from "react-hook-form";
 import "twin.macro";
 import { Input } from "../Input";
+import { FormSuggestions } from "./FormSuggestions";
 
 interface FormInputProps {
   label: string;
@@ -8,6 +10,7 @@ interface FormInputProps {
   helperText?: string;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
   error?: string;
+  suggestions?: string[];
 }
 
 export const FormInput: React.FC<FormInputProps> = ({
@@ -16,7 +19,10 @@ export const FormInput: React.FC<FormInputProps> = ({
   helperText,
   error,
   inputProps,
+  suggestions,
 }) => {
+  const { setValue } = useFormContext();
+
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
@@ -31,6 +37,14 @@ export const FormInput: React.FC<FormInputProps> = ({
           {...inputProps}
         />
       </div>
+      {suggestions && (
+        <FormSuggestions
+          suggestions={suggestions.map((s) => ({
+            label: s,
+            onClick: () => setValue(id, s),
+          }))}
+        />
+      )}
       {helperText && !error && (
         <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>
       )}
