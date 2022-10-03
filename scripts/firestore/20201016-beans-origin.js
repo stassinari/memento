@@ -24,4 +24,3 @@ db.collection("beans")
   .catch((err) => {
     console.log("Error getting documents", err);
   });
-

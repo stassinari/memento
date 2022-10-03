@@ -11,7 +11,7 @@ Memento helps you keep track of all your coffee brewing at home:
 
 Memento is for you if you:
 
-- want to achieve tasty, repeatable coffee 
+- want to achieve tasty, repeatable coffee
 - have several coffee beans open at any given time and want to remember each individual settings
 - painstakingly keep track of all your coffee data on a whiteboard, spreadsheet, etc. and are looking for a better and easier way
 - want to record the outcome and flavour notes of espresso/filter coffee to improve upon
@@ -47,7 +47,7 @@ On Memento:
 
 1. (Prerequisite) Sign up as a registered user (it won't work for guest users)
 2. Navigate to your _Account_ page and generate a **secret key**
-3. You're going to need both your secret and your email (both on the _Account_ page for easy copy/pasting) 
+3. You're going to need both your secret and your email (both on the _Account_ page for easy copy/pasting)
 
 From the GitHub repo:
 
@@ -59,7 +59,7 @@ On your tablet running the Decent app:
 
 5. Create a folder called `memento_uploader` in the `plugins` folder inside of `de1plus`
 6. Transfer the `plugin.tcl` (and optionally the `settings.tdb`) to the above folder
-7. Navigate to the *Extensions* page on the Decent app and enable the **Upload to Memento** extension
+7. Navigate to the _Extensions_ page on the Decent app and enable the **Upload to Memento** extension
 8. If you transferred the `settings.tdb` file, you're all set! If you haven't, open the settings page for the extension and enter you email and secret key
 
 ## Credits
