@@ -1,5 +1,11 @@
-import { PlusCircleIcon } from "@heroicons/react/20/solid";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  PlusIcon as PlusIconMini,
+} from "@heroicons/react/20/solid";
+import {
+  ArrowPathIcon,
+  PlusIcon as PlusIconOutline,
+} from "@heroicons/react/24/outline";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import "twin.macro";
@@ -9,6 +15,7 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
+import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
 import { notification } from "../components/Notification";
@@ -160,134 +167,270 @@ export const DesignLibrary = () => {
         />
       </div>
       <div>
-        <Button variant="primary" size="xs">
-          Button xs
-        </Button>
-        <Button variant="primary" size="sm">
-          Button sm
-        </Button>
-        <Button variant="primary">Button md</Button>
-        <Button variant="primary" size="lg">
-          Button lg
-        </Button>
-        <Button variant="primary" size="xl">
-          Button xl
-        </Button>
+        <h2>Buttons</h2>
+        <div>
+          <Button variant="primary" size="xs">
+            Button xs
+          </Button>
+          <Button variant="primary" size="sm">
+            Button sm
+          </Button>
+          <Button variant="primary">Button md</Button>
+          <Button variant="primary" size="lg">
+            Button lg
+          </Button>
+          <Button variant="primary" size="xl">
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button variant="secondary" size="xs">
+            Button xs
+          </Button>
+          <Button variant="secondary" size="sm">
+            Button sm
+          </Button>
+          <Button variant="secondary">Button md</Button>
+          <Button variant="secondary" size="lg">
+            Button lg
+          </Button>
+          <Button variant="secondary" size="xl">
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button colour="accent" variant="primary" size="xs">
+            Button xs
+          </Button>
+          <Button colour="accent" variant="primary" size="sm">
+            Button sm
+          </Button>
+          <Button colour="accent" variant="primary">
+            Button md
+          </Button>
+          <Button colour="accent" variant="primary" size="lg">
+            Button lg
+          </Button>
+          <Button colour="accent" variant="primary" size="xl">
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button colour="accent" variant="secondary" size="xs">
+            Button xs
+          </Button>
+          <Button colour="accent" variant="secondary" size="sm">
+            Button sm
+          </Button>
+          <Button colour="accent" variant="secondary">
+            Button md
+          </Button>
+          <Button colour="accent" variant="secondary" size="lg">
+            Button lg
+          </Button>
+          <Button colour="accent" variant="secondary" size="xl">
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button variant="white" size="xs">
+            Button xs
+          </Button>
+          <Button variant="white" size="sm">
+            Button sm
+          </Button>
+          <Button variant="white">Button md</Button>
+          <Button variant="white" size="lg">
+            Button lg
+          </Button>
+          <Button variant="white" size="xl">
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button variant="primary" size="xs" Icon={<PlusCircleIcon />}>
+            Button xs
+          </Button>
+          <Button variant="primary" size="sm" Icon={<PlusCircleIcon />}>
+            Button sm
+          </Button>
+          <Button variant="primary" Icon={<PlusCircleIcon />}>
+            Button md
+          </Button>
+          <Button variant="primary" size="lg" Icon={<PlusCircleIcon />}>
+            Button lg
+          </Button>
+          <Button variant="primary" size="xl" Icon={<PlusCircleIcon />}>
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
+            Button xs
+          </Button>
+          <Button variant="secondary" size="sm" Icon={<PlusCircleIcon />}>
+            Button sm
+          </Button>
+          <Button variant="secondary" Icon={<PlusCircleIcon />}>
+            Button md
+          </Button>
+          <Button variant="secondary" size="lg" Icon={<PlusCircleIcon />}>
+            Button lg
+          </Button>
+          <Button variant="secondary" size="xl" Icon={<PlusCircleIcon />}>
+            Button xl
+          </Button>
+        </div>
+        <div>
+          <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
+            Button xs
+          </Button>
+          <Button variant="white" size="sm" Icon={<PlusCircleIcon />}>
+            Button sm
+          </Button>
+          <Button variant="white" Icon={<PlusCircleIcon />}>
+            Button md
+          </Button>
+          <Button variant="white" size="lg" Icon={<PlusCircleIcon />}>
+            Button lg
+          </Button>
+          <Button variant="white" size="xl" Icon={<PlusCircleIcon />}>
+            Button xl
+          </Button>
+        </div>
       </div>
       <div>
-        <Button variant="secondary" size="xs">
-          Button xs
-        </Button>
-        <Button variant="secondary" size="sm">
-          Button sm
-        </Button>
-        <Button variant="secondary">Button md</Button>
-        <Button variant="secondary" size="lg">
-          Button lg
-        </Button>
-        <Button variant="secondary" size="xl">
-          Button xl
-        </Button>
-      </div>
-      <div>
-        <Button colour="accent" variant="primary" size="xs">
-          Button xs
-        </Button>
-        <Button colour="accent" variant="primary" size="sm">
-          Button sm
-        </Button>
-        <Button colour="accent" variant="primary">
-          Button md
-        </Button>
-        <Button colour="accent" variant="primary" size="lg">
-          Button lg
-        </Button>
-        <Button colour="accent" variant="primary" size="xl">
-          Button xl
-        </Button>
-      </div>
-      <div>
-        <Button colour="accent" variant="secondary" size="xs">
-          Button xs
-        </Button>
-        <Button colour="accent" variant="secondary" size="sm">
-          Button sm
-        </Button>
-        <Button colour="accent" variant="secondary">
-          Button md
-        </Button>
-        <Button colour="accent" variant="secondary" size="lg">
-          Button lg
-        </Button>
-        <Button colour="accent" variant="secondary" size="xl">
-          Button xl
-        </Button>
-      </div>
-      <div>
-        <Button variant="white" size="xs">
-          Button xs
-        </Button>
-        <Button variant="white" size="sm">
-          Button sm
-        </Button>
-        <Button variant="white">Button md</Button>
-        <Button variant="white" size="lg">
-          Button lg
-        </Button>
-        <Button variant="white" size="xl">
-          Button xl
-        </Button>
-      </div>
-      <div>
-        <Button variant="primary" size="xs" Icon={<PlusCircleIcon />}>
-          Button xs
-        </Button>
-        <Button variant="primary" size="sm" Icon={<PlusCircleIcon />}>
-          Button sm
-        </Button>
-        <Button variant="primary" Icon={<PlusCircleIcon />}>
-          Button md
-        </Button>
-        <Button variant="primary" size="lg" Icon={<PlusCircleIcon />}>
-          Button lg
-        </Button>
-        <Button variant="primary" size="xl" Icon={<PlusCircleIcon />}>
-          Button xl
-        </Button>
-      </div>
-      <div>
-        <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
-          Button xs
-        </Button>
-        <Button variant="secondary" size="sm" Icon={<PlusCircleIcon />}>
-          Button sm
-        </Button>
-        <Button variant="secondary" Icon={<PlusCircleIcon />}>
-          Button md
-        </Button>
-        <Button variant="secondary" size="lg" Icon={<PlusCircleIcon />}>
-          Button lg
-        </Button>
-        <Button variant="secondary" size="xl" Icon={<PlusCircleIcon />}>
-          Button xl
-        </Button>
-      </div>
-      <div>
-        <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
-          Button xs
-        </Button>
-        <Button variant="white" size="sm" Icon={<PlusCircleIcon />}>
-          Button sm
-        </Button>
-        <Button variant="white" Icon={<PlusCircleIcon />}>
-          Button md
-        </Button>
-        <Button variant="white" size="lg" Icon={<PlusCircleIcon />}>
-          Button lg
-        </Button>
-        <Button variant="white" size="xl" Icon={<PlusCircleIcon />}>
-          Button xl
-        </Button>
+        <h2>IconButtons</h2>
+
+        <div>
+          <IconButton variant="primary" size="xs" Icon={<PlusIconMini />}>
+            Button xs
+          </IconButton>
+          <IconButton variant="primary" size="sm" Icon={<PlusIconMini />}>
+            Button sm
+          </IconButton>
+          <IconButton variant="primary" Icon={<PlusIconMini />}>
+            Button md
+          </IconButton>
+          <IconButton variant="primary" size="lg" Icon={<PlusIconOutline />}>
+            Button lg
+          </IconButton>
+          <IconButton variant="primary" size="xl" Icon={<PlusIconOutline />}>
+            Button xl
+          </IconButton>
+        </div>
+        <div>
+          <IconButton variant="secondary" size="xs" Icon={<PlusIconMini />}>
+            Button xs
+          </IconButton>
+          <IconButton variant="secondary" size="sm" Icon={<PlusIconMini />}>
+            Button sm
+          </IconButton>
+          <IconButton variant="secondary" Icon={<PlusIconMini />}>
+            Button md
+          </IconButton>
+          <IconButton variant="secondary" size="lg" Icon={<PlusIconOutline />}>
+            Button lg
+          </IconButton>
+          <IconButton variant="secondary" size="xl" Icon={<PlusIconOutline />}>
+            Button xl
+          </IconButton>
+        </div>
+        <div>
+          <IconButton
+            colour="accent"
+            variant="primary"
+            size="xs"
+            Icon={<PlusIconMini />}
+          >
+            Button xs
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="primary"
+            size="sm"
+            Icon={<PlusIconMini />}
+          >
+            Button sm
+          </IconButton>
+          <IconButton colour="accent" variant="primary" Icon={<PlusIconMini />}>
+            Button md
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="primary"
+            size="lg"
+            Icon={<PlusIconOutline />}
+          >
+            Button lg
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="primary"
+            size="xl"
+            Icon={<PlusIconOutline />}
+          >
+            Button xl
+          </IconButton>
+        </div>
+        <div>
+          <IconButton
+            colour="accent"
+            variant="secondary"
+            size="xs"
+            Icon={<PlusIconMini />}
+          >
+            Button xs
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="secondary"
+            size="sm"
+            Icon={<PlusIconMini />}
+          >
+            Button sm
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="secondary"
+            Icon={<PlusIconMini />}
+          >
+            Button md
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="secondary"
+            size="lg"
+            Icon={<PlusIconOutline />}
+          >
+            Button lg
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="secondary"
+            size="xl"
+            Icon={<PlusIconOutline />}
+          >
+            Button xl
+          </IconButton>
+        </div>
+        <div>
+          <IconButton variant="white" size="xs" Icon={<PlusIconMini />}>
+            Button xs
+          </IconButton>
+          <IconButton variant="white" size="sm" Icon={<PlusIconMini />}>
+            Button sm
+          </IconButton>
+          <IconButton variant="white" Icon={<PlusIconMini />}>
+            Button md
+          </IconButton>
+          <IconButton variant="white" size="lg" Icon={<PlusIconOutline />}>
+            Button lg
+          </IconButton>
+          <IconButton variant="white" size="xl" Icon={<PlusIconOutline />}>
+            Button xl
+          </IconButton>
+        </div>
       </div>
     </div>
   );
