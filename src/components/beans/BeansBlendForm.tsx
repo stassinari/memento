@@ -4,6 +4,7 @@ import "twin.macro";
 import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { varietals } from "../../data/varietals";
+import { BeansBlendPart } from "../../types/beans";
 import { Button } from "../Button";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
@@ -11,7 +12,7 @@ import { FormInput } from "../form/FormInput";
 import { TextWithImageOption } from "../ListOption";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 
-const blendEmptyValues = {
+export const blendEmptyValues: BeansBlendPart = {
   name: "",
   percentage: null,
   country: null,
@@ -21,12 +22,10 @@ const blendEmptyValues = {
 
 export const BeansBlendForm = () => {
   const { control, register } = useFormContext();
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control,
-      name: "blend",
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "blend",
+  });
 
   const handleAppend = () => append(blendEmptyValues);
   const handleRemove = (index: number) => () => remove(index);

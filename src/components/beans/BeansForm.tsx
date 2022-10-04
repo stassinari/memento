@@ -8,7 +8,7 @@ import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
 import { varietals } from "../../data/varietals";
 import { useBeansList } from "../../hooks/firestore/useBeansList";
-import { RoastStyle } from "../../types/beans";
+import { BeansBlendPart, RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
@@ -22,7 +22,7 @@ import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { extractSuggestions } from "../form/FormSuggestions";
 import { TextWithImageOption } from "../ListOption";
-import { BeansBlendForm } from "./BeansBlendForm";
+import { BeansBlendForm, blendEmptyValues } from "./BeansBlendForm";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 
 export interface BeansFormInputs {
@@ -34,6 +34,7 @@ export interface BeansFormInputs {
   roastingNotes: string[];
 
   origin: "single-origin" | "blend";
+
   country: string | null;
   region: string | null;
   farmer: string | null;
@@ -42,11 +43,23 @@ export interface BeansFormInputs {
   varietals: string[];
   harvestDate: Date | null;
 
+  blend: BeansBlendPart[];
+
   freezeDate: Date | null;
   thawDate: Date | null;
 
   isFinished?: boolean;
 }
+
+const singleOriginEmptyValues = {
+  country: null,
+  farmer: null,
+  region: null,
+  process: null,
+  varietals: [],
+  harvestDate: null,
+  altitude: null,
+};
 
 export const beansFormEmptyValues: BeansFormInputs = {
   name: null,
@@ -57,13 +70,10 @@ export const beansFormEmptyValues: BeansFormInputs = {
   roastingNotes: [],
 
   origin: "single-origin",
-  country: null,
-  farmer: null,
-  region: null,
-  process: null,
-  varietals: [],
-  harvestDate: null,
-  altitude: null,
+
+  ...singleOriginEmptyValues,
+
+  blend: [blendEmptyValues],
 
   freezeDate: null,
   thawDate: null,
@@ -101,6 +111,11 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   } = methods;
 
   const onSubmit: SubmitHandler<BeansFormInputs> = async (data) => {
+    if (data.origin === "blend") {
+      data = { ...data, ...singleOriginEmptyValues };
+    } else {
+      data = { ...data, blend: [] };
+    }
     mutation(data);
   };
 
