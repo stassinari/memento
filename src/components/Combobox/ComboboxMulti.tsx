@@ -45,7 +45,10 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
     <HuiCombobox
       as="div"
       value={[...values]}
-      onChange={onChange}
+      onChange={(newValues) => {
+        onChange(newValues);
+        setQuery("");
+      }}
       name={name}
       multiple
     >
@@ -76,6 +79,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
               <HuiCombobox.Input
                 type="text"
                 placeholder={placeholder}
+                displayValue={() => query}
                 tw="flex-grow text-sm border-none p-0 focus:(outline-none border-none border-transparent ring-0)"
                 onChange={(event) => setQuery(event.target.value)}
               />
