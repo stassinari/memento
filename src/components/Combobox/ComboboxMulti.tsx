@@ -1,5 +1,5 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useRef, useState } from "react";
 import "twin.macro";
 import tw from "twin.macro";
 import { Badge, BadgeTimesIcon } from "../Badge";
@@ -33,6 +33,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
   renderOption = (option) => <TextOption text={option} />,
 }) => {
   const [query, setQuery] = useState("");
+  const ref = useRef<HTMLInputElement>(null);
 
   const filteredOptions =
     query === ""
@@ -48,6 +49,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
       onChange={(newValues) => {
         onChange(newValues);
         setQuery("");
+        ref.current?.focus();
       }}
       name={name}
       multiple
@@ -77,6 +79,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
                   />
                 ))}
               <HuiCombobox.Input
+                ref={ref}
                 type="text"
                 placeholder={placeholder}
                 displayValue={() => query}
