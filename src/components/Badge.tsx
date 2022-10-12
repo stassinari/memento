@@ -5,6 +5,7 @@ import tw from "twin.macro";
 interface BadgeProps {
   label: string;
   colour?: "grey" | "orange";
+  size?: "small" | "large";
   clickable?: boolean;
 
   icon?: {
@@ -17,6 +18,7 @@ interface BadgeProps {
 export const Badge: React.FC<BadgeProps> = ({
   label,
   icon,
+  size = "small",
   clickable = false,
   colour = "grey",
 }) => {
@@ -51,7 +53,12 @@ export const Badge: React.FC<BadgeProps> = ({
   return (
     <span
       css={[
-        tw`relative inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium`,
+        tw`relative inline-flex items-center rounded-full py-0.5 text-xs font-medium`,
+        size === "small"
+          ? tw`px-2.5 text-xs`
+          : size === "large"
+          ? tw`px-3 text-sm`
+          : null,
         colour === "grey"
           ? tw`text-gray-800 bg-gray-100`
           : colour === "orange"
@@ -59,9 +66,13 @@ export const Badge: React.FC<BadgeProps> = ({
           : null,
         !!icon
           ? icon.position === "left"
-            ? tw`pl-0.5 pr-2`
+            ? size === "small"
+              ? tw`pl-0.5 pr-2`
+              : tw`pl-1 pr-2.5`
             : icon.position === "right"
-            ? tw`pl-2 pr-0.5`
+            ? size === "small"
+              ? tw`pl-2 pr-0.5`
+              : tw`pl-2.5 pr-1`
             : null
           : tw`px-2.5`,
       ]}

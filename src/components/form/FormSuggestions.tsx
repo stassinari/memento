@@ -1,4 +1,6 @@
 import "twin.macro";
+import { theme } from "twin.macro";
+import useMediaQuery from "../../hooks/useMediaQuery";
 import { Badge, BadgePlusIcon } from "../Badge";
 
 interface Suggestion {
@@ -16,6 +18,7 @@ export const extractSuggestions = (arr: any[], field: string, limit = 3) =>
 export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
   suggestions,
 }) => {
+  const isSm = useMediaQuery(`(min-width: ${theme`screens.sm`})`);
   if (suggestions?.length === 0) return null;
   return (
     <div tw="flex items-baseline mt-2 text-xs text-gray-600">
@@ -26,6 +29,7 @@ export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
             <Badge
               label={label}
               colour="grey"
+              size={isSm ? "small" : "large"}
               clickable={true}
               icon={{
                 Element: <BadgePlusIcon />,

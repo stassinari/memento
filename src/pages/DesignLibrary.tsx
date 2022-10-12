@@ -143,7 +143,7 @@ export const DesignLibrary = () => {
         </div>
       </div>
       <div>
-        <Badge label="Gray badge" />
+        <Badge label="Grey badge" />
         <Badge label="Orange badge" colour="orange" />
         <Badge
           label="Icon left"
@@ -158,6 +158,33 @@ export const DesignLibrary = () => {
         <Badge
           label="Suggestion"
           colour="grey"
+          clickable={true}
+          icon={{
+            Element: <BadgePlusIcon />,
+            position: "left",
+            onClick: () => console.log("lolz"),
+          }}
+        />
+      </div>
+      <div>
+        <Badge label="Grey badge" size="large" />
+        <Badge label="Orange badge" colour="orange" size="large" />
+        <Badge
+          label="Icon left"
+          colour="orange"
+          size="large"
+          icon={{ Element: <BadgeTimesIcon />, position: "left" }}
+        />
+        <Badge
+          label="Icon right"
+          colour="orange"
+          size="large"
+          icon={{ Element: <BadgeTimesIcon />, position: "right" }}
+        />
+        <Badge
+          label="Suggestion"
+          colour="grey"
+          size="large"
           clickable={true}
           icon={{
             Element: <BadgePlusIcon />,
