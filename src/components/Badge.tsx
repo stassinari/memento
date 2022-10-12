@@ -30,12 +30,12 @@ export const Badge: React.FC<BadgeProps> = ({
           onClick={icon.onClick}
           css={[
             tw`inline-flex items-center justify-center flex-shrink-0 w-4 h-4 rounded-full focus:outline-none`,
-            clickable &&
-              tw`after:(content block absolute w-full h-full left-0 rounded-full)`,
+            tw`after:(content block absolute h-full rounded-full aspect-square)`, // see why this shouts
+            clickable && tw`after:w-full`,
             icon.position === "left"
-              ? tw`mr-0.5`
+              ? tw`mr-0.5 after:left-0`
               : icon.position === "right"
-              ? tw`ml-0.5`
+              ? tw`ml-0.5 after:right-0`
               : null,
             colour === "grey"
               ? tw`text-gray-400 bg-gray-100 hover:(text-gray-500 bg-gray-200) focus:(bg-gray-500 text-white)`
