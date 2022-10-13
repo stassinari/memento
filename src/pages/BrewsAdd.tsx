@@ -1,4 +1,4 @@
-import { collection, doc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
@@ -18,9 +18,9 @@ export const BrewsAdd: React.FC = () => {
   const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "brews"));
 
   const addBrew = async (data: BrewFormInputs) => {
-    console.log(data);
-    // await setDoc(newBeansRef, data);
-    // navigate(`/brews/${newBeansRef.id}`); // TODO doesn't exist yet
+    await setDoc(newBeansRef, data);
+    // navigate(`/drinks/brews/${newBeansRef.id}`); // TODO doesn't exist yet
+    navigate(`/drinks/brews`);
   };
 
   return (

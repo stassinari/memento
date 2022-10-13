@@ -10,11 +10,13 @@ import { FormSection } from "../Form";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
 import { FormInputDate } from "../form/FormInputDate";
+import { FormInputRadio } from "../form/FormInputRadio";
 
 // FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface BrewFormInputs {
   date: Date | null;
   method: string | null;
+  beans: string | null;
 
   grinder: string | null;
   grinderBurrs: string | null;
@@ -33,6 +35,7 @@ export interface BrewFormInputs {
 export const brewFormEmptyValues: () => BrewFormInputs = () => ({
   date: new Date(),
   method: null,
+  beans: null,
 
   grinder: null,
   grinderBurrs: null,
@@ -127,6 +130,16 @@ export const BrewForm: React.FC<BrewFormProps> = ({
                 {beansList.map((beans) => `${beans.name} (${beans.roaster})`)}
               </li>
             </ul>
+
+            <FormInputRadio
+              id="roastStyle"
+              label="Roast profile"
+              inputProps={{ ...register("beans") }}
+              options={beansList.map((beans) => ({
+                value: `/beans/${beans.id}`, // FIXME this is NOT a proper reference in Firestore
+                label: `${beans.name} (${beans.roaster})`,
+              }))}
+            />
           </FormSection>
 
           <Divider tw="hidden sm:block" />
