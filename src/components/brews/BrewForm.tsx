@@ -8,25 +8,44 @@ import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
+import { FormInput } from "../form/FormInput";
 import { FormInputDate } from "../form/FormInputDate";
 
 // FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface BrewFormInputs {
   date: Date | null;
   method: string | null;
+
   grinder: string | null;
   grinderBurrs: string | null;
   waterType: string | null;
   filterType: string | null;
+
+  waterWeight: number | null;
+  beansWeight: number | null;
+  waterTemperature: number | null;
+  grindSetting: number | null;
+
+  timeSeconds: number | null;
+  timeMinutes: number | null;
 }
 
 export const brewFormEmptyValues: () => BrewFormInputs = () => ({
-  date: new Date(), // FIXME I think this will not update, this prolly need to be wrapped in a function and called
+  date: new Date(),
   method: null,
+
   grinder: null,
   grinderBurrs: null,
   waterType: null,
   filterType: null,
+
+  waterWeight: null,
+  beansWeight: null,
+  waterTemperature: null,
+  grindSetting: null,
+
+  timeSeconds: null,
+  timeMinutes: null,
 });
 
 interface BrewFormProps {
@@ -158,6 +177,123 @@ export const BrewForm: React.FC<BrewFormProps> = ({
               // ]}
               placeholder="Bleached"
               // suggestions={extractSuggestions(beansList, "roaster")}
+            />
+          </FormSection>
+
+          <Divider tw="hidden sm:block" />
+
+          <FormSection
+            title="Recipe"
+            subtitle="All the info unique to this brew."
+          >
+            <FormInput
+              label="Water weight (ml) *"
+              id="waterWeight"
+              inputProps={{
+                ...register("waterWeight", {
+                  required: "Please enter the weight of your water.",
+                  min: {
+                    value: 0,
+                    message: "Please enter a positive weight.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "250",
+              }}
+              error={errors.waterWeight?.message}
+            />
+
+            <FormInput
+              label="Beans weight (g) *"
+              id="beansWeight"
+              inputProps={{
+                ...register("beansWeight", {
+                  required: "Please enter the weight of your beans.",
+                  min: {
+                    value: 0,
+                    message: "Please enter a positive weight.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "15",
+              }}
+              error={errors.beansWeight?.message}
+            />
+
+            <FormInput
+              label="Water temperature (°C)"
+              id="waterTemperature"
+              inputProps={{
+                ...register("waterTemperature", {
+                  min: {
+                    value: 0,
+                    message: "Please enter a positive temperature.",
+                  },
+                  max: {
+                    value: 100,
+                    message: "Please enter a non-gaseous water temperature.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "98",
+              }}
+              error={errors.waterTemperature?.message}
+            />
+
+            <FormInput
+              label="Grind setting"
+              id="grindSetting"
+              inputProps={{
+                ...register("grindSetting"),
+                type: "text",
+                placeholder: "1.5",
+              }}
+            />
+          </FormSection>
+
+          <Divider tw="hidden sm:block" />
+
+          <FormSection
+            title="Time"
+            subtitle="Keep track of how long your brew takes."
+          >
+            <FormInput
+              label="Minutes"
+              id="timeMinutes"
+              inputProps={{
+                ...register("timeMinutes", {
+                  min: {
+                    value: 0,
+                    message:
+                      "Please don't break space/time, enter a positive number.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "2",
+              }}
+              error={errors.timeMinutes?.message}
+            />
+
+            <FormInput
+              label="Seconds"
+              id="timeSeconds"
+              inputProps={{
+                ...register("timeSeconds", {
+                  min: {
+                    value: 0,
+                    message:
+                      "Please don't break space/time, enter a positive number.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "34",
+              }}
+              error={errors.timeSeconds?.message}
             />
           </FormSection>
 
