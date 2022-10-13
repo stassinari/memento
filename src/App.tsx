@@ -23,6 +23,7 @@ const BeansAdd = React.lazy(() => import("./pages/BeansAdd"));
 const BeansDetails = React.lazy(() => import("./pages/BeansDetails"));
 const BeansList = React.lazy(() => import("./pages/BeansList/BeansList"));
 const BrewsAdd = React.lazy(() => import("./pages/BrewsAdd"));
+const BrewDetails = React.lazy(() => import("./pages/BrewDetails"));
 const LogIn = React.lazy(() => import("./pages/LogIn"));
 
 export const App = () => {
@@ -55,6 +56,7 @@ export const App = () => {
 
               <Route path="drinks" element={<DrinksPage />} />
               <Route path="drinks/brews" element={<BrewsList />} />
+              <Route path="drinks/brews/:brewId" element={<BrewDetails />} />
               <Route path="drinks/brews/add" element={<BrewsAdd />} />
               <Route path="drinks/espressos" element={<EspressosPage />} />
               <Route path="drinks/tastings" element={<TastingsPage />} />

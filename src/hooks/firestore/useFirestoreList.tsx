@@ -16,7 +16,7 @@ interface UseFirestoreListResult<T> {
 }
 
 export const useFirestoreList = <T,>(
-  path: "brews" | "beans",
+  type: "brews" | "beans",
   filters: QueryConstraint[] = []
 ): UseFirestoreListResult<T> => {
   const [user] = useAtom(userAtom);
@@ -28,7 +28,7 @@ export const useFirestoreList = <T,>(
     db,
     "users",
     user?.uid || "lol",
-    path
+    type
   ) as CollectionReference<T>;
 
   const query = fbQuery(collectionRef, ...filters);

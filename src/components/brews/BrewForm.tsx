@@ -202,6 +202,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
             title="Recipe"
             subtitle="All the info unique to this brew."
           >
+            {/* FIXME this doesn't allow for decimal values */}
             <FormInput
               label="Water weight (ml) *"
               id="waterWeight"
