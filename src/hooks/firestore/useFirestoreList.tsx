@@ -8,44 +8,44 @@ import {
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
-import { Brew } from "../../types/brews";
 import { userAtom } from "../useInitUser";
 
-interface UseBrewsListResult {
-  brewsList: Brew[];
+interface UseFirestoreListResult<T> {
+  list: T[];
   isLoading: boolean;
 }
 
-export const useBrewsList = (
+export const useFirestoreList = <T,>(
+  path: "brews" | "beans",
   filters: QueryConstraint[] = []
-): UseBrewsListResult => {
+): UseFirestoreListResult<T> => {
   const [user] = useAtom(userAtom);
 
-  const [brewsList, setBrewsList] = useState<Brew[]>([]);
+  const [list, setList] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const collectionRef = collection(
     db,
     "users",
     user?.uid || "lol",
-    "brews"
-  ) as CollectionReference<Brew>;
+    path
+  ) as CollectionReference<T>;
 
   const query = fbQuery(collectionRef, ...filters);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query, (querySnap) => {
-      let list: Brew[] = [];
+      let tempList: T[] = [];
 
       querySnap.forEach((doc) => {
-        list.push({ id: doc.id, ...doc.data() });
+        tempList.push({ id: doc.id, ...doc.data() });
       });
 
-      setBrewsList(list);
+      setList(tempList);
       setIsLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
-  return { brewsList, isLoading };
+  return { list, isLoading };
 };

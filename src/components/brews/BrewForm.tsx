@@ -3,7 +3,8 @@ import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
-import { useBeansList } from "../../hooks/firestore/useBeansList";
+import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
+import { Beans } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
@@ -66,7 +67,9 @@ export const BrewForm: React.FC<BrewFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { beansList } = useBeansList([orderBy("roastDate", "desc")]);
+  const { list: beansList } = useFirestoreList<Beans>("beans", [
+    orderBy("roastDate", "desc"),
+  ]);
 
   const methods = useForm<BrewFormInputs>({
     defaultValues,
