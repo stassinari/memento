@@ -142,7 +142,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
                   required: "Please enter a name for your beans",
                 }),
                 type: "text",
-                autoFocus: true,
+                // autoFocus: true,
                 placeholder: "Kilimanjaro",
               }}
               error={errors.name?.message}
@@ -155,7 +155,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
                 ...new Set(beansList.map(({ roaster }) => roaster).sort()),
               ]}
               placeholder="Square mile"
-              requiredMsg="Please enter your password"
+              requiredMsg="Please select a roaster"
               error={errors.roaster?.message}
               suggestions={extractSuggestions(beansList, "roaster")}
             />

@@ -10,7 +10,7 @@ import { BeansEdit } from "./pages/BeansEdit";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
 // import { BeansList } from "./pages/BeansList";
-import { BrewsPage } from "./pages/BrewsPage";
+import { BrewsList } from "./pages/BrewsList";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
 import { EspressosPage } from "./pages/EspressosPage";
@@ -22,6 +22,7 @@ import { TastingsPage } from "./pages/TastingsPage";
 const BeansAdd = React.lazy(() => import("./pages/BeansAdd"));
 const BeansDetails = React.lazy(() => import("./pages/BeansDetails"));
 const BeansList = React.lazy(() => import("./pages/BeansList/BeansList"));
+const BrewsAdd = React.lazy(() => import("./pages/BrewsAdd"));
 const LogIn = React.lazy(() => import("./pages/LogIn"));
 
 export const App = () => {
@@ -53,7 +54,8 @@ export const App = () => {
               <Route path="beans/:beansId/clone" element={<BeansClone />} />
 
               <Route path="drinks" element={<DrinksPage />} />
-              <Route path="drinks/brews" element={<BrewsPage />} />
+              <Route path="drinks/brews" element={<BrewsList />} />
+              <Route path="drinks/brews/add" element={<BrewsAdd />} />
               <Route path="drinks/espressos" element={<EspressosPage />} />
               <Route path="drinks/tastings" element={<TastingsPage />} />
 
@@ -70,6 +72,8 @@ export const App = () => {
 
 const Homepage = () => (
   <div>
-    Dis da homepage, brah. <p>Still I'm testing lolz</p>
+    <p>Dis da homepage, brah.</p>
+    <p>Nobody knows what's going to appear here.</p>
+    <p>It's a secret 🤫</p>
   </div>
 );

@@ -11,6 +11,7 @@ interface FormInputDateProps {
   id: string;
   placeholder?: string;
   showMonthYearPicker?: boolean;
+  requiredMsg?: string;
   helperText?: string;
   error?: string;
 }
@@ -21,6 +22,7 @@ export const FormInputDate: React.FC<FormInputDateProps> = ({
   placeholder,
   helperText,
   showMonthYearPicker,
+  requiredMsg,
   error,
 }) => {
   // Consider creating reusable components rather than relying on this Provider
@@ -32,6 +34,7 @@ export const FormInputDate: React.FC<FormInputDateProps> = ({
         <Controller
           control={control}
           name={id}
+          rules={{ required: requiredMsg }}
           render={({ field }) => (
             <DatePicker
               showMonthYearPicker={showMonthYearPicker}
