@@ -10,6 +10,11 @@ import {
 import { db } from "../../firebaseConfig";
 import { userAtom } from "../../hooks/useInitUser";
 
+export const brewToFirestore = (brew: BrewFormInputs) => ({
+  ...brew,
+  beans: doc(db, "beans", brew.beans || ""),
+});
+
 export const BrewsAdd: React.FC = () => {
   const [user] = useAtom(userAtom);
 
@@ -18,7 +23,7 @@ export const BrewsAdd: React.FC = () => {
   const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "brews"));
 
   const addBrew = async (data: BrewFormInputs) => {
-    await setDoc(newBeansRef, data);
+    await setDoc(newBeansRef, brewToFirestore(data));
     // navigate(`/drinks/brews/${newBeansRef.id}`); // TODO doesn't exist yet
     navigate(`/drinks/brews`);
   };

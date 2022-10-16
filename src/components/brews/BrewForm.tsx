@@ -139,7 +139,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
               label="Roast profile"
               inputProps={{ ...register("beans") }}
               options={beansList.map((beans) => ({
-                value: `/beans/${beans.id}`, // FIXME this is NOT a proper reference in Firestore
+                value: beans.id || "",
                 label: `${beans.name} (${beans.roaster})`,
               }))}
             />
