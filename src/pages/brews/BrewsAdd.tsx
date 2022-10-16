@@ -6,9 +6,9 @@ import {
   BrewForm,
   brewFormEmptyValues,
   BrewFormInputs,
-} from "../components/brews/BrewForm";
-import { db } from "../firebaseConfig";
-import { userAtom } from "../hooks/useInitUser";
+} from "../../components/brews/BrewForm";
+import { db } from "../../firebaseConfig";
+import { userAtom } from "../../hooks/useInitUser";
 
 export const BrewsAdd: React.FC = () => {
   const [user] = useAtom(userAtom);

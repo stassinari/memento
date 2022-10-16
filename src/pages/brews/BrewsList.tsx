@@ -6,7 +6,6 @@ import { Brew } from "../../types/brews";
 
 export const BrewsList = () => {
   const { list: brewsList } = useFirestoreList<Brew>("brews");
-  console.log(brewsList);
   return (
     <div>
       <Button as={RouterLink} to="add" variant="primary" colour="accent">

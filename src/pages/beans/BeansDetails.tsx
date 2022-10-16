@@ -14,11 +14,11 @@ import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
-import { Button } from "../components/Button";
-import { Details } from "../components/Details";
-import { useFirestoreDetails } from "../hooks/firestore/useFirestoreDetails";
-import { Beans } from "../types/beans";
-import { NotFound } from "./NotFound";
+import { Button } from "../../components/Button";
+import { Details } from "../../components/Details";
+import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { Beans } from "../../types/beans";
+import { NotFound } from "../NotFound";
 
 export const BeansDetails = () => {
   const { beansId } = useParams();
