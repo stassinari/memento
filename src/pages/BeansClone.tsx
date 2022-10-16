@@ -3,8 +3,9 @@ import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../components/beans/BeansForm";
 import { db } from "../firebaseConfig";
-import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
+import { useFirestoreDetails } from "../hooks/firestore/useFirestoreDetails";
 import { userAtom } from "../hooks/useInitUser";
+import { Beans } from "../types/beans";
 
 export const BeansClone = () => {
   const { beansId } = useParams();
@@ -12,7 +13,7 @@ export const BeansClone = () => {
 
   const navigate = useNavigate();
 
-  const { beans } = useBeansDetails(beansId);
+  const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
 
   const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "beans"));
   const addBeans = async (data: BeansFormInputs) => {

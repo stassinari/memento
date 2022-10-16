@@ -3,8 +3,9 @@ import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../components/beans/BeansForm";
 import { db } from "../firebaseConfig";
-import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
+import { useFirestoreDetails } from "../hooks/firestore/useFirestoreDetails";
 import { userAtom } from "../hooks/useInitUser";
+import { Beans } from "../types/beans";
 
 export const BeansEdit = () => {
   const [user] = useAtom(userAtom);
@@ -12,7 +13,7 @@ export const BeansEdit = () => {
 
   const navigate = useNavigate();
 
-  const { beans } = useBeansDetails(beansId);
+  const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
 
   const existingBeansRef = doc(
     db,

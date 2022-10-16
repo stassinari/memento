@@ -16,14 +16,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
 import { Details } from "../components/Details";
-import { useBeansDetails } from "../hooks/firestore/useBeansDetails";
+import { useFirestoreDetails } from "../hooks/firestore/useFirestoreDetails";
+import { Beans } from "../types/beans";
 import { NotFound } from "./NotFound";
 
 export const BeansDetails = () => {
   const { beansId } = useParams();
   const navigate = useNavigate();
 
-  const { beans, isLoading, docRef } = useBeansDetails(beansId);
+  const {
+    details: beans,
+    isLoading,
+    docRef,
+  } = useFirestoreDetails<Beans>("beans", beansId);
 
   const handleArchive = async () => {
     await updateDoc(docRef, {
