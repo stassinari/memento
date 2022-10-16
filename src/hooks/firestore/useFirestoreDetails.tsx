@@ -1,8 +1,7 @@
 import { doc, DocumentReference, onSnapshot } from "firebase/firestore";
-import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
-import { userAtom } from "../useInitUser";
+import { useCurrentUser } from "../useInitUser";
 
 interface UseFirestoreDetailsReturn<T> {
   details: T | null;
@@ -14,7 +13,7 @@ export const useFirestoreDetails = <T,>(
   type: "brews" | "beans",
   id?: string
 ): UseFirestoreDetailsReturn<T> => {
-  const [user] = useAtom(userAtom);
+  const user = useCurrentUser();
 
   const [details, setDetails] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);

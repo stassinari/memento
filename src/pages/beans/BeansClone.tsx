@@ -1,21 +1,19 @@
-import { collection, doc, setDoc } from "firebase/firestore";
-import { useAtom } from "jotai";
+import { setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
-import { db } from "../../firebaseConfig";
 import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
-import { userAtom } from "../../hooks/useInitUser";
+import { useNewBeansRef } from "../../hooks/firestore/useNewBeansRef";
 import { Beans } from "../../types/beans";
 
 export const BeansClone = () => {
   const { beansId } = useParams();
-  const [user] = useAtom(userAtom);
 
   const navigate = useNavigate();
 
   const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
 
-  const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "beans"));
+  const newBeansRef = useNewBeansRef();
+
   const addBeans = async (data: BeansFormInputs) => {
     await setDoc(newBeansRef, data);
     navigate(`/beans/${newBeansRef.id}`);

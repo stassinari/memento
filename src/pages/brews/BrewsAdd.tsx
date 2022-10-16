@@ -1,5 +1,4 @@
-import { collection, doc, setDoc } from "firebase/firestore";
-import { useAtom } from "jotai";
+import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import {
@@ -8,7 +7,7 @@ import {
   BrewFormInputs,
 } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
-import { userAtom } from "../../hooks/useInitUser";
+import { useNewBeansRef } from "../../hooks/firestore/useNewBeansRef";
 
 export const brewToFirestore = (brew: BrewFormInputs) => ({
   ...brew,
@@ -16,16 +15,13 @@ export const brewToFirestore = (brew: BrewFormInputs) => ({
 });
 
 export const BrewsAdd: React.FC = () => {
-  const [user] = useAtom(userAtom);
-
   const navigate = useNavigate();
 
-  const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "brews"));
+  const newBeansRef = useNewBeansRef();
 
   const addBrew = async (data: BrewFormInputs) => {
     await setDoc(newBeansRef, brewToFirestore(data));
-    // navigate(`/drinks/brews/${newBeansRef.id}`); // TODO doesn't exist yet
-    navigate(`/drinks/brews`);
+    navigate(`/drinks/brews/${newBeansRef.id}`);
   };
 
   return (

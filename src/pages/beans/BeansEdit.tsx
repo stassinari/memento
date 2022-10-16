@@ -1,27 +1,21 @@
 import { doc, setDoc } from "firebase/firestore";
-import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
 import { db } from "../../firebaseConfig";
 import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
-import { userAtom } from "../../hooks/useInitUser";
+import { useCurrentUser } from "../../hooks/useInitUser";
 import { Beans } from "../../types/beans";
 
 export const BeansEdit = () => {
-  const [user] = useAtom(userAtom);
+  const user = useCurrentUser();
   const { beansId } = useParams();
 
   const navigate = useNavigate();
 
   const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
 
-  const existingBeansRef = doc(
-    db,
-    "users",
-    user?.uid || "",
-    "beans",
-    beansId || ""
-  );
+  if (!user) throw new Error("User is not logged in.");
+  const existingBeansRef = doc(db, "users", user.uid, "beans", beansId || "");
 
   const editBeans = async (data: BeansFormInputs) => {
     await setDoc(existingBeansRef, data);

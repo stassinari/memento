@@ -1,16 +1,15 @@
 import { Auth } from "firebase/auth";
-import { useAtom } from "jotai";
 import { Link } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
 import { auth } from "../firebaseConfig";
-import { userAtom } from "../hooks/useInitUser";
+import { useCurrentUser } from "../hooks/useInitUser";
 
 const signOut = (auth: Auth) =>
   auth.signOut().then(() => console.log("signed out"));
 
 export const Profile = () => {
-  const [user] = useAtom(userAtom);
+  const user = useCurrentUser();
 
   return (
     <div>

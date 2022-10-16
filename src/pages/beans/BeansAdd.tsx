@@ -1,5 +1,4 @@
-import { collection, doc, setDoc } from "firebase/firestore";
-import { useAtom } from "jotai";
+import { setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import {
@@ -7,15 +6,11 @@ import {
   beansFormEmptyValues,
   BeansFormInputs,
 } from "../../components/beans/BeansForm";
-import { db } from "../../firebaseConfig";
-import { userAtom } from "../../hooks/useInitUser";
+import { useNewBeansRef } from "../../hooks/firestore/useNewBeansRef";
 
 export const BeansAdd: React.FC = () => {
-  const [user] = useAtom(userAtom);
-
   const navigate = useNavigate();
-
-  const newBeansRef = doc(collection(db, "users", user?.uid || "lol", "beans"));
+  const newBeansRef = useNewBeansRef();
 
   const addBeans = async (data: BeansFormInputs) => {
     await setDoc(newBeansRef, data);

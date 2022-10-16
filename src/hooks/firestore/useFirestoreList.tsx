@@ -5,10 +5,9 @@ import {
   query as fbQuery,
   QueryConstraint,
 } from "firebase/firestore";
-import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
-import { userAtom } from "../useInitUser";
+import { useCurrentUser } from "../useInitUser";
 
 interface UseFirestoreListResult<T> {
   list: T[];
@@ -19,7 +18,7 @@ export const useFirestoreList = <T,>(
   type: "brews" | "beans",
   filters: QueryConstraint[] = []
 ): UseFirestoreListResult<T> => {
-  const [user] = useAtom(userAtom);
+  const user = useCurrentUser();
 
   const [list, setList] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +26,7 @@ export const useFirestoreList = <T,>(
   const collectionRef = collection(
     db,
     "users",
-    user?.uid || "lol",
+    user?.uid || "",
     type
   ) as CollectionReference<T>;
 

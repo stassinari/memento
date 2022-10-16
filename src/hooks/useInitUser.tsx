@@ -24,3 +24,11 @@ export const useInitUser = () => {
 
   return isLoading;
 };
+
+export const useCurrentUser = () => {
+  const [user] = useAtom(userAtom);
+
+  if (!user) throw new Error("User is not logged in.");
+
+  return user;
+};
