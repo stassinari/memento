@@ -5,11 +5,11 @@ import {
 import dayjs from "dayjs";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
-import { Button } from "../components/Button";
-import { Details } from "../components/Details";
-import { useFirestoreDetails } from "../hooks/firestore/useFirestoreDetails";
-import { Brew } from "../types/brews";
-import { NotFound } from "./NotFound";
+import { Button } from "../../components/Button";
+import { Details } from "../../components/Details";
+import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { Brew } from "../../types/brews";
+import { NotFound } from "../NotFound";
 
 export const BrewDetails = () => {
   const { brewId } = useParams();

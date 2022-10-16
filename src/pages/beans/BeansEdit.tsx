@@ -1,11 +1,11 @@
 import { doc, setDoc } from "firebase/firestore";
 import { useAtom } from "jotai";
 import { useNavigate, useParams } from "react-router-dom";
-import { BeansForm, BeansFormInputs } from "../components/beans/BeansForm";
-import { db } from "../firebaseConfig";
-import { useFirestoreDetails } from "../hooks/firestore/useFirestoreDetails";
-import { userAtom } from "../hooks/useInitUser";
-import { Beans } from "../types/beans";
+import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
+import { db } from "../../firebaseConfig";
+import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { userAtom } from "../../hooks/useInitUser";
+import { Beans } from "../../types/beans";
 
 export const BeansEdit = () => {
   const [user] = useAtom(userAtom);

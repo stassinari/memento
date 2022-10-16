@@ -3,8 +3,8 @@ import { orderBy, where } from "firebase/firestore";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
-import { Button } from "../../components/Button";
-import { EmptyState } from "../../components/EmptyState";
+import { Button } from "../../../components/Button";
+import { EmptyState } from "../../../components/EmptyState";
 import { BeansTab, BeansTabProps } from "./BeansTab";
 
 const tabs: BeansTabProps[] = [

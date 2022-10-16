@@ -5,12 +5,12 @@ import { RequireNoAuth } from "./components/auth/RequireNoAuth";
 import { Layout } from "./components/Layout";
 import { NotificationContainer } from "./components/NotificationContainer";
 import { useInitUser } from "./hooks/useInitUser";
-import { BeansClone } from "./pages/BeansClone";
-import { BeansEdit } from "./pages/BeansEdit";
+import { BeansClone } from "./pages/beans/BeansClone";
+import { BeansEdit } from "./pages/beans/BeansEdit";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
 // import { BeansList } from "./pages/BeansList";
-import { BrewsList } from "./pages/BrewsList";
+import { BrewsList } from "./pages/brews/BrewsList";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
 import { EspressosPage } from "./pages/EspressosPage";
@@ -19,11 +19,11 @@ import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
 import { TastingsPage } from "./pages/TastingsPage";
 
-const BeansAdd = React.lazy(() => import("./pages/BeansAdd"));
-const BeansDetails = React.lazy(() => import("./pages/BeansDetails"));
-const BeansList = React.lazy(() => import("./pages/BeansList/BeansList"));
-const BrewsAdd = React.lazy(() => import("./pages/BrewsAdd"));
-const BrewDetails = React.lazy(() => import("./pages/BrewDetails"));
+const BeansAdd = React.lazy(() => import("./pages/beans/BeansAdd"));
+const BeansDetails = React.lazy(() => import("./pages/beans/BeansDetails"));
+const BeansList = React.lazy(() => import("./pages/beans/BeansList/BeansList"));
+const BrewsAdd = React.lazy(() => import("./pages/brews/BrewsAdd"));
+const BrewDetails = React.lazy(() => import("./pages/brews/BrewDetails"));
 const LogIn = React.lazy(() => import("./pages/LogIn"));
 
 export const App = () => {

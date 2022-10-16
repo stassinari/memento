@@ -3,9 +3,9 @@ import { QueryConstraint } from "firebase/firestore";
 import { Fragment, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "twin.macro";
-import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
-import { Beans } from "../../types/beans";
-import { getTimeAgo, isNotFrozenOrIsThawed } from "../../util";
+import { useFirestoreList } from "../../../hooks/firestore/useFirestoreList";
+import { Beans } from "../../../types/beans";
+import { getTimeAgo, isNotFrozenOrIsThawed } from "../../../util";
 
 export interface BeansTabProps {
   name: "Archived" | "Frozen" | "Open";
