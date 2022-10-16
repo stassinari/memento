@@ -135,13 +135,19 @@ export const BrewForm: React.FC<BrewFormProps> = ({
             </ul>
 
             <FormInputRadio
-              id="roastStyle"
-              label="Roast profile"
-              inputProps={{ ...register("beans") }}
+              id="beans"
+              label="Beans"
+              direction="vertical"
+              inputProps={{
+                ...register("beans", {
+                  required: "Please select the beans you're using",
+                }),
+              }}
               options={beansList.map((beans) => ({
                 value: beans.id || "",
                 label: `${beans.name} (${beans.roaster})`,
               }))}
+              error={errors.beans?.message}
             />
           </FormSection>
 

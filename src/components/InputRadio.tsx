@@ -1,5 +1,8 @@
 import { InputHTMLAttributes } from "react";
 import "twin.macro";
+import tw from "twin.macro";
+
+export type RadioDirection = "vertical" | "horizontal";
 
 export type RadioOption = {
   value: string;
@@ -10,18 +13,27 @@ export type RadioOption = {
 export interface InputRadioProps {
   label: string;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
+  direction: RadioDirection;
   options: RadioOption[];
 }
 
 export const InputRadio: React.FC<InputRadioProps> = ({
   label,
+  direction,
   inputProps,
   options,
 }) => {
   return (
     <fieldset tw="mt-3">
       <legend tw="sr-only">{label}</legend>
-      <div tw="space-y-4 sm:(flex items-center space-y-0 space-x-10)">
+      <div
+        tw=""
+        css={[
+          direction === "vertical"
+            ? tw`flex flex-col space-y-4`
+            : tw`flex space-x-10 items-center`,
+        ]}
+      >
         {options.map(({ value, label }) => (
           <div key={label} tw="flex items-center">
             <input

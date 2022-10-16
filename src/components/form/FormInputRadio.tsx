@@ -1,12 +1,13 @@
 import { InputHTMLAttributes } from "react";
 import "twin.macro";
 import { Input } from "../Input";
-import { InputRadio, RadioOption } from "../InputRadio";
+import { InputRadio, RadioDirection, RadioOption } from "../InputRadio";
 
 interface FormInputRadioProps {
   label: string;
   id: string;
   options: RadioOption[];
+  direction: RadioDirection;
   helperText?: string;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
   error?: string;
@@ -16,6 +17,7 @@ export const FormInputRadio: React.FC<FormInputRadioProps> = ({
   label,
   id,
   options,
+  direction,
   inputProps,
   helperText,
   error,
@@ -29,7 +31,12 @@ export const FormInputRadio: React.FC<FormInputRadioProps> = ({
         </Input.Helper>
       )}
 
-      <InputRadio label={label} inputProps={inputProps} options={options} />
+      <InputRadio
+        label={label}
+        inputProps={inputProps}
+        options={options}
+        direction={direction}
+      />
 
       {error && <Input.Error id={`${id}-error`}>{error}</Input.Error>}
     </div>

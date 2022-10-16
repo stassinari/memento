@@ -3,11 +3,13 @@ import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
+import { theme } from "twin.macro";
 import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
 import { varietals } from "../../data/varietals";
 import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
+import useMediaQuery from "../../hooks/useMediaQuery";
 import { Beans, BeansBlendPart, RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
@@ -102,6 +104,8 @@ export const BeansForm: React.FC<BeansFormProps> = ({
     orderBy("roastDate", "desc"),
   ]);
 
+  const isSm = useMediaQuery(`(min-width: ${theme`screens.sm`})`);
+
   const methods = useForm<BeansFormInputs>({
     defaultValues,
   });
@@ -172,6 +176,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
               id="roastStyle"
               label="Roast profile"
               inputProps={{ ...register("roastStyle") }}
+              direction={isSm ? "horizontal" : "vertical"}
               options={[
                 { value: "filter", label: "Filter" },
                 { value: "espresso", label: "Espresso" },
