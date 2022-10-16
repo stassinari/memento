@@ -27,7 +27,7 @@ export interface BrewFormInputs {
   waterWeight: number | null;
   beansWeight: number | null;
   waterTemperature: number | null;
-  grindSetting: number | null;
+  grindSetting: string | null;
 
   timeSeconds: number | null;
   timeMinutes: number | null;
@@ -144,7 +144,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
                 }),
               }}
               options={beansList.map((beans) => ({
-                value: beans.id || "",
+                value: `beans/${beans.id}`,
                 label: `${beans.name} (${beans.roaster})`,
               }))}
               error={errors.beans?.message}

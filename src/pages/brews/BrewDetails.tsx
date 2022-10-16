@@ -62,7 +62,7 @@ export const BrewDetails = () => {
     <div tw="space-y-8">
       <div>
         <h3 tw="text-lg font-medium leading-6 text-gray-900">
-          Beans with id {brewId}
+          Brew with id {brewId}
         </h3>
         <p tw="max-w-2xl mt-1 text-sm text-gray-500">
           Subtitle in case it's needed.

@@ -15,12 +15,12 @@ export interface BrewPrep {
   filterType: string | null;
 
   waterWeight: number;
-  beansWeight: number; // FIXME wtf is this type? :O
+  beansWeight: number;
   waterTemperature: number | null;
   grindSetting: string | null;
 
   timeMinutes: number | null;
-  timeSeconds: string | null;
+  timeSeconds: number | null;
 }
 
 export interface BrewOutcome {

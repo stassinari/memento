@@ -7,21 +7,21 @@ import {
   BrewFormInputs,
 } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
-import { useNewBeansRef } from "../../hooks/firestore/useNewBeansRef";
+import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 
 export const brewToFirestore = (brew: BrewFormInputs) => ({
   ...brew,
-  beans: doc(db, "beans", brew.beans || ""),
+  beans: doc(db, brew.beans || ""),
 });
 
 export const BrewsAdd: React.FC = () => {
   const navigate = useNavigate();
 
-  const newBeansRef = useNewBeansRef();
+  const newBrewRef = useNewRef("brews");
 
   const addBrew = async (data: BrewFormInputs) => {
-    await setDoc(newBeansRef, brewToFirestore(data));
-    navigate(`/drinks/brews/${newBeansRef.id}`);
+    await setDoc(newBrewRef, brewToFirestore(data));
+    navigate(`/drinks/brews/${newBrewRef.id}`);
   };
 
   return (

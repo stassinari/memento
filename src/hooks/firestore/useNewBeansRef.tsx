@@ -2,7 +2,7 @@ import { collection, doc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
-export const useNewBeansRef = () => {
+export const useNewRef = (type: "beans" | "brews") => {
   const user = useCurrentUser();
-  return doc(collection(db, "users", user.uid, "beans"));
+  return doc(collection(db, "users", user.uid, type));
 };

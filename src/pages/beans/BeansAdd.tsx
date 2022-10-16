@@ -6,11 +6,11 @@ import {
   beansFormEmptyValues,
   BeansFormInputs,
 } from "../../components/beans/BeansForm";
-import { useNewBeansRef } from "../../hooks/firestore/useNewBeansRef";
+import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 
 export const BeansAdd: React.FC = () => {
   const navigate = useNavigate();
-  const newBeansRef = useNewBeansRef();
+  const newBeansRef = useNewRef("beans");
 
   const addBeans = async (data: BeansFormInputs) => {
     await setDoc(newBeansRef, data);

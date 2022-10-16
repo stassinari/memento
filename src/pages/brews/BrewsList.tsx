@@ -14,7 +14,7 @@ export const BrewsList = () => {
       <div>
         <ul>
           {brewsList.map((brew) => (
-            <li>
+            <li key={brew.id}>
               <Link to={brew.id || ""}>
                 {brew.method} ({brew.method})
               </Link>

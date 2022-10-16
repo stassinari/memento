@@ -2,7 +2,7 @@ import { setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
 import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
-import { useNewBeansRef } from "../../hooks/firestore/useNewBeansRef";
+import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Beans } from "../../types/beans";
 
 export const BeansClone = () => {
@@ -12,7 +12,7 @@ export const BeansClone = () => {
 
   const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
 
-  const newBeansRef = useNewBeansRef();
+  const newBeansRef = useNewRef("beans");
 
   const addBeans = async (data: BeansFormInputs) => {
     await setDoc(newBeansRef, data);
@@ -26,6 +26,7 @@ export const BeansClone = () => {
   // TODO find an automated way to do this
   const fromFirestore: BeansFormInputs = {
     ...beans,
+    isFinished: false,
     roastDate: beans.roastDate?.toDate() || null,
     freezeDate: null,
     thawDate: null,

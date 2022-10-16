@@ -7,6 +7,8 @@ import { NotificationContainer } from "./components/NotificationContainer";
 import { useInitUser } from "./hooks/useInitUser";
 import { BeansClone } from "./pages/beans/BeansClone";
 import { BeansEdit } from "./pages/beans/BeansEdit";
+import { BrewClone } from "./pages/brews/BrewClone";
+import { BrewEdit } from "./pages/brews/BrewEdit";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
 // import { BeansList } from "./pages/BeansList";
@@ -55,9 +57,16 @@ export const App = () => {
               <Route path="beans/:beansId/clone" element={<BeansClone />} />
 
               <Route path="drinks" element={<DrinksPage />} />
+
               <Route path="drinks/brews" element={<BrewsList />} />
-              <Route path="drinks/brews/:brewId" element={<BrewDetails />} />
               <Route path="drinks/brews/add" element={<BrewsAdd />} />
+              <Route path="drinks/brews/:brewId" element={<BrewDetails />} />
+              <Route path="drinks/brews/:brewId/edit" element={<BrewEdit />} />
+              <Route
+                path="drinks/brews/:brewId/clone"
+                element={<BrewClone />}
+              />
+
               <Route path="drinks/espressos" element={<EspressosPage />} />
               <Route path="drinks/tastings" element={<TastingsPage />} />
 
