@@ -69,13 +69,11 @@ export const BrewForm: React.FC<BrewFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { list: beansList } = useFirestoreList<Beans>("beans", [
-    orderBy("roastDate", "desc"),
-  ]);
+  const { list: beansList, isLoading: areBeansLoading } =
+    useFirestoreList<Beans>("beans", [orderBy("roastDate", "desc")]);
 
-  const { list: brewsList } = useFirestoreList<Brew>("brews", [
-    orderBy("date", "desc"),
-  ]);
+  const { list: brewsList, isLoading: areBrewsLoading } =
+    useFirestoreList<Brew>("brews", [orderBy("date", "desc")]);
 
   const methods = useForm<BrewFormInputs>({
     defaultValues,
@@ -94,6 +92,8 @@ export const BrewForm: React.FC<BrewFormProps> = ({
     // }
     mutation(data);
   };
+
+  if (areBeansLoading || areBrewsLoading) return null;
 
   return (
     <div>

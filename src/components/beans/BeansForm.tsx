@@ -100,7 +100,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { list: beansList } = useFirestoreList<Beans>("beans", [
+  const { list: beansList, isLoading } = useFirestoreList<Beans>("beans", [
     orderBy("roastDate", "desc"),
   ]);
 
@@ -126,6 +126,8 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   };
 
   const isSingleOrigin = watch("origin") === "single-origin";
+
+  if (isLoading) return null;
 
   return (
     <div>
