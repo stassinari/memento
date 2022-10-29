@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
 import { Beans } from "../../types/beans";
+import { Brew } from "../../types/brews";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
@@ -12,6 +13,7 @@ import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
 import { FormInputDate } from "../form/FormInputDate";
 import { FormInputRadio } from "../form/FormInputRadio";
+import { extractSuggestions } from "../form/FormSuggestions";
 
 // FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface BrewFormInputs {
@@ -71,6 +73,10 @@ export const BrewForm: React.FC<BrewFormProps> = ({
     orderBy("roastDate", "desc"),
   ]);
 
+  const { list: brewsList } = useFirestoreList<Brew>("brews", [
+    orderBy("date", "desc"),
+  ]);
+
   const methods = useForm<BrewFormInputs>({
     defaultValues,
   });
@@ -78,7 +84,6 @@ export const BrewForm: React.FC<BrewFormProps> = ({
     handleSubmit,
     formState: { errors },
     register,
-    watch,
   } = methods;
 
   const onSubmit: SubmitHandler<BrewFormInputs> = async (data) => {
@@ -114,25 +119,16 @@ export const BrewForm: React.FC<BrewFormProps> = ({
             <FormComboboxSingle
               label="Method *"
               name="method"
-              options={[]}
-              // options={[
-              //   ...new Set(beansList.map(({ roaster }) => roaster).sort()),
-              // ]}
+              options={[
+                ...new Set(brewsList.map(({ method }) => method).sort()),
+              ]}
               placeholder="Orea v3"
               requiredMsg="Please enter the method of your brew"
               error={errors.method?.message}
-              // suggestions={extractSuggestions(beansList, "roaster")}
+              suggestions={extractSuggestions(brewsList, "method")}
             />
 
-            <p>Beans selection here.</p>
-            <p>
-              Would like to give extra care to this with a custom component.
-            </p>
-            <ul>
-              <li>
-                {beansList.map((beans) => `${beans.name} (${beans.roaster})`)}
-              </li>
-            </ul>
+            <p>TODO: nicer beans selection</p>
 
             <FormInputRadio
               id="beans"
@@ -160,45 +156,61 @@ export const BrewForm: React.FC<BrewFormProps> = ({
             <FormComboboxSingle
               label="Grinder"
               name="grinder"
-              options={[]}
-              // options={[
-              //   ...new Set(beansList.map(({ roaster }) => roaster).sort()),
-              // ]}
               placeholder="Niche Zero"
-              // suggestions={extractSuggestions(beansList, "roaster")}
+              options={[
+                ...new Set(
+                  brewsList
+                    .flatMap(({ grinder }) => (grinder ? [grinder] : []))
+                    .sort()
+                ),
+              ]}
+              suggestions={extractSuggestions(brewsList, "grinder")}
             />
 
             <FormComboboxSingle
               label="Burrs"
               name="grinderBurrs"
-              options={[]}
-              // options={[
-              //   ...new Set(beansList.map(({ roaster }) => roaster).sort()),
-              // ]}
               placeholder="54mm conical"
-              // suggestions={extractSuggestions(beansList, "roaster")}
+              options={[
+                ...new Set(
+                  brewsList
+                    .flatMap(({ grinderBurrs }) =>
+                      grinderBurrs ? [grinderBurrs] : []
+                    )
+                    .sort()
+                ),
+              ]}
+              suggestions={extractSuggestions(brewsList, "grinderBurrs")}
             />
 
             <FormComboboxSingle
               label="Water type"
               name="waterType"
-              options={[]}
-              // options={[
-              //   ...new Set(beansList.map(({ roaster }) => roaster).sort()),
-              // ]}
               placeholder="ZeroWater"
-              // suggestions={extractSuggestions(beansList, "roaster")}
+              options={[
+                ...new Set(
+                  brewsList
+                    .flatMap(({ waterType }) => (waterType ? [waterType] : []))
+                    .sort()
+                ),
+              ]}
+              suggestions={extractSuggestions(brewsList, "waterType")}
             />
 
             <FormComboboxSingle
               label="Filter"
               name="filterType"
-              options={[]}
-              // options={[
-              //   ...new Set(beansList.map(({ roaster }) => roaster).sort()),
-              // ]}
               placeholder="Bleached"
-              // suggestions={extractSuggestions(beansList, "roaster")}
+              options={[
+                ...new Set(
+                  brewsList
+                    .flatMap(({ filterType }) =>
+                      filterType ? [filterType] : []
+                    )
+                    .sort()
+                ),
+              ]}
+              suggestions={extractSuggestions(brewsList, "filterType")}
             />
           </FormSection>
 

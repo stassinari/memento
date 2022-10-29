@@ -1,3 +1,4 @@
+import { orderBy } from "firebase/firestore";
 import { Link as RouterLink } from "react-router-dom";
 import { Button } from "../../components/Button";
 import { Link } from "../../components/Link";
@@ -5,7 +6,9 @@ import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
 import { Brew } from "../../types/brews";
 
 export const BrewsList = () => {
-  const { list: brewsList } = useFirestoreList<Brew>("brews");
+  const { list: brewsList } = useFirestoreList<Brew>("brews", [
+    orderBy("date", "desc"),
+  ]);
   return (
     <div>
       <Button as={RouterLink} to="add" variant="primary" colour="accent">
