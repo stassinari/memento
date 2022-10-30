@@ -1,10 +1,11 @@
-import { orderBy } from "firebase/firestore";
+import { orderBy, where } from "firebase/firestore";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import "twin.macro";
 import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
 import { Beans } from "../../types/beans";
 import { Brew } from "../../types/brews";
+import { isNotFrozenOrIsThawed } from "../../util";
 import {
   BeansMethodEquipment,
   beansMethodEquipmentEmptyValues,
@@ -52,7 +53,10 @@ export const BrewForm: React.FC<BrewFormProps> = ({
   );
 
   const { list: beansList, isLoading: areBeansLoading } =
-    useFirestoreList<Beans>("beans", [orderBy("roastDate", "desc")]);
+    useFirestoreList<Beans>("beans", [
+      orderBy("roastDate", "desc"),
+      where("isFinished", "==", false),
+    ]);
 
   const { list: brewsList, isLoading: areBrewsLoading } =
     useFirestoreList<Brew>("brews", [orderBy("date", "desc")]);
@@ -70,7 +74,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewsList={brewsList}
-          beansList={beansList}
+          beansList={beansList.filter(isNotFrozenOrIsThawed)} // TODO don't show frozen by default give ability to select frozen via toggle
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {
             setBrewFormInputs({ ...brewFormInputs, ...data });
