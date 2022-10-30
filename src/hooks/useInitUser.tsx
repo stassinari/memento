@@ -1,5 +1,5 @@
 import { onAuthStateChanged, User } from "firebase/auth";
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
 import { auth } from "../firebaseConfig";
 
@@ -7,7 +7,7 @@ export const userAtom = atom<User | null>(null);
 
 export const useInitUser = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useAtom(userAtom);
+  const setUser = useSetAtom(userAtom);
 
   onAuthStateChanged(auth, (user) => {
     setIsLoading(false);

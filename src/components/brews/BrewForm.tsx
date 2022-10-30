@@ -1,13 +1,11 @@
 import { orderBy } from "firebase/firestore";
+import { atom, useAtomValue } from "jotai";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
 import { Beans } from "../../types/beans";
 import { Brew } from "../../types/brews";
-import { Button } from "../Button";
-import { Divider } from "../Divider";
 import {
   BeansMethodEquipment,
   beansMethodEquipmentEmptyValues,
@@ -34,6 +32,12 @@ export const brewFormEmptyValues: () => BrewFormInputs = () => ({
   ...brewTimeEmptyValues(),
 });
 
+type BrewFormStep = "beansMethodEquipment" | "recipe" | "time";
+
+export const brewFormActiveStepAtom = atom<BrewFormStep>(
+  "beansMethodEquipment"
+);
+
 interface BrewFormProps {
   defaultValues: BrewFormInputs;
   title: string;
@@ -47,9 +51,8 @@ export const BrewForm: React.FC<BrewFormProps> = ({
   buttonLabel,
   mutation,
 }) => {
-  const navigate = useNavigate();
-
-  const [activeStep, setActiveStep] = useState(0);
+  const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
+  const activeStep = useAtomValue(brewFormActiveStepAtom);
 
   const { list: beansList, isLoading: areBeansLoading } =
     useFirestoreList<Beans>("beans", [orderBy("roastDate", "desc")]);
@@ -67,33 +70,32 @@ export const BrewForm: React.FC<BrewFormProps> = ({
     <div>
       <h1 tw="text-3xl font-bold tracking-tight text-gray-900">{title}</h1>
 
-      <BeansMethodEquipment
-        brewsList={brewsList}
-        beansList={beansList}
-        defaultValues={defaultValues}
-      />
-
-      <Divider tw="hidden sm:block" />
-
-      <BrewRecipe defaultValues={defaultValues} />
-
-      <Divider tw="hidden sm:block" />
-
-      <BrewTime defaultValues={defaultValues} />
-
-      <div className="flex justify-end gap-4">
-        <Button variant="white" onClick={() => navigate(-1)}>
-          Cancel
-        </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          colour="accent"
-          // disabled={mutation.isLoading} FIXME disabled buttons after first click
-        >
-          {buttonLabel}
-        </Button>
-      </div>
+      {activeStep === "beansMethodEquipment" ? (
+        <BeansMethodEquipment
+          brewsList={brewsList}
+          beansList={beansList}
+          defaultValues={brewFormInputs}
+          handleNestedSubmit={(data) =>
+            setBrewFormInputs({ ...brewFormInputs, ...data })
+          }
+        />
+      ) : activeStep === "recipe" ? (
+        <BrewRecipe
+          defaultValues={brewFormInputs}
+          handleNestedSubmit={(data) =>
+            setBrewFormInputs({ ...brewFormInputs, ...data })
+          }
+        />
+      ) : (
+        <BrewTime
+          defaultValues={brewFormInputs}
+          ctaLabel={buttonLabel}
+          handleNestedSubmit={(data) => {
+            const toSend = { ...brewFormInputs, ...data };
+            onSubmit(toSend);
+          }}
+        />
+      )}
     </div>
   );
 };

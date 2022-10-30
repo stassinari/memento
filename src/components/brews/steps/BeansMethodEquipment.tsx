@@ -1,12 +1,16 @@
+import { useSetAtom } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import "twin.macro";
 import { Beans } from "../../../types/beans";
 import { Brew } from "../../../types/brews";
+import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { FormSection } from "../../Form";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadio } from "../../form/FormInputRadio";
 import { extractSuggestions } from "../../form/FormSuggestions";
+import { brewFormActiveStepAtom } from "../BrewForm";
 
 export interface BeansMethodEquipmentInputs {
   date: Date | null;
@@ -35,13 +39,17 @@ interface BeansMethodEquipmentProps {
   brewsList: Brew[];
   beansList: Beans[];
   defaultValues: BeansMethodEquipmentInputs;
+  handleNestedSubmit: (data: BeansMethodEquipmentInputs) => void;
 }
 
 export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   brewsList,
   beansList,
   defaultValues,
+  handleNestedSubmit,
 }) => {
+  const setBrewFormActiveStep = useSetAtom(brewFormActiveStepAtom);
+
   const methods = useForm<BeansMethodEquipmentInputs>({
     defaultValues,
   });
@@ -53,9 +61,10 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   } = methods;
 
   const onSubmit: SubmitHandler<BeansMethodEquipmentInputs> = async (data) => {
-    // 1. add to atom
+    // 1. add to state
+    handleNestedSubmit(data);
     // 2. move to next page
-    console.log(data);
+    setBrewFormActiveStep("recipe");
   };
 
   return (
@@ -171,7 +180,14 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           />
         </FormSection>
 
-        <div className="flex justify-end gap-4"></div>
+        <div className="flex justify-end gap-4">
+          <Button variant="white" type="button" disabled>
+            Back
+          </Button>
+          <Button variant="primary" type="submit" colour="accent">
+            Next
+          </Button>
+        </div>
       </form>
     </FormProvider>
   );
