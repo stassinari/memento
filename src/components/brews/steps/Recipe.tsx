@@ -1,10 +1,8 @@
-import { useSetAtom } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
-import { brewFormActiveStepAtom } from "../BrewForm";
 
 export interface BrewRecipeInputs {
   waterWeight: number | null;
@@ -23,14 +21,14 @@ export const brewRecipeEmptyValues: () => BrewRecipeInputs = () => ({
 interface BrewRecipeProps {
   defaultValues: BrewRecipeInputs;
   handleNestedSubmit: (data: BrewRecipeInputs) => void;
+  handleBack: () => void;
 }
 
 export const BrewRecipe: React.FC<BrewRecipeProps> = ({
   defaultValues,
   handleNestedSubmit,
+  handleBack,
 }) => {
-  const setBrewFormActiveStep = useSetAtom(brewFormActiveStepAtom);
-
   const methods = useForm<BrewRecipeInputs>({
     defaultValues,
   });
@@ -42,10 +40,7 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
   } = methods;
 
   const onSubmit: SubmitHandler<BrewRecipeInputs> = async (data) => {
-    // 1. add to state
     handleNestedSubmit(data);
-    // 2. move to next page
-    setBrewFormActiveStep("time");
   };
 
   return (
@@ -129,11 +124,7 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
         </FormSection>
 
         <div className="flex justify-end gap-4">
-          <Button
-            variant="white"
-            type="button"
-            onClick={() => setBrewFormActiveStep("beansMethodEquipment")}
-          >
+          <Button variant="white" type="button" onClick={handleBack}>
             Back
           </Button>
           <Button variant="primary" type="submit" colour="accent">

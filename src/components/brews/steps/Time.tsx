@@ -1,10 +1,8 @@
-import { useSetAtom } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
-import { brewFormActiveStepAtom } from "../BrewForm";
 
 export interface BrewTimeInputs {
   timeSeconds: number | null;
@@ -19,16 +17,16 @@ export const brewTimeEmptyValues: () => BrewTimeInputs = () => ({
 interface BrewTimeProps {
   defaultValues: BrewTimeInputs;
   handleNestedSubmit: (data: BrewTimeInputs) => void;
+  handleBack: () => void;
   ctaLabel: string;
 }
 
 export const BrewTime: React.FC<BrewTimeProps> = ({
   defaultValues,
-  ctaLabel,
   handleNestedSubmit,
+  handleBack,
+  ctaLabel,
 }) => {
-  const setBrewFormActiveStep = useSetAtom(brewFormActiveStepAtom);
-
   const methods = useForm<BrewTimeInputs>({
     defaultValues,
   });
@@ -92,11 +90,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
         </FormSection>
 
         <div className="flex justify-end gap-4">
-          <Button
-            variant="white"
-            type="button"
-            onClick={() => setBrewFormActiveStep("recipe")}
-          >
+          <Button variant="white" type="button" onClick={handleBack}>
             Back
           </Button>
           <Button

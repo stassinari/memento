@@ -1,4 +1,3 @@
-import { useSetAtom } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
@@ -10,7 +9,6 @@ import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadio } from "../../form/FormInputRadio";
 import { extractSuggestions } from "../../form/FormSuggestions";
-import { brewFormActiveStepAtom } from "../BrewForm";
 
 export interface BeansMethodEquipmentInputs {
   date: Date | null;
@@ -48,8 +46,6 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   defaultValues,
   handleNestedSubmit,
 }) => {
-  const setBrewFormActiveStep = useSetAtom(brewFormActiveStepAtom);
-
   const methods = useForm<BeansMethodEquipmentInputs>({
     defaultValues,
   });
@@ -61,10 +57,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   } = methods;
 
   const onSubmit: SubmitHandler<BeansMethodEquipmentInputs> = async (data) => {
-    // 1. add to state
     handleNestedSubmit(data);
-    // 2. move to next page
-    setBrewFormActiveStep("recipe");
   };
 
   return (

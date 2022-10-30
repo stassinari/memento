@@ -1,5 +1,4 @@
 import { orderBy } from "firebase/firestore";
-import { atom, useAtomValue } from "jotai";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import "twin.macro";
@@ -34,10 +33,6 @@ export const brewFormEmptyValues: () => BrewFormInputs = () => ({
 
 type BrewFormStep = "beansMethodEquipment" | "recipe" | "time";
 
-export const brewFormActiveStepAtom = atom<BrewFormStep>(
-  "beansMethodEquipment"
-);
-
 interface BrewFormProps {
   defaultValues: BrewFormInputs;
   title: string;
@@ -52,7 +47,9 @@ export const BrewForm: React.FC<BrewFormProps> = ({
   mutation,
 }) => {
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
-  const activeStep = useAtomValue(brewFormActiveStepAtom);
+  const [activeStep, setActiveStep] = useState<BrewFormStep>(
+    "beansMethodEquipment"
+  );
 
   const { list: beansList, isLoading: areBeansLoading } =
     useFirestoreList<Beans>("beans", [orderBy("roastDate", "desc")]);
@@ -75,16 +72,19 @@ export const BrewForm: React.FC<BrewFormProps> = ({
           brewsList={brewsList}
           beansList={beansList}
           defaultValues={brewFormInputs}
-          handleNestedSubmit={(data) =>
-            setBrewFormInputs({ ...brewFormInputs, ...data })
-          }
+          handleNestedSubmit={(data) => {
+            setBrewFormInputs({ ...brewFormInputs, ...data });
+            setActiveStep("recipe");
+          }}
         />
       ) : activeStep === "recipe" ? (
         <BrewRecipe
           defaultValues={brewFormInputs}
-          handleNestedSubmit={(data) =>
-            setBrewFormInputs({ ...brewFormInputs, ...data })
-          }
+          handleNestedSubmit={(data) => {
+            setBrewFormInputs({ ...brewFormInputs, ...data });
+            setActiveStep("time");
+          }}
+          handleBack={() => setActiveStep("beansMethodEquipment")}
         />
       ) : (
         <BrewTime
@@ -94,6 +94,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
             const toSend = { ...brewFormInputs, ...data };
             onSubmit(toSend);
           }}
+          handleBack={() => setActiveStep("recipe")}
         />
       )}
     </div>
