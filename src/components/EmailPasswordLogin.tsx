@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { auth } from "../firebaseConfig";
@@ -28,41 +28,43 @@ export const EmailPasswordLogin = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} tw="space-y-6">
-      <FormInput
-        label="Email"
-        id="email"
-        inputProps={{
-          ...register("email", { required: "Please enter your email" }),
-          type: "email",
-          autoFocus: true,
-          placeholder: "example@email.com",
-        }}
-        error={errors.email?.message}
-      />
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} tw="space-y-6">
+        <FormInput
+          label="Email"
+          id="email"
+          inputProps={{
+            ...register("email", { required: "Please enter your email" }),
+            type: "email",
+            autoFocus: true,
+            placeholder: "example@email.com",
+          }}
+          error={errors.email?.message}
+        />
 
-      <FormInput
-        label="Password"
-        id="password"
-        inputProps={{
-          ...register("password", { required: "Please enter your password" }),
-          type: "password",
-          placeholder: "Enter your password",
-        }}
-        error={errors.password?.message}
-      />
+        <FormInput
+          label="Password"
+          id="password"
+          inputProps={{
+            ...register("password", { required: "Please enter your password" }),
+            type: "password",
+            placeholder: "Enter your password",
+          }}
+          error={errors.password?.message}
+        />
 
-      <div tw="flex items-center justify-end">
-        <div tw="text-sm">
-          <a href="#" tw="font-medium text-orange-600 hover:text-orange-500">
-            Forgot your password?
-          </a>
+        <div tw="flex items-center justify-end">
+          <div tw="text-sm">
+            <a href="#" tw="font-medium text-orange-600 hover:text-orange-500">
+              Forgot your password?
+            </a>
+          </div>
         </div>
-      </div>
 
-      <Button variant="primary" type="submit" width="full">
-        Log in
-      </Button>
-    </form>
+        <Button variant="primary" type="submit" width="full">
+          Log in
+        </Button>
+      </form>
+    </FormProvider>
   );
 };

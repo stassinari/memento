@@ -11,6 +11,7 @@ interface ImportMetaEnv
   readonly VITE_FB_APP_ID: string;
   readonly VITE_FB_MEASUREMENT_ID: string;
   readonly VITE_DECENT_UPLOAD_ENDPOINT: string;
+  readonly VITE_VAPID_KEY: string;
 }
 
 interface ImportMeta {
