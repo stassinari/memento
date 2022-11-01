@@ -1,11 +1,10 @@
-/// <reference lib="webworker" />
-declare let self: ServiceWorkerGlobalScope;
+// /// <reference lib="webworker" />
+// declare let self: ServiceWorkerGlobalScope;
 
 // Scripts for firebase and firebase messaging
 import { initializeApp } from "firebase/app";
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 import { firebaseConfig } from "./firebaseConfig";
-// Line below makes typescript happy by importing the definitions required for ServiceWorkerGlobalScope
 
 const firebaseApp = initializeApp(firebaseConfig);
 
@@ -16,12 +15,16 @@ console.log(self.__WB_MANIFEST);
 const messaging = getMessaging(firebaseApp);
 
 onBackgroundMessage(messaging, function (payload) {
-  console.log("Received background message ", payload);
+  console.log(
+    "[firebase-messaging-sw.js] Received background message ",
+    payload
+  );
 
   const notificationTitle = payload.notification?.title || "Notification title";
   const notificationOptions = {
     body: payload.notification?.body || "Notification body",
   };
 
+  // @ts-ignore
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
