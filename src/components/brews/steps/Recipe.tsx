@@ -54,7 +54,6 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
           title="Recipe"
           subtitle="All the info unique to this brew."
         >
-          {/* FIXME this doesn't allow for decimal values */}
           <FormInput
             label="Water weight (ml) *"
             id="waterWeight"
@@ -68,6 +67,7 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
                 valueAsNumber: true,
               }),
               type: "number",
+              step: "0.01",
               placeholder: "250",
             }}
             error={errors.waterWeight?.message}
@@ -86,6 +86,7 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
                 valueAsNumber: true,
               }),
               type: "number",
+              step: "0.01",
               placeholder: "15",
             }}
             error={errors.beansWeight?.message}
@@ -107,6 +108,7 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
                 valueAsNumber: true,
               }),
               type: "number",
+              step: "0.01",
               placeholder: "98",
             }}
             error={errors.waterTemperature?.message}
