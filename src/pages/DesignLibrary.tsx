@@ -19,6 +19,7 @@ import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
 import { notification } from "../components/Notification";
+import { Stopwatch } from "../components/Stopwatch";
 
 const people = [
   "Durward Reynolds",
@@ -38,6 +39,9 @@ export const DesignLibrary = () => {
   const [singleValue, setSingleValue] = useState<string>();
   const [multiValues, setMultiValues] = useState<string[]>([]);
 
+  const [, setSeconds] = useState(0);
+  const [, setMinutes] = useState(0);
+
   const [radioCardValue, setRadioCardValue] = useState<string>();
 
   return (
@@ -45,9 +49,13 @@ export const DesignLibrary = () => {
       <div>
         <Card>This is a card</Card>
       </div>
+      <div>
+        <Stopwatch setFormSeconds={setSeconds} setFormMinutes={setMinutes} />
+      </div>
       <div tw="space-y-4">
         <InputRadio
           label="Test radio"
+          direction="horizontal"
           options={radioOptions}
           inputProps={{ name: "test-radio" }}
         />

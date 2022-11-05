@@ -3,6 +3,7 @@ import "twin.macro";
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
+import { Stopwatch } from "../../Stopwatch";
 
 export interface BrewTimeInputs {
   timeSeconds: number | null;
@@ -35,6 +36,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
     handleSubmit,
     formState: { errors },
     register,
+    setValue,
   } = methods;
 
   const onSubmit: SubmitHandler<BrewTimeInputs> = async (data) => {
@@ -52,41 +54,48 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
           title="Time"
           subtitle="Keep track of how long your brew takes."
         >
-          <FormInput
-            label="Minutes"
-            id="timeMinutes"
-            inputProps={{
-              ...register("timeMinutes", {
-                min: {
-                  value: 0,
-                  message:
-                    "Please don't break space/time, enter a positive number.",
-                },
-                valueAsNumber: true,
-              }),
-              type: "number",
-              placeholder: "2",
-            }}
-            error={errors.timeMinutes?.message}
+          <Stopwatch
+            setFormSeconds={(seconds) => setValue("timeSeconds", seconds)}
+            setFormMinutes={(minutes) => setValue("timeMinutes", minutes)}
           />
 
-          <FormInput
-            label="Seconds"
-            id="timeSeconds"
-            inputProps={{
-              ...register("timeSeconds", {
-                min: {
-                  value: 0,
-                  message:
-                    "Please don't break space/time, enter a positive number.",
-                },
-                valueAsNumber: true,
-              }),
-              type: "number",
-              placeholder: "34",
-            }}
-            error={errors.timeSeconds?.message}
-          />
+          <div tw="flex items-end gap-4">
+            <FormInput
+              label="Minutes"
+              id="timeMinutes"
+              inputProps={{
+                ...register("timeMinutes", {
+                  min: {
+                    value: 0,
+                    message:
+                      "Please don't break space/time, enter a positive number.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "2",
+              }}
+              error={errors.timeMinutes?.message}
+            />
+            <span tw="py-[9px]">:</span>
+            <FormInput
+              label="Seconds"
+              id="timeSeconds"
+              inputProps={{
+                ...register("timeSeconds", {
+                  min: {
+                    value: 0,
+                    message:
+                      "Please don't break space/time, enter a positive number.",
+                  },
+                  valueAsNumber: true,
+                }),
+                type: "number",
+                placeholder: "34",
+              }}
+              error={errors.timeSeconds?.message}
+            />
+          </div>
         </FormSection>
 
         <div className="flex justify-end gap-4">
