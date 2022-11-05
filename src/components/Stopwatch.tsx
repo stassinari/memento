@@ -23,22 +23,19 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
 }) => {
   console.log("rendering Stopwatch");
 
-  const initialTime = initialMinutes * 60 + initialSeconds;
-  const [seconds, setSeconds] = useState(initialTime ? initialTime : 0);
+  const [seconds, setSeconds] = useState(initialMinutes * 60 + initialSeconds);
   const [isRunning, setIsRunning] = useState(false);
 
   const displaySeconds = ("0" + (seconds % 60)).slice(-2);
-  const displayMinutes = ("0" + Math.floor(seconds / 60)).slice(-2);
+  const displayMinutes = Math.floor(seconds / 60)
+    .toString()
+    .slice(-2);
 
   function toggle() {
     if (isRunning) {
-      // noSleep.disable();
-
       // in case it's stopping, we set form values
-      setFormSeconds(seconds);
+      setFormSeconds(seconds % 60);
       setFormMinutes(Math.floor(seconds / 60));
-    } else {
-      // noSleep.enable();
     }
     setIsRunning(!isRunning);
   }
@@ -71,50 +68,26 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
   }, [disabled]);
 
   return (
-    <React.Fragment>
-      {/* <CircularProgressbar
-          value={seconds % 60}
-          maxValue={60}
-          text={
-            setFormMinutes
-              ? `${displayMinutes}:${displaySeconds}`
-              : displaySeconds
-          }
-          strokeWidth={4}
-          styles={{
-            path: {
-              stroke: theme.palette.primary.main,
-              strokeLinecap: "butt",
-            },
-            trail: {
-              stroke: theme.palette.grey[300],
-            },
-            text: {
-              fill: disabled ? "#9e9e9e" : theme.palette.text.primary,
-            },
-          }}
-        /> */}
-      <div tw="flex items-center gap-2">
-        <IconButton
-          Icon={isRunning ? <PauseIcon /> : <PlayIcon />}
-          variant="secondary"
-          type="button"
-          onClick={toggle}
-          disabled={disabled}
-        />
+    <div tw="flex items-center gap-2">
+      <IconButton
+        Icon={isRunning ? <PauseIcon /> : <PlayIcon />}
+        variant="secondary"
+        type="button"
+        onClick={toggle}
+        disabled={disabled}
+      />
 
-        <span tw="w-20 text-2xl">
-          {displayMinutes}:{displaySeconds}
-        </span>
+      <span tw="w-20 text-2xl">
+        {displayMinutes}:{displaySeconds}
+      </span>
 
-        <IconButton
-          Icon={<XMarkIcon />}
-          variant="white"
-          type="button"
-          onClick={reset}
-          disabled={disabled}
-        />
-      </div>
-    </React.Fragment>
+      <IconButton
+        Icon={<XMarkIcon />}
+        variant="white"
+        type="button"
+        onClick={reset}
+        disabled={disabled}
+      />
+    </div>
   );
 };

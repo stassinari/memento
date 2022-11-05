@@ -20,6 +20,7 @@ import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
+import { Switch } from "../components/Switch";
 
 const people = [
   "Durward Reynolds",
@@ -42,6 +43,8 @@ export const DesignLibrary = () => {
   const [, setSeconds] = useState(0);
   const [, setMinutes] = useState(0);
 
+  const [switchEnabled, setSwitchEnabled] = useState(false);
+
   const [radioCardValue, setRadioCardValue] = useState<string>();
 
   return (
@@ -51,6 +54,15 @@ export const DesignLibrary = () => {
       </div>
       <div>
         <Stopwatch setFormSeconds={setSeconds} setFormMinutes={setMinutes} />
+      </div>
+      <div tw="flex gap-4">
+        <Switch checked={switchEnabled} onChange={setSwitchEnabled} />
+
+        <Switch
+          checked={switchEnabled}
+          onChange={setSwitchEnabled}
+          colour="accent"
+        />
       </div>
       <div tw="space-y-4">
         <InputRadio

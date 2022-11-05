@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
 import { Stopwatch } from "../../Stopwatch";
+import { Switch } from "../../Switch";
 
 export interface BrewTimeInputs {
   timeSeconds: number | null;
@@ -43,6 +45,8 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
     handleNestedSubmit(data);
   };
 
+  const [manualInput, setManualInput] = useState(false);
+
   return (
     <FormProvider {...methods}>
       <form
@@ -55,8 +59,17 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
           subtitle="Keep track of how long your brew takes."
         >
           <Stopwatch
+            initialSeconds={defaultValues.timeSeconds || 0}
+            initialMinutes={defaultValues.timeMinutes || 0}
             setFormSeconds={(seconds) => setValue("timeSeconds", seconds)}
             setFormMinutes={(minutes) => setValue("timeMinutes", minutes)}
+            disabled={manualInput}
+          />
+
+          <Switch
+            checked={manualInput}
+            onChange={setManualInput}
+            label="Set time manually"
           />
 
           <div tw="flex items-end gap-4">
@@ -74,6 +87,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
                 }),
                 type: "number",
                 placeholder: "2",
+                disabled: !manualInput,
               }}
               error={errors.timeMinutes?.message}
             />
@@ -92,6 +106,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
                 }),
                 type: "number",
                 placeholder: "34",
+                disabled: !manualInput,
               }}
               error={errors.timeSeconds?.message}
             />
