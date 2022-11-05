@@ -36,6 +36,7 @@ export const IconButton: <E extends React.ElementType = typeof defaultElement>(
       className=""
       css={[
         tw`inline-flex items-center p-2 text-white border rounded-full`,
+        tw`disabled:(cursor-not-allowed bg-gray-100! text-gray-500!)`,
         tw`focus:(outline-none ring-2 ring-offset-2)`,
         colour === "main"
           ? variant === "primary"

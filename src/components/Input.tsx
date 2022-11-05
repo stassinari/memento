@@ -6,7 +6,7 @@ import {
 import tw, { styled } from "twin.macro";
 
 export const labelStyles = tw`block text-sm font-medium text-gray-700`;
-export const inputStyles = tw`block w-full border-gray-300 rounded-md shadow-sm focus:(ring-orange-500 border-orange-500) sm:text-sm`;
+export const inputStyles = tw`block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:(ring-orange-500 border-orange-500) disabled:(cursor-not-allowed border-gray-200 bg-gray-50 text-gray-500)`;
 
 interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {}
 const Label: React.FC<LabelProps> = styled.label`

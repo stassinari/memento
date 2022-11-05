@@ -3,7 +3,7 @@ import { PauseIcon, PlayIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import React, { useEffect, useState } from "react";
 // import { CircularProgressbar } from "react-circular-progressbar";
 // import "react-circular-progressbar/dist/styles.css";
-import "twin.macro";
+import tw from "twin.macro";
 import { IconButton } from "./IconButton";
 
 interface StopwatchProps {
@@ -77,7 +77,9 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
         disabled={disabled}
       />
 
-      <span tw="w-20 text-2xl">
+      <span
+        css={[tw`w-20 text-2xl text-gray-900`, disabled && tw`text-gray-400`]}
+      >
         {displayMinutes}:{displaySeconds}
       </span>
 

@@ -229,6 +229,9 @@ export const DesignLibrary = () => {
           <Button variant="primary" size="xl">
             Button xl
           </Button>
+          <Button variant="primary" disabled>
+            Button md
+          </Button>
         </div>
         <div>
           <Button variant="secondary" size="xs">
@@ -243,6 +246,9 @@ export const DesignLibrary = () => {
           </Button>
           <Button variant="secondary" size="xl">
             Button xl
+          </Button>
+          <Button variant="secondary" disabled>
+            Button md
           </Button>
         </div>
         <div>
@@ -261,6 +267,9 @@ export const DesignLibrary = () => {
           <Button colour="accent" variant="primary" size="xl">
             Button xl
           </Button>
+          <Button colour="accent" variant="primary" disabled>
+            Button md
+          </Button>
         </div>
         <div>
           <Button colour="accent" variant="secondary" size="xs">
@@ -278,6 +287,9 @@ export const DesignLibrary = () => {
           <Button colour="accent" variant="secondary" size="xl">
             Button xl
           </Button>
+          <Button colour="accent" variant="secondary" disabled>
+            Button md
+          </Button>
         </div>
         <div>
           <Button variant="white" size="xs">
@@ -292,6 +304,9 @@ export const DesignLibrary = () => {
           </Button>
           <Button variant="white" size="xl">
             Button xl
+          </Button>
+          <Button variant="white" disabled>
+            Button md
           </Button>
         </div>
         <div>
@@ -310,6 +325,9 @@ export const DesignLibrary = () => {
           <Button variant="primary" size="xl" Icon={<PlusCircleIcon />}>
             Button xl
           </Button>
+          <Button variant="primary" Icon={<PlusCircleIcon />} disabled>
+            Button md
+          </Button>
         </div>
         <div>
           <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
@@ -327,6 +345,9 @@ export const DesignLibrary = () => {
           <Button variant="secondary" size="xl" Icon={<PlusCircleIcon />}>
             Button xl
           </Button>
+          <Button variant="secondary" Icon={<PlusCircleIcon />} disabled>
+            Button md
+          </Button>
         </div>
         <div>
           <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
@@ -343,6 +364,9 @@ export const DesignLibrary = () => {
           </Button>
           <Button variant="white" size="xl" Icon={<PlusCircleIcon />}>
             Button xl
+          </Button>
+          <Button variant="white" Icon={<PlusCircleIcon />} disabled>
+            Button md
           </Button>
         </div>
       </div>
@@ -365,6 +389,9 @@ export const DesignLibrary = () => {
           <IconButton variant="primary" size="xl" Icon={<PlusIconOutline />}>
             Button xl
           </IconButton>
+          <IconButton variant="primary" Icon={<PlusIconMini />} disabled>
+            Button md
+          </IconButton>
         </div>
         <div>
           <IconButton variant="secondary" size="xs" Icon={<PlusIconMini />}>
@@ -381,6 +408,9 @@ export const DesignLibrary = () => {
           </IconButton>
           <IconButton variant="secondary" size="xl" Icon={<PlusIconOutline />}>
             Button xl
+          </IconButton>
+          <IconButton variant="secondary" Icon={<PlusIconMini />} disabled>
+            Button md
           </IconButton>
         </div>
         <div>
@@ -419,6 +449,14 @@ export const DesignLibrary = () => {
           >
             Button xl
           </IconButton>
+          <IconButton
+            colour="accent"
+            variant="primary"
+            Icon={<PlusIconMini />}
+            disabled
+          >
+            Button md
+          </IconButton>
         </div>
         <div>
           <IconButton
@@ -460,6 +498,14 @@ export const DesignLibrary = () => {
           >
             Button xl
           </IconButton>
+          <IconButton
+            colour="accent"
+            variant="secondary"
+            Icon={<PlusIconMini />}
+            disabled
+          >
+            Button md
+          </IconButton>
         </div>
         <div>
           <IconButton variant="white" size="xs" Icon={<PlusIconMini />}>
@@ -476,6 +522,9 @@ export const DesignLibrary = () => {
           </IconButton>
           <IconButton variant="white" size="xl" Icon={<PlusIconOutline />}>
             Button xl
+          </IconButton>
+          <IconButton variant="white" Icon={<PlusIconMini />} disabled>
+            Button md
           </IconButton>
         </div>
       </div>

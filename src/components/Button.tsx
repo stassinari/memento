@@ -36,6 +36,7 @@ export const Button: <E extends React.ElementType = typeof defaultElement>(
       as={defaultElement}
       css={[
         tw`inline-flex items-center justify-center font-medium border`,
+        tw`disabled:(cursor-not-allowed bg-gray-100! text-gray-500!)`,
         tw`focus:(outline-none ring-2 ring-offset-2)`,
         colour === "main"
           ? variant === "primary"
