@@ -223,6 +223,26 @@ export const DesignLibrary = () => {
       <div>
         <h2>Buttons</h2>
         <div>
+          <Button variant="primary" colour="mainGradient" size="xs">
+            Button xs
+          </Button>
+          <Button variant="primary" colour="mainGradient" size="sm">
+            Button sm
+          </Button>
+          <Button variant="primary" colour="mainGradient">
+            Button md
+          </Button>
+          <Button variant="primary" colour="mainGradient" size="lg">
+            Button lg
+          </Button>
+          <Button variant="primary" colour="mainGradient" size="xl">
+            Button xl
+          </Button>
+          <Button variant="primary" colour="mainGradient" disabled>
+            Button md
+          </Button>
+        </div>
+        <div>
           <Button variant="primary" size="xs">
             Button xs
           </Button>
@@ -255,6 +275,26 @@ export const DesignLibrary = () => {
             Button xl
           </Button>
           <Button variant="secondary" disabled>
+            Button md
+          </Button>
+        </div>
+        <div>
+          <Button colour="accentGradient" variant="primary" size="xs">
+            Button xs
+          </Button>
+          <Button colour="accentGradient" variant="primary" size="sm">
+            Button sm
+          </Button>
+          <Button colour="accentGradient" variant="primary">
+            Button md
+          </Button>
+          <Button colour="accentGradient" variant="primary" size="lg">
+            Button lg
+          </Button>
+          <Button colour="accentGradient" variant="primary" size="xl">
+            Button xl
+          </Button>
+          <Button colour="accentGradient" variant="primary" disabled>
             Button md
           </Button>
         </div>

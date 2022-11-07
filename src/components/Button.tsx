@@ -6,7 +6,7 @@ import tw from "twin.macro";
 export type ButtonOwnProps = {
   variant: "primary" | "secondary" | "white";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
-  colour?: "main" | "accent";
+  colour?: "main" | "accent" | "mainGradient" | "accentGradient";
   width?: "auto" | "full";
   Icon?: ReactNode;
 };
@@ -36,7 +36,7 @@ export const Button: <E extends React.ElementType = typeof defaultElement>(
       as={defaultElement}
       css={[
         tw`inline-flex items-center justify-center font-medium border`,
-        tw`disabled:(cursor-not-allowed bg-gray-100! text-gray-500!)`,
+        tw`disabled:(cursor-not-allowed bg-gray-100! from-gray-100 text-gray-500! hover:from-gray-100)`,
         tw`focus:(outline-none ring-2 ring-offset-2)`,
         colour === "main"
           ? variant === "primary"
@@ -50,10 +50,22 @@ export const Button: <E extends React.ElementType = typeof defaultElement>(
             : variant === "secondary"
             ? tw`text-blue-700 bg-blue-100 hover:bg-blue-200`
             : null
+          : colour === "mainGradient"
+          ? variant === "primary"
+            ? tw`bg-gradient-to-br from-orange-600 to-rose-600 bg-origin-border hover:(from-orange-700 to-rose-700)`
+            : variant === "secondary"
+            ? tw`text-orange-700 bg-orange-100 hover:bg-orange-200`
+            : null
+          : colour === "accentGradient"
+          ? variant === "primary"
+            ? tw`bg-gradient-to-br from-blue-600 to-purple-600 bg-origin-border hover:(from-blue-700 to-purple-700)`
+            : variant === "secondary"
+            ? tw`text-blue-700 bg-blue-100 hover:bg-blue-200`
+            : null
           : null,
-        colour === "main"
+        colour === "main" || colour === "mainGradient"
           ? tw`ring-orange-500`
-          : colour === "accent"
+          : colour === "accent" || colour === "accentGradient"
           ? tw`ring-blue-500`
           : null,
         variant === "primary"
