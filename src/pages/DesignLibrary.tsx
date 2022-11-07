@@ -419,6 +419,26 @@ export const DesignLibrary = () => {
         <h2>IconButtons</h2>
 
         <div>
+          <IconButton variant="gradient" size="xs" Icon={<PlusIconMini />}>
+            Button xs
+          </IconButton>
+          <IconButton variant="gradient" size="sm" Icon={<PlusIconMini />}>
+            Button sm
+          </IconButton>
+          <IconButton variant="gradient" Icon={<PlusIconMini />}>
+            Button md
+          </IconButton>
+          <IconButton variant="gradient" size="lg" Icon={<PlusIconOutline />}>
+            Button lg
+          </IconButton>
+          <IconButton variant="gradient" size="xl" Icon={<PlusIconOutline />}>
+            Button xl
+          </IconButton>
+          <IconButton variant="gradient" Icon={<PlusIconMini />} disabled>
+            Button md
+          </IconButton>
+        </div>
+        <div>
           <IconButton variant="primary" size="xs" Icon={<PlusIconMini />}>
             Button xs
           </IconButton>
@@ -455,6 +475,55 @@ export const DesignLibrary = () => {
             Button xl
           </IconButton>
           <IconButton variant="secondary" Icon={<PlusIconMini />} disabled>
+            Button md
+          </IconButton>
+        </div>
+        <div>
+          <IconButton
+            colour="accent"
+            variant="gradient"
+            size="xs"
+            Icon={<PlusIconMini />}
+          >
+            Button xs
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="gradient"
+            size="sm"
+            Icon={<PlusIconMini />}
+          >
+            Button sm
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="gradient"
+            Icon={<PlusIconMini />}
+          >
+            Button md
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="gradient"
+            size="lg"
+            Icon={<PlusIconOutline />}
+          >
+            Button lg
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="gradient"
+            size="xl"
+            Icon={<PlusIconOutline />}
+          >
+            Button xl
+          </IconButton>
+          <IconButton
+            colour="accent"
+            variant="gradient"
+            Icon={<PlusIconMini />}
+            disabled
+          >
             Button md
           </IconButton>
         </div>

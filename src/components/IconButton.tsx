@@ -5,7 +5,7 @@ import tw from "twin.macro";
 // Component-specific props specified separately
 export type IconButtonOwnProps = {
   Icon: ReactNode;
-  variant: "primary" | "secondary" | "white";
+  variant: "primary" | "secondary" | "white" | "gradient";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   colour?: "main" | "accent";
 };
@@ -36,19 +36,23 @@ export const IconButton: <E extends React.ElementType = typeof defaultElement>(
       className=""
       css={[
         tw`inline-flex items-center p-2 text-white border rounded-full`,
-        tw`disabled:(cursor-not-allowed bg-gray-100! text-gray-500!)`,
+        tw`disabled:(cursor-not-allowed bg-gray-100! from-gray-100 text-gray-500! hover:from-gray-100)`,
         tw`focus:(outline-none ring-2 ring-offset-2)`,
         colour === "main"
           ? variant === "primary"
             ? tw`bg-orange-600 hover:bg-orange-700`
             : variant === "secondary"
             ? tw`text-orange-700 bg-orange-100 hover:bg-orange-200`
+            : variant === "gradient"
+            ? tw`bg-gradient-to-br from-orange-600 to-rose-600 bg-origin-border hover:(from-orange-700 to-rose-700)`
             : null
           : colour === "accent"
           ? variant === "primary"
             ? tw`bg-blue-600 hover:bg-blue-700`
             : variant === "secondary"
             ? tw`text-blue-700 bg-blue-100 hover:bg-blue-200`
+            : variant === "gradient"
+            ? tw`bg-gradient-to-br from-blue-600 to-purple-600 bg-origin-border hover:(from-blue-700 to-purple-700)`
             : null
           : null,
         colour === "main"
@@ -56,7 +60,7 @@ export const IconButton: <E extends React.ElementType = typeof defaultElement>(
           : colour === "accent"
           ? tw`ring-blue-500`
           : null,
-        variant === "primary"
+        variant === "primary" || variant === "gradient"
           ? tw`text-white border-transparent shadow-sm `
           : variant === "secondary"
           ? tw`border-transparent `
