@@ -220,29 +220,27 @@ export const DesignLibrary = () => {
           }}
         />
       </div>
-      <div>
+      <div tw="space-y-2">
         <h2>Buttons</h2>
-        <div>
-          <Button variant="primary" colour="mainGradient" size="xs">
+        <div tw="space-x-2">
+          <Button variant="gradient" size="xs">
             Button xs
           </Button>
-          <Button variant="primary" colour="mainGradient" size="sm">
+          <Button variant="gradient" size="sm">
             Button sm
           </Button>
-          <Button variant="primary" colour="mainGradient">
-            Button md
-          </Button>
-          <Button variant="primary" colour="mainGradient" size="lg">
+          <Button variant="gradient">Button md</Button>
+          <Button variant="gradient" size="lg">
             Button lg
           </Button>
-          <Button variant="primary" colour="mainGradient" size="xl">
+          <Button variant="gradient" size="xl">
             Button xl
           </Button>
-          <Button variant="primary" colour="mainGradient" disabled>
+          <Button variant="gradient" disabled>
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button variant="primary" size="xs">
             Button xs
           </Button>
@@ -260,7 +258,7 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button variant="secondary" size="xs">
             Button xs
           </Button>
@@ -278,27 +276,27 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
-          <Button colour="accentGradient" variant="primary" size="xs">
+        <div tw="space-x-2">
+          <Button colour="accent" variant="gradient" size="xs">
             Button xs
           </Button>
-          <Button colour="accentGradient" variant="primary" size="sm">
+          <Button colour="accent" variant="gradient" size="sm">
             Button sm
           </Button>
-          <Button colour="accentGradient" variant="primary">
+          <Button colour="accent" variant="gradient">
             Button md
           </Button>
-          <Button colour="accentGradient" variant="primary" size="lg">
+          <Button colour="accent" variant="gradient" size="lg">
             Button lg
           </Button>
-          <Button colour="accentGradient" variant="primary" size="xl">
+          <Button colour="accent" variant="gradient" size="xl">
             Button xl
           </Button>
-          <Button colour="accentGradient" variant="primary" disabled>
+          <Button colour="accent" variant="gradient" disabled>
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button colour="accent" variant="primary" size="xs">
             Button xs
           </Button>
@@ -318,7 +316,7 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button colour="accent" variant="secondary" size="xs">
             Button xs
           </Button>
@@ -338,7 +336,7 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button variant="white" size="xs">
             Button xs
           </Button>
@@ -356,7 +354,7 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button variant="primary" size="xs" Icon={<PlusCircleIcon />}>
             Button xs
           </Button>
@@ -376,7 +374,7 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
             Button xs
           </Button>
@@ -396,7 +394,7 @@ export const DesignLibrary = () => {
             Button md
           </Button>
         </div>
-        <div>
+        <div tw="space-x-2">
           <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
             Button xs
           </Button>
