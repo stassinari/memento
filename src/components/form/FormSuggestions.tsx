@@ -12,7 +12,10 @@ interface FormSuggestionsProps {
 }
 
 export function extractSuggestions<T>(arr: T[], field: keyof T, limit = 3) {
-  return [...new Set(arr.map((b) => b[field]))].slice(0, limit) as string[];
+  return [...new Set(arr.map((b) => b[field]).filter((f) => !!f))].slice(
+    0,
+    limit
+  ) as string[];
 }
 export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
   suggestions,
