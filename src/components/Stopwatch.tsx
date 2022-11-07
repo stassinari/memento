@@ -1,5 +1,6 @@
 // import NoSleep from "nosleep.js";
 import { PauseIcon, PlayIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { PrimitiveAtom, useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 // import { CircularProgressbar } from "react-circular-progressbar";
 // import "react-circular-progressbar/dist/styles.css";
@@ -7,6 +8,7 @@ import tw from "twin.macro";
 import { IconButton } from "./IconButton";
 
 interface StopwatchProps {
+  atom: PrimitiveAtom<boolean>;
   initialSeconds?: number;
   initialMinutes?: number;
   setFormSeconds: (arg0: number) => void;
@@ -15,16 +17,15 @@ interface StopwatchProps {
 }
 
 export const Stopwatch: React.FC<StopwatchProps> = ({
+  atom,
   disabled = false,
   initialSeconds = 0,
   initialMinutes = 0,
   setFormSeconds,
   setFormMinutes,
 }) => {
-  console.log("rendering Stopwatch");
-
   const [seconds, setSeconds] = useState(initialMinutes * 60 + initialSeconds);
-  const [isRunning, setIsRunning] = useState(false);
+  const [isRunning, setIsRunning] = useAtom(atom);
 
   const displaySeconds = ("0" + (seconds % 60)).slice(-2);
   const displayMinutes = Math.floor(seconds / 60)
@@ -59,13 +60,6 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
     }
     return () => clearInterval(interval);
   }, [isRunning, seconds, setSeconds, disabled]);
-
-  useEffect(() => {
-    if (disabled) {
-      setIsRunning(false);
-      setSeconds(0);
-    }
-  }, [disabled]);
 
   return (
     <div tw="flex items-center gap-2">

@@ -6,6 +6,7 @@ import {
   ArrowPathIcon,
   PlusIcon as PlusIconOutline,
 } from "@heroicons/react/24/outline";
+import { atom } from "jotai";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import "twin.macro";
@@ -20,7 +21,7 @@ import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
-import { Switch } from "../components/Switch";
+import { Toggle } from "../components/Toggle";
 
 const people = [
   "Durward Reynolds",
@@ -35,6 +36,8 @@ const radioOptions = [
   { label: "Second label", value: "second" },
   { label: "Third label", value: "third" },
 ];
+
+export const designLibraryStopwatchAtom = atom<boolean>(false);
 
 export const DesignLibrary = () => {
   const [singleValue, setSingleValue] = useState<string>();
@@ -53,12 +56,16 @@ export const DesignLibrary = () => {
         <Card>This is a card</Card>
       </div>
       <div>
-        <Stopwatch setFormSeconds={setSeconds} setFormMinutes={setMinutes} />
+        <Stopwatch
+          atom={designLibraryStopwatchAtom}
+          setFormSeconds={setSeconds}
+          setFormMinutes={setMinutes}
+        />
       </div>
       <div tw="flex gap-4">
-        <Switch checked={switchEnabled} onChange={setSwitchEnabled} />
+        <Toggle checked={switchEnabled} onChange={setSwitchEnabled} />
 
-        <Switch
+        <Toggle
           checked={switchEnabled}
           onChange={setSwitchEnabled}
           colour="accent"

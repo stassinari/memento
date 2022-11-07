@@ -1,5 +1,5 @@
 import { onAuthStateChanged, User } from "firebase/auth";
-import { atom, useAtom, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
 import { auth } from "../firebaseConfig";
 
@@ -26,7 +26,7 @@ export const useInitUser = () => {
 };
 
 export const useCurrentUser = () => {
-  const [user] = useAtom(userAtom);
+  const user = useAtomValue(userAtom);
 
   if (!user) throw new Error("User is not logged in.");
 

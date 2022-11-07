@@ -1,3 +1,4 @@
+import { atom, useAtomValue } from "jotai";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
@@ -5,7 +6,7 @@ import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
 import { Stopwatch } from "../../Stopwatch";
-import { Switch } from "../../Switch";
+import { Toggle } from "../../Toggle";
 
 export interface BrewTimeInputs {
   timeSeconds: number | null;
@@ -24,12 +25,16 @@ interface BrewTimeProps {
   ctaLabel: string;
 }
 
+export const brewStopwatchAtom = atom<boolean>(false);
+
 export const BrewTime: React.FC<BrewTimeProps> = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
   ctaLabel,
 }) => {
+  const isStopwatchRunning = useAtomValue(brewStopwatchAtom);
+
   const methods = useForm<BrewTimeInputs>({
     defaultValues,
   });
@@ -59,6 +64,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
           subtitle="Keep track of how long your brew takes."
         >
           <Stopwatch
+            atom={brewStopwatchAtom}
             initialSeconds={defaultValues.timeSeconds || 0}
             initialMinutes={defaultValues.timeMinutes || 0}
             setFormSeconds={(seconds) => setValue("timeSeconds", seconds)}
@@ -66,10 +72,11 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
             disabled={manualInput}
           />
 
-          <Switch
+          <Toggle
             checked={manualInput}
             onChange={setManualInput}
             label="Set time manually"
+            disabled={isStopwatchRunning}
           />
 
           <div tw="flex items-end gap-4">
