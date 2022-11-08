@@ -16,6 +16,7 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
+import { FormRadioCards } from "../components/form/FormRadioCards";
 import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
@@ -37,6 +38,37 @@ const radioOptions = [
   { label: "Third label", value: "third" },
 ];
 
+const radioCardOptions = [
+  {
+    name: "Hobby",
+    ram: "8GB",
+    cpus: "4 CPUs",
+    disk: "160 GB SSD disk",
+    price: "$40",
+  },
+  {
+    name: "Startup",
+    ram: "12GB",
+    cpus: "6 CPUs",
+    disk: "256 GB SSD disk",
+    price: "$80",
+  },
+  {
+    name: "Business",
+    ram: "16GB",
+    cpus: "8 CPUs",
+    disk: "512 GB SSD disk",
+    price: "$160",
+  },
+  {
+    name: "Enterprise",
+    ram: "32GB",
+    cpus: "12 CPUs",
+    disk: "1024 GB SSD disk",
+    price: "$240",
+  },
+];
+
 export const designLibraryStopwatchAtom = atom<boolean>(false);
 
 export const DesignLibrary = () => {
@@ -48,10 +80,22 @@ export const DesignLibrary = () => {
 
   const [switchEnabled, setSwitchEnabled] = useState(false);
 
-  const [radioCardValue, setRadioCardValue] = useState<string>();
+  const [formRadioCardValue, setFormRadioCardValue] = useState(
+    radioCardOptions[1]
+  );
+
+  const [radioButtonGroupValue, setRadioButtonGroupValue] = useState<string>();
 
   return (
     <div tw="space-y-8">
+      <div>
+        <FormRadioCards
+          label="Radio cards"
+          options={radioCardOptions}
+          value={formRadioCardValue}
+          handleChange={setFormRadioCardValue}
+        />
+      </div>
       <div>
         <Card>This is a card</Card>
       </div>
@@ -82,15 +126,15 @@ export const DesignLibrary = () => {
         <InputRadioButtonGroup
           label="Test radio group"
           options={radioOptions}
-          value={radioCardValue}
-          onChange={(v) => setRadioCardValue(v)}
+          value={radioButtonGroupValue}
+          onChange={(v) => setRadioButtonGroupValue(v)}
         />
 
         <InputRadioButtonGroup
           label="Test radio secondary"
           options={radioOptions}
-          value={radioCardValue}
-          onChange={(v) => setRadioCardValue(v)}
+          value={radioButtonGroupValue}
+          onChange={(v) => setRadioButtonGroupValue(v)}
           variant="secondary"
         />
 
