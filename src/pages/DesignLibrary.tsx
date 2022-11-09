@@ -7,7 +7,7 @@ import {
   PlusIcon as PlusIconOutline,
 } from "@heroicons/react/24/outline";
 import { atom } from "jotai";
-import { useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import "twin.macro";
 import { theme } from "twin.macro";
@@ -16,7 +16,10 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
-import { FormRadioCards } from "../components/form/FormRadioCards";
+import {
+  FormRadioCardOption,
+  FormRadioCards,
+} from "../components/form/FormRadioCards";
 import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
@@ -38,34 +41,48 @@ const radioOptions = [
   { label: "Third label", value: "third" },
 ];
 
-const radioCardOptions = [
+const radioCardOptions: FormRadioCardOption[] = [
   {
-    name: "Hobby",
-    ram: "8GB",
-    cpus: "4 CPUs",
-    disk: "160 GB SSD disk",
-    price: "$40",
+    value: "hobby",
+    left: {
+      top: "Hobby",
+      bottom: (
+        <React.Fragment>8GB / 4 CPUs &middot; 160 GB SSD disk</React.Fragment>
+      ),
+    },
+    right: { top: "$40", bottom: "/mo" },
   },
   {
-    name: "Startup",
-    ram: "12GB",
-    cpus: "6 CPUs",
-    disk: "256 GB SSD disk",
-    price: "$80",
+    value: "startup",
+    left: {
+      top: "Startup",
+      bottom: (
+        <React.Fragment>12GB / 6 CPUs &middot; 256 GB SSD disk</React.Fragment>
+      ),
+    },
+    right: { top: "$80", bottom: "/mo" },
   },
   {
-    name: "Business",
-    ram: "16GB",
-    cpus: "8 CPUs",
-    disk: "512 GB SSD disk",
-    price: "$160",
+    value: "business",
+    left: {
+      top: "Business",
+      bottom: (
+        <React.Fragment>16GB / 8 CPUs &middot; 512 GB SSD disk</React.Fragment>
+      ),
+    },
+    right: { top: "$160", bottom: "/mo" },
   },
   {
-    name: "Enterprise",
-    ram: "32GB",
-    cpus: "12 CPUs",
-    disk: "1024 GB SSD disk",
-    price: "$240",
+    value: "enterprise",
+    left: {
+      top: "Enterprise",
+      bottom: (
+        <React.Fragment>
+          32GB / 12 CPUs &middot; 1024 GB SSD disk
+        </React.Fragment>
+      ),
+    },
+    right: { top: "$240", bottom: "/mo" },
   },
 ];
 
@@ -92,7 +109,7 @@ export const DesignLibrary = () => {
         <FormRadioCards
           label="Radio cards"
           options={radioCardOptions}
-          value={formRadioCardValue}
+          currentValue={formRadioCardValue}
           handleChange={setFormRadioCardValue}
         />
       </div>

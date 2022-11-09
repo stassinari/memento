@@ -1,19 +1,23 @@
+import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
 import { Brew } from "../../../types/brews";
+import { getTimeAgo } from "../../../util";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { FormSection } from "../../Form";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadio } from "../../form/FormInputRadio";
+import { FormRadioCards } from "../../form/FormRadioCards";
 import { extractSuggestions } from "../../form/FormSuggestions";
 
 export interface BeansMethodEquipmentInputs {
   date: Date | null;
   method: string | null;
   beans: string | null;
+  beansNew: string | null;
 
   grinder: string | null;
   grinderBurrs: string | null;
@@ -26,6 +30,7 @@ export const beansMethodEquipmentEmptyValues: () => BeansMethodEquipmentInputs =
     date: new Date(),
     method: null,
     beans: null,
+    beansNew: null,
 
     grinder: null,
     grinderBurrs: null,
@@ -54,10 +59,13 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
     handleSubmit,
     formState: { errors },
     register,
+    watch,
+    setValue,
   } = methods;
 
   const onSubmit: SubmitHandler<BeansMethodEquipmentInputs> = async (data) => {
-    handleNestedSubmit(data);
+    console.log(data);
+    // handleNestedSubmit(data);
   };
 
   return (
@@ -89,7 +97,29 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
             suggestions={extractSuggestions(brewsList, "method")}
           />
 
-          <p>TODO: nicer beans selection</p>
+          <FormRadioCards
+            label="Select beans *"
+            options={beansList.map((beans) => ({
+              value: `beans/${beans.id}`,
+              left: { top: beans.name, bottom: beans.roaster },
+              right: {
+                top: beans.roastDate && (
+                  <React.Fragment>
+                    Roasted{" "}
+                    <time
+                      dateTime={beans.roastDate?.toDate().toLocaleDateString()}
+                    >
+                      {getTimeAgo(beans.roastDate.toDate())}
+                    </time>
+                  </React.Fragment>
+                ),
+                bottom:
+                  beans.origin === "single-origin" ? beans.country : "Blend",
+              },
+            }))}
+            currentValue={watch("beansNew")}
+            handleChange={(boh) => setValue("beansNew", boh)}
+          />
 
           <FormInputRadio
             id="beans"
