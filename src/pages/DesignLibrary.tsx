@@ -23,6 +23,7 @@ import {
 import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
+import { ExampleDialogContent, Modal } from "../components/Modal";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
 import { Toggle } from "../components/Toggle";
@@ -103,8 +104,38 @@ export const DesignLibrary = () => {
 
   const [radioButtonGroupValue, setRadioButtonGroupValue] = useState<string>();
 
+  const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
+  const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
+
   return (
     <div tw="space-y-8">
+      <div>
+        <p>Modals</p>
+        <div>
+          <Button variant="primary" onClick={() => setIsExampleModalOpen(true)}>
+            Open example modal
+          </Button>
+          <Modal
+            open={isExampleModalOpen}
+            handleClose={() => setIsExampleModalOpen(false)}
+          >
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
+          </Modal>
+        </div>
+        <div>
+          <Button variant="primary" onClick={() => setIsBasicModalOpen(true)}>
+            Open basic modal
+          </Button>
+          <Modal
+            open={isBasicModalOpen}
+            handleClose={() => setIsBasicModalOpen(false)}
+          >
+            This is the basic-est modal
+          </Modal>
+        </div>
+      </div>
       <div>
         <FormRadioCards
           label="Radio cards"
