@@ -1,31 +1,31 @@
 import { RadioGroup } from "@headlessui/react";
 import React, { ReactNode } from "react";
 import "twin.macro";
-import { labelStyles } from "../Input";
+import { labelStyles } from "./Input";
 
 interface CopyBlock {
   top: ReactNode;
   bottom?: ReactNode;
 }
-export interface FormRadioCardOption {
+export interface InputRadioCardsOption {
   value: string; // maybe open it up more?
   left: CopyBlock;
   right?: Partial<CopyBlock>;
 }
 
-type FormRadioCardsProps<T> = {
+export type InputRadioCardsProps<T> = {
   label: string;
   currentValue: T;
   handleChange: (value: T) => void;
-  options: FormRadioCardOption[];
+  options: InputRadioCardsOption[];
 };
 
-export const FormRadioCards = <T,>({
+export const InputRadioCards = <T,>({
   label,
   options,
   currentValue,
   handleChange,
-}: FormRadioCardsProps<T>) => {
+}: InputRadioCardsProps<T>) => {
   return (
     <RadioGroup value={currentValue} onChange={handleChange}>
       <RadioGroup.Label css={labelStyles}>{label}</RadioGroup.Label>

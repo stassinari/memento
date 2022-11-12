@@ -16,13 +16,13 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
-import {
-  FormRadioCardOption,
-  FormRadioCards,
-} from "../components/form/FormRadioCards";
 import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
+import {
+  InputRadioCards,
+  InputRadioCardsOption,
+} from "../components/InputRadioCards";
 import { ExampleDialogContent, Modal } from "../components/Modal";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
@@ -42,7 +42,7 @@ const radioOptions = [
   { label: "Third label", value: "third" },
 ];
 
-const radioCardOptions: FormRadioCardOption[] = [
+const radioCardOptions: InputRadioCardsOption[] = [
   {
     value: "hobby",
     left: {
@@ -137,7 +137,7 @@ export const DesignLibrary = () => {
         </div>
       </div>
       <div>
-        <FormRadioCards
+        <InputRadioCards
           label="Radio cards"
           options={radioCardOptions}
           currentValue={formRadioCardValue}
