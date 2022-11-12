@@ -1,5 +1,5 @@
 import { RadioGroup } from "@headlessui/react";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import "twin.macro";
 import { labelStyles } from "../Input";
 
@@ -10,7 +10,7 @@ interface CopyBlock {
 export interface FormRadioCardOption {
   value: string; // maybe open it up more?
   left: CopyBlock;
-  right?: CopyBlock;
+  right?: Partial<CopyBlock>;
 }
 
 type FormRadioCardsProps<T> = {
@@ -53,7 +53,9 @@ export const FormRadioCards = <T,>({
                 as="span"
                 tw="flex flex-col-reverse text-sm sm:(mt-0 ml-4 flex-col text-right)"
               >
-                <span tw="font-medium text-gray-500">{option.right.top}</span>
+                <span tw="font-medium text-gray-500">
+                  {option.right.top || <React.Fragment>&nbsp;</React.Fragment>}
+                </span>
                 {option.right.bottom && (
                   <span tw="text-gray-500">{option.right.bottom}</span>
                 )}
