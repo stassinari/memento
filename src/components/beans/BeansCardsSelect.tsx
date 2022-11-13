@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../types/beans";
@@ -39,12 +39,14 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
   const [collapseToOne, setCollapseToOne] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  console.log(watch("beans"));
+  const selectedBeans: string = watch("beans");
 
-  const mainBeans = collapseToOne
-    ? beansList.filter((b) => toBeansFormValue(b) === watch("beans")) ||
-      beansList.slice(0, 1)
-    : beansList.slice(0, 3);
+  const mainBeans = useMemo(() => {
+    const sortedBeans = beansList.sort((a, b) =>
+      toBeansFormValue(a) === selectedBeans ? -1 : 1
+    );
+    return collapseToOne ? sortedBeans.slice(0, 1) : sortedBeans.slice(0, 3);
+  }, [beansList, collapseToOne, selectedBeans]);
 
   const modalBeans = searchQuery
     ? beansList.filter(
