@@ -3,13 +3,12 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
 import { Brew } from "../../../types/brews";
-import { beansRadioOption } from "../../beans/beansRadioOption";
+import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { FormSection } from "../../Form";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
-import { FormInputRadioCards } from "../../form/FormInputRadioCards";
 import { extractSuggestions } from "../../form/FormSuggestions";
 
 export interface BeansMethodEquipmentInputs {
@@ -91,13 +90,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
             suggestions={extractSuggestions(brewsList, "method")}
           />
 
-          <FormInputRadioCards
-            name="beans"
-            label="Select beans *"
-            options={beansList.map((beans) => beansRadioOption(beans))}
-            requiredMsg="Please select the beans you're using"
-            error={errors.beans?.message}
-          />
+          <BeansCardsSelect beansList={beansList} />
         </FormSection>
 
         <Divider tw="hidden sm:block" />
