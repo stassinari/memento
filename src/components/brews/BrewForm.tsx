@@ -5,7 +5,6 @@ import "twin.macro";
 import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
 import { Beans } from "../../types/beans";
 import { Brew } from "../../types/brews";
-import { isNotFrozenOrIsThawed } from "../../util";
 import {
   BeansMethodEquipment,
   beansMethodEquipmentEmptyValues,
@@ -74,7 +73,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewsList={brewsList}
-          beansList={beansList.filter(isNotFrozenOrIsThawed)} // TODO don't show frozen by default give ability to select frozen via toggle
+          beansList={beansList} // TODO don't show frozen by default give ability to select frozen via toggle
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {
             setBrewFormInputs({ ...brewFormInputs, ...data });

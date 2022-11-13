@@ -3,7 +3,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
 import { Brew } from "../../../types/brews";
-import { beansRadioOption } from "../../beans/BeansRadioSelector";
+import { beansRadioOption } from "../../beans/beansRadioOption";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { FormSection } from "../../Form";
@@ -55,14 +55,11 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   const {
     handleSubmit,
     formState: { errors },
-    register,
-    watch,
-    setValue,
   } = methods;
 
   const onSubmit: SubmitHandler<BeansMethodEquipmentInputs> = async (data) => {
     console.log(data);
-    // handleNestedSubmit(data);
+    handleNestedSubmit(data);
   };
 
   return (

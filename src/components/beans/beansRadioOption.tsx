@@ -18,7 +18,3 @@ export const beansRadioOption = (beans: Beans): InputRadioCardsOption => ({
     bottom: beans.origin === "single-origin" ? beans.country : "Blend",
   },
 });
-
-export const BeansRadioSelector = () => {
-  return <div>lol</div>;
-};
