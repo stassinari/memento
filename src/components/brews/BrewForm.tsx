@@ -1,4 +1,4 @@
-import { orderBy, where } from "firebase/firestore";
+import { orderBy } from "firebase/firestore";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import "twin.macro";
@@ -54,14 +54,14 @@ export const BrewForm: React.FC<BrewFormProps> = ({
   const { list: beansList, isLoading: areBeansLoading } =
     useFirestoreList<Beans>("beans", [
       orderBy("roastDate", "desc"),
-      where("isFinished", "==", false),
+      // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
     ]);
 
   const { list: brewsList, isLoading: areBrewsLoading } =
     useFirestoreList<Brew>("brews", [orderBy("date", "desc")]);
 
   const onSubmit: SubmitHandler<BrewFormInputs> = async (data) => {
-    mutation(data);
+    await mutation(data);
   };
 
   if (areBeansLoading || areBrewsLoading) return null;

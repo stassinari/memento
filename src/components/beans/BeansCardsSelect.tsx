@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../types/beans";
-import { getTimeAgo, isNotFrozenOrIsThawed } from "../../util";
+import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "../../util";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
@@ -43,14 +43,19 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
   const selectedBeans = watch("beans");
 
   const mainBeans = useMemo(() => {
+    if (selectedBeans) {
+      // return the only beans to display
+      return beansList.filter((b) => selectedBeans === toBeansFormValue(b));
+    }
     return beansList
       .filter(isNotFrozenOrIsThawed)
-      .sort((a) => (toBeansFormValue(a) === selectedBeans ? -1 : 1))
+      .filter(isNotArchived)
       .slice(0, !selectedBeans ? 3 : 1);
   }, [beansList, selectedBeans]);
 
   const modalBeans = useMemo(() => {
     return beansList
+      .filter(isNotArchived)
       .filter((b) => {
         if (!searchQuery) return b;
         return (
@@ -63,6 +68,13 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
       .filter(showFrozenBeans ? () => true : isNotFrozenOrIsThawed);
   }, [beansList, searchQuery, showFrozenBeans]);
 
+  const showMore = useMemo(() => {
+    const shownLength = beansList
+      .filter(isNotFrozenOrIsThawed)
+      .filter(isNotArchived).length;
+    return (!!selectedBeans && shownLength > 1) || shownLength >= 3;
+  }, [beansList, selectedBeans]);
+
   return (
     <div>
       <FormInputRadioCards
@@ -73,13 +85,15 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
         error={formState.errors.beans?.message?.toString()}
       />
 
-      <button
-        type="button"
-        tw="mt-2 text-sm font-medium text-orange-500 hover:underline"
-        onClick={() => setIsModalOpen(true)}
-      >
-        More...
-      </button>
+      {showMore && (
+        <button
+          type="button"
+          tw="mt-2 text-sm font-medium text-orange-500 hover:underline"
+          onClick={() => setIsModalOpen(true)}
+        >
+          More...
+        </button>
+      )}
 
       <Modal open={isModalOpen} handleClose={() => setIsModalOpen(false)}>
         <div tw="w-full space-y-5">

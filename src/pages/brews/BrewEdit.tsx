@@ -13,12 +13,17 @@ export const BrewEdit = () => {
 
   const navigate = useNavigate();
 
-  const { details: brew } = useFirestoreDetails<Brew>("brews", brewId);
+  const { details: brew, isLoading } = useFirestoreDetails<Brew>(
+    "brews",
+    brewId
+  );
 
   if (!user) throw new Error("User is not logged in.");
 
+  if (isLoading) return null;
+
   if (!brewId || !brew) {
-    return null;
+    throw new Error("Brew does not exist.");
   }
 
   const existingBrewRef = doc(db, "users", user.uid, "brews", brewId);

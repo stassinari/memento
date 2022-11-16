@@ -14,6 +14,8 @@ export const isNotFrozenOrIsThawed = (beans: Beans): boolean =>
 export const isFrozen = (beans: Beans): boolean =>
   !!beans.freezeDate && !beans.thawDate;
 
+export const isNotArchived = (beans: Beans): boolean => !beans.isFinished;
+
 const MINUTE = 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
