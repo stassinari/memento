@@ -23,8 +23,10 @@ export interface BrewFormInputs
     BrewRecipeInputs,
     BrewTimeInputs {}
 
-export const brewFormEmptyValues: () => BrewFormInputs = () => ({
-  ...beansMethodEquipmentEmptyValues(),
+export const brewFormEmptyValues: (copyFrom?: Brew) => BrewFormInputs = (
+  copyFrom
+) => ({
+  ...beansMethodEquipmentEmptyValues(copyFrom),
 
   ...brewRecipeEmptyValues(),
 

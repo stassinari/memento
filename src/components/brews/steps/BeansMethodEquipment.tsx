@@ -22,17 +22,18 @@ export interface BeansMethodEquipmentInputs {
   filterType: string | null;
 }
 
-export const beansMethodEquipmentEmptyValues: () => BeansMethodEquipmentInputs =
-  () => ({
-    date: new Date(),
-    method: null,
-    beans: null,
+export const beansMethodEquipmentEmptyValues: (
+  copyFrom?: Brew
+) => BeansMethodEquipmentInputs = (copyFrom) => ({
+  date: new Date(),
+  method: null,
+  beans: null,
 
-    grinder: null,
-    grinderBurrs: null,
-    waterType: null,
-    filterType: null,
-  });
+  grinder: copyFrom?.grinder ?? null,
+  grinderBurrs: copyFrom?.grinderBurrs ?? null,
+  waterType: copyFrom?.waterType ?? null,
+  filterType: copyFrom?.filterType ?? null,
+});
 
 interface BeansMethodEquipmentProps {
   brewsList: Brew[];
