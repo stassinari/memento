@@ -62,15 +62,16 @@ export default defineConfig({
         ],
       },
     }),
-    VitePWA({
-      strategies: "injectManifest",
-      srcDir: "src",
-      filename: "firebase-messaging-sw.js",
-      workbox: {
-        globPatterns: [],
-        globIgnores: ["*"],
-      },
-    }),
+    // FIXME revisit when looking into Firebase notifications
+    // VitePWA({
+    //   strategies: "injectManifest",
+    //   srcDir: "src",
+    //   filename: "firebase-messaging-sw.js",
+    //   workbox: {
+    //     globPatterns: [],
+    //     globIgnores: ["*"],
+    //   },
+    // }),
   ],
   esbuild: {
     logOverride: { "this-is-undefined-in-esm": "silent" },

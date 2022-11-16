@@ -1,3 +1,5 @@
+// FIXME revisit when looking into Firebase notifications
+
 // /// <reference lib="webworker" />
 // declare let self: ServiceWorkerGlobalScope;
 

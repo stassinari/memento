@@ -1,56 +1,59 @@
 /* eslint-disable no-undef */
-// Scripts for firebase and firebase messaging
-importScripts(
-  "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"
-);
-importScripts(
-  "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"
-);
 
-// FIXME find a way to have this populated properly
+// FIXME revisit when looking into Firebase notifications
 
-// const {
-//   VITE_FB_API_KEY,
-//   VITE_FB_AUTH_DOMAIN,
-//   VITE_FB_DATABASE_URL,
-//   VITE_FB_PROJECT_ID,
-//   VITE_FB_STORAGE_BUCKET,
-//   VITE_FB_MESSAGING_SENDER_ID,
-//   VITE_FB_APP_ID,
-//   VITE_FB_MEASUREMENT_ID,
-// } = import.meta.env;
+// // Scripts for firebase and firebase messaging
+// importScripts(
+//   "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"
+// );
+// importScripts(
+//   "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"
+// );
 
-// Firebase configuration
-const config = {
-  apiKey: "AIzaSyB34N6u6BKCuSZt2cQPcfWT_GHV_jDIhks",
-  authDomain: "brewlog-prod.firebaseapp.com",
-  databaseURL: "https://brewlog-prod.firebaseio.com",
-  projectId: "brewlog-prod",
-  storageBucket: "brewlog-prod.appspot.com",
-  messagingSenderId: "905888347744",
-  appId: "1:905888347744:web:967e3f40833abbe3beb505",
-  measurementId: "G-JKQ1J4VGZD",
-};
+// // FIXME find a way to have this populated properly
 
-firebase.initializeApp(config);
+// // const {
+// //   VITE_FB_API_KEY,
+// //   VITE_FB_AUTH_DOMAIN,
+// //   VITE_FB_DATABASE_URL,
+// //   VITE_FB_PROJECT_ID,
+// //   VITE_FB_STORAGE_BUCKET,
+// //   VITE_FB_MESSAGING_SENDER_ID,
+// //   VITE_FB_APP_ID,
+// //   VITE_FB_MEASUREMENT_ID,
+// // } = import.meta.env;
 
-console.log(self.__WB_MANIFEST);
+// // Firebase configuration
+// const config = {
+//   apiKey: "AIzaSyB34N6u6BKCuSZt2cQPcfWT_GHV_jDIhks",
+//   authDomain: "brewlog-prod.firebaseapp.com",
+//   databaseURL: "https://brewlog-prod.firebaseio.com",
+//   projectId: "brewlog-prod",
+//   storageBucket: "brewlog-prod.appspot.com",
+//   messagingSenderId: "905888347744",
+//   appId: "1:905888347744:web:967e3f40833abbe3beb505",
+//   measurementId: "G-JKQ1J4VGZD",
+// };
 
-// Retrieve firebase messaging
-const messaging = firebase.messaging();
+// firebase.initializeApp(config);
 
-messaging.onBackgroundMessage(function (payload) {
-  console.log("Received background message ", payload);
+// console.log(self.__WB_MANIFEST);
 
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-  };
+// // Retrieve firebase messaging
+// const messaging = firebase.messaging();
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+// messaging.onBackgroundMessage(function (payload) {
+//   console.log("Received background message ", payload);
 
-// trying to fix reloading madness
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
-});
+//   const notificationTitle = payload.notification.title;
+//   const notificationOptions = {
+//     body: payload.notification.body,
+//   };
+
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });
+
+// // trying to fix reloading madness
+// self.addEventListener("message", (event) => {
+//   if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+// });

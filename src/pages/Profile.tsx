@@ -1,9 +1,8 @@
 import { Auth } from "firebase/auth";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
-import { auth, getMessagingToken } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 import { useCurrentUser } from "../hooks/useInitUser";
 
 const signOut = (auth: Auth) =>
@@ -22,27 +21,28 @@ export const Profile = () => {
       <Button variant="white" as={Link} to="/design-library" tw="sm:hidden">
         Design Library
       </Button>
-      <Notifications />
+      {/* <Notifications /> */}
     </div>
   );
 };
 
-const Notifications = () => {
-  const [isTokenFound, setTokenFound] = useState(false);
-  return (
-    <div>
-      <h2>Notifications</h2>
-      <p>
-        Status:
-        {isTokenFound && <span>Notification permission enabled 👍🏻</span>}
-        {!isTokenFound && <span>Need notification permission ❗️ </span>}
-      </p>
-      <Button
-        variant="primary"
-        onClick={() => getMessagingToken(setTokenFound)}
-      >
-        Enable notifications
-      </Button>
-    </div>
-  );
-};
+// FIXME revisit when looking into Firebase notifications
+// const Notifications = () => {
+//   const [isTokenFound, setTokenFound] = useState(false);
+//   return (
+//     <div>
+//       <h2>Notifications</h2>
+//       <p>
+//         Status:
+//         {isTokenFound && <span>Notification permission enabled 👍🏻</span>}
+//         {!isTokenFound && <span>Need notification permission ❗️ </span>}
+//       </p>
+//       <Button
+//         variant="primary"
+//         onClick={() => getMessagingToken(setTokenFound)}
+//       >
+//         Enable notifications
+//       </Button>
+//     </div>
+//   );
+// };
