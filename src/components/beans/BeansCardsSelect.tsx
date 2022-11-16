@@ -2,13 +2,14 @@ import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../types/beans";
-import { getTimeAgo } from "../../util";
+import { getTimeAgo, isNotFrozenOrIsThawed } from "../../util";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
-import { Input } from "../Input";
+import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
 import { Modal } from "../Modal";
+import { Toggle } from "../Toggle";
 
-const toBeansFormValue = (beans: Beans) => `beans/${beans.id}`;
+const toBeansFormValue = (beans: Beans) => `beans/${beans.id ?? ""}`;
 
 const beansRadioOption = (beans: Beans): InputRadioCardsOption => ({
   value: toBeansFormValue(beans),
@@ -36,27 +37,31 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
   const { watch, formState } = useFormContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [collapseToOne, setCollapseToOne] = useState(false);
+  const [showFrozenBeans, setShowFrozenBeans] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const selectedBeans: string = watch("beans");
+  const selectedBeans = watch("beans");
 
   const mainBeans = useMemo(() => {
-    const sortedBeans = beansList.sort((a, b) =>
-      toBeansFormValue(a) === selectedBeans ? -1 : 1
-    );
-    return collapseToOne ? sortedBeans.slice(0, 1) : sortedBeans.slice(0, 3);
-  }, [beansList, collapseToOne, selectedBeans]);
+    return beansList
+      .filter(isNotFrozenOrIsThawed)
+      .sort((a) => (toBeansFormValue(a) === selectedBeans ? -1 : 1))
+      .slice(0, !selectedBeans ? 3 : 1);
+  }, [beansList, selectedBeans]);
 
-  const modalBeans = searchQuery
-    ? beansList.filter(
-        (b) =>
+  const modalBeans = useMemo(() => {
+    return beansList
+      .filter((b) => {
+        if (!searchQuery) return b;
+        return (
           b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           b.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (b.origin === "single-origin" &&
             b.country?.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : beansList;
+        );
+      })
+      .filter(showFrozenBeans ? () => true : isNotFrozenOrIsThawed);
+  }, [beansList, searchQuery, showFrozenBeans]);
 
   return (
     <div>
@@ -65,7 +70,6 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
         label="Select beans *"
         options={mainBeans.map(beansRadioOption)}
         requiredMsg="Please select the beans you're using"
-        onChange={() => setCollapseToOne(true)}
         error={formState.errors.beans?.message?.toString()}
       />
 
@@ -78,15 +82,23 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
       </button>
 
       <Modal open={isModalOpen} handleClose={() => setIsModalOpen(false)}>
-        <div tw="w-full">
-          <Input
-            type="text"
-            tw="mb-3"
-            id="beans-radio-search"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-          />
+        <div tw="w-full space-y-5">
+          <div>
+            <span css={labelStyles}>Filters</span>
+            <Input
+              type="text"
+              tw="mt-2 mb-4"
+              id="beans-radio-search"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+            />
+            <Toggle
+              label="Show frozen"
+              checked={showFrozenBeans}
+              onChange={setShowFrozenBeans}
+            />
+          </div>
 
           <FormInputRadioCards
             name="beans"
@@ -94,7 +106,6 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
             options={modalBeans.map(beansRadioOption)}
             onChange={() => {
               setIsModalOpen(false);
-              setCollapseToOne(true);
             }}
           />
         </div>

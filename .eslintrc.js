@@ -17,5 +17,9 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["react"],
-  rules: {},
+  rules: {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "react/no-unknown-property": ["error", { ignore: ["css", "tw"] }],
+  },
 };

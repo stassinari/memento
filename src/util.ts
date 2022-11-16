@@ -11,6 +11,9 @@ export function immutableRemove<T>(array: T[], item: T) {
 export const isNotFrozenOrIsThawed = (beans: Beans): boolean =>
   !beans.freezeDate || (!!beans.freezeDate && !!beans.thawDate);
 
+export const isFrozen = (beans: Beans): boolean =>
+  !!beans.freezeDate && !beans.thawDate;
+
 const MINUTE = 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;

@@ -1,7 +1,3 @@
-// export const Switch = () => {
-//   return <div>lol</div>;
-// };
-
 import { Switch } from "@headlessui/react";
 import tw from "twin.macro";
 
@@ -56,7 +52,7 @@ export const Toggle: React.FC<ToggleProps> = ({
       <Switch.Label as="span" tw="ml-3">
         <span
           css={[
-            tw`text-sm font-medium text-gray-900`,
+            tw`text-sm font-medium text-gray-700`,
             disabled && tw`text-gray-400`,
           ]}
         >
