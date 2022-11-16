@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
@@ -48,6 +48,8 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   defaultValues,
   handleNestedSubmit,
 }) => {
+  const [showEquipment, setShowEquipment] = useState(false);
+
   const methods = useForm<BeansMethodEquipmentInputs>({
     defaultValues,
   });
@@ -55,6 +57,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   const {
     handleSubmit,
     formState: { errors },
+    getValues,
   } = methods;
 
   const onSubmit: SubmitHandler<BeansMethodEquipmentInputs> = async (data) => {
@@ -100,66 +103,91 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           title="Equipment information"
           subtitle="This section is about equipment. Duh."
         >
-          <FormComboboxSingle
-            label="Grinder"
-            name="grinder"
-            placeholder="Niche Zero"
-            options={[
-              ...new Set(
-                brewsList
-                  .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                  .sort()
-              ),
-            ]}
-            suggestions={extractSuggestions(brewsList, "grinder")}
-          />
+          {showEquipment ? (
+            <React.Fragment>
+              <FormComboboxSingle
+                label="Grinder"
+                name="grinder"
+                placeholder="Niche Zero"
+                options={[
+                  ...new Set(
+                    brewsList
+                      .flatMap(({ grinder }) => (grinder ? [grinder] : []))
+                      .sort()
+                  ),
+                ]}
+                suggestions={extractSuggestions(brewsList, "grinder")}
+              />
+              <FormComboboxSingle
+                label="Burrs"
+                name="grinderBurrs"
+                placeholder="54mm conical"
+                options={[
+                  ...new Set(
+                    brewsList
+                      .flatMap(({ grinderBurrs }) =>
+                        grinderBurrs ? [grinderBurrs] : []
+                      )
+                      .sort()
+                  ),
+                ]}
+                suggestions={extractSuggestions(brewsList, "grinderBurrs")}
+              />
+              <FormComboboxSingle
+                label="Water type"
+                name="waterType"
+                placeholder="ZeroWater"
+                options={[
+                  ...new Set(
+                    brewsList
+                      .flatMap(({ waterType }) =>
+                        waterType ? [waterType] : []
+                      )
+                      .sort()
+                  ),
+                ]}
+                suggestions={extractSuggestions(brewsList, "waterType")}
+              />
+              <FormComboboxSingle
+                label="Filter"
+                name="filterType"
+                placeholder="Bleached"
+                options={[
+                  ...new Set(
+                    brewsList
+                      .flatMap(({ filterType }) =>
+                        filterType ? [filterType] : []
+                      )
+                      .sort()
+                  ),
+                ]}
+                suggestions={extractSuggestions(brewsList, "filterType")}
+              />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <dl tw="-my-3 divide-y divide-gray-200">
+                <EquipmentRow label="Grinder" value={getValues("grinder")} />
+                <EquipmentRow label="Burrs" value={getValues("grinderBurrs")} />
+                <EquipmentRow
+                  label="Water type"
+                  value={getValues("waterType")}
+                />
+                <EquipmentRow label="Filter" value={getValues("filterType")} />
+              </dl>
 
-          <FormComboboxSingle
-            label="Burrs"
-            name="grinderBurrs"
-            placeholder="54mm conical"
-            options={[
-              ...new Set(
-                brewsList
-                  .flatMap(({ grinderBurrs }) =>
-                    grinderBurrs ? [grinderBurrs] : []
-                  )
-                  .sort()
-              ),
-            ]}
-            suggestions={extractSuggestions(brewsList, "grinderBurrs")}
-          />
-
-          <FormComboboxSingle
-            label="Water type"
-            name="waterType"
-            placeholder="ZeroWater"
-            options={[
-              ...new Set(
-                brewsList
-                  .flatMap(({ waterType }) => (waterType ? [waterType] : []))
-                  .sort()
-              ),
-            ]}
-            suggestions={extractSuggestions(brewsList, "waterType")}
-          />
-
-          <FormComboboxSingle
-            label="Filter"
-            name="filterType"
-            placeholder="Bleached"
-            options={[
-              ...new Set(
-                brewsList
-                  .flatMap(({ filterType }) => (filterType ? [filterType] : []))
-                  .sort()
-              ),
-            ]}
-            suggestions={extractSuggestions(brewsList, "filterType")}
-          />
+              <button
+                type="button"
+                tw="text-sm font-medium text-orange-500 hover:underline"
+                onClick={() => setShowEquipment(true)}
+              >
+                Change...
+              </button>
+            </React.Fragment>
+          )}
         </FormSection>
 
-        <div className="flex justify-end gap-4">
+        <div tw="flex justify-end gap-4">
           <Button variant="white" type="button" disabled>
             Back
           </Button>
@@ -171,3 +199,19 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
     </FormProvider>
   );
 };
+
+interface EquipmentRowProps {
+  label: string;
+  value: string | null;
+}
+
+const EquipmentRow: React.FC<EquipmentRowProps> = ({ label, value }) => (
+  <div tw="flex justify-between py-3 text-sm font-medium">
+    <dt tw="text-gray-500">{label}</dt>
+    {value ? (
+      <dd tw="text-gray-900 whitespace-nowrap">{value}</dd>
+    ) : (
+      <dd tw="italic text-gray-300 whitespace-nowrap">Not set</dd>
+    )}
+  </div>
+);
