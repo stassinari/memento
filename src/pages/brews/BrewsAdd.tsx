@@ -1,4 +1,4 @@
-import { doc, limit, setDoc } from "firebase/firestore";
+import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
@@ -21,7 +21,7 @@ export const BrewsAdd: React.FC = () => {
   const navigate = useNavigate();
 
   const { list: brewsList, isLoading: areBrewsLoading } =
-    useFirestoreList<Brew>("brews", [limit(1)]);
+    useFirestoreList<Brew>("brews", [orderBy("date", "desc"), limit(1)]);
 
   const newBrewRef = useNewRef("brews");
 
