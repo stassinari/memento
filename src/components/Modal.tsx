@@ -1,7 +1,8 @@
+import { css } from "@emotion/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { Fragment, ReactNode } from "react";
-import "twin.macro";
+import tw, { theme } from "twin.macro";
 import { Button } from "./Button";
 
 interface ModalProps {
@@ -31,7 +32,19 @@ export const Modal: React.FC<ModalProps> = ({
         </Transition.Child>
 
         <div tw="fixed inset-0 z-10 overflow-y-auto">
-          <div tw="flex items-end justify-center min-h-full p-4 text-center sm:items-center sm:p-0">
+          <div
+            css={[
+              tw`flex items-end justify-center min-h-full px-4 text-center sm:(items-center p-0)`,
+              css`
+                padding-top: calc(
+                  env(safe-area-inset-top) + ${theme`spacing.4`}
+                );
+                padding-bottom: calc(
+                  env(safe-area-inset-bottom) + ${theme`spacing.4`}
+                );
+              `,
+            ]}
+          >
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"

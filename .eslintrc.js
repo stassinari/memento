@@ -6,6 +6,7 @@ module.exports = {
   },
   extends: [
     "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
     "standard-with-typescript",
     "prettier",
     "plugin:react-hooks/recommended",
@@ -21,5 +22,6 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
     "react/no-unknown-property": ["error", { ignore: ["css", "tw"] }],
+    "react/prop-types": "off",
   },
 };
