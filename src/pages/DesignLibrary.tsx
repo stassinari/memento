@@ -9,7 +9,6 @@ import {
 import { atom } from "jotai";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import "twin.macro";
 import { theme } from "twin.macro";
 import { Badge, BadgePlusIcon, BadgeTimesIcon } from "../components/Badge";
 import { Button } from "../components/Button";
@@ -23,7 +22,12 @@ import {
   InputRadioCards,
   InputRadioCardsOption,
 } from "../components/InputRadioCards";
-import { ExampleDialogContent, Modal } from "../components/Modal";
+import {
+  ExampleDialogContent,
+  Modal,
+  ModalScroll,
+  YetAnotherModal,
+} from "../components/Modal";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
 import { Toggle } from "../components/Toggle";
@@ -106,7 +110,8 @@ export const DesignLibrary = () => {
 
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
-  const [isVeryLongModal, setIsVeryLongModal] = useState(false);
+  const [isVeryLongModalOpen, setIsVeryLongModalOpen] = useState(false);
+  const [yamOpen, setYamOpen] = useState(false);
 
   return (
     <div tw="space-y-8">
@@ -120,6 +125,22 @@ export const DesignLibrary = () => {
             open={isExampleModalOpen}
             handleClose={() => setIsExampleModalOpen(false)}
           >
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
+
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
             <ExampleDialogContent
               handleClose={() => setIsExampleModalOpen(false)}
             />
@@ -137,12 +158,15 @@ export const DesignLibrary = () => {
           </Modal>
         </div>
         <div>
-          <Button variant="primary" onClick={() => setIsVeryLongModal(true)}>
+          <Button
+            variant="primary"
+            onClick={() => setIsVeryLongModalOpen(true)}
+          >
             Open long modal
           </Button>
-          <Modal
-            open={isVeryLongModal}
-            handleClose={() => setIsVeryLongModal(false)}
+          <ModalScroll
+            open={isVeryLongModalOpen}
+            handleClose={() => setIsVeryLongModalOpen(false)}
           >
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
             vel est quis leo cursus euismod. Integer porta eros id risus
@@ -194,7 +218,15 @@ export const DesignLibrary = () => {
             pharetra in sollicitudin ac, sagittis ac metus. Nunc molestie magna
             placerat, rutrum mauris sit amet, faucibus est. Quisque volutpat
             tincidunt turpis, eu laoreet dolor porta quis.
-          </Modal>
+          </ModalScroll>
+        </div>
+        <div>
+          <Button variant="primary" onClick={() => setYamOpen(true)}>
+            Yet another modal
+          </Button>
+          <YetAnotherModal open={yamOpen} handleClose={() => setYamOpen(false)}>
+            This is the basic-est modal
+          </YetAnotherModal>
         </div>
       </div>
       <div>
