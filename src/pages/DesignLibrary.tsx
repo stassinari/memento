@@ -24,9 +24,9 @@ import {
 } from "../components/InputRadioCards";
 import {
   ExampleDialogContent,
+  LoremIpsum,
   Modal,
-  ModalScroll,
-  YetAnotherModal,
+  RadixModal,
 } from "../components/Modal";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
@@ -110,8 +110,6 @@ export const DesignLibrary = () => {
 
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
-  const [isVeryLongModalOpen, setIsVeryLongModalOpen] = useState(false);
-  const [yamOpen, setYamOpen] = useState(false);
 
   return (
     <div tw="space-y-8">
@@ -125,22 +123,6 @@ export const DesignLibrary = () => {
             open={isExampleModalOpen}
             handleClose={() => setIsExampleModalOpen(false)}
           >
-            <ExampleDialogContent
-              handleClose={() => setIsExampleModalOpen(false)}
-            />
-            <ExampleDialogContent
-              handleClose={() => setIsExampleModalOpen(false)}
-            />
-
-            <ExampleDialogContent
-              handleClose={() => setIsExampleModalOpen(false)}
-            />
-            <ExampleDialogContent
-              handleClose={() => setIsExampleModalOpen(false)}
-            />
-            <ExampleDialogContent
-              handleClose={() => setIsExampleModalOpen(false)}
-            />
             <ExampleDialogContent
               handleClose={() => setIsExampleModalOpen(false)}
             />
@@ -158,75 +140,22 @@ export const DesignLibrary = () => {
           </Modal>
         </div>
         <div>
-          <Button
-            variant="primary"
-            onClick={() => setIsVeryLongModalOpen(true)}
+          <RadixModal
+            triggerSlot={
+              <Button variant="primary">Tailwind Radix modal</Button>
+            }
           >
-            Open long modal
-          </Button>
-          <ModalScroll
-            open={isVeryLongModalOpen}
-            handleClose={() => setIsVeryLongModalOpen(false)}
-          >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            vel est quis leo cursus euismod. Integer porta eros id risus
-            fermentum, in sodales dui ultrices. Proin ut augue nec ex bibendum
-            lobortis in non erat. Proin enim lorem, mollis nec tempor sed,
-            iaculis vitae sem. Ut porttitor euismod felis, et finibus sapien
-            efficitur ut. Praesent iaculis, felis ut vulputate consequat, urna
-            augue porta justo, nec malesuada justo magna eget nulla. Nullam
-            tristique metus nibh, at commodo lectus pellentesque eu. Aliquam
-            commodo lorem orci, at efficitur elit semper quis. Nullam eu nibh ac
-            purus venenatis pulvinar eu quis nisi. Donec in egestas lectus, et
-            pulvinar velit. Cras venenatis lectus ac nibh pulvinar, et gravida
-            tortor eleifend. Aliquam erat volutpat. Aenean vitae quam dui.
-            Aliquam sodales nulla ut orci tempus, ut maximus quam elementum.
-            Suspendisse potenti. Fusce tincidunt vel est quis pulvinar.
-            Pellentesque mollis, sapien in scelerisque laoreet, diam nulla
-            blandit urna, eget condimentum lectus velit nec est. Duis sit amet
-            erat semper, mollis leo id, posuere felis. Cras finibus mauris eros,
-            pulvinar finibus ex dictum ut. Suspendisse in ex semper, feugiat
-            arcu a, tincidunt diam. Ut sit amet euismod tellus, a eleifend
-            sapien. In quis odio quam. Maecenas vel auctor est. Suspendisse
-            potenti. Suspendisse quis nisl ut ex laoreet sagittis vitae
-            vestibulum libero. Pellentesque quam diam, condimentum in auctor
-            quis, rhoncus at orci. Pellentesque eget iaculis est, sit amet
-            placerat neque. Nulla neque lorem, tempor et pretium eget, laoreet
-            nec neque. Aliquam id orci ut nibh ultrices porta at id quam. Cras
-            venenatis, nisl non consectetur semper, felis felis scelerisque
-            eros, quis egestas lacus erat a urna. Phasellus ut maximus massa.
-            Nulla lobortis justo quis dolor fermentum, et rutrum nisl
-            ullamcorper. Curabitur a pretium ligula. Quisque condimentum
-            imperdiet erat sed tincidunt. Proin quis ante sit amet libero tempor
-            tempor non nec nunc. Phasellus ut fermentum ex. Suspendisse in
-            varius massa. Donec sed viverra neque. Suspendisse augue ante,
-            lobortis in luctus nec, aliquam in risus. Vestibulum at nulla nunc.
-            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-            posuere cubilia curae; Vestibulum tempus metus quis ex consectetur,
-            quis fringilla ligula dictum. Suspendisse sit amet turpis elementum,
-            rutrum tellus porta, lobortis risus. Sed nec lectus consectetur,
-            consequat magna ut, varius eros. Cras viverra turpis ac turpis
-            consectetur dapibus. Mauris varius ante at erat condimentum, ut
-            rutrum tortor accumsan. Nullam vitae neque non purus mollis semper
-            vitae non nunc. Donec non velit ut dolor pulvinar ornare vel eu
-            erat. Nulla aliquet eleifend libero sit amet posuere. Aliquam nunc
-            libero, tempor quis nulla in, blandit faucibus neque. Nunc quis
-            metus eu metus tristique euismod. Aenean ultrices volutpat nunc, et
-            tincidunt nisi ornare et. Nullam vestibulum sagittis semper.
-            Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras
-            consectetur magna ac nunc interdum rhoncus. Fusce turpis massa,
-            pharetra in sollicitudin ac, sagittis ac metus. Nunc molestie magna
-            placerat, rutrum mauris sit amet, faucibus est. Quisque volutpat
-            tincidunt turpis, eu laoreet dolor porta quis.
-          </ModalScroll>
+            <ExampleDialogContent
+              handleClose={() => setIsExampleModalOpen(false)}
+            />
+          </RadixModal>
         </div>
         <div>
-          <Button variant="primary" onClick={() => setYamOpen(true)}>
-            Yet another modal
-          </Button>
-          <YetAnotherModal open={yamOpen} handleClose={() => setYamOpen(false)}>
-            This is the basic-est modal
-          </YetAnotherModal>
+          <RadixModal
+            triggerSlot={<Button variant="primary">Long Radix modal</Button>}
+          >
+            <LoremIpsum />
+          </RadixModal>
         </div>
       </div>
       <div>
