@@ -69,18 +69,32 @@ export const Modal: React.FC<ModalProps> = ({
 interface RadixProps {
   triggerSlot: ReactNode;
   children: ReactNode;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
-export const RadixModal: React.FC<RadixProps> = ({ children, triggerSlot }) => {
+export const RadixModal: React.FC<RadixProps> = ({
+  children,
+  triggerSlot,
+  open,
+  setOpen,
+}) => {
+  console.log(theme``);
   return (
-    <RadixDialog.Root>
+    <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>{triggerSlot}</RadixDialog.Trigger>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay tw="fixed inset-0 z-10 grid overflow-y-auto place-items-end bg-gray-500/75 sm:place-items-center">
+        <RadixDialog.Overlay tw="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 sm:place-items-center">
           <RadixDialog.Content
             css={[
-              tw`p-4 mx-4 text-center bg-white rounded`,
+              tw`p-4 mx-4 bg-white rounded`,
               css`
+                /* will probably need to be smarter about widths */
+                width: calc(100vw - ${theme`spacing.8`});
+                @media (min-width: ${theme`screens.sm`}) {
+                  width: auto;
+                  max-width: 512px;
+                }
                 margin-top: calc(
                   env(safe-area-inset-top) + ${theme`spacing.4`}
                 );

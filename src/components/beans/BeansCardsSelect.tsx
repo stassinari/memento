@@ -6,7 +6,7 @@ import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "../../util";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
-import { Modal } from "../Modal";
+import { RadixModal } from "../Modal";
 import { Toggle } from "../Toggle";
 
 const toBeansFormValue = (beans: Beans) => `beans/${beans.id ?? ""}`;
@@ -85,17 +85,23 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
         error={formState.errors.beans?.message?.toString()}
       />
 
-      {showMore && (
-        <button
-          type="button"
-          tw="mt-2 text-sm font-medium text-orange-500 hover:underline"
-          onClick={() => setIsModalOpen(true)}
-        >
-          More...
-        </button>
-      )}
-
-      <Modal open={isModalOpen} handleClose={() => setIsModalOpen(false)}>
+      <RadixModal
+        triggerSlot={
+          <>
+            {showMore && (
+              <button
+                type="button"
+                tw="mt-2 text-sm font-medium text-orange-500 hover:underline"
+                onClick={() => setIsModalOpen(true)}
+              >
+                More...
+              </button>
+            )}
+          </>
+        }
+        open={isModalOpen}
+        setOpen={setIsModalOpen}
+      >
         <div tw="w-full space-y-5">
           <div>
             <span css={labelStyles}>Filters</span>
@@ -123,7 +129,7 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
             }}
           />
         </div>
-      </Modal>
+      </RadixModal>
     </div>
   );
 };

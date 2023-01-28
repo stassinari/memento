@@ -10,7 +10,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import "twin.macro";
 import tw, { theme } from "twin.macro";
 import { useActiveRoute } from "../hooks/useActiveRoute";
 

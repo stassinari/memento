@@ -111,6 +111,9 @@ export const DesignLibrary = () => {
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
 
+  const [isTwRadixModalOpen, setIsTwRadixModalOpen] = useState(false);
+  const [isLongRadixModalOpen, setIsLongRadixModalOpen] = useState(false);
+
   return (
     <div tw="space-y-8">
       <div>
@@ -144,6 +147,8 @@ export const DesignLibrary = () => {
             triggerSlot={
               <Button variant="primary">Tailwind Radix modal</Button>
             }
+            open={isTwRadixModalOpen}
+            setOpen={setIsTwRadixModalOpen}
           >
             <ExampleDialogContent
               handleClose={() => setIsExampleModalOpen(false)}
@@ -153,6 +158,8 @@ export const DesignLibrary = () => {
         <div>
           <RadixModal
             triggerSlot={<Button variant="primary">Long Radix modal</Button>}
+            open={isLongRadixModalOpen}
+            setOpen={setIsLongRadixModalOpen}
           >
             <LoremIpsum />
           </RadixModal>
