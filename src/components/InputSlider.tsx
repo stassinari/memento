@@ -1,6 +1,5 @@
 import React from "react";
 import { getTrackBackground, Range } from "react-range";
-import "twin.macro";
 import tw, { theme } from "twin.macro";
 
 export interface InputSliderProps {
@@ -22,6 +21,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
   overrideLabels,
   hideThumbMarker = false,
 }) => {
+  console.log({ min, max, step, values, onChange, overrideLabels });
   return (
     <div tw="mx-2">
       <Range
@@ -37,10 +37,10 @@ export const InputSlider: React.FC<InputSliderProps> = ({
             style={{
               ...props.style,
               background: getTrackBackground({
-                values: values,
+                values,
                 colors: [theme`colors.orange.500`, theme`colors.gray.200`],
-                min: min,
-                max: max,
+                min,
+                max,
               }),
             }}
           >

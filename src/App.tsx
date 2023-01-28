@@ -8,7 +8,8 @@ import { useInitUser } from "./hooks/useInitUser";
 import { BeansClone } from "./pages/beans/BeansClone";
 import { BeansEdit } from "./pages/beans/BeansEdit";
 import { BrewClone } from "./pages/brews/BrewClone";
-import { BrewEdit } from "./pages/brews/BrewEdit";
+import { BrewEditDetails } from "./pages/brews/BrewEditDetails";
+import { BrewEditOutcome } from "./pages/brews/BrewEditOutcome";
 // import { BeansAdd } from "./pages/BeansAdd";
 // import { BeansDetails } from "./pages/BeansDetails";
 // import { BeansList } from "./pages/BeansList";
@@ -50,6 +51,8 @@ export const App = () => {
           <Route path="/" element={<Layout />}>
             <Route element={<RequireAuth />}>
               <Route path="/" element={<Homepage />} />
+
+              {/* Beans */}
               <Route path="beans" element={<BeansList />} />
               <Route path="beans/add" element={<BeansAdd />} />
               <Route path="beans/:beansId" element={<BeansDetails />} />
@@ -58,10 +61,18 @@ export const App = () => {
 
               <Route path="drinks" element={<DrinksPage />} />
 
+              {/* Brews */}
               <Route path="drinks/brews" element={<BrewsList />} />
               <Route path="drinks/brews/add" element={<BrewsAdd />} />
               <Route path="drinks/brews/:brewId" element={<BrewDetails />} />
-              <Route path="drinks/brews/:brewId/edit" element={<BrewEdit />} />
+              <Route
+                path="drinks/brews/:brewId/edit"
+                element={<BrewEditDetails />}
+              />
+              <Route
+                path="drinks/brews/:brewId/outcome"
+                element={<BrewEditOutcome />}
+              />
               <Route
                 path="drinks/brews/:brewId/clone"
                 element={<BrewClone />}

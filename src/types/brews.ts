@@ -24,10 +24,18 @@ export interface BrewPrep {
 }
 
 export interface BrewOutcome {
-  // rating: number;
-  // notes: string;
-  // tastingScores: TastingScores;
-  // tds?: number;
-  // finalBrewWeight?: number;
-  // extractionType?: string; // "percolation" | "immersion"
+  rating: number;
+  notes: string;
+  tastingScores: TastingScores;
+  tds?: number;
+  finalBrewWeight?: number;
+  extractionType?: string; // "percolation" | "immersion"
+}
+
+export interface TastingScores {
+  aroma: number;
+  acidity: number;
+  sweetness: number;
+  body: number;
+  finish: number;
 }

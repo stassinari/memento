@@ -1,6 +1,7 @@
 import {
   DocumentDuplicateIcon,
   PencilSquareIcon,
+  SparklesIcon,
 } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -78,7 +79,10 @@ export const BrewDetails = () => {
           Clone
         </Button>
         <Button variant="white" as={Link} to="edit" Icon={<PencilSquareIcon />}>
-          Edit
+          Edit details
+        </Button>
+        <Button variant="white" as={Link} to="outcome" Icon={<SparklesIcon />}>
+          Edit outcome
         </Button>
         {/* <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
             Delete

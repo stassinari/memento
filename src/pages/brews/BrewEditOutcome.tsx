@@ -1,13 +1,16 @@
 import { doc, setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BrewForm, BrewFormInputs } from "../../components/brews/BrewForm";
+import "twin.macro";
+import { BrewFormInputs } from "../../components/brews/BrewForm";
+import { BrewOutcomeForm } from "../../components/brews/BrewOutcomeForm";
 import { db } from "../../firebaseConfig";
 import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { Brew } from "../../types/brews";
 import { brewToFirestore } from "./BrewsAdd";
 
-export const BrewEdit = () => {
+export const BrewEditOutcome: React.FC = () => {
   const user = useCurrentUser();
   const { brewId } = useParams();
 
@@ -41,11 +44,18 @@ export const BrewEdit = () => {
   };
 
   return (
-    <BrewForm
-      defaultValues={fromFirestore}
-      title="Edit brew"
-      buttonLabel="Edit"
-      mutation={editBrew}
-    />
+    // <BrewForm
+    //   defaultValues={fromFirestore}
+    //   title="Edit brew details"
+    //   buttonLabel="Edit"
+    //   mutation={editBrew}
+    // />
+    <>
+      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">
+        Edit brew outcome
+      </h1>
+
+      <BrewOutcomeForm />
+    </>
   );
 };

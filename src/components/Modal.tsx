@@ -79,7 +79,6 @@ export const RadixModal: React.FC<RadixProps> = ({
   open,
   setOpen,
 }) => {
-  console.log(theme``);
   return (
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>{triggerSlot}</RadixDialog.Trigger>
