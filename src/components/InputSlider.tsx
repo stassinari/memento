@@ -21,7 +21,6 @@ export const InputSlider: React.FC<InputSliderProps> = ({
   overrideLabels,
   hideThumbMarker = false,
 }) => {
-  console.log({ min, max, step, values, onChange, overrideLabels });
   return (
     <div tw="mx-2">
       <Range
@@ -73,7 +72,12 @@ export const InputSlider: React.FC<InputSliderProps> = ({
           </div>
         )}
         renderMark={({ props, index }) => {
-          if (index === 0 || index === max) return null;
+          // remove first and last mark
+          if (index === 0 || index === max / step) return null;
+
+          // remove non-int marks if step is < 1
+          // NOTE only works for 0.5 step for now
+          if (step < 1 && index % 2 === 1) return null;
           return (
             <div {...props} tw="top-0 w-0.5 h-1 rounded-full bg-gray-50" />
           );

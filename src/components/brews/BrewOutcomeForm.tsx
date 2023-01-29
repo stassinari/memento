@@ -1,6 +1,8 @@
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import "twin.macro";
-import { TastingScores } from "../../types/brews";
+import { Brew, TastingScores } from "../../types/brews";
+import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { FormInputSlider } from "../form/FormInputSlider";
 
@@ -22,12 +24,14 @@ const brewOutcomeFormEmptyValues: BrewOutcomeInputs = {
   extractionType: null,
 };
 
-export const BrewOutcomeForm = () => {
+interface BrewOutcomeFormProps {
+  brew: Brew;
+}
+
+export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({ brew }) => {
   const methods = useForm<BrewOutcomeInputs>({
     defaultValues: brewOutcomeFormEmptyValues,
   });
-
-  console.log(brewOutcomeFormEmptyValues);
 
   const {
     handleSubmit,
@@ -57,6 +61,25 @@ export const BrewOutcomeForm = () => {
             // hideThumbMarker={true}
           />
         </FormSection>
+
+        <div className="flex justify-end gap-4">
+          <Button
+            variant="white"
+            type="button"
+            as={Link}
+            to={`/drinks/brews/${brew.id}`}
+          >
+            Back
+          </Button>
+          <Button
+            variant="primary"
+            type="submit"
+            colour="accent"
+            // disabled={mutation.isLoading} FIXME disabled buttons after first click
+          >
+            Rate
+          </Button>
+        </div>
       </form>
     </FormProvider>
   );

@@ -52,7 +52,7 @@ export const BrewEditOutcome: React.FC = () => {
         Edit brew outcome
       </h1>
 
-      <BrewOutcomeForm />
+      <BrewOutcomeForm brew={brew} />
     </>
   );
 };

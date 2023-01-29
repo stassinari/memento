@@ -75,7 +75,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewsList={brewsList}
-          beansList={beansList} // TODO don't show frozen by default give ability to select frozen via toggle
+          beansList={beansList}
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {
             setBrewFormInputs({ ...brewFormInputs, ...data });

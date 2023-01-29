@@ -44,7 +44,8 @@ export const useFirestoreCollection = <T,>(
       setIsLoading(false);
     });
     return () => unsubscribe();
-  }, [query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { list, isLoading };
 };
