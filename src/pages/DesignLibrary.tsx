@@ -30,6 +30,7 @@ import {
 } from "../components/Modal";
 import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
+import { Textarea } from "../components/Textarea";
 import { Toggle } from "../components/Toggle";
 
 const people = [
@@ -236,6 +237,9 @@ export const DesignLibrary = () => {
           }
           onChange={(values: any[]) => setMultiValues(values)}
         />
+      </div>
+      <div>
+        <Textarea />
       </div>
       <div>
         Toast notifications

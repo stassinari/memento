@@ -2,7 +2,6 @@ import { orderBy } from "firebase/firestore";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import "twin.macro";
 import { theme } from "twin.macro";
 import countries from "../../data/countries";
 import { processes } from "../../data/processes";

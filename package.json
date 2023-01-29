@@ -23,6 +23,7 @@
     "react-polymorphic-box": "^3.0.3",
     "react-range": "^1.8.14",
     "react-router-dom": "^6.3.0",
+    "react-textarea-autosize": "^8.4.0",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
