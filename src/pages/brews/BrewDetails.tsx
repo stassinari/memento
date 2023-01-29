@@ -8,7 +8,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
-import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Brew } from "../../types/brews";
 import { NotFound } from "../NotFound";
 
@@ -20,7 +20,7 @@ export const BrewDetails = () => {
     details: brew,
     isLoading,
     docRef,
-  } = useFirestoreDetails<Brew>("brews", brewId);
+  } = useFirestoreDoc<Brew>("brews", brewId);
 
   // const handleArchive = async () => {
   //   await updateDoc(docRef, {

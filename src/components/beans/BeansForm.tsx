@@ -8,7 +8,7 @@ import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
 import { varietals } from "../../data/varietals";
-import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
+import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { Beans, BeansBlendPart, RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
@@ -100,9 +100,10 @@ export const BeansForm: React.FC<BeansFormProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { list: beansList, isLoading } = useFirestoreList<Beans>("beans", [
-    orderBy("roastDate", "desc"),
-  ]);
+  const { list: beansList, isLoading } = useFirestoreCollection<Beans>(
+    "beans",
+    [orderBy("roastDate", "desc")]
+  );
 
   const isSm = useMediaQuery(`(min-width: ${theme`screens.sm`})`);
 

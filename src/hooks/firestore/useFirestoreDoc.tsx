@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
-interface UseFirestoreDetailsReturn<T> {
+interface UseFirestoreDocReturn<T> {
   details: T | null;
   isLoading: boolean;
   docRef: DocumentReference<T>;
 }
 
-export const useFirestoreDetails = <T,>(
+export const useFirestoreDoc = <T,>(
   type: "brews" | "beans",
   id?: string
-): UseFirestoreDetailsReturn<T> => {
+): UseFirestoreDocReturn<T> => {
   const user = useCurrentUser();
 
   const [details, setDetails] = useState<T | null>(null);
@@ -22,7 +22,7 @@ export const useFirestoreDetails = <T,>(
     "users",
     user?.uid || "",
     type,
-    id || ""
+    id ?? ""
   ) as DocumentReference<T>;
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useFirestoreDetails = <T,>(
       setIsLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [docRef]);
 
   return { details, isLoading, docRef };
 };

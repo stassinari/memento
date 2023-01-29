@@ -5,7 +5,7 @@ import {
   brewFormEmptyValues,
   BrewFormInputs,
 } from "../../components/brews/BrewForm";
-import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Brew } from "../../types/brews";
 import { brewToFirestore } from "./BrewsAdd";
@@ -14,7 +14,7 @@ export const BrewClone = () => {
   const { brewId } = useParams();
   const navigate = useNavigate();
 
-  const { details: brew } = useFirestoreDetails<Brew>("brews", brewId);
+  const { details: brew } = useFirestoreDoc<Brew>("brews", brewId);
 
   const newBrewRef = useNewRef("brews");
 

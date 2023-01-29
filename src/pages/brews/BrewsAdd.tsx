@@ -8,7 +8,7 @@ import {
   BrewFormInputs,
 } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreList } from "../../hooks/firestore/useFirestoreList";
+import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Brew } from "../../types/brews";
 
@@ -21,7 +21,7 @@ export const BrewsAdd: React.FC = () => {
   const navigate = useNavigate();
 
   const { list: brewsList, isLoading: areBrewsLoading } =
-    useFirestoreList<Brew>("brews", [orderBy("date", "desc"), limit(1)]);
+    useFirestoreCollection<Brew>("brews", [orderBy("date", "desc"), limit(1)]);
 
   const newBrewRef = useNewRef("brews");
 

@@ -3,7 +3,7 @@ import { QueryConstraint } from "firebase/firestore";
 import { Fragment, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "twin.macro";
-import { useFirestoreList } from "../../../hooks/firestore/useFirestoreList";
+import { useFirestoreCollection } from "../../../hooks/firestore/useFirestoreCollection";
 import { Beans } from "../../../types/beans";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "../../../util";
 
@@ -19,7 +19,7 @@ export const BeansTab: React.FC<BeansTabProps> = ({
   removeFrozen,
   EmptyState,
 }) => {
-  const { list: beansList, isLoading } = useFirestoreList<Beans>(
+  const { list: beansList, isLoading } = useFirestoreCollection<Beans>(
     "beans",
     filters
   );

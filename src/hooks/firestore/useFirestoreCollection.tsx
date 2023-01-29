@@ -9,15 +9,15 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
-interface UseFirestoreListResult<T> {
+interface UseFirestoreCollectionResult<T> {
   list: T[];
   isLoading: boolean;
 }
 
-export const useFirestoreList = <T,>(
+export const useFirestoreCollection = <T,>(
   type: "brews" | "beans",
   filters: QueryConstraint[] = []
-): UseFirestoreListResult<T> => {
+): UseFirestoreCollectionResult<T> => {
   const user = useCurrentUser();
 
   const [list, setList] = useState<T[]>([]);
@@ -34,7 +34,7 @@ export const useFirestoreList = <T,>(
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query, (querySnap) => {
-      let tempList: T[] = [];
+      const tempList: T[] = [];
 
       querySnap.forEach((doc) => {
         tempList.push({ id: doc.id, ...doc.data() });
@@ -44,7 +44,7 @@ export const useFirestoreList = <T,>(
       setIsLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [query]);
 
   return { list, isLoading };
 };

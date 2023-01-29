@@ -1,7 +1,7 @@
 import { setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
-import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Beans } from "../../types/beans";
 
@@ -10,7 +10,7 @@ export const BeansClone = () => {
 
   const navigate = useNavigate();
 
-  const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
+  const { details: beans } = useFirestoreDoc<Beans>("beans", beansId);
 
   const newBeansRef = useNewRef("beans");
 

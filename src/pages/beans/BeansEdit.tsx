@@ -2,7 +2,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreDetails } from "../../hooks/firestore/useFirestoreDetails";
+import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { Beans } from "../../types/beans";
 
@@ -12,7 +12,7 @@ export const BeansEdit = () => {
 
   const navigate = useNavigate();
 
-  const { details: beans } = useFirestoreDetails<Beans>("beans", beansId);
+  const { details: beans } = useFirestoreDoc<Beans>("beans", beansId);
 
   if (!user) throw new Error("User is not logged in.");
   const existingBeansRef = doc(db, "users", user.uid, "beans", beansId || "");
