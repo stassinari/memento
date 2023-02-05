@@ -83,6 +83,53 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({ brew }) => {
           />
         </FormSection>
 
+        <FormSection
+          title="Tasting notes"
+          subtitle="(Optional) More granular tasting notes."
+        >
+          {/* 
+          aroma
+          acidity
+          sweetness
+          body
+          finish */}
+          <FormInputSlider
+            label="Aroma"
+            id="tastingScores.aroma"
+            min={0}
+            max={10}
+            step={1}
+          />
+          <FormInputSlider
+            label="Acidity"
+            id="tastingScores.acidity"
+            min={0}
+            max={10}
+            step={1}
+          />
+          <FormInputSlider
+            label="Sweetness"
+            id="tastingScores.sweetness"
+            min={0}
+            max={10}
+            step={1}
+          />
+          <FormInputSlider
+            label="Body"
+            id="tastingScores.body"
+            min={0}
+            max={10}
+            step={1}
+          />
+          <FormInputSlider
+            label="Finish"
+            id="tastingScores.finish"
+            min={0}
+            max={10}
+            step={1}
+          />
+        </FormSection>
+
         <div className="flex justify-end gap-4">
           <Button
             variant="white"
