@@ -1,20 +1,16 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "twin.macro";
-import { BrewFormInputs } from "../../components/brews/BrewForm";
 import { BrewOutcomeForm } from "../../components/brews/BrewOutcomeForm";
 import { db } from "../../firebaseConfig";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { Brew } from "../../types/brews";
-import { brewToFirestore } from "./BrewsAdd";
 
 export const BrewEditOutcome: React.FC = () => {
   const user = useCurrentUser();
   const { brewId } = useParams();
-
-  const navigate = useNavigate();
 
   const { details: brew, isLoading } = useFirestoreDoc<Brew>("brews", brewId);
 
@@ -26,33 +22,15 @@ export const BrewEditOutcome: React.FC = () => {
     throw new Error("Brew does not exist.");
   }
 
-  const existingBrewRef = doc(db, "users", user.uid, "brews", brewId);
-
-  const editBrew = async (data: BrewFormInputs) => {
-    await setDoc(existingBrewRef, brewToFirestore(data));
-    navigate(`/drinks/brews/${brewId}`);
-  };
-
-  // TODO find an automated way to do this
-  const fromFirestore: BrewFormInputs = {
-    ...brew,
-    date: brew.date.toDate(),
-    beans: brew.beans.path,
-  };
+  const brewRef = doc(db, "users", user.uid, "brews", brewId);
 
   return (
-    // <BrewForm
-    //   defaultValues={fromFirestore}
-    //   title="Edit brew details"
-    //   buttonLabel="Edit"
-    //   mutation={editBrew}
-    // />
     <>
       <h1 tw="text-3xl font-bold tracking-tight text-gray-900">
         Edit brew outcome
       </h1>
 
-      <BrewOutcomeForm brew={brew} />
+      <BrewOutcomeForm brew={brew} brewRef={brewRef} />
     </>
   );
 };

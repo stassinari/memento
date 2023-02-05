@@ -1,17 +1,26 @@
+import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "twin.macro";
-import { Brew, TastingScores } from "../../types/brews";
+import { Brew } from "../../types/brews";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { FormTextarea } from "../form/FormTextarea";
 
+interface TastingScoresInputs {
+  aroma: number | null;
+  acidity: number | null;
+  sweetness: number | null;
+  body: number | null;
+  finish: number | null;
+}
+
 interface BrewOutcomeInputs {
   rating: number | null;
   notes: string | null;
-  tastingScores: TastingScores | null;
+  tastingScores: TastingScoresInputs;
   tds: number | null;
   finalBrewWeight: number | null;
   extractionType: string | null; // "percolation" | "immersion"
@@ -21,29 +30,39 @@ const brewOutcomeFormEmptyValues: BrewOutcomeInputs = {
   rating: null,
   notes: null,
   tds: null,
-  tastingScores: null,
+  tastingScores: {
+    acidity: null,
+    aroma: null,
+    sweetness: null,
+    body: null,
+    finish: null,
+  },
   finalBrewWeight: null,
   extractionType: null,
 };
 
 interface BrewOutcomeFormProps {
   brew: Brew;
+  brewRef: DocumentReference<DocumentData>;
 }
 
-export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({ brew }) => {
+export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
+  brew,
+  brewRef,
+}) => {
+  const navigate = useNavigate();
+
   const methods = useForm<BrewOutcomeInputs>({
     defaultValues: brewOutcomeFormEmptyValues,
   });
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-  } = methods;
+  const { handleSubmit, register } = methods;
 
   const onSubmit: SubmitHandler<BrewOutcomeInputs> = async (data) => {
-    // handleNestedSubmit(data);
-    console.log(data);
+    if (brew.id) {
+      await updateDoc(brewRef, { ...data });
+      navigate(`/drinks/brews/${brew.id}`);
+    }
   };
 
   return (
@@ -135,7 +154,7 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({ brew }) => {
             variant="white"
             type="button"
             as={Link}
-            to={`/drinks/brews/${brew.id}`}
+            to={`/drinks/brews/${brew.id ?? ""}`}
           >
             Back
           </Button>
