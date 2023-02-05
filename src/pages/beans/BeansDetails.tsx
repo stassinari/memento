@@ -57,7 +57,7 @@ export const BeansDetails = () => {
 
   const handleDelete = async () => {
     // TODO check if beans have brews/espressos/tastings
-    deleteDoc(docRef);
+    await deleteDoc(docRef);
     navigate(`/beans`);
   };
 
@@ -74,7 +74,7 @@ export const BeansDetails = () => {
           Beans with id {beansId}
         </h3>
         <p tw="max-w-2xl mt-1 text-sm text-gray-500">
-          Subtitle in case it's needed.
+          Subtitle in case it is needed.
         </p>
       </div>
       <div tw="space-x-2">
@@ -131,8 +131,8 @@ export const BeansDetails = () => {
               ? dayjs(beans.roastDate.toDate()).format("DD MMM YYYY")
               : "",
           },
-          { label: "Roast style", value: beans.roastStyle || "" },
-          { label: "Roast level", value: beans.roastLevel?.toString() || "" },
+          { label: "Roast style", value: beans.roastStyle ?? "" },
+          { label: "Roast level", value: beans.roastLevel?.toString() ?? "" },
           { label: "Roasting notes", value: beans.roastingNotes.join(", ") },
         ]}
       />
@@ -159,14 +159,14 @@ export const BeansDetails = () => {
         <Details
           title="Single-origin terroir"
           rows={[
-            { label: "Country", value: beans.country || "" },
-            { label: "Region", value: beans.region || "" },
-            { label: "Farmer", value: beans.farmer || "" },
+            { label: "Country", value: beans.country ?? "" },
+            { label: "Region", value: beans.region ?? "" },
+            { label: "Farmer", value: beans.farmer ?? "" },
             {
               label: "Altitude",
               value: beans.altitude ? `${beans.altitude} masl` : "",
             },
-            { label: "Process", value: beans.process || "" },
+            { label: "Process", value: beans.process ?? "" },
             { label: "Varietal(s)", value: beans.varietals.join(", ") },
             {
               label: "Harvest date",
@@ -183,13 +183,13 @@ export const BeansDetails = () => {
               key={i}
               title={`Blend item ${i + 1}`}
               rows={[
-                { label: "Name", value: b.name || "" },
+                { label: "Name", value: b.name ?? "" },
                 {
                   label: "Percentage",
                   value: b.percentage ? `${b.percentage} %` : "",
                 },
-                { label: "Country", value: b.country || "" },
-                { label: "Process", value: b.process || "" },
+                { label: "Country", value: b.country ?? "" },
+                { label: "Process", value: b.process ?? "" },
                 { label: "Varietal(s)", value: b.varietals.join(", ") },
               ]}
             />

@@ -3,7 +3,9 @@ import {
   PencilSquareIcon,
   SparklesIcon,
 } from "@heroicons/react/20/solid";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
+import { deleteDoc } from "firebase/firestore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
@@ -22,36 +24,10 @@ export const BrewDetails = () => {
     docRef,
   } = useFirestoreDoc<Brew>("brews", brewId);
 
-  // const handleArchive = async () => {
-  //   await updateDoc(docRef, {
-  //     isFinished: true,
-  //   });
-  //   navigate(`/beans`);
-  // };
-
-  // const handleUnarchive = async () => {
-  //   await updateDoc(docRef, {
-  //     isFinished: false,
-  //   });
-  // };
-
-  // const handleFreeze = async () => {
-  //   await updateDoc(docRef, {
-  //     freezeDate: serverTimestamp(),
-  //   });
-  // };
-
-  // const handleThaw = async () => {
-  //   await updateDoc(docRef, {
-  //     thawDate: serverTimestamp(),
-  //   });
-  // };
-
-  // const handleDelete = async () => {
-  //   // TODO check if beans have brews/espressos/tastings
-  //   deleteDoc(docRef);
-  //   navigate(`/beans`);
-  // };
+  const handleDelete = async () => {
+    await deleteDoc(docRef);
+    navigate(`/drinks/brews`);
+  };
 
   if (isLoading) return null;
 
@@ -66,7 +42,7 @@ export const BrewDetails = () => {
           Brew with id {brewId}
         </h3>
         <p tw="max-w-2xl mt-1 text-sm text-gray-500">
-          Subtitle in case it's needed.
+          Subtitle in case it is needed.
         </p>
       </div>
       <div tw="space-x-2">
@@ -84,10 +60,58 @@ export const BrewDetails = () => {
         <Button variant="white" as={Link} to="outcome" Icon={<SparklesIcon />}>
           Edit outcome
         </Button>
-        {/* <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
-            Delete
-          </Button> */}
+        <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
+          Delete
+        </Button>
       </div>
+
+      <Details
+        title="Rating"
+        rows={[
+          {
+            label: "Overall score",
+            value: brew.rating ? `${brew.rating}/10` : "",
+          },
+          // FIXME make Markdown beautiful
+          { label: "Notes", value: brew.notes ?? "" },
+        ]}
+      />
+
+      <Details
+        title="Tasting scores"
+        rows={[
+          {
+            label: "Aroma",
+            value: brew.tastingScores.aroma
+              ? `${brew.tastingScores.aroma}/10`
+              : "",
+          },
+          {
+            label: "Acidity",
+            value: brew.tastingScores.acidity
+              ? `${brew.tastingScores.acidity}/10`
+              : "",
+          },
+          {
+            label: "Sweetness",
+            value: brew.tastingScores.sweetness
+              ? `${brew.tastingScores.sweetness}/10`
+              : "",
+          },
+          {
+            label: "Body",
+            value: brew.tastingScores.body
+              ? `${brew.tastingScores.body}/10`
+              : "",
+          },
+          {
+            label: "Finish",
+            value: brew.tastingScores.finish
+              ? `${brew.tastingScores.finish}/10`
+              : "",
+          },
+        ]}
+      />
 
       <Details
         title="Prep"
@@ -106,10 +130,10 @@ export const BrewDetails = () => {
       <Details
         title="Equipment"
         rows={[
-          { label: "Grinder", value: brew.grinder || "" },
-          { label: "Burrs", value: brew.grinderBurrs || "" },
-          { label: "Water type", value: brew.waterType || "" },
-          { label: "Filter type", value: brew.filterType || "" },
+          { label: "Grinder", value: brew.grinder ?? "" },
+          { label: "Burrs", value: brew.grinderBurrs ?? "" },
+          { label: "Water type", value: brew.waterType ?? "" },
+          { label: "Filter type", value: brew.filterType ?? "" },
         ]}
       />
 
@@ -128,7 +152,7 @@ export const BrewDetails = () => {
             label: "Water temperature",
             value: brew.waterTemperature ? `${brew.waterTemperature} °C` : "",
           },
-          { label: "Grind setting", value: brew.grindSetting || "" },
+          { label: "Grind setting", value: brew.grindSetting ?? "" },
         ]}
       />
 
@@ -139,7 +163,7 @@ export const BrewDetails = () => {
             label: "Time",
             value:
               brew.timeMinutes || brew.timeSeconds
-                ? `${brew.timeMinutes}:${brew.timeSeconds}`
+                ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
                 : "",
           },
         ]}

@@ -24,8 +24,8 @@ export interface BrewPrep {
 }
 
 export interface BrewOutcome {
-  rating: number;
-  notes: string;
+  rating: number | null;
+  notes: string | null;
   tastingScores: TastingScores;
   tds?: number;
   finalBrewWeight?: number;
@@ -33,9 +33,9 @@ export interface BrewOutcome {
 }
 
 export interface TastingScores {
-  aroma: number;
-  acidity: number;
-  sweetness: number;
-  body: number;
-  finish: number;
+  aroma: number | null;
+  acidity: number | null;
+  sweetness: number | null;
+  body: number | null;
+  finish: number | null;
 }
