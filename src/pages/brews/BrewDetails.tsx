@@ -82,31 +82,31 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Aroma",
-            value: brew.tastingScores.aroma
+            value: brew.tastingScores?.aroma
               ? `${brew.tastingScores.aroma}/10`
               : "",
           },
           {
             label: "Acidity",
-            value: brew.tastingScores.acidity
+            value: brew.tastingScores?.acidity
               ? `${brew.tastingScores.acidity}/10`
               : "",
           },
           {
             label: "Sweetness",
-            value: brew.tastingScores.sweetness
+            value: brew.tastingScores?.sweetness
               ? `${brew.tastingScores.sweetness}/10`
               : "",
           },
           {
             label: "Body",
-            value: brew.tastingScores.body
+            value: brew.tastingScores?.body
               ? `${brew.tastingScores.body}/10`
               : "",
           },
           {
             label: "Finish",
-            value: brew.tastingScores.finish
+            value: brew.tastingScores?.finish
               ? `${brew.tastingScores.finish}/10`
               : "",
           },

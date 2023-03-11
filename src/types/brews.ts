@@ -2,6 +2,8 @@ import { DocumentReference, Timestamp } from "firebase/firestore";
 
 export type Brew = BrewPrep & BrewOutcome;
 
+export type ExtractionType = "percolation" | "immersion";
+
 export interface BrewPrep {
   id?: string;
 
@@ -26,10 +28,10 @@ export interface BrewPrep {
 export interface BrewOutcome {
   rating: number | null;
   notes: string | null;
-  tastingScores: TastingScores;
-  tds?: number;
-  finalBrewWeight?: number;
-  extractionType?: string; // "percolation" | "immersion"
+  tastingScores: TastingScores | null;
+  tds: number | null;
+  finalBrewWeight: number | null;
+  extractionType: ExtractionType | null;
 }
 
 export interface TastingScores {

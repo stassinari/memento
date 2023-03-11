@@ -1,11 +1,14 @@
 import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
+import { pick } from "lodash";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import "twin.macro";
-import { Brew } from "../../types/brews";
+import { Brew, ExtractionType } from "../../types/brews";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
+import { FormInput } from "../form/FormInput";
+import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { FormTextarea } from "../form/FormTextarea";
 
@@ -20,10 +23,10 @@ interface TastingScoresInputs {
 interface BrewOutcomeInputs {
   rating: number | null;
   notes: string | null;
-  tastingScores: TastingScoresInputs;
+  tastingScores: TastingScoresInputs | null;
   tds: number | null;
   finalBrewWeight: number | null;
-  extractionType: string | null; // "percolation" | "immersion"
+  extractionType: ExtractionType | null;
 }
 
 const brewOutcomeFormEmptyValues: BrewOutcomeInputs = {
@@ -38,7 +41,7 @@ const brewOutcomeFormEmptyValues: BrewOutcomeInputs = {
     finish: null,
   },
   finalBrewWeight: null,
-  extractionType: null,
+  extractionType: "percolation",
 };
 
 interface BrewOutcomeFormProps {
@@ -53,10 +56,24 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
   const navigate = useNavigate();
 
   const methods = useForm<BrewOutcomeInputs>({
-    defaultValues: brewOutcomeFormEmptyValues,
+    defaultValues: {
+      ...brewOutcomeFormEmptyValues,
+      ...pick(brew, [
+        "rating",
+        "notes",
+        "tastingScores",
+        "tds",
+        "finalBrewWeight",
+        "extractionType",
+      ]),
+    },
   });
 
-  const { handleSubmit, register } = methods;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = methods;
 
   const onSubmit: SubmitHandler<BrewOutcomeInputs> = async (data) => {
     if (brew.id) {
@@ -106,12 +123,6 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
           title="Tasting notes"
           subtitle="(Optional) More granular tasting notes."
         >
-          {/* 
-          aroma
-          acidity
-          sweetness
-          body
-          finish */}
           <FormInputSlider
             label="Aroma"
             id="tastingScores.aroma"
@@ -146,6 +157,57 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
             min={0}
             max={10}
             step={1}
+          />
+        </FormSection>
+
+        <FormSection
+          title="Extraction"
+          subtitle="(Optional) Find out the TDS of you brew."
+        >
+          <FormInputRadioButtonGroup
+            label="Extraction type"
+            name="extractionType"
+            options={[
+              { label: "Percolation", value: "percolation" },
+              { label: "Immersion", value: "immersion" },
+            ]}
+            variant="secondary"
+          />
+
+          <FormInput
+            label="Final brew weight (g)"
+            id="finalBrewWeight"
+            inputProps={{
+              ...register("finalBrewWeight", {
+                min: {
+                  value: 0,
+                  message: "Please enter a positive weight.",
+                },
+                valueAsNumber: true,
+              }),
+              type: "number",
+              step: "0.01",
+              placeholder: "223.7",
+            }}
+            error={errors.finalBrewWeight?.message}
+          />
+
+          <FormInput
+            label="TDS (%)"
+            id="tds"
+            inputProps={{
+              ...register("tds", {
+                min: {
+                  value: 0,
+                  message: "Please enter a positive TDS.",
+                },
+                valueAsNumber: true,
+              }),
+              type: "number",
+              step: "0.01",
+              placeholder: "1.9",
+            }}
+            error={errors.finalBrewWeight?.message}
           />
         </FormSection>
 
