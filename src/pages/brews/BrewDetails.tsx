@@ -12,6 +12,7 @@ import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Brew } from "../../types/brews";
+import { getEyFromBrew } from "../../utils";
 import { NotFound } from "../NotFound";
 
 export const BrewDetails = () => {
@@ -118,7 +119,11 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Extraction type",
-            value: brew.extractionType || "",
+            value: brew.extractionType ?? "",
+          },
+          {
+            label: "Extraction yield",
+            value: `${getEyFromBrew(brew)}%`,
           },
           {
             label: "Final brew weight",
