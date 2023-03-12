@@ -114,6 +114,24 @@ export const BrewDetails = () => {
       />
 
       <Details
+        title="Extraction"
+        rows={[
+          {
+            label: "Extraction type",
+            value: brew.extractionType || "",
+          },
+          {
+            label: "Final brew weight",
+            value: brew.finalBrewWeight ? `${brew.finalBrewWeight}g` : "",
+          },
+          {
+            label: "TDS",
+            value: brew.tds ? `${brew.tds}%` : "",
+          },
+        ]}
+      />
+
+      <Details
         title="Prep"
         rows={[
           {
