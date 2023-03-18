@@ -36,6 +36,7 @@ export const BeansShortInfo: React.FC<BeansShortInfoProps> = ({
         {
           label: "Name",
           value: beans.name,
+          link: beans.id ? `/beans/${beans.id}` : undefined,
         },
         { label: "Roaster", value: beans.roaster },
         {

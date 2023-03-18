@@ -1,15 +1,19 @@
 import React from "react";
 import "twin.macro";
+import { Link } from "./Link";
 
 interface DetailsRowProps {
   label: string;
   value: string;
+  link?: string;
 }
 
-const DetailsRow: React.FC<DetailsRowProps> = ({ label, value }) => (
+const DetailsRow: React.FC<DetailsRowProps> = ({ label, value, link }) => (
   <div tw="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
     <dt tw="text-sm font-medium text-gray-500">{label}</dt>
-    <dd tw="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{value}</dd>
+    <dd tw="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+      {link ? <Link to={link}>{value}</Link> : value}
+    </dd>
   </div>
 );
 
@@ -30,8 +34,8 @@ export const Details: React.FC<DetailsProps> = ({ title, subtitle, rows }) => {
       </div>
       <div tw="mt-5 border-t border-gray-200">
         <dl tw="sm:divide-y sm:divide-gray-200">
-          {rows.map(({ label, value }) => (
-            <DetailsRow key={label} label={label} value={value} />
+          {rows.map(({ label, value, link }) => (
+            <DetailsRow key={label} label={label} value={value} link={link} />
           ))}
         </dl>
       </div>
