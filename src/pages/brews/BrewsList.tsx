@@ -10,6 +10,7 @@ export const BrewsList = () => {
   const { list: brewsList } = useFirestoreCollection<Brew>("brews", [
     orderBy("date", "desc"),
   ]);
+
   return (
     <div>
       <Button as={RouterLink} to="add" variant="primary" colour="accent">

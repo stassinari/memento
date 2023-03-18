@@ -1,7 +1,7 @@
-import { Details } from "../../components/Details";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { NotFound } from "../../pages/NotFound";
 import { Beans } from "../../types/beans";
-import { NotFound } from "../NotFound";
+import { Details } from "../Details";
 
 interface BeansShortInfoProps {
   beansId?: string;

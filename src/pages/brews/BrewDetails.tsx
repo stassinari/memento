@@ -8,12 +8,12 @@ import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
+import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Brew } from "../../types/brews";
 import { getEyFromBrew } from "../../utils";
-import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { NotFound } from "../NotFound";
 
 export const BrewDetails = () => {

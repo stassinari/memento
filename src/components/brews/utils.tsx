@@ -3,7 +3,7 @@ import { Brew } from "../../types/brews";
 import { DataListItem } from "../DataList";
 
 export const brewToDataListItem = (b: Brew): DataListItem => ({
-  link: b.id ?? "",
+  link: `/drinks/brews/${b.id ?? ""}`,
   topRow: {
     title: b.method,
     pill: b.rating ? `${b.rating}/10 ★` : undefined,
