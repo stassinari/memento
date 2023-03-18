@@ -13,6 +13,7 @@ import { Details } from "../../components/Details";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Brew } from "../../types/brews";
 import { getEyFromBrew } from "../../utils";
+import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { NotFound } from "../NotFound";
 
 export const BrewDetails = () => {
@@ -149,6 +150,8 @@ export const BrewDetails = () => {
           // { label: "Beans", value: brew.beans }, TBD
         ]}
       />
+
+      <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
 
       <Details
         title="Equipment"

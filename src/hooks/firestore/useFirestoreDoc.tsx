@@ -28,7 +28,7 @@ export const useFirestoreDoc = <T,>(
   useEffect(() => {
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
-        setDetails(docSnap.data());
+        setDetails({ ...docSnap.data(), id });
       } else {
         console.log("No such document!");
         setDetails(null);
@@ -39,5 +39,5 @@ export const useFirestoreDoc = <T,>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { details: details ? { ...details, id } : null, isLoading, docRef };
+  return { details, isLoading, docRef };
 };
