@@ -16,6 +16,8 @@ import { BrewEditOutcome } from "./pages/brews/BrewEditOutcome";
 import { BrewsList } from "./pages/brews/BrewsList";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
+import { EspressoClone } from "./pages/espresso/EspressoClone";
+import { EspressoEditDetails } from "./pages/espresso/EspressoEditDetails";
 // import { LogIn } from "./pages/LogIn";
 import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
@@ -39,6 +41,9 @@ const EspressoList = React.lazy(
 );
 const EspressoDetails = React.lazy(
   async () => await import("./pages/espresso/EspressoDetails")
+);
+const EspressoAdd = React.lazy(
+  async () => await import("./pages/espresso/EspressoAdd")
 );
 
 const LogIn = React.lazy(async () => await import("./pages/LogIn"));
@@ -98,6 +103,15 @@ export const App = () => {
               <Route
                 path="drinks/espresso/:espressoId"
                 element={<EspressoDetails />}
+              />
+              <Route path="drinks/espresso/add" element={<EspressoAdd />} />
+              <Route
+                path="drinks/espresso/:espressoId/edit"
+                element={<EspressoEditDetails />}
+              />
+              <Route
+                path="drinks/espresso/:espressoId/clone"
+                element={<EspressoClone />}
               />
 
               <Route path="drinks/tastings" element={<TastingsPage />} />

@@ -8,34 +8,34 @@ import { FormInput } from "../../form/FormInput";
 import { Stopwatch } from "../../Stopwatch";
 import { Toggle } from "../../Toggle";
 
-export interface BrewTimeInputs {
-  timeSeconds: number | null;
-  timeMinutes: number | null;
+export interface EspressoTimeInputs {
+  actualTime: number | null;
+  actualWeight: number | null;
 }
 
-export const brewTimeEmptyValues: () => BrewTimeInputs = () => ({
-  timeSeconds: null,
-  timeMinutes: null,
+export const espressoTimeEmptyValues: () => EspressoTimeInputs = () => ({
+  actualTime: null,
+  actualWeight: null,
 });
 
-interface BrewTimeProps {
-  defaultValues: BrewTimeInputs;
-  handleNestedSubmit: (data: BrewTimeInputs) => void;
+interface EspressoTimeProps {
+  defaultValues: EspressoTimeInputs;
+  handleNestedSubmit: (data: EspressoTimeInputs) => void;
   handleBack: () => void;
   ctaLabel: string;
 }
 
-export const brewStopwatchAtom = atom<boolean>(false);
+export const espressoStopwatchAtom = atom<boolean>(false);
 
-export const BrewTime: React.FC<BrewTimeProps> = ({
+export const EspressoTime: React.FC<EspressoTimeProps> = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
   ctaLabel,
 }) => {
-  const isStopwatchRunning = useAtomValue(brewStopwatchAtom);
+  const isStopwatchRunning = useAtomValue(espressoStopwatchAtom);
 
-  const methods = useForm<BrewTimeInputs>({
+  const methods = useForm<EspressoTimeInputs>({
     defaultValues,
   });
 
@@ -46,7 +46,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
     setValue,
   } = methods;
 
-  const onSubmit: SubmitHandler<BrewTimeInputs> = async (data) => {
+  const onSubmit: SubmitHandler<EspressoTimeInputs> = async (data) => {
     handleNestedSubmit(data);
   };
 
@@ -61,14 +61,19 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
       >
         <FormSection
           title="Time"
-          subtitle="Keep track of how long your brew takes."
+          subtitle="Keep track of how long your espresso takes."
         >
           <Stopwatch
-            atom={brewStopwatchAtom}
-            initialSeconds={defaultValues.timeSeconds || 0}
-            initialMinutes={defaultValues.timeMinutes || 0}
-            setFormSeconds={(seconds) => setValue("timeSeconds", seconds)}
-            setFormMinutes={(minutes) => setValue("timeMinutes", minutes)}
+            atom={espressoStopwatchAtom}
+            initialSeconds={
+              defaultValues.actualTime ? defaultValues.actualTime % 60 : 0
+            }
+            initialMinutes={
+              defaultValues.actualTime
+                ? Math.floor(defaultValues.actualTime / 60)
+                : 0
+            }
+            setFormSeconds={(seconds) => setValue("actualTime", seconds)}
             disabled={manualInput}
           />
 
@@ -81,10 +86,10 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
 
           <div tw="flex items-end gap-4">
             <FormInput
-              label="Minutes"
-              id="timeMinutes"
+              label="Time (seconds)"
+              id="actualTime"
               inputProps={{
-                ...register("timeMinutes", {
+                ...register("actualTime", {
                   min: {
                     value: 0,
                     message:
@@ -96,28 +101,27 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
                 placeholder: "2",
                 disabled: !manualInput,
               }}
-              error={errors.timeMinutes?.message}
-            />
-            <span tw="py-[9px]">:</span>
-            <FormInput
-              label="Seconds"
-              id="timeSeconds"
-              inputProps={{
-                ...register("timeSeconds", {
-                  min: {
-                    value: 0,
-                    message:
-                      "Please don't break space/time, enter a positive number.",
-                  },
-                  valueAsNumber: true,
-                }),
-                type: "number",
-                placeholder: "34",
-                disabled: !manualInput,
-              }}
-              error={errors.timeSeconds?.message}
+              error={errors.actualTime?.message}
             />
           </div>
+
+          <FormInput
+            label="Final weight (g)"
+            id="actualWeight"
+            inputProps={{
+              ...register("actualWeight", {
+                min: {
+                  value: 0,
+                  message: "Please enter a positive weight.",
+                },
+                valueAsNumber: true,
+              }),
+              type: "number",
+              step: "0.01",
+              placeholder: "41.7",
+            }}
+            error={errors.actualWeight?.message}
+          />
         </FormSection>
 
         <div className="flex justify-end gap-4">

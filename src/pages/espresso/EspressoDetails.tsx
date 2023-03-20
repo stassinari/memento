@@ -183,7 +183,7 @@ const EspressoDetails = () => {
         rows={[
           {
             label: "Time",
-            value: `${espresso.actualTime}`,
+            value: `${espresso.actualTime}s`,
           },
         ]}
       />

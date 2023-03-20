@@ -2,55 +2,56 @@ import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
-import { Brew } from "../../../types/brew";
+import { Espresso } from "../../../types/espresso";
 import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { FormSection } from "../../Form";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
+import { FormInputRadioButtonGroup } from "../../form/FormInputRadioButtonGroup";
 import { extractSuggestions } from "../../form/FormSuggestions";
 
-export interface BeansMethodEquipmentInputs {
+export interface BeansEquipmentInputs {
   date: Date | null;
-  method: string | null;
   beans: string | null;
 
+  machine: string | null;
   grinder: string | null;
   grinderBurrs: string | null;
-  waterType: string | null;
-  filterType: string | null;
+  portafilter: string | null;
+  basket: string | null;
 }
 
-export const beansMethodEquipmentEmptyValues: (
-  copyFrom?: Brew
-) => BeansMethodEquipmentInputs = (copyFrom) => ({
+export const beansEquipmentEmptyValues: (
+  copyFrom?: Espresso
+) => BeansEquipmentInputs = (copyFrom) => ({
   date: new Date(),
-  method: null,
   beans: null,
 
+  machine: copyFrom?.machine ?? null,
   grinder: copyFrom?.grinder ?? null,
   grinderBurrs: copyFrom?.grinderBurrs ?? null,
-  waterType: copyFrom?.waterType ?? null,
-  filterType: copyFrom?.filterType ?? null,
+  portafilter: copyFrom?.portafilter ?? null,
+  basket: copyFrom?.basket ?? null,
 });
 
-interface BeansMethodEquipmentProps {
-  brewsList: Brew[];
+interface BeansEquipmentProps {
+  espressoList: Espresso[];
   beansList: Beans[];
-  defaultValues: BeansMethodEquipmentInputs;
-  handleNestedSubmit: (data: BeansMethodEquipmentInputs) => void;
+  defaultValues: BeansEquipmentInputs;
+  handleNestedSubmit: (data: BeansEquipmentInputs) => void;
 }
 
-export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
-  brewsList,
+export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
+  espressoList,
   beansList,
   defaultValues,
   handleNestedSubmit,
 }) => {
   const [showEquipment, setShowEquipment] = useState(false);
 
-  const methods = useForm<BeansMethodEquipmentInputs>({
+  const methods = useForm<BeansEquipmentInputs>({
     defaultValues,
   });
 
@@ -60,7 +61,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
     getValues,
   } = methods;
 
-  const onSubmit: SubmitHandler<BeansMethodEquipmentInputs> = async (data) => {
+  const onSubmit: SubmitHandler<BeansEquipmentInputs> = async (data) => {
     console.log(data);
     handleNestedSubmit(data);
   };
@@ -79,19 +80,9 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           <FormInputDate
             label="Date *"
             id="date"
-            requiredMsg="Please enter a brew date"
+            requiredMsg="Please enter a espresso date"
             error={errors.date?.message}
-            placeholder="Select brew date"
-          />
-
-          <FormComboboxSingle
-            label="Method *"
-            name="method"
-            options={[...new Set(brewsList.map(({ method }) => method).sort())]}
-            placeholder="Orea v3"
-            requiredMsg="Please enter the method of your brew"
-            error={errors.method?.message}
-            suggestions={extractSuggestions(brewsList, "method")}
+            placeholder="Select espresso date"
           />
 
           <BeansCardsSelect beansList={beansList} />
@@ -106,74 +97,84 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           {showEquipment ? (
             <React.Fragment>
               <FormComboboxSingle
+                label="Machine"
+                name="machine"
+                placeholder="Lelit Elizabeth"
+                options={[
+                  ...new Set(
+                    espressoList
+                      .flatMap(({ machine }) => (machine ? [machine] : []))
+                      .sort()
+                  ),
+                ]}
+                suggestions={extractSuggestions(espressoList, "machine")}
+              />
+
+              <FormComboboxSingle
                 label="Grinder"
                 name="grinder"
                 placeholder="Niche Zero"
                 options={[
                   ...new Set(
-                    brewsList
+                    espressoList
                       .flatMap(({ grinder }) => (grinder ? [grinder] : []))
                       .sort()
                   ),
                 ]}
-                suggestions={extractSuggestions(brewsList, "grinder")}
+                suggestions={extractSuggestions(espressoList, "grinder")}
               />
+
               <FormComboboxSingle
                 label="Burrs"
                 name="grinderBurrs"
                 placeholder="54mm conical"
                 options={[
                   ...new Set(
-                    brewsList
+                    espressoList
                       .flatMap(({ grinderBurrs }) =>
                         grinderBurrs ? [grinderBurrs] : []
                       )
                       .sort()
                   ),
                 ]}
-                suggestions={extractSuggestions(brewsList, "grinderBurrs")}
+                suggestions={extractSuggestions(espressoList, "grinderBurrs")}
               />
+
+              <FormInputRadioButtonGroup
+                label="Portafilter"
+                name="portafilter"
+                options={[
+                  { label: "Regular", value: "regular" },
+                  { label: "Bottomless", value: "bottomless" },
+                ]}
+                variant="secondary"
+              />
+
               <FormComboboxSingle
-                label="Water type"
-                name="waterType"
-                placeholder="ZeroWater"
+                label="Basket"
+                name="basket"
+                placeholder="VST 18g"
                 options={[
                   ...new Set(
-                    brewsList
-                      .flatMap(({ waterType }) =>
-                        waterType ? [waterType] : []
-                      )
+                    espressoList
+                      .flatMap(({ basket }) => (basket ? [basket] : []))
                       .sort()
                   ),
                 ]}
-                suggestions={extractSuggestions(brewsList, "waterType")}
-              />
-              <FormComboboxSingle
-                label="Filter"
-                name="filterType"
-                placeholder="Bleached"
-                options={[
-                  ...new Set(
-                    brewsList
-                      .flatMap(({ filterType }) =>
-                        filterType ? [filterType] : []
-                      )
-                      .sort()
-                  ),
-                ]}
-                suggestions={extractSuggestions(brewsList, "filterType")}
+                suggestions={extractSuggestions(espressoList, "basket")}
               />
             </React.Fragment>
           ) : (
             <React.Fragment>
               <dl tw="-my-3 divide-y divide-gray-200">
+                <EquipmentRow label="Machine" value={getValues("machine")} />
                 <EquipmentRow label="Grinder" value={getValues("grinder")} />
                 <EquipmentRow label="Burrs" value={getValues("grinderBurrs")} />
                 <EquipmentRow
-                  label="Water type"
-                  value={getValues("waterType")}
+                  label="Portafilter"
+                  value={getValues("portafilter")}
                 />
-                <EquipmentRow label="Filter" value={getValues("filterType")} />
+                <EquipmentRow label="Basket" value={getValues("basket")} />
               </dl>
 
               <button
@@ -200,6 +201,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
   );
 };
 
+// TODO extract and reuse from brew
 interface EquipmentRowProps {
   label: string;
   value: string | null;

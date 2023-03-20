@@ -11,8 +11,8 @@ interface StopwatchProps {
   atom: PrimitiveAtom<boolean>;
   initialSeconds?: number;
   initialMinutes?: number;
-  setFormSeconds: (arg0: number) => void;
-  setFormMinutes: (arg0: number) => void;
+  setFormSeconds: (seconds: number) => void;
+  setFormMinutes?: (minutes: number) => void;
   disabled?: boolean;
 }
 
@@ -27,7 +27,7 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
   const [seconds, setSeconds] = useState(initialMinutes * 60 + initialSeconds);
   const [isRunning, setIsRunning] = useAtom(atom);
 
-  const displaySeconds = ("0" + (seconds % 60)).slice(-2);
+  const displaySeconds = `0${seconds % 60}`.slice(-2);
   const displayMinutes = Math.floor(seconds / 60)
     .toString()
     .slice(-2);
@@ -35,8 +35,12 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
   function toggle() {
     if (isRunning) {
       // in case it's stopping, we set form values
-      setFormSeconds(seconds % 60);
-      setFormMinutes(Math.floor(seconds / 60));
+      if (setFormMinutes) {
+        setFormSeconds(seconds % 60);
+        setFormMinutes(Math.floor(seconds / 60));
+      } else {
+        setFormSeconds(seconds);
+      }
     }
     setIsRunning(!isRunning);
   }

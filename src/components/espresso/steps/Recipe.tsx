@@ -4,32 +4,32 @@ import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
 
-export interface BrewRecipeInputs {
-  waterWeight: number | null;
+export interface EspressoRecipeInputs {
+  targetWeight: number | null;
   beansWeight: number | null;
   waterTemperature: number | null;
   grindSetting: string | null;
 }
 
-export const brewRecipeEmptyValues: () => BrewRecipeInputs = () => ({
-  waterWeight: null,
+export const espressoRecipeEmptyValues: () => EspressoRecipeInputs = () => ({
+  targetWeight: null,
   beansWeight: null,
   waterTemperature: null,
   grindSetting: null,
 });
 
-interface BrewRecipeProps {
-  defaultValues: BrewRecipeInputs;
-  handleNestedSubmit: (data: BrewRecipeInputs) => void;
+interface EspressoRecipeProps {
+  defaultValues: EspressoRecipeInputs;
+  handleNestedSubmit: (data: EspressoRecipeInputs) => void;
   handleBack: () => void;
 }
 
-export const BrewRecipe: React.FC<BrewRecipeProps> = ({
+export const EspressoRecipe: React.FC<EspressoRecipeProps> = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
 }) => {
-  const methods = useForm<BrewRecipeInputs>({
+  const methods = useForm<EspressoRecipeInputs>({
     defaultValues,
   });
 
@@ -39,7 +39,7 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
     register,
   } = methods;
 
-  const onSubmit: SubmitHandler<BrewRecipeInputs> = async (data) => {
+  const onSubmit: SubmitHandler<EspressoRecipeInputs> = async (data) => {
     handleNestedSubmit(data);
   };
 
@@ -52,14 +52,14 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
       >
         <FormSection
           title="Recipe"
-          subtitle="All the info unique to this brew."
+          subtitle="All the info unique to this espresso."
         >
           <FormInput
-            label="Water weight (ml) *"
-            id="waterWeight"
+            label="Yield *"
+            id="targetWeight"
             inputProps={{
-              ...register("waterWeight", {
-                required: "Please enter the weight of your water.",
+              ...register("targetWeight", {
+                required: "Please enter the yield of your espresso.",
                 min: {
                   value: 0,
                   message: "Please enter a positive weight.",
@@ -68,17 +68,17 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
               }),
               type: "number",
               step: "0.01",
-              placeholder: "250",
+              placeholder: "42",
             }}
-            error={errors.waterWeight?.message}
+            error={errors.targetWeight?.message}
           />
 
           <FormInput
-            label="Beans weight (g) *"
+            label="Dose (g) *"
             id="beansWeight"
             inputProps={{
               ...register("beansWeight", {
-                required: "Please enter the weight of your beans.",
+                required: "Please enter the dose of your beans.",
                 min: {
                   value: 0,
                   message: "Please enter a positive weight.",
