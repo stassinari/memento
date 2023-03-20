@@ -8,7 +8,7 @@ export const DrinksPage = () => (
         <Link to="brews">Go to brews</Link>
       </li>
       <li>
-        <Link to="espressos">Go to espressos</Link>
+        <Link to="espresso">Go to espressos</Link>
       </li>
       <li>
         <Link to="tastings">Go to tastings</Link>

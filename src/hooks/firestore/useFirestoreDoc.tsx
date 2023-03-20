@@ -10,7 +10,7 @@ interface UseFirestoreDocReturn<T> {
 }
 
 export const useFirestoreDoc = <T,>(
-  type: "brews" | "beans",
+  type: "brews" | "beans" | "espresso",
   id?: string
 ): UseFirestoreDocReturn<T> => {
   const user = useCurrentUser();

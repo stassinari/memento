@@ -1,5 +1,4 @@
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
-import { NotFound } from "../../pages/NotFound";
 import { Beans } from "../../types/beans";
 import { Details } from "../Details";
 
@@ -19,9 +18,7 @@ export const BeansShortInfo: React.FC<BeansShortInfoProps> = ({
 
   if (isLoading) return null;
 
-  if (!beans) {
-    return <NotFound />;
-  }
+  if (!beans) return null;
 
   const secondsBetween = beans.roastDate
     ? Number(brewDate) - Number(beans.roastDate.toDate())

@@ -12,28 +12,28 @@ import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
-import { Brew } from "../../types/brew";
-import { getEyFromBrew } from "../../utils";
+import { Espresso } from "../../types/espresso";
+import { getEyFromEspresso } from "../../utils";
 import { NotFound } from "../NotFound";
 
-export const BrewDetails = () => {
-  const { brewId } = useParams();
+const EspressoDetails = () => {
+  const { espressoId } = useParams();
   const navigate = useNavigate();
 
   const {
-    details: brew,
+    details: espresso,
     isLoading,
     docRef,
-  } = useFirestoreDoc<Brew>("brews", brewId);
+  } = useFirestoreDoc<Espresso>("espresso", espressoId);
 
   const handleDelete = async () => {
     await deleteDoc(docRef);
-    navigate(`/drinks/brews`);
+    navigate(`/drinks/espresso`);
   };
 
   if (isLoading) return null;
 
-  if (!brew) {
+  if (!espresso) {
     return <NotFound />;
   }
 
@@ -41,7 +41,7 @@ export const BrewDetails = () => {
     <div tw="space-y-8">
       <div>
         <h3 tw="text-lg font-medium leading-6 text-gray-900">
-          Brew with id {brewId}
+          Espresso with id {espressoId}
         </h3>
         <p tw="max-w-2xl mt-1 text-sm text-gray-500">
           Subtitle in case it is needed.
@@ -72,10 +72,10 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Overall score",
-            value: brew.rating ? `${brew.rating}/10` : "",
+            value: espresso.rating ? `${espresso.rating}/10` : "",
           },
           // FIXME make Markdown beautiful
-          { label: "Notes", value: brew.notes ?? "" },
+          { label: "Notes", value: espresso.notes ?? "" },
         ]}
       />
 
@@ -84,32 +84,32 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Aroma",
-            value: brew.tastingScores?.aroma
-              ? `${brew.tastingScores.aroma}/10`
+            value: espresso.tastingScores?.aroma
+              ? `${espresso.tastingScores.aroma}/10`
               : "",
           },
           {
             label: "Acidity",
-            value: brew.tastingScores?.acidity
-              ? `${brew.tastingScores.acidity}/10`
+            value: espresso.tastingScores?.acidity
+              ? `${espresso.tastingScores.acidity}/10`
               : "",
           },
           {
             label: "Sweetness",
-            value: brew.tastingScores?.sweetness
-              ? `${brew.tastingScores.sweetness}/10`
+            value: espresso.tastingScores?.sweetness
+              ? `${espresso.tastingScores.sweetness}/10`
               : "",
           },
           {
             label: "Body",
-            value: brew.tastingScores?.body
-              ? `${brew.tastingScores.body}/10`
+            value: espresso.tastingScores?.body
+              ? `${espresso.tastingScores.body}/10`
               : "",
           },
           {
             label: "Finish",
-            value: brew.tastingScores?.finish
-              ? `${brew.tastingScores.finish}/10`
+            value: espresso.tastingScores?.finish
+              ? `${espresso.tastingScores.finish}/10`
               : "",
           },
         ]}
@@ -119,20 +119,12 @@ export const BrewDetails = () => {
         title="Extraction"
         rows={[
           {
-            label: "Extraction type",
-            value: brew.extractionType ?? "",
-          },
-          {
             label: "Extraction yield",
-            value: `${getEyFromBrew(brew)}%`,
-          },
-          {
-            label: "Final brew weight",
-            value: brew.finalBrewWeight ? `${brew.finalBrewWeight}g` : "",
+            value: `${getEyFromEspresso(espresso)}%`,
           },
           {
             label: "TDS",
-            value: brew.tds ? `${brew.tds}%` : "",
+            value: espresso.tds ? `${espresso.tds}%` : "",
           },
         ]}
       />
@@ -142,24 +134,26 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Date",
-            value: brew.date
-              ? dayjs(brew.date.toDate()).format("DD MMM YYYY | H:m")
+            value: espresso.date
+              ? dayjs(espresso.date.toDate()).format("DD MMM YYYY | H:m")
               : "",
           },
-          { label: "Method", value: brew.method },
-          // { label: "Beans", value: brew.beans }, TBD
         ]}
       />
 
-      <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
+      <BeansShortInfo
+        beansId={espresso.beans.id}
+        brewDate={espresso.date.toDate()}
+      />
 
       <Details
         title="Equipment"
         rows={[
-          { label: "Grinder", value: brew.grinder ?? "" },
-          { label: "Burrs", value: brew.grinderBurrs ?? "" },
-          { label: "Water type", value: brew.waterType ?? "" },
-          { label: "Filter type", value: brew.filterType ?? "" },
+          { label: "Machine", value: espresso.machine ?? "" },
+          { label: "Grinder", value: espresso.grinder ?? "" },
+          { label: "Burrs", value: espresso.grinderBurrs ?? "" },
+          { label: "Portafilter", value: espresso.portafilter ?? "" },
+          { label: "Basket", value: espresso.basket ?? "" },
         ]}
       />
 
@@ -167,18 +161,20 @@ export const BrewDetails = () => {
         title="Recipe"
         rows={[
           {
-            label: "Water weight",
-            value: brew.waterWeight ? `${brew.waterWeight} g` : "",
+            label: "Target weight",
+            value: espresso.targetWeight ? `${espresso.targetWeight} g` : "",
           },
           {
             label: "Beans weight",
-            value: brew.beansWeight ? `${brew.beansWeight} g` : "",
+            value: espresso.beansWeight ? `${espresso.beansWeight} g` : "",
           },
           {
             label: "Water temperature",
-            value: brew.waterTemperature ? `${brew.waterTemperature} °C` : "",
+            value: espresso.waterTemperature
+              ? `${espresso.waterTemperature} °C`
+              : "",
           },
-          { label: "Grind setting", value: brew.grindSetting ?? "" },
+          { label: "Grind setting", value: espresso.grindSetting ?? "" },
         ]}
       />
 
@@ -187,10 +183,7 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Time",
-            value:
-              brew.timeMinutes || brew.timeSeconds
-                ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
-                : "",
+            value: `${espresso.actualTime}`,
           },
         ]}
       />
@@ -198,4 +191,4 @@ export const BrewDetails = () => {
   );
 };
 
-export default BrewDetails;
+export default EspressoDetails;

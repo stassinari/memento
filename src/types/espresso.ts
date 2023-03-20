@@ -33,7 +33,8 @@ export interface EspressoOutcome {
   rating: number;
   notes: string;
   tastingScores: TastingScores;
-  tds?: number;
+
+  tds: number | null;
 }
 
 export interface DecentReadings {

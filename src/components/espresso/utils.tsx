@@ -3,7 +3,7 @@ import { Espresso } from "../../types/espresso";
 import { DataListItem } from "../DataList";
 
 export const espressoToDataListItem = (e: Espresso): DataListItem => ({
-  link: `/drinks/espressos/${e.id ?? ""}`,
+  link: `/drinks/espresso/${e.id ?? ""}`,
   topRow: {
     title: `${e.targetWeight} : ${e.beansWeight}`,
     pill: e.rating ? `${e.rating}/10 ★` : undefined,

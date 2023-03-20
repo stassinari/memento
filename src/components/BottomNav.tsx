@@ -25,8 +25,8 @@ export const navigation: BottomNavItemProps[] = [
   },
   {
     Icon: <CurrencyPoundIcon />,
-    label: "Espressos",
-    linkTo: "/drinks/espressos",
+    label: "Espresso",
+    linkTo: "/drinks/espresso",
     nested: true,
   },
   {
