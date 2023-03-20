@@ -207,7 +207,7 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
               step: "0.01",
               placeholder: "1.9",
             }}
-            error={errors.finalBrewWeight?.message}
+            error={errors.tds?.message}
           />
         </FormSection>
 

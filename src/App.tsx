@@ -18,6 +18,7 @@ import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
 import { EspressoClone } from "./pages/espresso/EspressoClone";
 import { EspressoEditDetails } from "./pages/espresso/EspressoEditDetails";
+import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
 // import { LogIn } from "./pages/LogIn";
 import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
@@ -108,6 +109,10 @@ export const App = () => {
               <Route
                 path="drinks/espresso/:espressoId/edit"
                 element={<EspressoEditDetails />}
+              />
+              <Route
+                path="drinks/espresso/:espressoId/outcome"
+                element={<EspressoEditOutcome />}
               />
               <Route
                 path="drinks/espresso/:espressoId/clone"
