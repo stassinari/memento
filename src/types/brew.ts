@@ -7,8 +7,8 @@ export type ExtractionType = "percolation" | "immersion";
 export interface BrewPrep {
   id?: string;
 
-  method: string;
   date: Timestamp;
+  method: string;
   beans: DocumentReference;
 
   grinder: string | null;

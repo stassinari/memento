@@ -1,24 +1,26 @@
 import { orderBy } from "firebase/firestore";
 import { Link as RouterLink } from "react-router-dom";
-import { brewToDataListItem } from "../../components/brews/utils";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
+import { espressoToDataListItem } from "../../components/espresso/utils";
 import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
-import { Brew } from "../../types/brew";
+import { Espresso } from "../../types/espresso";
 
-export const BrewsList = () => {
-  const { list: brewsList } = useFirestoreCollection<Brew>("brews", [
+const EspressoList = () => {
+  const { list: espressoList } = useFirestoreCollection<Espresso>("espresso", [
     orderBy("date", "desc"),
   ]);
 
   return (
     <div>
       <Button as={RouterLink} to="add" variant="primary" colour="accent">
-        Add brew
+        Add espresso
       </Button>
       <div>
-        <DataList items={brewsList.map(brewToDataListItem)} />
+        <DataList items={espressoList.map(espressoToDataListItem)} />
       </div>
     </div>
   );
 };
+
+export default EspressoList;

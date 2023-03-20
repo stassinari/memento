@@ -16,18 +16,28 @@ import { BrewEditOutcome } from "./pages/brews/BrewEditOutcome";
 import { BrewsList } from "./pages/brews/BrewsList";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
-import { EspressosPage } from "./pages/EspressosPage";
 // import { LogIn } from "./pages/LogIn";
 import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
 import { TastingsPage } from "./pages/TastingsPage";
 
-const BeansAdd = React.lazy(() => import("./pages/beans/BeansAdd"));
-const BeansDetails = React.lazy(() => import("./pages/beans/BeansDetails"));
-const BeansList = React.lazy(() => import("./pages/beans/BeansList/BeansList"));
-const BrewsAdd = React.lazy(() => import("./pages/brews/BrewsAdd"));
-const BrewDetails = React.lazy(() => import("./pages/brews/BrewDetails"));
-const LogIn = React.lazy(() => import("./pages/LogIn"));
+const BeansAdd = React.lazy(async () => await import("./pages/beans/BeansAdd"));
+const BeansDetails = React.lazy(
+  async () => await import("./pages/beans/BeansDetails")
+);
+const BeansList = React.lazy(
+  async () => await import("./pages/beans/BeansList/BeansList")
+);
+
+const BrewsAdd = React.lazy(async () => await import("./pages/brews/BrewsAdd"));
+const BrewDetails = React.lazy(
+  async () => await import("./pages/brews/BrewDetails")
+);
+
+const EspressoList = React.lazy(
+  async () => await import("./pages/espresso/EspressoList")
+);
+const LogIn = React.lazy(async () => await import("./pages/LogIn"));
 
 export const App = () => {
   const isUserLoading = useInitUser();
@@ -78,7 +88,9 @@ export const App = () => {
                 element={<BrewClone />}
               />
 
-              <Route path="drinks/espressos" element={<EspressosPage />} />
+              {/* Espressos */}
+
+              <Route path="drinks/espressos" element={<EspressoList />} />
               <Route path="drinks/tastings" element={<TastingsPage />} />
 
               <Route path="profile" element={<Profile />} />

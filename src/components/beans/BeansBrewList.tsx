@@ -2,7 +2,7 @@ import { doc, orderBy, where } from "firebase/firestore";
 import "twin.macro";
 import { db } from "../../firebaseConfig";
 import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
-import { Brew } from "../../types/brews";
+import { Brew } from "../../types/brew";
 import { brewToDataListItem } from "../brews/utils";
 import { DataList } from "../DataList";
 

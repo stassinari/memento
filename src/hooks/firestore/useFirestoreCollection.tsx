@@ -15,7 +15,7 @@ interface UseFirestoreCollectionResult<T> {
 }
 
 export const useFirestoreCollection = <T,>(
-  type: "brews" | "beans",
+  type: "brews" | "beans" | "espresso",
   filters: QueryConstraint[] = []
 ): UseFirestoreCollectionResult<T> => {
   const user = useCurrentUser();

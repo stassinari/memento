@@ -1,4 +1,4 @@
-import { Brew } from "./types/brews";
+import { Brew } from "./types/brew";
 
 export const getEyFromBrew = (brew: Brew) => {
   if (!brew.tds || !brew.finalBrewWeight || !brew.beansWeight) return 0;
