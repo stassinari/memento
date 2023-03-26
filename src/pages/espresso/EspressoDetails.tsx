@@ -48,14 +48,16 @@ const EspressoDetails = () => {
         </p>
       </div>
       <div tw="space-x-2">
-        <Button
-          variant="primary"
-          as={Link}
-          to="clone"
-          Icon={<DocumentDuplicateIcon />}
-        >
-          Clone
-        </Button>
+        {!espresso.fromDecent && (
+          <Button
+            variant="primary"
+            as={Link}
+            to="clone"
+            Icon={<DocumentDuplicateIcon />}
+          >
+            Clone
+          </Button>
+        )}
         {espresso.fromDecent ? (
           <Button
             variant="white"
