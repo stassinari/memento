@@ -142,7 +142,7 @@ export const PressureFlowWeightChart: React.FC<
             dot={false}
             dataKey="weight"
             strokeWidth={2}
-            stroke={theme`colors.amber.800`}
+            stroke={theme`colors.mui-brown.500`}
           />
         </LineChart>
       </ResponsiveContainer>

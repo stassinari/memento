@@ -9,7 +9,7 @@ import {
 import { atom } from "jotai";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { theme } from "twin.macro";
+import tw, { theme } from "twin.macro";
 import { Badge, BadgePlusIcon, BadgeTimesIcon } from "../components/Badge";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
@@ -542,7 +542,6 @@ export const DesignLibrary = () => {
       </div>
       <div>
         <h2>IconButtons</h2>
-
         <div>
           <IconButton variant="gradient" size="xs" Icon={<PlusIconMini />}>
             Button xs
@@ -766,7 +765,38 @@ export const DesignLibrary = () => {
             Button md
           </IconButton>
         </div>
+        Colour palette
+        <div tw="flex gap-2">
+          <div>
+            Brown - TW
+            <ColourShade tw="bg-tw-brown-50">50</ColourShade>
+            <ColourShade tw="bg-tw-brown-100">100</ColourShade>
+            <ColourShade tw="bg-tw-brown-200">200</ColourShade>
+            <ColourShade tw="bg-tw-brown-300">300</ColourShade>
+            <ColourShade tw="bg-tw-brown-400">400</ColourShade>
+            <ColourShade tw="bg-tw-brown-500">500</ColourShade>
+            <ColourShade tw="text-white bg-tw-brown-600">600</ColourShade>
+            <ColourShade tw="text-white bg-tw-brown-700">700</ColourShade>
+            <ColourShade tw="text-white bg-tw-brown-800">800</ColourShade>
+            <ColourShade tw="text-white bg-tw-brown-900">900</ColourShade>
+          </div>
+          <div>
+            Brown - Material
+            <ColourShade tw="bg-mui-brown-50">50</ColourShade>
+            <ColourShade tw="bg-mui-brown-100">100</ColourShade>
+            <ColourShade tw="bg-mui-brown-200">200</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-300">300</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-400">400</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-500">500</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-600">600</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-700">700</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-800">800</ColourShade>
+            <ColourShade tw="text-white bg-mui-brown-900">900</ColourShade>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
+const ColourShade = tw.div`flex items-center justify-center w-32 h-8 text-sm`;
