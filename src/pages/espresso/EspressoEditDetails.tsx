@@ -7,7 +7,7 @@ import {
 import { db } from "../../firebaseConfig";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useCurrentUser } from "../../hooks/useInitUser";
-import { Espresso } from "../../types/espresso";
+import { BaseEspresso } from "../../types/espresso";
 import { espressoToFirestore } from "./EspressoAdd";
 
 export const EspressoEditDetails = () => {
@@ -16,7 +16,7 @@ export const EspressoEditDetails = () => {
 
   const navigate = useNavigate();
 
-  const { details: espresso, isLoading } = useFirestoreDoc<Espresso>(
+  const { details: espresso, isLoading } = useFirestoreDoc<BaseEspresso>(
     "espresso",
     espressoId
   );

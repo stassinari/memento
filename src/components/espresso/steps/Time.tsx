@@ -106,7 +106,7 @@ export const EspressoTime: React.FC<EspressoTimeProps> = ({
           </div>
 
           <FormInput
-            label="Final weight (g)"
+            label="Final yield (g)"
             id="actualWeight"
             inputProps={{
               ...register("actualWeight", {

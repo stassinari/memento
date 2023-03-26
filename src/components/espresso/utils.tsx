@@ -5,7 +5,9 @@ import { DataListItem } from "../DataList";
 export const espressoToDataListItem = (e: Espresso): DataListItem =>
   e.fromDecent === true
     ? {
-        link: `/drinks/espresso/${e.id ?? ""}`,
+        link: e.partial
+          ? `/drinks/espresso/${e.id ?? ""}/decent`
+          : `/drinks/espresso/${e.id ?? ""}`,
         topRow: {
           title: e.profileName,
           pill: e.partial ? "NEW !" : e.rating ? `${e.rating}/10 ★` : undefined,

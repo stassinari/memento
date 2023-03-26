@@ -56,9 +56,25 @@ const EspressoDetails = () => {
         >
           Clone
         </Button>
-        <Button variant="white" as={Link} to="edit" Icon={<PencilSquareIcon />}>
-          Edit details
-        </Button>
+        {espresso.fromDecent ? (
+          <Button
+            variant="white"
+            as={Link}
+            to="decent"
+            Icon={<PencilSquareIcon />}
+          >
+            Edit details
+          </Button>
+        ) : (
+          <Button
+            variant="white"
+            as={Link}
+            to="edit"
+            Icon={<PencilSquareIcon />}
+          >
+            Edit details
+          </Button>
+        )}
         <Button variant="white" as={Link} to="outcome" Icon={<SparklesIcon />}>
           Edit outcome
         </Button>

@@ -49,7 +49,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
   defaultValues,
   handleNestedSubmit,
 }) => {
-  const [showEquipment, setShowEquipment] = useState(false);
+  const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
   const methods = useForm<BeansEquipmentInputs>({
     defaultValues,
@@ -94,7 +94,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
           title="Equipment information"
           subtitle="This section is about equipment. Duh."
         >
-          {showEquipment ? (
+          {showEquipmentForm ? (
             <React.Fragment>
               <FormComboboxSingle
                 label="Machine"
@@ -180,7 +180,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
               <button
                 type="button"
                 tw="text-sm font-medium text-orange-500 hover:underline"
-                onClick={() => setShowEquipment(true)}
+                onClick={() => setShowEquipmentForm(true)}
               >
                 Change...
               </button>

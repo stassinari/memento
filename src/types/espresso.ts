@@ -39,10 +39,11 @@ export type DecentEspresso = DecentEspressoPrep & EspressoOutcome;
 export interface DecentEspressoPrep
   extends Omit<
     BaseEspressoPrep,
-    "beansWeight" | "fromDecent" | "waterTemperature" | "beans"
+    "beansWeight" | "fromDecent" | "waterTemperature" | "beans" | "targetWeight"
   > {
   beans?: DocumentReference | null;
   beansWeight?: number | null;
+  targetWeight?: number | null;
 
   fromDecent: true;
   partial?: boolean;
