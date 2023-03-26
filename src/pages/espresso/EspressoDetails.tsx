@@ -15,6 +15,7 @@ import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Espresso } from "../../types/espresso";
 import { getEyFromEspresso } from "../../utils";
 import { NotFound } from "../NotFound";
+import { DecentCharts } from "./DecentCharts";
 
 const EspressoDetails = () => {
   const { espressoId } = useParams();
@@ -84,6 +85,8 @@ const EspressoDetails = () => {
           Delete
         </Button>
       </div>
+
+      {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
       <Details
         title="Rating"
