@@ -138,13 +138,18 @@ const EspressoDetails = () => {
               ? dayjs(espresso.date.toDate()).format("DD MMM YYYY | H:m")
               : "",
           },
+          ...(espresso.fromDecent
+            ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
+            : []),
         ]}
       />
 
-      <BeansShortInfo
-        beansId={espresso.beans.id}
-        brewDate={espresso.date.toDate()}
-      />
+      {espresso.beans ? (
+        <BeansShortInfo
+          beansId={espresso.beans.id}
+          brewDate={espresso.date.toDate()}
+        />
+      ) : null}
 
       <Details
         title="Equipment"
@@ -168,12 +173,16 @@ const EspressoDetails = () => {
             label: "Beans weight",
             value: espresso.beansWeight ? `${espresso.beansWeight} g` : "",
           },
-          {
-            label: "Water temperature",
-            value: espresso.waterTemperature
-              ? `${espresso.waterTemperature} °C`
-              : "",
-          },
+          ...(!espresso.fromDecent
+            ? [
+                {
+                  label: "Water temperature",
+                  value: espresso.waterTemperature
+                    ? `${espresso.waterTemperature} °C`
+                    : "",
+                },
+              ]
+            : []),
           { label: "Grind setting", value: espresso.grindSetting ?? "" },
         ]}
       />

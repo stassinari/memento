@@ -1,9 +1,11 @@
 import { DocumentReference, Timestamp } from "firebase/firestore";
 import { TastingScores } from "./brew";
 
-export type Espresso = EspressoPrep & EspressoOutcome;
+export type Espresso = BaseEspresso | DecentEspresso;
 
-export interface EspressoPrep {
+export type BaseEspresso = BaseEspressoPrep & EspressoOutcome;
+
+export interface BaseEspressoPrep {
   id?: string;
 
   date: Timestamp;
@@ -16,24 +18,41 @@ export interface EspressoPrep {
   basket: string | null;
 
   targetWeight: number;
-  beansWeight: number; // FIXME wtf is this type? :O
+  beansWeight: number;
   waterTemperature: number | null;
   grindSetting: string | null;
 
   actualWeight: number | null;
   actualTime: number;
 
-  // FIXME split out and make proper DecentEspresso type
-  fromDecent?: boolean;
+  fromDecent?: false;
+}
+
+export type DecentEspresso = DecentEspressoPrep & EspressoOutcome;
+
+// interface DecentEspressoPartialPrep {
+//   partial?: true;
+//   profileName: string;
+//   fromDecent: true;
+// }
+
+export interface DecentEspressoPrep
+  extends Omit<
+    BaseEspressoPrep,
+    "beansWeight" | "fromDecent" | "waterTemperature" | "beans"
+  > {
+  beans?: DocumentReference | null;
+  beansWeight?: number | null;
+
+  fromDecent: true;
   partial?: boolean;
-  profileName?: string;
+  profileName: string;
 }
 
 export interface EspressoOutcome {
-  rating: number;
-  notes: string;
-  tastingScores: TastingScores;
-
+  rating: number | null;
+  notes: string | null;
+  tastingScores: TastingScores | null;
   tds: number | null;
 }
 
