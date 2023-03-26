@@ -57,12 +57,14 @@ interface DecentEspressoFormProps {
   defaultValues: DecentEspressoFormInputs;
   espressoList: Espresso[];
   mutation: (data: DecentEspressoFormInputs) => void;
+  backLink: string;
 }
 
 export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
   defaultValues,
   espressoList,
   mutation,
+  backLink,
 }) => {
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
@@ -270,7 +272,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
         </FormSection>
 
         <div tw="flex justify-end gap-4">
-          <Button variant="white" as={Link} to="/drinks/espresso">
+          <Button variant="white" as={Link} to={backLink}>
             Back
           </Button>
           <Button variant="primary" type="submit" colour="accent">

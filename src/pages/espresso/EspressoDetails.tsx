@@ -60,7 +60,7 @@ const EspressoDetails = () => {
           <Button
             variant="white"
             as={Link}
-            to="decent"
+            to="decent/edit"
             Icon={<PencilSquareIcon />}
           >
             Edit details
