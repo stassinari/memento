@@ -5,11 +5,12 @@ export type Espresso = BaseEspresso | DecentEspresso;
 
 export type BaseEspresso = BaseEspressoPrep & EspressoOutcome;
 
-export interface BaseEspressoPrep {
+interface SharedEspressoFields {
   id?: string;
 
   date: Timestamp;
-  beans: DocumentReference;
+
+  grindSetting: string | null;
 
   machine: string | null;
   grinder: string | null;
@@ -17,37 +18,19 @@ export interface BaseEspressoPrep {
   portafilter: string | null;
   basket: string | null;
 
+  actualTime: number;
+}
+
+export interface BaseEspressoPrep extends SharedEspressoFields {
+  beans: DocumentReference;
+
   targetWeight: number;
   beansWeight: number;
   waterTemperature: number | null;
-  grindSetting: string | null;
 
   actualWeight: number | null;
-  actualTime: number;
 
   fromDecent?: false;
-}
-
-export type DecentEspresso = DecentEspressoPrep & EspressoOutcome;
-
-// interface DecentEspressoPartialPrep {
-//   partial?: true;
-//   profileName: string;
-//   fromDecent: true;
-// }
-
-export interface DecentEspressoPrep
-  extends Omit<
-    BaseEspressoPrep,
-    "beansWeight" | "fromDecent" | "waterTemperature" | "beans" | "targetWeight"
-  > {
-  beans?: DocumentReference | null;
-  beansWeight?: number | null;
-  targetWeight?: number | null;
-
-  fromDecent: true;
-  partial?: boolean;
-  profileName: string;
 }
 
 export interface EspressoOutcome {
@@ -55,6 +38,22 @@ export interface EspressoOutcome {
   notes: string | null;
   tastingScores: TastingScores | null;
   tds: number | null;
+}
+
+export type DecentEspresso = DecentEspressoPrep & EspressoOutcome;
+
+export interface DecentEspressoPrep extends SharedEspressoFields {
+  beans?: DocumentReference | null;
+
+  targetWeight?: number | null;
+  beansWeight?: number | null;
+
+  actualWeight: number;
+
+  fromDecent: true;
+  partial?: boolean;
+  profileName: string;
+  uploadedAt: Date;
 }
 
 export interface DecentReadings {

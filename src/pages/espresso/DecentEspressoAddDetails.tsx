@@ -1,4 +1,4 @@
-import { doc, limit, orderBy, updateDoc } from "firebase/firestore";
+import { doc, orderBy, updateDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
@@ -21,20 +21,20 @@ export const decentEspressoToFirestore = (
   beans: doc(db, espresso.beans ?? ""),
 });
 
-export const DecentEspressoEditDetails = () => {
+export const DecentEspressoAddDetails = () => {
   const user = useCurrentUser();
   const { espressoId } = useParams();
 
   const navigate = useNavigate();
 
-  const { details: partialEspresso, isLoading } =
-    useFirestoreDoc<DecentEspressoPrep>("espresso", espressoId);
+  const {
+    details: partialEspresso,
+    isLoading,
+    docRef: existingEspressoRef,
+  } = useFirestoreDoc<DecentEspressoPrep>("espresso", espressoId);
 
   const { list: espressoList, isLoading: areEspressoLoading } =
-    useFirestoreCollection<Espresso>("espresso", [
-      orderBy("date", "desc"),
-      limit(1),
-    ]);
+    useFirestoreCollection<Espresso>("espresso", [orderBy("date", "desc")]);
 
   if (!user) throw new Error("User is not logged in.");
 
@@ -44,14 +44,6 @@ export const DecentEspressoEditDetails = () => {
     throw new Error("Espresso does not exist.");
   }
 
-  const existingEspressoRef = doc(
-    db,
-    "users",
-    user.uid,
-    "espresso",
-    espressoId
-  );
-
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
     await updateDoc(existingEspressoRef, decentEspressoToFirestore(data));
     navigate(`/drinks/espresso/${espressoId}`);
@@ -60,7 +52,7 @@ export const DecentEspressoEditDetails = () => {
   return (
     <React.Fragment>
       <h1 tw="text-3xl font-bold tracking-tight text-gray-900">
-        Complete Decent shot
+        Add Decent shot details
       </h1>
       <DecentEspressoForm
         defaultValues={decentEspressoFormEmptyValues(

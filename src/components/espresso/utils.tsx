@@ -6,7 +6,7 @@ export const espressoToDataListItem = (e: Espresso): DataListItem =>
   e.fromDecent === true
     ? {
         link: e.partial
-          ? `/drinks/espresso/${e.id ?? ""}/decent`
+          ? `/drinks/espresso/${e.id ?? ""}/decent/add`
           : `/drinks/espresso/${e.id ?? ""}`,
         topRow: {
           title: e.profileName,
@@ -17,7 +17,7 @@ export const espressoToDataListItem = (e: Espresso): DataListItem =>
           tags: [
             {
               icon: <MapPinIcon />,
-              label: `${e.targetWeight} : ${
+              label: `${e.targetWeight ? e.targetWeight : "?"} : ${
                 e.beansWeight ? e.beansWeight : "?"
               }`,
             },

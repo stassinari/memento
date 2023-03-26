@@ -16,7 +16,7 @@ import { BrewEditOutcome } from "./pages/brews/BrewEditOutcome";
 import { BrewsList } from "./pages/brews/BrewsList";
 import { DesignLibrary } from "./pages/DesignLibrary";
 import { DrinksPage } from "./pages/DrinksPage";
-import { DecentEspressoEditDetails } from "./pages/espresso/DecentEspressoEditDetails";
+import { DecentEspressoAddDetails } from "./pages/espresso/DecentEspressoAddDetails";
 import { EspressoClone } from "./pages/espresso/EspressoClone";
 import { EspressoEditDetails } from "./pages/espresso/EspressoEditDetails";
 import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
@@ -112,8 +112,12 @@ export const App = () => {
                 element={<EspressoEditDetails />}
               />
               <Route
-                path="drinks/espresso/:espressoId/decent"
-                element={<DecentEspressoEditDetails />}
+                path="drinks/espresso/:espressoId/decent/add"
+                element={<DecentEspressoAddDetails />}
+              />
+              <Route
+                path="drinks/espresso/:espressoId/decent/edit"
+                element={<DecentEspressoAddDetails />}
               />
               <Route
                 path="drinks/espresso/:espressoId/outcome"

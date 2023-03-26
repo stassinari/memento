@@ -26,7 +26,7 @@ export interface DecentEspressoFormInputs {
   portafilter: string | null;
   basket: string | null;
 
-  actualWeight: number | null;
+  actualWeight: number; // FIXME this should be nullable if no scale is used
   targetWeight: number | null;
   beansWeight: number | null;
   grindSetting: string | null;
@@ -38,12 +38,13 @@ export const decentEspressoFormEmptyValues: (
 ) => DecentEspressoFormInputs = (partialEspresso, latestEspresso) => ({
   date: partialEspresso.date.toDate(),
 
-  actualWeight: partialEspresso.actualWeight,
-  beansWeight: partialEspresso.beansWeight ? partialEspresso.beansWeight : null,
-  targetWeight: null,
-  grindSetting: null,
-
   beans: null,
+  grindSetting: null,
+  actualTime: partialEspresso.actualTime,
+  actualWeight: partialEspresso.actualWeight,
+
+  targetWeight: partialEspresso.targetWeight ?? null,
+  beansWeight: null,
 
   machine: latestEspresso ? latestEspresso.machine : null,
   grinder: latestEspresso ? latestEspresso.grinder : null,
