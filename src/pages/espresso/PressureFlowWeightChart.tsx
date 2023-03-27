@@ -9,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 import { theme } from "twin.macro";
+import { CustomTooltip } from "../../components/espresso/charts/ChartTooltip";
 import { DecentReadings } from "../../types/espresso";
 
 interface PressureFlowWeightChartProps {
@@ -93,11 +94,11 @@ export const PressureFlowWeightChart: React.FC<
             animationDuration={100}
             animationEasing="ease-out"
             // FIXME add custom tooltip
-            //   content={(props) => {
-            //     return (
-            //       <CustomTooltip title={props.label} payload={props.payload} />
-            //     );
-            //   }}
+            content={(props) => {
+              return (
+                <CustomTooltip title={props.label} payload={props.payload} />
+              );
+            }}
           />
           {/* FIXME add custom legend */}
           {/* <Legend content={CustomLegend} /> */}

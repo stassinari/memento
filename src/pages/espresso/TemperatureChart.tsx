@@ -8,6 +8,7 @@ import {
   YAxis,
 } from "recharts";
 import { theme } from "twin.macro";
+import { CustomTooltip } from "../../components/espresso/charts/ChartTooltip";
 import { DecentReadings } from "../../types/espresso";
 
 interface TemperatureChartProps {
@@ -79,11 +80,11 @@ export const TemperatureChart: React.FC<TemperatureChartProps> = ({
           <Tooltip
             animationDuration={100}
             animationEasing="ease-out"
-            // content={(props) => {
-            //   return (
-            //     <CustomTooltip title={props.label} payload={props.payload} />
-            //   );
-            // }}
+            content={(props) => {
+              return (
+                <CustomTooltip title={props.label} payload={props.payload} />
+              );
+            }}
           />
           {/* <Legend content={CustomLegend} /> */}
           <Line
