@@ -30,7 +30,7 @@ const Circle: React.FC<CircleProps> = ({ color }) => {
   );
 };
 
-export const CustomTooltip: React.FC<CustomTooltipProps> = ({
+export const ChartTooltip: React.FC<CustomTooltipProps> = ({
   title,
   payload,
 }) => {

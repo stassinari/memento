@@ -1,5 +1,6 @@
 import {
   CartesianGrid,
+  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -8,7 +9,8 @@ import {
   YAxis,
 } from "recharts";
 import { theme } from "twin.macro";
-import { CustomTooltip } from "../../components/espresso/charts/ChartTooltip";
+import { ChartLegend } from "../../components/espresso/charts/ChartLegend";
+import { ChartTooltip } from "../../components/espresso/charts/ChartTooltip";
 import { DecentReadings } from "../../types/espresso";
 
 interface TemperatureChartProps {
@@ -82,11 +84,11 @@ export const TemperatureChart: React.FC<TemperatureChartProps> = ({
             animationEasing="ease-out"
             content={(props) => {
               return (
-                <CustomTooltip title={props.label} payload={props.payload} />
+                <ChartTooltip title={props.label} payload={props.payload} />
               );
             }}
           />
-          {/* <Legend content={CustomLegend} /> */}
+          <Legend content={ChartLegend} />
           <Line
             type="basis"
             dot={false}
