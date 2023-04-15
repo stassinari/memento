@@ -1,4 +1,4 @@
-import { limit, orderBy } from "firebase/firestore";
+import { orderBy } from "firebase/firestore";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
@@ -7,10 +7,9 @@ import { brewToDataListItem } from "../../components/brews/utils";
 import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
 import { Brew } from "../../types/brew";
 
-export const BrewsList = () => {
+export const BrewsListAll = () => {
   const { list: brewsList } = useFirestoreCollection<Brew>("brews", [
     orderBy("date", "desc"),
-    limit(50),
   ]);
 
   return (
@@ -22,11 +21,6 @@ export const BrewsList = () => {
       </div>
       <div>
         <DataList items={brewsList.map(brewToDataListItem)} />
-      </div>
-      <div tw="mt-4 text-center">
-        <Button as={RouterLink} to="all" variant="white" colour="accent">
-          View all brews
-        </Button>
       </div>
     </div>
   );

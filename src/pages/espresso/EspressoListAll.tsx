@@ -1,4 +1,4 @@
-import { limit, orderBy } from "firebase/firestore";
+import { orderBy } from "firebase/firestore";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
@@ -7,10 +7,9 @@ import { espressoToDataListItem } from "../../components/espresso/utils";
 import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
 import { Espresso } from "../../types/espresso";
 
-const EspressoList = () => {
+const EspressoListAll = () => {
   const { list: espressoList } = useFirestoreCollection<Espresso>("espresso", [
     orderBy("date", "desc"),
-    limit(50),
   ]);
 
   return (
@@ -23,13 +22,8 @@ const EspressoList = () => {
       <div>
         <DataList items={espressoList.map(espressoToDataListItem)} />
       </div>
-      <div tw="mt-4 text-center">
-        <Button as={RouterLink} to="all" variant="white" colour="accent">
-          View all espresso
-        </Button>
-      </div>
     </div>
   );
 };
 
-export default EspressoList;
+export default EspressoListAll;
