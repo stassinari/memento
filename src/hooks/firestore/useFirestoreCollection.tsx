@@ -1,9 +1,9 @@
 import {
-  collection,
   CollectionReference,
-  onSnapshot,
-  query as fbQuery,
   QueryConstraint,
+  collection,
+  query as fbQuery,
+  onSnapshot,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";

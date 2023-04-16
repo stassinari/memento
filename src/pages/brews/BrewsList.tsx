@@ -1,18 +1,25 @@
 import { limit, orderBy } from "firebase/firestore";
+import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
 import { brewToDataListItem } from "../../components/brews/utils";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useBuildQuery } from "../../hooks/firestore/useBuildQuery";
+import { useFirestoreCollectionNew } from "../../hooks/firestore/useFirestoreCollectionNew";
 import { Brew } from "../../types/brew";
 
 export const BrewsList = () => {
-  const { list: brewsList } = useFirestoreCollection<Brew>("brews", [
-    orderBy("date", "desc"),
-    limit(50),
-  ]);
+  const [brewLimit, setBrewLimit] = useState(50);
 
+  const filters = useMemo(() => {
+    return [orderBy("date", "desc"), limit(brewLimit)];
+  }, [brewLimit]);
+
+  const query = useBuildQuery<Brew>("brews", filters);
+  const { list: brewList } = useFirestoreCollectionNew<Brew>(query);
+
+  console.log("brewList");
   return (
     <div>
       <div tw="mb-4 text-right">
@@ -21,9 +28,16 @@ export const BrewsList = () => {
         </Button>
       </div>
       <div>
-        <DataList items={brewsList.map(brewToDataListItem)} />
+        <DataList items={brewList.map(brewToDataListItem)} />
       </div>
-      <div tw="mt-4 text-center">
+      <div tw="flex justify-center gap-4 mt-4">
+        <Button
+          variant="white"
+          colour="accent"
+          onClick={() => setBrewLimit(brewLimit + 50)}
+        >
+          Load more
+        </Button>
         <Button as={RouterLink} to="all" variant="white" colour="accent">
           View all brews
         </Button>
