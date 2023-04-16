@@ -1,14 +1,15 @@
 import { doc, limit, orderBy, setDoc } from "firebase/firestore";
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import {
   BrewForm,
-  brewFormEmptyValues,
   BrewFormInputs,
+  brewFormEmptyValues,
 } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Brew } from "../../types/brew";
 
@@ -18,10 +19,15 @@ export const brewToFirestore = (brew: BrewFormInputs) => ({
 });
 
 export const BrewsAdd: React.FC = () => {
+  console.log("BrewsAdd");
+
   const navigate = useNavigate();
 
-  const { list: brewsList, isLoading: areBrewsLoading } =
-    useFirestoreCollection<Brew>("brews", [orderBy("date", "desc"), limit(1)]);
+  const filters = useMemo(() => [orderBy("date", "desc"), limit(1)], []);
+
+  const query = useCollectionQuery<Brew>("brews", filters);
+  const { list: brewsList, isLoading } =
+    useFirestoreCollectionOneTime<Brew>(query);
 
   const newBrewRef = useNewRef("brews");
 
@@ -30,7 +36,7 @@ export const BrewsAdd: React.FC = () => {
     navigate(`/drinks/brews/${newBrewRef.id}`);
   };
 
-  if (areBrewsLoading) return null;
+  if (isLoading) return null;
 
   return (
     <BrewForm

@@ -1,16 +1,21 @@
 import { orderBy } from "firebase/firestore";
+import { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
 import { espressoToDataListItem } from "../../components/espresso/utils";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
 import { Espresso } from "../../types/espresso";
 
 const EspressoListAll = () => {
-  const { list: espressoList } = useFirestoreCollection<Espresso>("espresso", [
-    orderBy("date", "desc"),
-  ]);
+  console.log("EspressoListAll");
+
+  const filters = useMemo(() => [orderBy("date", "desc")], []);
+  const query = useCollectionQuery<Espresso>("espresso", filters);
+  const { list: espressoList } =
+    useFirestoreCollectionRealtime<Espresso>(query);
 
   return (
     <div>

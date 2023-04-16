@@ -1,5 +1,5 @@
 import { doc, orderBy, setDoc } from "firebase/firestore";
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import {
@@ -7,7 +7,8 @@ import {
   DecentEspressoFormInputs,
 } from "../../components/espresso/steps/DecentEspressoForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { DecentEspresso, Espresso } from "../../types/espresso";
@@ -20,6 +21,8 @@ export const decentEspressoToFirestore = (
 });
 
 export const DecentEspressoEditDetails = () => {
+  console.log("DecentEspressoEditDetails");
+
   const user = useCurrentUser();
   const { espressoId } = useParams();
 
@@ -28,8 +31,10 @@ export const DecentEspressoEditDetails = () => {
   const { details: decentEspresso, isLoading } =
     useFirestoreDoc<DecentEspresso>("espresso", espressoId);
 
+  const filters = useMemo(() => [orderBy("date", "desc")], []);
+  const query = useCollectionQuery<Espresso>("espresso", filters);
   const { list: espressoList, isLoading: areEspressoLoading } =
-    useFirestoreCollection<Espresso>("espresso", [orderBy("date", "desc")]);
+    useFirestoreCollectionOneTime(query);
 
   if (!user) throw new Error("User is not logged in.");
 

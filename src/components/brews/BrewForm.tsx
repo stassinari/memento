@@ -1,21 +1,22 @@
 import { orderBy } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import "twin.macro";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../types/beans";
 import { Brew } from "../../types/brew";
 import {
   BeansMethodEquipment,
-  beansMethodEquipmentEmptyValues,
   BeansMethodEquipmentInputs,
+  beansMethodEquipmentEmptyValues,
 } from "./steps/BeansMethodEquipment";
 import {
   BrewRecipe,
-  brewRecipeEmptyValues,
   BrewRecipeInputs,
+  brewRecipeEmptyValues,
 } from "./steps/Recipe";
-import { BrewTime, brewTimeEmptyValues, BrewTimeInputs } from "./steps/Time";
+import { BrewTime, BrewTimeInputs, brewTimeEmptyValues } from "./steps/Time";
 
 // FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface BrewFormInputs
@@ -48,19 +49,23 @@ export const BrewForm: React.FC<BrewFormProps> = ({
   buttonLabel,
   mutation,
 }) => {
+  console.log("BrewForm");
+
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] = useState<BrewFormStep>(
     "beansMethodEquipment"
   );
 
+  // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
+  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
+  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
   const { list: beansList, isLoading: areBeansLoading } =
-    useFirestoreCollection<Beans>("beans", [
-      orderBy("roastDate", "desc"),
-      // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
-    ]);
+    useFirestoreCollectionOneTime<Beans>(beansQuery);
 
+  const brewFilters = useMemo(() => [orderBy("date", "desc")], []);
+  const brewQuery = useCollectionQuery<Brew>("brews", brewFilters);
   const { list: brewsList, isLoading: areBrewsLoading } =
-    useFirestoreCollection<Brew>("brews", [orderBy("date", "desc")]);
+    useFirestoreCollectionOneTime<Brew>(brewQuery);
 
   const onSubmit: SubmitHandler<BrewFormInputs> = async (data) => {
     await mutation(data);

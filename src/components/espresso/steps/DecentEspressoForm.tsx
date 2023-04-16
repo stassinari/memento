@@ -1,15 +1,16 @@
 import { orderBy } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import "twin.macro";
-import { useFirestoreCollection } from "../../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "../../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../../types/beans";
 import { DecentEspressoPrep, Espresso } from "../../../types/espresso";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
+import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInput } from "../../form/FormInput";
 import { FormInputDate } from "../../form/FormInputDate";
@@ -68,11 +69,12 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
 }) => {
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
+  // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
+  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
+
+  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
   const { list: beansList, isLoading: areBeansLoading } =
-    useFirestoreCollection<Beans>("beans", [
-      orderBy("roastDate", "desc"),
-      // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
-    ]);
+    useFirestoreCollectionOneTime<Beans>(beansQuery);
 
   const methods = useForm<DecentEspressoFormInputs>({
     defaultValues,

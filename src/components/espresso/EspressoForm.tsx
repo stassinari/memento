@@ -1,24 +1,25 @@
 import { orderBy } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import "twin.macro";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../types/beans";
 import { Espresso } from "../../types/espresso";
 import {
   BeansEquipment,
-  beansEquipmentEmptyValues,
   BeansEquipmentInputs,
+  beansEquipmentEmptyValues,
 } from "./steps/BeansEquipment";
 import {
   EspressoRecipe,
-  espressoRecipeEmptyValues,
   EspressoRecipeInputs,
+  espressoRecipeEmptyValues,
 } from "./steps/Recipe";
 import {
   EspressoTime,
-  espressoTimeEmptyValues,
   EspressoTimeInputs,
+  espressoTimeEmptyValues,
 } from "./steps/Time";
 
 // FIXME introduce global "createdAt" and "updatedAt" on every object
@@ -52,18 +53,27 @@ export const EspressoForm: React.FC<EspressoFormProps> = ({
   buttonLabel,
   mutation,
 }) => {
+  console.log("EspressoForm");
+
   const [espressoFormInputs, setEspressoFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] =
     useState<EspressoFormStep>("beansEquipment");
 
+  // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
+  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
+
+  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
   const { list: beansList, isLoading: areBeansLoading } =
-    useFirestoreCollection<Beans>("beans", [
-      orderBy("roastDate", "desc"),
-      // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
-    ]);
+    useFirestoreCollectionOneTime<Beans>(beansQuery);
+
+  const espressoFilters = useMemo(() => [orderBy("date", "desc")], []);
+  const espressoQuery = useCollectionQuery<Espresso>(
+    "espresso",
+    espressoFilters
+  );
 
   const { list: espressoList, isLoading: areEspressosLoading } =
-    useFirestoreCollection<Espresso>("espresso", [orderBy("date", "desc")]);
+    useFirestoreCollectionOneTime<Espresso>(espressoQuery);
 
   const onSubmit: SubmitHandler<EspressoFormInputs> = async (data) => {
     await mutation(data);
