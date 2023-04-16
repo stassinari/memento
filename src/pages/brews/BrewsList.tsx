@@ -17,7 +17,7 @@ export const BrewsList = () => {
   }, [brewLimit]);
 
   const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: brewList } = useFirestoreCollectionRealtime<Brew>(query);
+  const { list: brewsList } = useFirestoreCollectionRealtime<Brew>(query);
 
   console.log("brewList");
   return (
@@ -28,7 +28,7 @@ export const BrewsList = () => {
         </Button>
       </div>
       <div>
-        <DataList items={brewList.map(brewToDataListItem)} />
+        <DataList items={brewsList.map(brewToDataListItem)} />
       </div>
       <div tw="flex justify-center gap-4 mt-4">
         <Button

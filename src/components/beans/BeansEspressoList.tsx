@@ -4,15 +4,17 @@ import "twin.macro";
 import { db } from "../../firebaseConfig";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
-import { Brew } from "../../types/brew";
+import { Espresso } from "../../types/espresso";
 import { DataList } from "../DataList";
-import { brewToDataListItem } from "../brews/utils";
+import { espressoToDataListItem } from "../espresso/utils";
 
-interface BeansBrewListProps {
+interface BeansEspressoListProps {
   beansId: string;
 }
 
-export const BeansBrewList: React.FC<BeansBrewListProps> = ({ beansId }) => {
+export const BeansEspressoList: React.FC<BeansEspressoListProps> = ({
+  beansId,
+}) => {
   const filters = useMemo(() => {
     return [
       where("beans", "==", doc(db, "beans", beansId)),
@@ -20,16 +22,17 @@ export const BeansBrewList: React.FC<BeansBrewListProps> = ({ beansId }) => {
     ];
   }, [beansId]);
 
-  const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: brewsList } = useFirestoreCollectionRealtime<Brew>(query);
+  const query = useCollectionQuery<Espresso>("espresso", filters);
+  const { list: espressoList } =
+    useFirestoreCollectionRealtime<Espresso>(query);
 
-  console.log("BeansBrewList");
+  console.log("BeansEspressoList");
 
   return (
     <div>
-      <h3 tw="mb-5 text-lg font-medium leading-6 text-gray-900">Brews</h3>
+      <h3 tw="mb-5 text-lg font-medium leading-6 text-gray-900">Espresso</h3>
 
-      <DataList items={brewsList.map(brewToDataListItem)} />
+      <DataList items={espressoList.map(espressoToDataListItem)} />
     </div>
   );
 };

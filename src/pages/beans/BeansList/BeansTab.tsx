@@ -30,7 +30,7 @@ export const BeansTab: React.FC<BeansTabProps> = ({
 
   const sortedAndFiltered = beansList
     .sort((a, b) =>
-      (a.roastDate?.toDate() || 0) < (b.roastDate?.toDate() || 0) ? 1 : -1
+      (a.roastDate?.toDate() ?? 0) < (b.roastDate?.toDate() ?? 0) ? 1 : -1
     )
     .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
 

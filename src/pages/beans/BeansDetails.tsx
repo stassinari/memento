@@ -14,9 +14,10 @@ import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
-import { BeansBrewList } from "../../components/beans/BeansBrewList";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
+import { BeansBrewList } from "../../components/beans/BeansBrewList";
+import { BeansEspressoList } from "../../components/beans/BeansEspressoList";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Beans } from "../../types/beans";
 import { NotFound } from "../NotFound";
@@ -121,7 +122,10 @@ export const BeansDetails = () => {
         </Button>
       </div>
 
-      <BeansBrewList beansId={beans.id ?? ""} />
+      <div tw="grid gap-4 lg:grid-cols-2">
+        <BeansBrewList beansId={beans.id ?? ""} />
+        <BeansEspressoList beansId={beans.id ?? ""} />
+      </div>
 
       <Details
         title="Roast information"
