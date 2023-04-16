@@ -6,7 +6,7 @@ interface UseFirestoreCollectionResult<T> {
   isLoading: boolean;
 }
 
-export const useFirestoreCollectionNew = <T,>(
+export const useFirestoreCollectionRealtime = <T,>(
   query: Query<T> | null
 ): UseFirestoreCollectionResult<T> => {
   const [list, setList] = useState<T[]>([]);

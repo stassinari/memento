@@ -6,7 +6,7 @@ import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
 import { brewToDataListItem } from "../../components/brews/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionNew } from "../../hooks/firestore/useFirestoreCollectionNew";
+import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
 import { Brew } from "../../types/brew";
 
 export const BrewsList = () => {
@@ -17,7 +17,7 @@ export const BrewsList = () => {
   }, [brewLimit]);
 
   const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: brewList } = useFirestoreCollectionNew<Brew>(query);
+  const { list: brewList } = useFirestoreCollectionRealtime<Brew>(query);
 
   console.log("brewList");
   return (

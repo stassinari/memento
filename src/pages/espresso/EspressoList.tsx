@@ -6,7 +6,7 @@ import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
 import { espressoToDataListItem } from "../../components/espresso/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionNew } from "../../hooks/firestore/useFirestoreCollectionNew";
+import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
 import { Espresso } from "../../types/espresso";
 
 const EspressoList = () => {
@@ -17,7 +17,8 @@ const EspressoList = () => {
   }, [espressoLimit]);
 
   const query = useCollectionQuery<Espresso>("espresso", filters);
-  const { list: espressoList } = useFirestoreCollectionNew<Espresso>(query);
+  const { list: espressoList } =
+    useFirestoreCollectionRealtime<Espresso>(query);
 
   console.log("espressoList");
 
