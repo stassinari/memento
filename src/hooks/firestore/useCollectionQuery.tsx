@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { db } from "../../firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
-export const useBuildQuery = <T,>(
+export const useCollectionQuery = <T,>(
   type: "brews" | "beans" | "espresso",
   filters: QueryConstraint[] = []
 ): Query<T> | null => {

@@ -5,7 +5,7 @@ import "twin.macro";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
 import { espressoToDataListItem } from "../../components/espresso/utils";
-import { useBuildQuery } from "../../hooks/firestore/useBuildQuery";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionNew } from "../../hooks/firestore/useFirestoreCollectionNew";
 import { Espresso } from "../../types/espresso";
 
@@ -16,7 +16,7 @@ const EspressoList = () => {
     return [orderBy("date", "desc"), limit(espressoLimit)];
   }, [espressoLimit]);
 
-  const query = useBuildQuery<Espresso>("espresso", filters);
+  const query = useCollectionQuery<Espresso>("espresso", filters);
   const { list: espressoList } = useFirestoreCollectionNew<Espresso>(query);
 
   console.log("espressoList");

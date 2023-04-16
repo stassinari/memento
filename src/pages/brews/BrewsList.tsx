@@ -5,7 +5,7 @@ import "twin.macro";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
 import { brewToDataListItem } from "../../components/brews/utils";
-import { useBuildQuery } from "../../hooks/firestore/useBuildQuery";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionNew } from "../../hooks/firestore/useFirestoreCollectionNew";
 import { Brew } from "../../types/brew";
 
@@ -16,7 +16,7 @@ export const BrewsList = () => {
     return [orderBy("date", "desc"), limit(brewLimit)];
   }, [brewLimit]);
 
-  const query = useBuildQuery<Brew>("brews", filters);
+  const query = useCollectionQuery<Brew>("brews", filters);
   const { list: brewList } = useFirestoreCollectionNew<Brew>(query);
 
   console.log("brewList");
