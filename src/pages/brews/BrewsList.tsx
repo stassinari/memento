@@ -12,9 +12,10 @@ import { Brew } from "../../types/brew";
 export const BrewsList = () => {
   const [brewLimit, setBrewLimit] = useState(50);
 
-  const filters = useMemo(() => {
-    return [orderBy("date", "desc"), limit(brewLimit)];
-  }, [brewLimit]);
+  const filters = useMemo(
+    () => [orderBy("date", "desc"), limit(brewLimit)],
+    [brewLimit]
+  );
 
   const query = useCollectionQuery<Brew>("brews", filters);
   const { list: brewsList } = useFirestoreCollectionRealtime<Brew>(query);

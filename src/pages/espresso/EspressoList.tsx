@@ -12,9 +12,10 @@ import { Espresso } from "../../types/espresso";
 const EspressoList = () => {
   const [espressoLimit, setEspressoLimit] = useState(50);
 
-  const filters = useMemo(() => {
-    return [orderBy("date", "desc"), limit(espressoLimit)];
-  }, [espressoLimit]);
+  const filters = useMemo(
+    () => [orderBy("date", "desc"), limit(espressoLimit)],
+    [espressoLimit]
+  );
 
   const query = useCollectionQuery<Espresso>("espresso", filters);
   const { list: espressoList } =

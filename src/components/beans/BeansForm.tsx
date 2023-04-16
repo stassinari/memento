@@ -1,5 +1,5 @@
 import { orderBy } from "firebase/firestore";
-import React from "react";
+import React, { useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { theme } from "twin.macro";
@@ -7,12 +7,14 @@ import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
 import { varietals } from "../../data/varietals";
-import { useFirestoreCollection } from "../../hooks/firestore/useFirestoreCollection";
+import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { Beans, BeansBlendPart, RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
+import { TextWithImageOption } from "../ListOption";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
@@ -22,7 +24,6 @@ import { FormInputRadio } from "../form/FormInputRadio";
 import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { extractSuggestions } from "../form/FormSuggestions";
-import { TextWithImageOption } from "../ListOption";
 import { BeansBlendForm, blendEmptyValues } from "./BeansBlendForm";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 
@@ -97,12 +98,15 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   mutation,
   showStorageSection = true,
 }) => {
+  console.log("BeansForm");
+
   const navigate = useNavigate();
 
-  const { list: beansList, isLoading } = useFirestoreCollection<Beans>(
-    "beans",
-    [orderBy("roastDate", "desc")]
-  );
+  const filters = useMemo(() => [orderBy("roastDate", "desc")], []);
+
+  const query = useCollectionQuery<Beans>("beans", filters);
+  const { list: beansList, isLoading } =
+    useFirestoreCollectionOneTime<Beans>(query);
 
   const isSm = useMediaQuery(`(min-width: ${theme`screens.sm`})`);
 

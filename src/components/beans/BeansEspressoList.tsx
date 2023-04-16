@@ -15,12 +15,13 @@ interface BeansEspressoListProps {
 export const BeansEspressoList: React.FC<BeansEspressoListProps> = ({
   beansId,
 }) => {
-  const filters = useMemo(() => {
-    return [
+  const filters = useMemo(
+    () => [
       where("beans", "==", doc(db, "beans", beansId)),
       orderBy("date", "desc"),
-    ];
-  }, [beansId]);
+    ],
+    [beansId]
+  );
 
   const query = useCollectionQuery<Espresso>("espresso", filters);
   const { list: espressoList } =

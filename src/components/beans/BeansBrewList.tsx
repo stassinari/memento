@@ -13,12 +13,13 @@ interface BeansBrewListProps {
 }
 
 export const BeansBrewList: React.FC<BeansBrewListProps> = ({ beansId }) => {
-  const filters = useMemo(() => {
-    return [
+  const filters = useMemo(
+    () => [
       where("beans", "==", doc(db, "beans", beansId)),
       orderBy("date", "desc"),
-    ];
-  }, [beansId]);
+    ],
+    [beansId]
+  );
 
   const query = useCollectionQuery<Brew>("brews", filters);
   const { list: brewsList } = useFirestoreCollectionRealtime<Brew>(query);
