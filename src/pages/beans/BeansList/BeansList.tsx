@@ -50,6 +50,8 @@ const tabs: BeansTabProps[] = [
 export const BeansList = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  console.log("BeansList");
+
   return (
     <div>
       <Button as={Link} to="add" variant="primary" colour="accent">

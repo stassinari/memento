@@ -1,9 +1,10 @@
 import { QueryConstraint } from "firebase/firestore";
 import { Fragment, ReactNode } from "react";
 import "twin.macro";
-import { beansToDataListItem } from "../../../components/beans/utils";
 import { DataList } from "../../../components/DataList";
-import { useFirestoreCollection } from "../../../hooks/firestore/useFirestoreCollection";
+import { beansToDataListItem } from "../../../components/beans/utils";
+import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionRealtime } from "../../../hooks/firestore/useFirestoreCollectionRealtime";
 import { Beans } from "../../../types/beans";
 import { isNotFrozenOrIsThawed } from "../../../util";
 
@@ -19,10 +20,11 @@ export const BeansTab: React.FC<BeansTabProps> = ({
   removeFrozen,
   EmptyState,
 }) => {
-  const { list: beansList, isLoading } = useFirestoreCollection<Beans>(
-    "beans",
-    filters
-  );
+  console.log("BeansTab");
+
+  const query = useCollectionQuery<Beans>("beans", filters);
+  const { list: beansList, isLoading } =
+    useFirestoreCollectionRealtime<Beans>(query);
 
   if (isLoading) return null;
 
