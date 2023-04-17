@@ -41,6 +41,11 @@ export const DecentEspressoAddDetails = () => {
   const { list: espressoList, isLoading: areEspressoLoading } =
     useFirestoreCollectionOneTime(query);
 
+  const lastNonPartialEspresso = useMemo(
+    () => espressoList.filter((e) => e.fromDecent && !e.partial)[0],
+    [espressoList]
+  );
+
   if (!user) throw new Error("User is not logged in.");
 
   if (isLoading || areEspressoLoading) return null;
@@ -62,7 +67,7 @@ export const DecentEspressoAddDetails = () => {
       <DecentEspressoForm
         defaultValues={decentEspressoFormEmptyValues(
           partialEspresso,
-          espressoList[0]
+          lastNonPartialEspresso
         )}
         espressoList={espressoList}
         mutation={editDecentEspresso}
