@@ -75,8 +75,8 @@ export const App = () => {
           </Route>
 
           {/* Add routes that REQUIRE the user to be logged in */}
-          <Route path="/" element={<Layout />}>
-            <Route element={<RequireAuth />}>
+          <Route element={<RequireAuth />}>
+            <Route element={<Layout />}>
               <Route path="/" element={<Homepage />} />
 
               {/* Beans */}
@@ -91,10 +91,6 @@ export const App = () => {
               {/* Brews */}
               <Route path="drinks/brews" element={<BrewsList />} />
               <Route path="drinks/brews/all" element={<BrewsListAll />} />
-              <Route
-                path="drinks/brews/table"
-                element={<BrewsTableWrapper />}
-              />
               <Route path="drinks/brews/add" element={<BrewsAdd />} />
               <Route path="drinks/brews/:brewId" element={<BrewDetails />} />
               <Route
@@ -145,6 +141,12 @@ export const App = () => {
               <Route path="profile" element={<Profile />} />
 
               <Route path="design-library" element={<DesignLibrary />} />
+            </Route>
+            <Route element={<Layout fullWidth />}>
+              <Route
+                path="drinks/brews/table"
+                element={<BrewsTableWrapper />}
+              />
             </Route>
           </Route>
         </Routes>

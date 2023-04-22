@@ -14,7 +14,11 @@ export const layoutContainerStyles = [
   `,
 ];
 
-export const Layout = () => {
+interface LayoutProps {
+  fullWidth?: boolean;
+}
+
+export const Layout: React.FC<LayoutProps> = ({ fullWidth = false }) => {
   return (
     <div css={layoutContainerStyles}>
       <SidebarNav />
@@ -23,7 +27,14 @@ export const Layout = () => {
 
         <main css={tw`flex-1`}>
           <div tw="py-6">
-            <div tw="px-4 mx-auto max-w-7xl sm:px-6 lg:px-16 2xl:px-32">
+            <div
+              css={[
+                tw`mx-auto`,
+                fullWidth
+                  ? tw`px-4 sm:px-6 lg:px-8 2xl:px-12`
+                  : tw`px-4 max-w-7xl sm:px-6 lg:px-16 2xl:px-32`,
+              ]}
+            >
               <Suspense>
                 <Outlet />
               </Suspense>
@@ -35,5 +46,3 @@ export const Layout = () => {
     </div>
   );
 };
-
-const Fallback = () => <div>Loading stuff</div>;

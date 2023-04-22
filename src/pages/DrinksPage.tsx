@@ -6,6 +6,12 @@ export const DrinksPage = () => (
     <ul>
       <li>
         <Link to="brews">Go to brews</Link>
+
+        <ul>
+          <li>
+            <Link to="brews/table">Go to brews table</Link>
+          </li>
+        </ul>
       </li>
       <li>
         <Link to="espresso">Go to espressos</Link>
