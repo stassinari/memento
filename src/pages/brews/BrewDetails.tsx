@@ -8,9 +8,9 @@ import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
-import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
+import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { Brew } from "../../types/brew";
 import { getEyFromBrew } from "../../utils";
@@ -142,9 +142,7 @@ export const BrewDetails = () => {
         rows={[
           {
             label: "Date",
-            value: brew.date
-              ? dayjs(brew.date.toDate()).format("DD MMM YYYY | H:m")
-              : "",
+            value: dayjs(brew.date.toDate()).format("DD MMM YYYY | H:m"),
           },
           { label: "Method", value: brew.method },
           // { label: "Beans", value: brew.beans }, TBD
