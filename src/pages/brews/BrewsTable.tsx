@@ -9,12 +9,14 @@ import {
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { orderBy } from "firebase/firestore";
+import { countBy, maxBy, mean } from "lodash";
 import { useMemo, useState } from "react";
 import tw from "twin.macro";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../types/beans";
 import { Brew } from "../../types/brew";
+import { roundToDecimal } from "../../utils";
 
 type BrewFlatForTable = Omit<Brew, "beans"> & { beans?: Beans };
 
@@ -115,8 +117,6 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
     [beansList, brewsList]
   );
 
-  console.log(data);
-
   const table = useReactTable({
     data,
     columns,
@@ -126,8 +126,40 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
     getSortedRowModel: getSortedRowModel(),
   });
 
+  const totalStats: Stat[] = useMemo(() => {
+    const totalNumberOfBrews = {
+      name: "Total number of brews",
+      stat: brewsList.length.toString(),
+    };
+
+    const averageRating = {
+      name: "Average (mean) rating",
+      stat: roundToDecimal(
+        mean(
+          brewsList.filter((b) => b.rating && b.rating > 0).map((b) => b.rating)
+        ),
+        2
+      ).toString(),
+      statSmall: "/ 10",
+    };
+
+    const methodOccurrences = countBy(brewsList.map((b) => b.method));
+    const mostUsedMethod =
+      maxBy(Object.keys(methodOccurrences), (o) => methodOccurrences[o]) ?? "";
+    const correspondingNumber = methodOccurrences[mostUsedMethod];
+
+    const mostUsedMethodStat = {
+      name: "Most used method",
+      stat: mostUsedMethod,
+      statSmall: `(${correspondingNumber} times)`,
+    };
+
+    return [totalNumberOfBrews, averageRating, mostUsedMethodStat];
+  }, [brewsList]);
+
   return (
     <div>
+      <Stats title="Brew stats" stats={totalStats} />
       <div tw="flow-root mt-8">
         <div tw="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div tw="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -137,9 +169,6 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => {
-                        const isSorted = header.column.getIsSorted();
-                        console.log(isSorted);
-
                         return (
                           <th
                             key={header.id}
@@ -161,27 +190,21 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
                                   header.column.columnDef.header,
                                   header.getContext()
                                 )}
-                                <span className="flex-none ml-2 text-gray-900 bg-gray-200 rounded group-hover:bg-gray-300">
+                                <span tw="flex-none ml-2 text-gray-900 bg-gray-200 rounded group-hover:bg-gray-300">
                                   {header.column.getIsSorted() === "asc" ? (
                                     <ChevronUpIcon
-                                      className="w-5 h-5"
+                                      tw="w-5 h-5"
                                       aria-hidden="true"
                                     />
                                   ) : header.column.getIsSorted() === "desc" ? (
                                     <ChevronDownIcon
-                                      className="w-5 h-5"
+                                      tw="w-5 h-5"
                                       aria-hidden="true"
                                     />
                                   ) : null}
                                 </span>
                               </div>
                             )}
-                            {/* {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )} */}
                           </th>
                         );
                       })}
@@ -210,6 +233,41 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+interface Stat {
+  name: string;
+  stat: string;
+  statSmall?: string;
+}
+
+interface StatProps {
+  title: string;
+  stats: Stat[];
+}
+
+const Stats: React.FC<StatProps> = ({ title, stats }) => {
+  return (
+    <div>
+      <h3 tw="text-base font-semibold leading-6 text-gray-900">{title}</h3>
+      <dl tw="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
+        {stats.map((item) => (
+          <div
+            key={item.name}
+            tw="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
+          >
+            <dt tw="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
+            <dd tw="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+              {item.stat}
+              {item.statSmall && (
+                <span tw="pl-1 text-xl ">{item.statSmall}</span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 };
