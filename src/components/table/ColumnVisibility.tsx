@@ -1,4 +1,6 @@
 import { Table } from "@tanstack/react-table";
+import { Divider } from "../Divider";
+import { InputCheckbox } from "../InputCheckbox";
 
 interface ColumnVisibilityProps {
   table: Table<any>;
@@ -8,26 +10,21 @@ export const ColumnVisibility: React.FC<ColumnVisibilityProps> = ({
   table,
 }) => {
   return (
-    <div className="inline-block text-left">
-      <label>
-        <input
-          type="checkbox"
-          checked={table.getIsAllColumnsVisible()}
-          onChange={table.getToggleAllColumnsVisibilityHandler()}
-        />
-        Toggle All
-      </label>
+    <div className="text-left">
+      <InputCheckbox
+        label="Toggle all"
+        checked={table.getIsAllColumnsVisible()}
+        handleChange={table.getToggleAllColumnsVisibilityHandler()}
+      />
+      <Divider spacing="xs" />
       {table.getAllLeafColumns().map((column) => {
         return (
           <div key={column.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={column.getIsVisible()}
-                onChange={column.getToggleVisibilityHandler()}
-              />
-              {column.id}
-            </label>
+            <InputCheckbox
+              label={column.id}
+              checked={column.getIsVisible()}
+              handleChange={column.getToggleVisibilityHandler()}
+            />
           </div>
         );
       })}
