@@ -1,4 +1,14 @@
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { Popover, Transition } from "@headlessui/react";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ViewColumnsIcon,
+} from "@heroicons/react/20/solid";
+import {
+  AtSymbolIcon,
+  CpuChipIcon,
+  ScaleIcon,
+} from "@heroicons/react/24/outline";
 import {
   SortingState,
   createColumnHelper,
@@ -10,8 +20,10 @@ import {
 import dayjs from "dayjs";
 import { orderBy } from "firebase/firestore";
 import { countBy, maxBy, mean } from "lodash";
-import { useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import tw from "twin.macro";
+import { IconButton } from "../../components/IconButton";
+import { ColumnVisibility } from "../../components/table/ColumnVisibility";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../types/beans";
@@ -105,6 +117,7 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
   console.log("BrewsTable");
 
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const data = useMemo(
     () =>
@@ -120,8 +133,9 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    state: { sorting, columnVisibility },
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -158,9 +172,34 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
   }, [brewsList]);
 
   return (
-    <div>
+    <div tw="relative">
       <Stats title="Brew stats" stats={totalStats} />
-      <div tw="flow-root mt-8">
+
+      <Popover className="relative my-4 text-right">
+        <IconButton
+          as={Popover.Button}
+          Icon={<ViewColumnsIcon />}
+          variant="white"
+        />
+
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-200"
+          enterFrom="opacity-0 translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leave="transition ease-in duration-150"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 translate-y-1"
+        >
+          <Popover.Panel className="absolute right-0 z-10 mt-2">
+            <div className="p-4 text-sm leading-6 text-gray-900 bg-white shadow-lg shrink rounded-xl ring-1 ring-gray-900/5">
+              <ColumnVisibility table={table} />
+            </div>
+          </Popover.Panel>
+        </Transition>
+      </Popover>
+
+      <div tw="flow-root mt-4">
         <div tw="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div tw="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div tw="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
@@ -237,6 +276,27 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
   );
 };
 
+const solutions = [
+  {
+    name: "Insights",
+    description: "Measure actions your users take",
+    href: "##",
+    icon: AtSymbolIcon,
+  },
+  {
+    name: "Automations",
+    description: "Create your own targeted content",
+    href: "##",
+    icon: CpuChipIcon,
+  },
+  {
+    name: "Reports",
+    description: "Keep track of your growth",
+    href: "##",
+    icon: ScaleIcon,
+  },
+];
+
 interface Stat {
   name: string;
   stat: string;
@@ -252,7 +312,7 @@ const Stats: React.FC<StatProps> = ({ title, stats }) => {
   return (
     <div>
       <h3 tw="text-base font-semibold leading-6 text-gray-900">{title}</h3>
-      <dl tw="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
+      <dl tw="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-3">
         {stats.map((item) => (
           <div
             key={item.name}
