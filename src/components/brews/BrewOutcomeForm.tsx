@@ -41,7 +41,7 @@ const brewOutcomeFormEmptyValues: BrewOutcomeInputs = {
     finish: null,
   },
   finalBrewWeight: null,
-  extractionType: "percolation",
+  extractionType: null,
 };
 
 interface BrewOutcomeFormProps {
