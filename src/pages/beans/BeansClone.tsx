@@ -1,6 +1,10 @@
 import { setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
-import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
+import {
+  BeansForm,
+  BeansFormInputs,
+  beansFormEmptyValues,
+} from "../../components/beans/BeansForm";
 import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Beans } from "../../types/beans";
@@ -23,14 +27,31 @@ export const BeansClone = () => {
     return null;
   }
 
-  // TODO find an automated way to do this
   const fromFirestore: BeansFormInputs = {
-    ...beans,
-    isFinished: false,
-    roastDate: beans.roastDate?.toDate() || null,
-    freezeDate: null,
-    thawDate: null,
-    harvestDate: beans.harvestDate?.toDate() || null,
+    ...beansFormEmptyValues,
+
+    name: beans.name,
+    roaster: beans.roaster,
+    roastDate: beans.roastDate?.toDate() ?? null,
+    roastStyle: beans.roastStyle,
+    roastLevel: beans.roastLevel,
+    roastingNotes: beans.roastingNotes,
+
+    origin: beans.origin,
+
+    ...(beans.origin === "single-origin"
+      ? {
+          country: beans.country,
+          farmer: beans.farmer,
+          region: beans.region,
+          process: beans.process,
+          varietals: beans.varietals,
+          harvestDate: beans.harvestDate?.toDate() ?? null,
+          altitude: beans.altitude,
+        }
+      : {
+          blend: beans.blend,
+        }),
   };
 
   return (

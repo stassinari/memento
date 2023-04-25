@@ -5,8 +5,8 @@ export type Origin = "single-origin" | "blend";
 
 export type Beans = BeansSingleOrigin | BeansBlend;
 
-type BeansSingleOrigin = BeansCommon & TerroirSingleOrigin;
-type BeansBlend = BeansCommon & TerroirBlend;
+export type BeansSingleOrigin = BeansCommon & TerroirSingleOrigin;
+export type BeansBlend = BeansCommon & TerroirBlend;
 
 interface BeansCommon {
   id?: string;
