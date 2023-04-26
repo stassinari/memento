@@ -34,13 +34,15 @@ const EspressoList = () => {
         <DataList items={espressoList.map(espressoToDataListItem)} />
       </div>
       <div tw="flex justify-center gap-4 mt-4">
-        <Button
-          variant="white"
-          colour="accent"
-          onClick={() => setEspressoLimit(espressoLimit + 50)}
-        >
-          Load more
-        </Button>
+        {espressoList.length >= espressoLimit && (
+          <Button
+            variant="white"
+            colour="accent"
+            onClick={() => setEspressoLimit(espressoLimit + 50)}
+          >
+            Load more
+          </Button>
+        )}
         <Button as={RouterLink} to="all" variant="white" colour="accent">
           View all espresso
         </Button>

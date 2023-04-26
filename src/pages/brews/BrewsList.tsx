@@ -32,13 +32,15 @@ export const BrewsList = () => {
         <DataList items={brewsList.map(brewToDataListItem)} />
       </div>
       <div tw="flex justify-center gap-4 mt-4">
-        <Button
-          variant="white"
-          colour="accent"
-          onClick={() => setBrewLimit(brewLimit + 50)}
-        >
-          Load more
-        </Button>
+        {brewsList.length >= brewLimit && (
+          <Button
+            variant="white"
+            colour="accent"
+            onClick={() => setBrewLimit(brewLimit + 50)}
+          >
+            Load more
+          </Button>
+        )}
         <Button as={RouterLink} to="all" variant="white" colour="accent">
           View all brews
         </Button>
