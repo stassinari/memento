@@ -1,9 +1,10 @@
 import {
   DocumentDuplicateIcon,
   PencilSquareIcon,
+  PuzzlePieceIcon,
   SparklesIcon,
+  TrashIcon,
 } from "@heroicons/react/20/solid";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -86,6 +87,22 @@ const EspressoDetails = () => {
           Delete
         </Button>
       </div>
+
+      {espresso.fromDecent && espresso.partial && (
+        <div tw="inline-flex items-center gap-4">
+          <Button
+            variant="secondary"
+            size="sm"
+            as={Link}
+            to="decent/add"
+            Icon={<PuzzlePieceIcon />}
+            tw="shrink-0"
+          >
+            Add shot info
+          </Button>
+          <span>This shot is missing some information!</span>
+        </div>
+      )}
 
       {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
