@@ -2,18 +2,22 @@ import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { BrewForm, BrewFormInputs } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { Brew } from "../../types/brew";
 import { brewToFirestore } from "./BrewsAdd";
 
 export const BrewEditDetails = () => {
+  console.log("BrewEditDetails");
+
   const user = useCurrentUser();
   const { brewId } = useParams();
 
   const navigate = useNavigate();
 
-  const { details: brew, isLoading } = useFirestoreDoc<Brew>("brews", brewId);
+  const docRef = useDocRef<Brew>("brews", brewId);
+  const { details: brew, isLoading } = useFirestoreDocOneTime<Brew>(docRef);
 
   if (!user) throw new Error("User is not logged in.");
 

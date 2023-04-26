@@ -5,7 +5,8 @@ import {
   EspressoFormInputs,
 } from "../../components/espresso/EspressoForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { BaseEspresso } from "../../types/espresso";
 import { espressoToFirestore } from "./EspressoAdd";
@@ -16,10 +17,9 @@ export const EspressoEditDetails = () => {
 
   const navigate = useNavigate();
 
-  const { details: espresso, isLoading } = useFirestoreDoc<BaseEspresso>(
-    "espresso",
-    espressoId
-  );
+  const docRef = useDocRef<BaseEspresso>("espresso", espressoId);
+  const { details: espresso, isLoading } =
+    useFirestoreDocOneTime<BaseEspresso>(docRef);
 
   if (!user) throw new Error("User is not logged in.");
 

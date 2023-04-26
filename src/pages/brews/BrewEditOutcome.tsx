@@ -4,15 +4,19 @@ import { useParams } from "react-router-dom";
 import "twin.macro";
 import { BrewOutcomeForm } from "../../components/brews/BrewOutcomeForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { Brew } from "../../types/brew";
 
 export const BrewEditOutcome: React.FC = () => {
+  console.log("BrewEditOutcome");
+
   const user = useCurrentUser();
   const { brewId } = useParams();
 
-  const { details: brew, isLoading } = useFirestoreDoc<Brew>("brews", brewId);
+  const docRef = useDocRef<Brew>("brews", brewId);
+  const { details: brew, isLoading } = useFirestoreDocOneTime<Brew>(docRef);
 
   if (!user) throw new Error("User is not logged in.");
 

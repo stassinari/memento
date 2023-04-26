@@ -2,22 +2,21 @@ import { setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   EspressoForm,
-  espressoFormEmptyValues,
   EspressoFormInputs,
+  espressoFormEmptyValues,
 } from "../../components/espresso/EspressoForm";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
-import { Espresso } from "../../types/espresso";
+import { BaseEspresso } from "../../types/espresso";
 import { espressoToFirestore } from "./EspressoAdd";
 
 export const EspressoClone = () => {
   const { espressoId } = useParams();
   const navigate = useNavigate();
 
-  const { details: espresso } = useFirestoreDoc<Espresso>(
-    "espresso",
-    espressoId
-  );
+  const docRef = useDocRef<BaseEspresso>("espresso", espressoId);
+  const { details: espresso } = useFirestoreDocOneTime<BaseEspresso>(docRef);
 
   const newEspressoRef = useNewRef("espresso");
 
@@ -33,7 +32,7 @@ export const EspressoClone = () => {
   // TODO find an automated way to do this
   const fromFirestore: EspressoFormInputs = {
     ...espressoFormEmptyValues(),
-    beans: espresso.beans.path,
+    beans: espresso.beans?.path ?? null,
 
     machine: espresso.machine,
     grinder: espresso.grinder,
@@ -41,8 +40,8 @@ export const EspressoClone = () => {
     portafilter: espresso.portafilter,
     basket: espresso.basket,
 
-    targetWeight: espresso.targetWeight,
-    beansWeight: espresso.beansWeight,
+    targetWeight: espresso.targetWeight ?? null,
+    beansWeight: espresso.beansWeight ?? null,
     waterTemperature: espresso.waterTemperature,
     grindSetting: espresso.grindSetting,
   };

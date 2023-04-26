@@ -8,24 +8,25 @@ import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
-import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Espresso } from "../../types/espresso";
 import { getEyFromEspresso } from "../../utils";
 import { NotFound } from "../NotFound";
 import { DecentCharts } from "./DecentCharts";
 
 const EspressoDetails = () => {
+  console.log("EspressoDetails");
+
   const { espressoId } = useParams();
   const navigate = useNavigate();
 
-  const {
-    details: espresso,
-    isLoading,
-    docRef,
-  } = useFirestoreDoc<Espresso>("espresso", espressoId);
+  const docRef = useDocRef<Espresso>("espresso", espressoId);
+  const { details: espresso, isLoading } =
+    useFirestoreDocRealtime<Espresso>(docRef);
 
   const handleDelete = async () => {
     await deleteDoc(docRef);

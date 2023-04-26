@@ -4,18 +4,20 @@ import { useParams } from "react-router-dom";
 import "twin.macro";
 import { EspressoOutcomeForm } from "../../components/espresso/EspressoOutcomeForm";
 import { db } from "../../firebaseConfig";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { Espresso } from "../../types/espresso";
 
 export const EspressoEditOutcome: React.FC = () => {
+  console.log("EspressoEditOutcome");
+
   const user = useCurrentUser();
   const { espressoId } = useParams();
 
-  const { details: espresso, isLoading } = useFirestoreDoc<Espresso>(
-    "espresso",
-    espressoId
-  );
+  const docRef = useDocRef<Espresso>("espresso", espressoId);
+  const { details: espresso, isLoading } =
+    useFirestoreDocOneTime<Espresso>(docRef);
 
   if (!user) throw new Error("User is not logged in.");
 

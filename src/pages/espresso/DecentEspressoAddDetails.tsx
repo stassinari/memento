@@ -9,8 +9,9 @@ import {
 } from "../../components/espresso/steps/DecentEspressoForm";
 import { db } from "../../firebaseConfig";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { DecentEspressoPrep, Espresso } from "../../types/espresso";
 
@@ -30,11 +31,12 @@ export const DecentEspressoAddDetails = () => {
 
   const navigate = useNavigate();
 
-  const {
-    details: partialEspresso,
-    isLoading,
-    docRef: existingEspressoRef,
-  } = useFirestoreDoc<DecentEspressoPrep>("espresso", espressoId);
+  const existingEspressoRef = useDocRef<DecentEspressoPrep>(
+    "espresso",
+    espressoId
+  );
+  const { details: partialEspresso, isLoading } =
+    useFirestoreDocOneTime<DecentEspressoPrep>(existingEspressoRef);
 
   const filters = useMemo(() => [orderBy("date", "desc")], []);
   const query = useCollectionQuery<Espresso>("espresso", filters);

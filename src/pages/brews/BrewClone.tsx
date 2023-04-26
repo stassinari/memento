@@ -2,19 +2,23 @@ import { setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   BrewForm,
-  brewFormEmptyValues,
   BrewFormInputs,
+  brewFormEmptyValues,
 } from "../../components/brews/BrewForm";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Brew } from "../../types/brew";
 import { brewToFirestore } from "./BrewsAdd";
 
 export const BrewClone = () => {
+  console.log("BrewClone");
+
   const { brewId } = useParams();
   const navigate = useNavigate();
 
-  const { details: brew } = useFirestoreDoc<Brew>("brews", brewId);
+  const docRef = useDocRef<Brew>("brews", brewId);
+  const { details: brew } = useFirestoreDocOneTime<Brew>(docRef);
 
   const newBrewRef = useNewRef("brews");
 
