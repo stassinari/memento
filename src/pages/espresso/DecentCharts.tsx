@@ -1,6 +1,6 @@
 import { doc, DocumentReference } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import { useFirestoreAnyDoc } from "../../hooks/firestore/useFirestoreAnyDoc";
+import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { DecentReadings } from "../../types/espresso";
 import { PressureFlowWeightChart } from "./PressureFlowWeightChart";
@@ -24,7 +24,7 @@ export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
   ) as DocumentReference<DecentReadings>;
 
   const { details: decentReadings, isLoading } =
-    useFirestoreAnyDoc<DecentReadings>(readingsRef);
+    useFirestoreDocRealtime<DecentReadings>(readingsRef);
 
   if (isLoading || !decentReadings) return null;
 
