@@ -12,11 +12,11 @@ import { useCurrentUser } from "../useInitUser";
 export const useCollectionQuery = <T,>(
   type: "brews" | "beans" | "espresso",
   filters: QueryConstraint[] = []
-): Query<T> | null => {
+): Query<T> => {
   const user = useCurrentUser();
 
   return useMemo(() => {
-    if (!user?.uid) return null;
+    if (!user?.uid) throw new Error("User is not logged in");
     const collectionRef = collection(
       db,
       "users",
