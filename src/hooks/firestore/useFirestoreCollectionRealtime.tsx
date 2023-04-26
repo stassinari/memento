@@ -1,7 +1,7 @@
 import { Query, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-interface UseFirestoreCollectionResult<T> {
+export interface UseFirestoreCollectionResult<T> {
   list: T[];
   isLoading: boolean;
 }

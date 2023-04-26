@@ -1,10 +1,6 @@
 import { Query, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-
-interface UseFirestoreCollectionResult<T> {
-  list: T[];
-  isLoading: boolean;
-}
+import { UseFirestoreCollectionResult } from "./useFirestoreCollectionRealtime";
 
 export const useFirestoreCollectionOneTime = <T,>(
   query: Query<T> | null

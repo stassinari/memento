@@ -20,12 +20,12 @@ export const useCollectionQuery = <T,>(
     const collectionRef = collection(
       db,
       "users",
-      user?.uid || "",
+      user.uid,
       type
     ) as CollectionReference<T>;
 
     const query = fbQuery(collectionRef, ...filters);
 
     return query;
-  }, [filters, type, user?.uid]);
+  }, [filters, type, user.uid]);
 };

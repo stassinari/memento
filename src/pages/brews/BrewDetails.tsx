@@ -11,20 +11,20 @@ import "twin.macro";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Brew } from "../../types/brew";
 import { getEyFromBrew } from "../../utils";
 import { NotFound } from "../NotFound";
 
 export const BrewDetails = () => {
+  console.log("BrewDetails");
+
   const { brewId } = useParams();
   const navigate = useNavigate();
 
-  const {
-    details: brew,
-    isLoading,
-    docRef,
-  } = useFirestoreDoc<Brew>("brews", brewId);
+  const docRef = useDocRef<Brew>("brews", brewId);
+  const { details: brew, isLoading } = useFirestoreDocRealtime<Brew>(docRef);
 
   const handleDelete = async () => {
     await deleteDoc(docRef);
