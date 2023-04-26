@@ -18,7 +18,7 @@ export const useFirestoreCollectionRealtime = <T,>(
         const tempList: T[] = [];
 
         querySnap.forEach((doc) => {
-          tempList.push({ id: doc.id, ...doc.data() });
+          tempList.push({ ...doc.data(), id: doc.id });
         });
 
         setList(tempList);
