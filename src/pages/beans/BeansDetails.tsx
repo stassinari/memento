@@ -18,7 +18,8 @@ import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
 import { BeansBrewList } from "../../components/beans/BeansBrewList";
 import { BeansEspressoList } from "../../components/beans/BeansEspressoList";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Beans } from "../../types/beans";
 import { NotFound } from "../NotFound";
 
@@ -26,11 +27,8 @@ export const BeansDetails = () => {
   const { beansId } = useParams();
   const navigate = useNavigate();
 
-  const {
-    details: beans,
-    isLoading,
-    docRef,
-  } = useFirestoreDoc<Beans>("beans", beansId);
+  const docRef = useDocRef<Beans>("beans", beansId);
+  const { details: beans, isLoading } = useFirestoreDocRealtime<Beans>(docRef);
 
   const handleArchive = async () => {
     await updateDoc(docRef, {

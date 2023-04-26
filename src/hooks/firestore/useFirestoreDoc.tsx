@@ -36,8 +36,7 @@ export const useFirestoreDoc = <T,>(
       setIsLoading(false);
     });
     return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [docRef, id]);
 
   return { details, isLoading, docRef };
 };

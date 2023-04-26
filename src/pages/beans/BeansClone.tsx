@@ -5,16 +5,20 @@ import {
   BeansFormInputs,
   beansFormEmptyValues,
 } from "../../components/beans/BeansForm";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Beans } from "../../types/beans";
 
 export const BeansClone = () => {
+  console.log("BeansClone");
+
   const { beansId } = useParams();
 
   const navigate = useNavigate();
 
-  const { details: beans } = useFirestoreDoc<Beans>("beans", beansId);
+  const docRef = useDocRef<Beans>("beans", beansId);
+  const { details: beans } = useFirestoreDocOneTime<Beans>(docRef);
 
   const newBeansRef = useNewRef("beans");
 

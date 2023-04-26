@@ -1,4 +1,5 @@
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Beans } from "../../types/beans";
 import { Details } from "../Details";
 
@@ -11,10 +12,10 @@ export const BeansShortInfo: React.FC<BeansShortInfoProps> = ({
   beansId,
   brewDate,
 }) => {
-  const { details: beans, isLoading } = useFirestoreDoc<Beans>(
-    "beans",
-    beansId
-  );
+  console.log("BeansShortInfo");
+
+  const docRef = useDocRef<Beans>("beans", beansId);
+  const { details: beans, isLoading } = useFirestoreDocRealtime<Beans>(docRef);
 
   if (isLoading) return null;
 

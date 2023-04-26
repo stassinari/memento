@@ -1,25 +1,28 @@
-import { doc, setDoc } from "firebase/firestore";
+import { DocumentReference, setDoc } from "firebase/firestore";
+import { omit } from "lodash";
 import { useNavigate, useParams } from "react-router-dom";
-import { BeansForm, BeansFormInputs } from "../../components/beans/BeansForm";
-import { db } from "../../firebaseConfig";
-import { useFirestoreDoc } from "../../hooks/firestore/useFirestoreDoc";
-import { useCurrentUser } from "../../hooks/useInitUser";
+import {
+  BeansForm,
+  BeansFormInputs,
+  beansFormEmptyValues,
+} from "../../components/beans/BeansForm";
+import { useDocRef } from "../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { Beans } from "../../types/beans";
 
 export const BeansEdit = () => {
-  const user = useCurrentUser();
+  console.log("BeansEdit");
+
   const { beansId } = useParams();
 
   const navigate = useNavigate();
 
-  const { details: beans } = useFirestoreDoc<Beans>("beans", beansId);
-
-  if (!user) throw new Error("User is not logged in.");
-  const existingBeansRef = doc(db, "users", user.uid, "beans", beansId || "");
+  const docRef = useDocRef<Beans>("beans", beansId);
+  const { details: beans } = useFirestoreDocOneTime<Beans>(docRef);
 
   const editBeans = async (data: BeansFormInputs) => {
-    await setDoc(existingBeansRef, data);
-    navigate(`/beans/${beansId}`);
+    await setDoc(docRef as DocumentReference, data);
+    navigate(`/beans/${docRef.id}`);
   };
 
   if (!beans) {
@@ -28,11 +31,15 @@ export const BeansEdit = () => {
 
   // TODO find an automated way to do this
   const fromFirestore: BeansFormInputs = {
-    ...beans,
-    roastDate: beans.roastDate?.toDate() || null,
-    freezeDate: beans.freezeDate?.toDate() || null,
-    thawDate: beans.thawDate?.toDate() || null,
-    harvestDate: beans.harvestDate?.toDate() || null,
+    ...beansFormEmptyValues,
+    ...omit(beans, "id"),
+    roastDate: beans.roastDate?.toDate() ?? null,
+    freezeDate: beans.freezeDate?.toDate() ?? null,
+    thawDate: beans.thawDate?.toDate() ?? null,
+    harvestDate:
+      beans.origin === "single-origin"
+        ? beans.harvestDate?.toDate() ?? null
+        : null,
   };
 
   return (
