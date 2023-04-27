@@ -1,4 +1,5 @@
 import { doc, DocumentReference } from "firebase/firestore";
+import { useMemo } from "react";
 import { db } from "../../firebaseConfig";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { useCurrentUser } from "../../hooks/useInitUser";
@@ -11,17 +12,23 @@ interface DecentChartProps {
 }
 
 export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
+  console.log("DecentCharts");
+
   const user = useCurrentUser();
 
-  const readingsRef = doc(
-    db,
-    "users",
-    user?.uid || "",
-    "espresso",
-    espressoId ?? "",
-    "decentReadings",
-    "decentReadings"
-  ) as DocumentReference<DecentReadings>;
+  const readingsRef = useMemo(
+    () =>
+      doc(
+        db,
+        "users",
+        user?.uid || "",
+        "espresso",
+        espressoId ?? "",
+        "decentReadings",
+        "decentReadings"
+      ) as DocumentReference<DecentReadings>,
+    [espressoId, user?.uid]
+  );
 
   const { details: decentReadings, isLoading } =
     useFirestoreDocRealtime<DecentReadings>(readingsRef);
