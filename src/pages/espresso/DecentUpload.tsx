@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import tw from "twin.macro";
 import { Button } from "../../components/Button";
 import { Link } from "../../components/Link";
+import { Spinner } from "../../components/Spinner";
 import { db } from "../../firebaseConfig";
 import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { useCurrentUser } from "../../hooks/useInitUser";
@@ -26,21 +27,18 @@ export const DecentUpload = () => {
 
   const userEmail = user?.email ? user.email : "";
 
-  const [isFileUploading, setIsFileUploading] = useState(true);
+  const [isFileUploading, setIsFileUploading] = useState(false);
 
   const handleUpload = async (files: File[]) => {
     const url = import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
     if (!url) {
       throw new Error("decent upload endpoint not set");
     }
-    console.log({ secretKey, files });
 
     const formData = new FormData();
     files.forEach((file, i) => {
       formData.append(`file${i}`, file);
     });
-
-    console.log({ formData });
 
     axios
       .post(url, formData, {
@@ -49,7 +47,7 @@ export const DecentUpload = () => {
           password: secretKey,
         },
       })
-      .then(() => navigate("drinks/espresso"))
+      .then(() => navigate("/drinks/espresso"))
       .catch((error) => {
         throw new Error(error);
       })
@@ -58,11 +56,12 @@ export const DecentUpload = () => {
 
   const { getRootProps, getInputProps, fileRejections } = useDropzone({
     maxFiles: 20,
-    disabled: true,
-    // accept: { "application/json": [".json"], "": [".shot"] },
+    disabled: isFileUploading,
     validator: (file) => {
+      console.log({ file });
+
       const isJson = file.type === "application/json";
-      const isShot = file.type === "";
+      const isShot = file.type === "" && file.name.endsWith(".shot");
       console.log({ file, isJson, isShot });
       if (!isJson && !isShot) {
         return {
@@ -72,18 +71,18 @@ export const DecentUpload = () => {
       }
       return null;
     },
-    onDrop: async (acceptedFiles) => {
-      // original onDrop
-      //     setIsFileUploading(true);
-      //     await handleUpload(acceptedFiles);
+    onDrop: async (acceptedFiles, rejectedFiles) => {
+      console.log({ acceptedFiles, rejectedFiles });
+      if (rejectedFiles.length > 0) return;
+
       setIsFileUploading(true);
       await handleUpload(acceptedFiles);
     },
   });
 
   const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
+    <li key={file.name}>
+      {file.name} - {file.size} bytes
       <ul>
         {errors.map((e) => (
           <li key={e.code}>{e.message}</li>
@@ -136,47 +135,50 @@ export const DecentUpload = () => {
               </Button>
             </React.Fragment>
           )}
-          {!!secretKey && (
+
+          {secretKey && (
             <div tw="mt-8">
-              <div tw="flex items-center justify-center w-full">
+              <div tw="relative">
                 <div
-                  {...getRootProps({ tw: "dropzone" })}
-                  className="group"
                   css={[
-                    tw`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50`,
-                    // tw`dark:(border-gray-600 bg-gray-700 hover:(bg-gray-800 border-gray-500))`,
-                    isFileUploading
-                      ? tw`cursor-not-allowed`
-                      : tw`hover:bg-gray-100`,
+                    tw`flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg border-gray-900/25 focus-visible:(ring-2 ring-offset-2 ring-orange-600/75 outline-none)`,
+                    isFileUploading &&
+                      tw`after:(content absolute inset-0 bg-gray-50/50)`,
                   ]}
+                  className="group"
+                  {...getRootProps()}
                 >
-                  <div tw="flex flex-col items-center justify-center pt-5 pb-6">
-                    <span tw="w-6 h-6 mb-4 text-gray-500">
-                      <ArrowUpTrayIcon />
-                    </span>
-                    <p
-                      css={[
-                        tw`mb-2 text-sm text-gray-500`,
-                        // tw`dark:text-gray-400`,
-                      ]}
-                    >
-                      <span tw="font-semibold group-hover:underline">
-                        Click to upload
-                      </span>{" "}
-                      or drag and drop
-                    </p>
-                    <p
-                      css={[
-                        tw`text-xs text-gray-500`,
-                        // tw`dark:text-gray-400`
-                      ]}
-                    >
-                      SVG, PNG, JPG or GIF (MAX. 800x400px)
+                  <div tw="text-center">
+                    <ArrowUpTrayIcon
+                      tw="w-12 h-12 mx-auto text-gray-300"
+                      aria-hidden="true"
+                    />
+                    <div tw="flex justify-center mt-4 text-sm leading-6 text-gray-600">
+                      <label
+                        htmlFor="file-upload"
+                        css={[
+                          tw`relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2`,
+                          !isFileUploading &&
+                            tw`group-hover:(text-orange-500 underline)`,
+                        ]}
+                      >
+                        <span>Upload a file</span>
+                        <input {...getInputProps()} tw="sr-only" />
+                      </label>
+                      <p tw="pl-1">or drag and drop</p>
+                    </div>
+                    <p tw="text-xs leading-5 text-gray-600">
+                      SHOT or JSON files, maximum of 20 files
                     </p>
                   </div>
-                  <input {...getInputProps()} />
                 </div>
+                {isFileUploading && (
+                  <div tw="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                    <Spinner />
+                  </div>
+                )}
               </div>
+              <ul>{fileRejectionItems}</ul>
             </div>
           )}
         </div>

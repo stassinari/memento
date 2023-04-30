@@ -31,5 +31,6 @@ module.exports = {
     "react/no-unknown-property": ["error", { ignore: ["css", "tw"] }],
     "react/prop-types": "off",
     "react/display-name": "off",
+    "react/no-unescaped-entities": ["error", { forbid: [">", "}"] }],
   },
 };
