@@ -24,6 +24,7 @@ import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
 // import { LogIn } from "./pages/LogIn";
 import { BrewsListAll } from "./pages/brews/BrewsListAll";
 import { BrewsTableWrapper } from "./pages/brews/BrewsTable";
+import { DecentUpload } from "./pages/espresso/DecentUpload";
 import { NotFound } from "./pages/NotFound";
 import { Profile } from "./pages/Profile";
 import { TastingsPage } from "./pages/TastingsPage";
@@ -135,6 +136,8 @@ export const App = () => {
                 path="drinks/espresso/:espressoId/clone"
                 element={<EspressoClone />}
               />
+
+              <Route path="decent-upload" element={<DecentUpload />} />
 
               <Route path="drinks/tastings" element={<TastingsPage />} />
 

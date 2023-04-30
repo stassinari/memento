@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import {
+  ArrowUpOnSquareIcon,
   ChartBarIcon,
   CurrencyEuroIcon,
   CurrencyPoundIcon,
@@ -22,18 +23,27 @@ export const navigation: BottomNavItemProps[] = [
     label: "Brews",
     linkTo: "/drinks/brews",
     nested: true,
+    sidebarOnly: true,
   },
   {
     Icon: <CurrencyPoundIcon />,
     label: "Espresso",
     linkTo: "/drinks/espresso",
     nested: true,
+    sidebarOnly: true,
   },
   {
     Icon: <CurrencyYenIcon />,
     label: "Tastings",
     linkTo: "/drinks/tastings",
     nested: true,
+    sidebarOnly: true,
+  },
+  {
+    Icon: <ArrowUpOnSquareIcon />,
+    label: "Decent upload",
+    linkTo: "/decent-upload",
+    sidebarOnly: true,
   },
   { Icon: <UserIcon />, label: "Profile", linkTo: "/profile" },
 ];
@@ -50,7 +60,7 @@ export const BottomNav = () => (
   >
     <ol tw="flex justify-between h-full">
       {navigation
-        .filter((item) => !item.nested)
+        .filter((item) => !item.sidebarOnly)
         .map(({ Icon, label, linkTo: to }) => (
           <BottomNavItem key={label} Icon={Icon} label={label} linkTo={to} />
         ))}
@@ -63,6 +73,7 @@ export interface BottomNavItemProps {
   label: string;
   linkTo: string;
   nested?: boolean;
+  sidebarOnly?: boolean;
 }
 
 const BottomNavItem: React.FC<BottomNavItemProps> = ({
