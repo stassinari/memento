@@ -1,13 +1,26 @@
-import { Link as ReactRouterLink, LinkProps } from "react-router-dom";
-import tw from "twin.macro";
+import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
+import "twin.macro";
 
-export const Link: React.FC<
-  LinkProps & React.RefAttributes<HTMLAnchorElement>
-> = (props) => {
+// Component-specific props specified separately
+type LinkOwnProps = {};
+
+// Merge own props with others inherited from the underlying element type
+type LinkProps<E extends React.ElementType> = PolymorphicComponentProps<
+  E,
+  LinkOwnProps
+>;
+
+const defaultElement = "a";
+
+export function Link<E extends React.ElementType = typeof defaultElement>({
+  ...restProps
+}: LinkProps<E>): JSX.Element {
+  // The `as` prop may be overridden by the passed props
   return (
-    <ReactRouterLink
-      css={tw`text-orange-600 underline hover:(text-orange-500 no-underline )`}
-      {...props}
+    <Box
+      tw="text-orange-600 underline hover:(text-orange-500 no-underline)"
+      as={defaultElement}
+      {...restProps}
     />
   );
-};
+}

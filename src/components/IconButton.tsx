@@ -33,7 +33,6 @@ export const IconButton: <E extends React.ElementType = typeof defaultElement>(
   ) => (
     <Box
       as={defaultElement}
-      className=""
       css={[
         tw`inline-flex items-center p-2 text-white border rounded-full`,
         tw`disabled:(cursor-not-allowed bg-gray-100! from-gray-100 text-gray-500! hover:from-gray-100)`,

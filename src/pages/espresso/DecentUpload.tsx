@@ -6,7 +6,7 @@ import axios from "axios";
 import { DocumentReference, doc } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import tw from "twin.macro";
 import { Button } from "../../components/Button";
 import { Link } from "../../components/Link";
@@ -99,7 +99,7 @@ export const DecentUpload = () => {
           rel="noreferrer noopener"
           // FIXME allow external links
           //   href="https://github.com/stassinari/memento#decent-espresso-integration"
-          to="https://github.com/stassinari/memento#decent-espresso-integration"
+          href="https://github.com/stassinari/memento#decent-espresso-integration"
         >
           follow the guide here
         </Link>
@@ -111,7 +111,10 @@ export const DecentUpload = () => {
             It looks like you haven't uploaded any shot files yet. For security
             reasons, we require you to generate a secret token (the same used
             used by auto-upload feature). Click the button below or head over to{" "}
-            <Link to="/account">your Account page</Link> to create your token.
+            <Link as={RouterLink} to="/account">
+              your Account page
+            </Link>{" "}
+            to create your token.
           </div>
           <Button
             variant="secondary"
