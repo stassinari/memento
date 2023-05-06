@@ -26,7 +26,7 @@ import { BrewsListAll } from "./pages/brews/BrewsListAll";
 import { BrewsTableWrapper } from "./pages/brews/BrewsTable";
 import { DecentUpload } from "./pages/espresso/DecentUpload";
 import { NotFound } from "./pages/NotFound";
-import { Profile } from "./pages/Profile";
+import { Settings } from "./pages/Settings";
 import { TastingsPage } from "./pages/TastingsPage";
 
 const BeansAdd = React.lazy(async () => await import("./pages/beans/BeansAdd"));
@@ -141,7 +141,7 @@ export const App = () => {
 
               <Route path="drinks/tastings" element={<TastingsPage />} />
 
-              <Route path="profile" element={<Profile />} />
+              <Route path="settings" element={<Settings />} />
 
               <Route path="design-library" element={<DesignLibrary />} />
             </Route>

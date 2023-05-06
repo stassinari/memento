@@ -2,50 +2,72 @@ import { css } from "@emotion/react";
 import {
   ArrowUpOnSquareIcon,
   ChartBarIcon,
+  Cog6ToothIcon,
   CurrencyEuroIcon,
   CurrencyPoundIcon,
   CurrencyYenIcon,
   FolderIcon,
   HomeIcon,
-  UserIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import tw, { theme } from "twin.macro";
 import { useActiveRoute } from "../hooks/useActiveRoute";
 
-export const navigation: BottomNavItemProps[] = [
-  { Icon: <HomeIcon />, label: "Home", linkTo: "/" },
-  { Icon: <FolderIcon />, label: "Beans", linkTo: "/beans" },
-  { Icon: <ChartBarIcon />, label: "Drinks", linkTo: "/drinks" },
-  {
-    Icon: <CurrencyEuroIcon />,
+export const navLinks = {
+  home: {
+    label: "Home",
+    linkTo: "/",
+    Icon: <HomeIcon />,
+  },
+  beans: {
+    label: "Beans",
+    linkTo: "/beans",
+    Icon: <FolderIcon />,
+  },
+  drinks: {
+    label: "Drinks",
+    linkTo: "/drinks",
+    Icon: <ChartBarIcon />,
+  },
+  brews: {
     label: "Brews",
     linkTo: "/drinks/brews",
-    nested: true,
-    sidebarOnly: true,
+    Icon: <CurrencyEuroIcon />,
   },
-  {
-    Icon: <CurrencyPoundIcon />,
+  espresso: {
     label: "Espresso",
     linkTo: "/drinks/espresso",
-    nested: true,
-    sidebarOnly: true,
+    Icon: <CurrencyPoundIcon />,
   },
-  {
-    Icon: <CurrencyYenIcon />,
+  tastings: {
     label: "Tastings",
     linkTo: "/drinks/tastings",
-    nested: true,
-    sidebarOnly: true,
+    Icon: <CurrencyYenIcon />,
   },
-  {
-    Icon: <ArrowUpOnSquareIcon />,
+  decentUpload: {
     label: "Decent upload",
     linkTo: "/decent-upload",
-    sidebarOnly: true,
+    Icon: <ArrowUpOnSquareIcon />,
   },
-  { Icon: <UserIcon />, label: "Profile", linkTo: "/profile" },
+  settings: {
+    label: "Settings",
+    linkTo: "/settings",
+    Icon: <Cog6ToothIcon />,
+  },
+  designLibrary: {
+    label: "Design library",
+    linkTo: "/design-library",
+    Icon: <PhotoIcon />,
+  },
+};
+
+const bottomNavLinks: BottomNavItemProps[] = [
+  navLinks.home,
+  navLinks.beans,
+  navLinks.drinks,
+  navLinks.settings,
 ];
 
 export const BottomNav = () => (
@@ -59,21 +81,17 @@ export const BottomNav = () => (
     ]}
   >
     <ol tw="flex justify-between h-full">
-      {navigation
-        .filter((item) => !item.sidebarOnly)
-        .map(({ Icon, label, linkTo: to }) => (
-          <BottomNavItem key={label} Icon={Icon} label={label} linkTo={to} />
-        ))}
+      {bottomNavLinks.map(({ Icon, label, linkTo: to }) => (
+        <BottomNavItem key={label} Icon={Icon} label={label} linkTo={to} />
+      ))}
     </ol>
   </nav>
 );
 
-export interface BottomNavItemProps {
+interface BottomNavItemProps {
   Icon: ReactNode;
   label: string;
   linkTo: string;
-  nested?: boolean;
-  sidebarOnly?: boolean;
 }
 
 const BottomNavItem: React.FC<BottomNavItemProps> = ({
