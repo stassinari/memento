@@ -1,9 +1,23 @@
 import { Auth } from "firebase/auth";
-import { Link } from "react-router-dom";
+import {
+  DocumentReference,
+  deleteField,
+  doc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { Fragment, useMemo } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../components/Button";
-import { auth } from "../firebaseConfig";
+import { FormSection } from "../components/Form";
+import { Link } from "../components/Link";
+import { Toggle } from "../components/Toggle";
+import { auth, db } from "../firebaseConfig";
+import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
 import { useCurrentUser } from "../hooks/useInitUser";
+import { User } from "../types/user";
+import { generateRandomString } from "../utils";
 
 const signOut = async (auth: Auth) => {
   await auth.signOut();
@@ -12,39 +26,86 @@ const signOut = async (auth: Auth) => {
 
 export const Settings = () => {
   const user = useCurrentUser();
+  const userRef = useMemo(
+    () => doc(db, "users", user.uid) as DocumentReference<User>,
+    [user?.uid]
+  );
+
+  const { details: dbUser, isLoading } = useFirestoreDocRealtime<User>(userRef);
+  const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
+
+  if (isLoading) return null;
+  console.log({ user, dbUser, isLoading, secretKey });
 
   return (
-    <div>
-      WIP profile page
-      <div>Logged in as: {user?.email}</div>
-      <Button variant="secondary" onClick={async () => await signOut(auth)}>
-        Sign out
-      </Button>
-      <Button variant="white" as={Link} to="/design-library" tw="sm:hidden">
+    <div tw="space-y-6">
+      <FormSection title="Decent setup">
+        <div tw="flex items-center justify-between">
+          <span tw="font-medium">Enable Decent integration</span>
+          <Toggle
+            checked={!!secretKey}
+            onChange={async () =>
+              secretKey
+                ? await updateDoc(userRef, { secretKey: deleteField() })
+                : await setDoc(userRef, { secretKey: generateRandomString() })
+            }
+          />
+        </div>
+        {secretKey ? (
+          <Fragment>
+            <div tw="flex items-center justify-between">
+              <p tw="text-sm">
+                Secret key: <strong tw="font-semibold">{secretKey}</strong>
+              </p>
+              <Button
+                variant="white"
+                size="xs"
+                onClick={async () =>
+                  await navigator.clipboard.writeText(secretKey)
+                }
+              >
+                Copy
+              </Button>
+            </div>
+            <p tw="text-sm text-gray-600">
+              You can{" "}
+              <Link as={RouterLink} to="/decent-upload">
+                upload shots from here
+              </Link>
+              , or follow{" "}
+              <Link
+                href="https://github.com/stassinari/memento#decent-espresso-integration"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                this guide
+              </Link>{" "}
+              to enable automatic uploads from you machine
+            </p>
+          </Fragment>
+        ) : (
+          <p tw="mt-2 mb-4 text-sm text-gray-600">
+            If you have a Decent Espresso machine, and would like to enable
+            uploading shots from it, start by enabling the integration here.
+          </p>
+        )}
+      </FormSection>
+      <FormSection title="Account">
+        <p tw="text-sm">
+          Email: <strong tw="font-semibold">{user.email}</strong>
+        </p>
+        <Button variant="white" onClick={async () => await signOut(auth)}>
+          Sign out
+        </Button>
+      </FormSection>
+      <Button
+        variant="white"
+        as={RouterLink}
+        to="/design-library"
+        tw="sm:hidden"
+      >
         Design Library
       </Button>
-      {/* <Notifications /> */}
     </div>
   );
 };
-
-// FIXME revisit when looking into Firebase notifications
-// const Notifications = () => {
-//   const [isTokenFound, setTokenFound] = useState(false);
-//   return (
-//     <div>
-//       <h2>Notifications</h2>
-//       <p>
-//         Status:
-//         {isTokenFound && <span>Notification permission enabled 👍🏻</span>}
-//         {!isTokenFound && <span>Need notification permission ❗️ </span>}
-//       </p>
-//       <Button
-//         variant="primary"
-//         onClick={() => getMessagingToken(setTokenFound)}
-//       >
-//         Enable notifications
-//       </Button>
-//     </div>
-//   );
-// };

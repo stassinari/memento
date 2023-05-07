@@ -14,7 +14,6 @@ export const FormSection: React.FC<FormSectionProps> = ({
   subtitle,
 }) => {
   return (
-    // <Card>
     <div tw="md:(grid grid-cols-3 gap-6)">
       <div tw="md:col-span-1">
         <h3 tw="text-lg font-medium leading-6 text-gray-900">{title}</h3>
@@ -24,6 +23,5 @@ export const FormSection: React.FC<FormSectionProps> = ({
         <Card tw="space-y-6">{children}</Card>
       </div>
     </div>
-    // </Card>
   );
 };

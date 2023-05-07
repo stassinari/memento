@@ -13,7 +13,7 @@ import { Link } from "../../components/Link";
 import { notification } from "../../components/Notification";
 import { Spinner } from "../../components/Spinner";
 import { db } from "../../firebaseConfig";
-import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
+import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { User } from "../../types/user";
 
@@ -26,8 +26,8 @@ export const DecentUpload = () => {
 
   const navigate = useNavigate();
 
-  const { details: dbUser, isLoading } = useFirestoreDocOneTime<User>(userRef);
-  const secretKey = dbUser?.secretKey ? dbUser.secretKey : "";
+  const { details: dbUser, isLoading } = useFirestoreDocRealtime<User>(userRef);
+  const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
 
   const userEmail = user?.email ? user.email : "";
 
@@ -37,6 +37,9 @@ export const DecentUpload = () => {
     const url = import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
     if (!url) {
       throw new Error("decent upload endpoint not set");
+    }
+    if (!secretKey) {
+      throw new Error("secret key not set");
     }
 
     const formData = new FormData();

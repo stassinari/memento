@@ -40,3 +40,9 @@ const calculateEy = ({ tds, weight, dose }: EyVariables) =>
 
 export const roundToDecimal = (n?: number, decimal = 1) =>
   n ? Math.round(n * (10 * decimal)) / (10 * decimal) : 0;
+
+export const generateRandomString = (len: number = 16) =>
+  Array(len)
+    .fill(0)
+    .map((x) => Math.random().toString(36).charAt(2))
+    .join("");

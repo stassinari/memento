@@ -1,9 +1,14 @@
 import { css } from "@emotion/react";
-import { ReactNode } from "react";
+import { DocumentReference, doc } from "firebase/firestore";
+import { ReactNode, useMemo } from "react";
 import { Link } from "react-router-dom";
 import tw, { theme } from "twin.macro";
+import { db } from "../firebaseConfig";
+import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
 import { useActiveRoute } from "../hooks/useActiveRoute";
+import { useCurrentUser } from "../hooks/useInitUser";
 import useMediaQuery from "../hooks/useMediaQuery";
+import { User } from "../types/user";
 import { navLinks } from "./BottomNav";
 
 const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
@@ -57,7 +62,32 @@ const sidebarNavLinks: SidebarNavItemProps[] = [
 ];
 
 export const SidebarNav = () => {
+  const user = useCurrentUser();
+  const userRef = useMemo(
+    () => doc(db, "users", user.uid) as DocumentReference<User>,
+    [user?.uid]
+  );
+
+  const { details: dbUser } = useFirestoreDocRealtime<User>(userRef);
+  const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
+
   const isLg = useMediaQuery(`(min-width: ${theme`screens.lg`})`);
+
+  const sidebarNavLinks: SidebarNavItemProps[] = useMemo(
+    () => [
+      navLinks.home,
+      navLinks.beans,
+      navLinks.drinks,
+      { ...navLinks.brews, nested: true },
+      { ...navLinks.espresso, nested: true },
+      { ...navLinks.tastings, nested: true },
+      ...(secretKey ? [navLinks.decentUpload] : []),
+      ...(process.env.NODE_ENV === "development"
+        ? [navLinks.designLibrary]
+        : []),
+    ],
+    [secretKey]
+  );
 
   return (
     <div tw="hidden md:(flex w-48 flex-col fixed inset-y-0) lg:w-64">
