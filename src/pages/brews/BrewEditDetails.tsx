@@ -1,5 +1,9 @@
 import { doc, setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import { BrewForm, BrewFormInputs } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -8,7 +12,7 @@ import { useCurrentUser } from "../../hooks/useInitUser";
 import { Brew } from "../../types/brew";
 import { brewToFirestore } from "./BrewsAdd";
 
-export const BrewEditDetails = () => {
+export const BrewEditDetails: React.FC = () => {
   console.log("BrewEditDetails");
 
   const user = useCurrentUser();
@@ -42,11 +46,23 @@ export const BrewEditDetails = () => {
   };
 
   return (
-    <BrewForm
-      defaultValues={fromFirestore}
-      title="Edit brew details"
-      buttonLabel="Edit"
-      mutation={editBrew}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.brews,
+          { label: brew.method, linkTo: `/drinks/brews/${brewId}` },
+          { label: "Edit", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit brew details</PageHeading>
+
+      <BrewForm
+        defaultValues={fromFirestore}
+        buttonLabel="Edit"
+        mutation={editBrew}
+      />
+    </>
   );
 };

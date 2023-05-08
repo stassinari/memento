@@ -1,5 +1,4 @@
 import { ReactNode, useMemo } from "react";
-import "twin.macro";
 import tw from "twin.macro";
 
 interface BadgeProps {
@@ -47,7 +46,7 @@ export const Badge: React.FC<BadgeProps> = ({
           <span tw="w-2 h-2">{icon.Element}</span>
         </button>
       ) : null,
-    [icon]
+    [clickable, colour, icon]
   );
 
   return (
@@ -64,7 +63,7 @@ export const Badge: React.FC<BadgeProps> = ({
           : colour === "orange"
           ? tw`text-orange-800 bg-orange-100`
           : null,
-        !!icon
+        icon
           ? icon.position === "left"
             ? size === "small"
               ? tw`pl-0.5 pr-2`

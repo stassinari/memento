@@ -2,6 +2,9 @@ import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   BrewForm,
   BrewFormInputs,
@@ -39,12 +42,19 @@ export const BrewsAdd: React.FC = () => {
   if (isLoading) return null;
 
   return (
-    <BrewForm
-      defaultValues={brewFormEmptyValues(brewsList[0])}
-      title="Add brew"
-      buttonLabel="Add"
-      mutation={addBrew}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[navLinks.drinks, navLinks.brews, { label: "Add", linkTo: "#" }]}
+      />
+
+      <PageHeading>Add brew</PageHeading>
+
+      <BrewForm
+        defaultValues={brewFormEmptyValues(brewsList[0])}
+        buttonLabel="Add"
+        mutation={addBrew}
+      />
+    </>
   );
 };
 

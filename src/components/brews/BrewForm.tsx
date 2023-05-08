@@ -38,14 +38,12 @@ type BrewFormStep = "beansMethodEquipment" | "recipe" | "time";
 
 interface BrewFormProps {
   defaultValues: BrewFormInputs;
-  title: string;
   buttonLabel: string;
   mutation: (data: BrewFormInputs) => Promise<void>;
 }
 
 export const BrewForm: React.FC<BrewFormProps> = ({
   defaultValues,
-  title,
   buttonLabel,
   mutation,
 }) => {
@@ -75,8 +73,6 @@ export const BrewForm: React.FC<BrewFormProps> = ({
 
   return (
     <React.Fragment>
-      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">{title}</h1>
-
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewsList={brewsList}

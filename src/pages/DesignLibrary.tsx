@@ -11,6 +11,10 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import tw, { theme } from "twin.macro";
 import { Badge, BadgePlusIcon, BadgeTimesIcon } from "../components/Badge";
+import {
+  BreadcrumbsWithHome,
+  BreadcrumbsWithoutHome,
+} from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
@@ -117,6 +121,23 @@ export const DesignLibrary = () => {
 
   return (
     <div tw="space-y-8">
+      <div>
+        <p>Breadcrumbs</p>
+        <BreadcrumbsWithoutHome
+          items={[
+            { label: "Drinks", linkTo: "/drinks" },
+            { label: "Brews", linkTo: "/drinks/brews" },
+            { label: "Brew details", linkTo: "#" },
+          ]}
+        />
+        <BreadcrumbsWithHome
+          items={[
+            { label: "Drinks", linkTo: "/drinks" },
+            { label: "Brews", linkTo: "/drinks/brews" },
+            { label: "Brew details", linkTo: "#" },
+          ]}
+        />
+      </div>
       <div>
         <p>Modals</p>
         <div>

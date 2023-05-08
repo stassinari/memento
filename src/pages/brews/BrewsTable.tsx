@@ -22,6 +22,8 @@ import { orderBy } from "firebase/firestore";
 import { countBy, maxBy, mean } from "lodash";
 import React, { Fragment, useMemo, useState } from "react";
 import tw from "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { IconButton } from "../../components/IconButton";
 import { ColumnVisibility } from "../../components/table/ColumnVisibility";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
@@ -173,6 +175,14 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
 
   return (
     <div tw="relative">
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.brews,
+          { label: "Table", linkTo: "#" },
+        ]}
+      />
+
       <Stats title="Brew stats" stats={totalStats} />
 
       <Popover className="relative my-4 text-right">

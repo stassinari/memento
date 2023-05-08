@@ -1,15 +1,18 @@
 import { limit, orderBy } from "firebase/firestore";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
+import { PageHeading } from "../../components/Heading";
 import { brewToDataListItem } from "../../components/brews/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
 import { Brew } from "../../types/brew";
 
-export const BrewsList = () => {
+export const BrewsList: React.FC = () => {
   const [brewLimit, setBrewLimit] = useState(50);
 
   const filters = useMemo(
@@ -22,7 +25,11 @@ export const BrewsList = () => {
 
   console.log("brewList");
   return (
-    <div>
+    <>
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.brews]} />
+
+      <PageHeading>Brews</PageHeading>
+
       <div tw="mb-4 text-right">
         <Button as={RouterLink} to="add" variant="primary" colour="accent">
           Add brew
@@ -41,10 +48,10 @@ export const BrewsList = () => {
             Load more
           </Button>
         )}
-        <Button as={RouterLink} to="all" variant="white" colour="accent">
+        <Button as={RouterLink} to="table" variant="white" colour="accent">
           View all brews
         </Button>
       </div>
-    </div>
+    </>
   );
 };

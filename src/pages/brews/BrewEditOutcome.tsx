@@ -2,6 +2,9 @@ import { doc } from "firebase/firestore";
 import React from "react";
 import { useParams } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import { BrewOutcomeForm } from "../../components/brews/BrewOutcomeForm";
 import { db } from "../../firebaseConfig";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -30,9 +33,16 @@ export const BrewEditOutcome: React.FC = () => {
 
   return (
     <>
-      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">
-        Edit brew outcome
-      </h1>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.brews,
+          { label: brew.method, linkTo: `/drinks/brews/${brewId}` },
+          { label: "Outcome", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit brew outcome</PageHeading>
 
       <BrewOutcomeForm brew={brew} brewRef={brewRef} />
     </>

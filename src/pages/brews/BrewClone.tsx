@@ -1,5 +1,9 @@
 import { setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   BrewForm,
   BrewFormInputs,
@@ -11,7 +15,7 @@ import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Brew } from "../../types/brew";
 import { brewToFirestore } from "./BrewsAdd";
 
-export const BrewClone = () => {
+export const BrewClone: React.FC = () => {
   console.log("BrewClone");
 
   const { brewId } = useParams();
@@ -27,7 +31,7 @@ export const BrewClone = () => {
     navigate(`/drinks/brews/${newBrewRef.id}`);
   };
 
-  if (!brew) {
+  if (!brew || !brewId) {
     return null;
   }
 
@@ -49,11 +53,23 @@ export const BrewClone = () => {
   };
 
   return (
-    <BrewForm
-      defaultValues={fromFirestore}
-      title="Clone brew"
-      buttonLabel="Clone"
-      mutation={addBrew}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.brews,
+          { label: brew.method, linkTo: `/drinks/brews/${brewId}` },
+          { label: "Clone", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Clone brew</PageHeading>
+
+      <BrewForm
+        defaultValues={fromFirestore}
+        buttonLabel="Clone"
+        mutation={addBrew}
+      />
+    </>
   );
 };

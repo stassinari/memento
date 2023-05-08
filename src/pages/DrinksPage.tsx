@@ -9,14 +9,6 @@ export const DrinksPage = () => (
         <Link as={RouterLink} to="brews">
           Go to brews
         </Link>
-
-        <ul>
-          <li>
-            <Link as={RouterLink} to="brews/table">
-              Go to brews table
-            </Link>
-          </li>
-        </ul>
       </li>
       <li>
         <Link as={RouterLink} to="espresso">

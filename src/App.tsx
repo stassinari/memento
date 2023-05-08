@@ -22,7 +22,6 @@ import { EspressoClone } from "./pages/espresso/EspressoClone";
 import { EspressoEditDetails } from "./pages/espresso/EspressoEditDetails";
 import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
 // import { LogIn } from "./pages/LogIn";
-import { BrewsListAll } from "./pages/brews/BrewsListAll";
 import { BrewsTableWrapper } from "./pages/brews/BrewsTable";
 import { DecentUpload } from "./pages/espresso/DecentUpload";
 import { NotFound } from "./pages/NotFound";
@@ -91,7 +90,6 @@ export const App = () => {
 
               {/* Brews */}
               <Route path="drinks/brews" element={<BrewsList />} />
-              <Route path="drinks/brews/all" element={<BrewsListAll />} />
               <Route path="drinks/brews/add" element={<BrewsAdd />} />
               <Route path="drinks/brews/:brewId" element={<BrewDetails />} />
               <Route
