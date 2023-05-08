@@ -24,6 +24,7 @@ import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
 // import { LogIn } from "./pages/LogIn";
 import { BrewsTableWrapper } from "./pages/brews/BrewsTable";
 import { DecentUpload } from "./pages/espresso/DecentUpload";
+import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { Settings } from "./pages/Settings";
 import { TastingsPage } from "./pages/TastingsPage";
@@ -77,7 +78,7 @@ export const App = () => {
           {/* Add routes that REQUIRE the user to be logged in */}
           <Route element={<RequireAuth />}>
             <Route element={<Layout />}>
-              <Route path="/" element={<Homepage />} />
+              <Route path="/" element={<Home />} />
 
               {/* Beans */}
               <Route path="beans" element={<BeansList />} />
@@ -155,11 +156,3 @@ export const App = () => {
     </Suspense>
   );
 };
-
-const Homepage = () => (
-  <div>
-    <p>Dis da homepage, brah.</p>
-    <p>Nobody knows what's going to appear here.</p>
-    <p>It's a secret 🤫</p>
-  </div>
-);
