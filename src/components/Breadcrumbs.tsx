@@ -50,10 +50,10 @@ export const BreadcrumbsWithHome: React.FC<BreadcrumbsProps> = ({ items }) => {
       >
         <li>
           <div>
-            <a href="#" tw="text-gray-400 hover:text-gray-500">
+            <Link to="/" tw="text-gray-400 hover:text-gray-500">
               <HomeIcon tw="flex-shrink-0 w-5 h-5" aria-hidden="true" />
               <span tw="sr-only">Home</span>
-            </a>
+            </Link>
           </div>
         </li>
         {items.map((item, i) => (

@@ -1,9 +1,16 @@
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { navLinks } from "../components/BottomNav";
+import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
+import { PageHeading } from "../components/Heading";
 import { Link } from "../components/Link";
 
-export const DrinksPage = () => (
-  <div>
-    Drink here soon{" "}
+export const DrinksPage: React.FC = () => (
+  <>
+    <BreadcrumbsWithHome items={[navLinks.drinks]} />
+
+    <PageHeading>Drinks</PageHeading>
+
     <ul>
       <li>
         <Link as={RouterLink} to="brews">
@@ -21,5 +28,5 @@ export const DrinksPage = () => (
         </Link>
       </li>
     </ul>
-  </div>
+  </>
 );

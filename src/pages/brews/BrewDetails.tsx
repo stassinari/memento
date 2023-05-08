@@ -14,6 +14,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
+import { PageHeading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
@@ -50,14 +51,9 @@ export const BrewDetails: React.FC = () => {
           { label: brew.method, linkTo: "#" },
         ]}
       />
-      <div>
-        <h3 tw="text-lg font-medium leading-6 text-gray-900">
-          Brew with id {brewId}
-        </h3>
-        <p tw="max-w-2xl mt-1 text-sm text-gray-500">
-          Subtitle in case it is needed.
-        </p>
-      </div>
+
+      <PageHeading>{brew.method}</PageHeading>
+
       <div tw="space-x-2">
         <Button
           variant="primary"

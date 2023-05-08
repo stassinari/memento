@@ -6,11 +6,14 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { Fragment, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../components/BottomNav";
+import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
 import { FormSection } from "../components/Form";
+import { PageHeading } from "../components/Heading";
 import { Link } from "../components/Link";
 import { Toggle } from "../components/Toggle";
 import { auth, db } from "../firebaseConfig";
@@ -24,7 +27,7 @@ const signOut = async (auth: Auth) => {
   console.log("signed out");
 };
 
-export const Settings = () => {
+export const Settings: React.FC = () => {
   const user = useCurrentUser();
   const userRef = useMemo(
     () => doc(db, "users", user.uid) as DocumentReference<User>,
@@ -38,74 +41,80 @@ export const Settings = () => {
   console.log({ user, dbUser, isLoading, secretKey });
 
   return (
-    <div tw="space-y-6">
-      <FormSection title="Decent setup">
-        <div tw="flex items-center justify-between">
-          <span tw="font-medium">Enable Decent integration</span>
-          <Toggle
-            checked={!!secretKey}
-            onChange={async () =>
-              secretKey
-                ? await updateDoc(userRef, { secretKey: deleteField() })
-                : await setDoc(userRef, { secretKey: generateRandomString() })
-            }
-          />
-        </div>
-        {secretKey ? (
-          <Fragment>
-            <div tw="flex items-center justify-between">
-              <p tw="text-sm">
-                Secret key: <strong tw="font-semibold">{secretKey}</strong>
+    <>
+      <BreadcrumbsWithHome items={[navLinks.settings]} />
+
+      <PageHeading>Settings</PageHeading>
+
+      <div tw="space-y-6">
+        <FormSection title="Decent setup">
+          <div tw="flex items-center justify-between">
+            <span tw="font-medium">Enable Decent integration</span>
+            <Toggle
+              checked={!!secretKey}
+              onChange={async () =>
+                secretKey
+                  ? await updateDoc(userRef, { secretKey: deleteField() })
+                  : await setDoc(userRef, { secretKey: generateRandomString() })
+              }
+            />
+          </div>
+          {secretKey ? (
+            <>
+              <div tw="flex items-center justify-between">
+                <p tw="text-sm">
+                  Secret key: <strong tw="font-semibold">{secretKey}</strong>
+                </p>
+                <Button
+                  variant="white"
+                  size="xs"
+                  onClick={async () =>
+                    await navigator.clipboard.writeText(secretKey)
+                  }
+                >
+                  Copy
+                </Button>
+              </div>
+              <p tw="text-sm text-gray-600">
+                You can{" "}
+                <Link as={RouterLink} to="/decent-upload">
+                  upload shots from here
+                </Link>
+                , or follow{" "}
+                <Link
+                  href="https://github.com/stassinari/memento#decent-espresso-integration"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  this guide
+                </Link>{" "}
+                to enable automatic uploads from you machine
               </p>
-              <Button
-                variant="white"
-                size="xs"
-                onClick={async () =>
-                  await navigator.clipboard.writeText(secretKey)
-                }
-              >
-                Copy
-              </Button>
-            </div>
-            <p tw="text-sm text-gray-600">
-              You can{" "}
-              <Link as={RouterLink} to="/decent-upload">
-                upload shots from here
-              </Link>
-              , or follow{" "}
-              <Link
-                href="https://github.com/stassinari/memento#decent-espresso-integration"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                this guide
-              </Link>{" "}
-              to enable automatic uploads from you machine
+            </>
+          ) : (
+            <p tw="mt-2 mb-4 text-sm text-gray-600">
+              If you have a Decent Espresso machine, and would like to enable
+              uploading shots from it, start by enabling the integration here.
             </p>
-          </Fragment>
-        ) : (
-          <p tw="mt-2 mb-4 text-sm text-gray-600">
-            If you have a Decent Espresso machine, and would like to enable
-            uploading shots from it, start by enabling the integration here.
+          )}
+        </FormSection>
+        <FormSection title="Account">
+          <p tw="text-sm">
+            Email: <strong tw="font-semibold">{user.email}</strong>
           </p>
-        )}
-      </FormSection>
-      <FormSection title="Account">
-        <p tw="text-sm">
-          Email: <strong tw="font-semibold">{user.email}</strong>
-        </p>
-        <Button variant="white" onClick={async () => await signOut(auth)}>
-          Sign out
+          <Button variant="white" onClick={async () => await signOut(auth)}>
+            Sign out
+          </Button>
+        </FormSection>
+        <Button
+          variant="white"
+          as={RouterLink}
+          to="/design-library"
+          tw="sm:hidden"
+        >
+          Design Library
         </Button>
-      </FormSection>
-      <Button
-        variant="white"
-        as={RouterLink}
-        to="/design-library"
-        tw="sm:hidden"
-      >
-        Design Library
-      </Button>
-    </div>
+      </div>
+    </>
   );
 };

@@ -8,7 +8,10 @@ import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import tw from "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
+import { PageHeading } from "../../components/Heading";
 import { Link } from "../../components/Link";
 import { notification } from "../../components/Notification";
 import { Spinner } from "../../components/Spinner";
@@ -17,7 +20,7 @@ import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRe
 import { useCurrentUser } from "../../hooks/useInitUser";
 import { User } from "../../types/user";
 
-export const DecentUpload = () => {
+export const DecentUpload: React.FC = () => {
   const user = useCurrentUser();
   const userRef = useMemo(
     () => doc(db, "users", user?.uid || "") as DocumentReference<User>,
@@ -93,7 +96,11 @@ export const DecentUpload = () => {
   if (isLoading) return null;
 
   return (
-    <div>
+    <>
+      <BreadcrumbsWithHome items={[navLinks.decentUpload]} />
+
+      <PageHeading>Decent Upload</PageHeading>
+
       <p>Manually upload your Decent Espresso shot files.</p>
       <p>
         If you'd like to enable automatic uploads,{" "}
@@ -109,7 +116,7 @@ export const DecentUpload = () => {
         .
       </p>
       {!secretKey && (
-        <React.Fragment>
+        <>
           <div>
             It looks like you haven't uploaded any shot files yet. For security
             reasons, we require you to generate a secret token (the same used
@@ -129,7 +136,7 @@ export const DecentUpload = () => {
           >
             Generate secret key (TBD)
           </Button>
-        </React.Fragment>
+        </>
       )}
 
       {secretKey && (
@@ -176,6 +183,6 @@ export const DecentUpload = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

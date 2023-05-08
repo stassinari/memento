@@ -1,10 +1,13 @@
 import { Tab } from "@headlessui/react";
 import { orderBy, where } from "firebase/firestore";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import tw from "twin.macro";
+import { navLinks } from "../../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../../components/Breadcrumbs";
 import { Button } from "../../../components/Button";
 import { EmptyState } from "../../../components/EmptyState";
+import { PageHeading } from "../../../components/Heading";
 import { BeansTab, BeansTabProps } from "./BeansTab";
 
 const tabs: BeansTabProps[] = [
@@ -47,13 +50,17 @@ const tabs: BeansTabProps[] = [
   },
 ];
 
-export const BeansList = () => {
+export const BeansList: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   console.log("BeansList");
 
   return (
-    <div>
+    <>
+      <BreadcrumbsWithHome items={[navLinks.beans]} />
+
+      <PageHeading>Beans</PageHeading>
+
       <Button as={Link} to="add" variant="primary" colour="accent">
         Add beans
       </Button>
@@ -86,7 +93,7 @@ export const BeansList = () => {
           ))}
         </Tab.Panels>
       </Tab.Group>
-    </div>
+    </>
   );
 };
 
