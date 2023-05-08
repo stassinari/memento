@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import "twin.macro";
 import { Link } from "./Link";
 
 interface DetailsRowProps {
   label: string;
-  value: string;
+  value: string | ReactNode;
   link?: string;
 }
 

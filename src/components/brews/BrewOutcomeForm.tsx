@@ -7,6 +7,7 @@ import "twin.macro";
 import { Brew, ExtractionType } from "../../types/brew";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
+import { PoweredByMarkdown } from "../PoweredByMarkdown";
 import { FormInput } from "../form/FormInput";
 import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
@@ -103,19 +104,7 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
             label="Notes"
             id="notes"
             textareaProps={{ ...register("notes") }}
-            helperText={
-              <React.Fragment>
-                Powered by{" "}
-                <a
-                  tw="underline hover:no-underline"
-                  href="https://www.markdownguide.org/"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Markdown
-                </a>
-              </React.Fragment>
-            }
+            helperText={<PoweredByMarkdown />}
           />
         </FormSection>
 

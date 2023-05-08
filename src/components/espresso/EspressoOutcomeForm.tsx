@@ -7,6 +7,7 @@ import "twin.macro";
 import { Espresso } from "../../types/espresso";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
+import { PoweredByMarkdown } from "../PoweredByMarkdown";
 import { FormInput } from "../form/FormInput";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { FormTextarea } from "../form/FormTextarea";
@@ -91,19 +92,7 @@ export const EspressoOutcomeForm: React.FC<EspressoOutcomeFormProps> = ({
             label="Notes"
             id="notes"
             textareaProps={{ ...register("notes") }}
-            helperText={
-              <React.Fragment>
-                Powered by{" "}
-                <a
-                  tw="underline hover:no-underline"
-                  href="https://www.markdownguide.org/"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Markdown
-                </a>
-              </React.Fragment>
-            }
+            helperText={<PoweredByMarkdown />}
           />
         </FormSection>
 

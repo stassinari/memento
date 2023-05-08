@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
+import ReactMarkdown from "react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
@@ -113,8 +114,14 @@ const EspressoDetails = () => {
             label: "Overall score",
             value: espresso.rating ? `${espresso.rating}/10` : "",
           },
-          // FIXME make Markdown beautiful
-          { label: "Notes", value: espresso.notes ?? "" },
+          {
+            label: "Notes",
+            value: (
+              <article tw="prose-sm prose">
+                <ReactMarkdown>{espresso.notes ?? ""}</ReactMarkdown>
+              </article>
+            ),
+          },
         ]}
       />
 

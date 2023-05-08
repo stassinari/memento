@@ -137,7 +137,7 @@ export const DecentUpload = () => {
           <div tw="relative">
             <div
               css={[
-                tw`flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg border-gray-900/25 focus-visible:(ring-2 ring-offset-2 ring-orange-600/75 outline-none)`,
+                tw`flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:(ring-2 ring-offset-2 ring-orange-600/75 outline-none)`,
                 isFileUploading &&
                   tw`after:(content absolute inset-0 bg-gray-50/50)`,
               ]}

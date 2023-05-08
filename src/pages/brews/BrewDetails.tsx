@@ -6,6 +6,7 @@ import {
 import { TrashIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { Button } from "../../components/Button";
@@ -74,8 +75,14 @@ export const BrewDetails = () => {
             label: "Overall score",
             value: brew.rating ? `${brew.rating}/10` : "",
           },
-          // FIXME make Markdown beautiful
-          { label: "Notes", value: brew.notes ?? "" },
+          {
+            label: "Notes",
+            value: (
+              <article tw="prose-sm prose">
+                <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
+              </article>
+            ),
+          },
         ]}
       />
 
@@ -186,7 +193,7 @@ export const BrewDetails = () => {
           {
             label: "Time",
             value:
-              brew.timeMinutes || brew.timeSeconds
+              brew.timeMinutes ?? brew.timeSeconds
                 ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
                 : "",
           },
