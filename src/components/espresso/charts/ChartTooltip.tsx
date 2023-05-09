@@ -5,8 +5,8 @@ import {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 import tw from "twin.macro";
-import { propertyToValues } from "../../../pages/espresso/PressureFlowWeightChart";
 import { roundToDecimal } from "../../../utils";
+import { propertyToValues } from "./PressureFlowWeightChart";
 
 interface CustomTooltipProps {
   title: number;

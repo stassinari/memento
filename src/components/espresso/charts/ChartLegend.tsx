@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import tw from "twin.macro";
-import { propertyToValues } from "../../../pages/espresso/PressureFlowWeightChart";
+import { propertyToValues } from "./PressureFlowWeightChart";
 
 interface LegendRectangleProps {
   color: string;

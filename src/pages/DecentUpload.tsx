@@ -8,17 +8,17 @@ import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import tw from "twin.macro";
-import { navLinks } from "../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { Button } from "../../components/Button";
-import { PageHeading } from "../../components/Heading";
-import { Link } from "../../components/Link";
-import { notification } from "../../components/Notification";
-import { Spinner } from "../../components/Spinner";
-import { db } from "../../firebaseConfig";
-import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
-import { useCurrentUser } from "../../hooks/useInitUser";
-import { User } from "../../types/user";
+import { navLinks } from "../components/BottomNav";
+import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
+import { Button } from "../components/Button";
+import { PageHeading } from "../components/Heading";
+import { Link } from "../components/Link";
+import { notification } from "../components/Notification";
+import { Spinner } from "../components/Spinner";
+import { db } from "../firebaseConfig";
+import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
+import { useCurrentUser } from "../hooks/useInitUser";
+import { User } from "../types/user";
 
 export const DecentUpload: React.FC = () => {
   const user = useCurrentUser();

@@ -9,9 +9,9 @@ import {
   YAxis,
 } from "recharts";
 import { theme } from "twin.macro";
-import { ChartLegend } from "../../components/espresso/charts/ChartLegend";
-import { ChartTooltip } from "../../components/espresso/charts/ChartTooltip";
-import { DecentReadings } from "../../types/espresso";
+import { DecentReadings } from "../../../types/espresso";
+import { ChartLegend } from "./ChartLegend";
+import { ChartTooltip } from "./ChartTooltip";
 
 interface TemperatureChartProps {
   decentReadings: DecentReadings;

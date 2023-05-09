@@ -23,7 +23,7 @@ import { EspressoEditDetails } from "./pages/espresso/EspressoEditDetails";
 import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
 // import { LogIn } from "./pages/LogIn";
 import { BrewsTableWrapper } from "./pages/brews/BrewsTable";
-import { DecentUpload } from "./pages/espresso/DecentUpload";
+import { DecentUpload } from "./pages/DecentUpload";
 import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { Settings } from "./pages/Settings";

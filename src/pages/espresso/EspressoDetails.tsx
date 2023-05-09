@@ -17,12 +17,12 @@ import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
 import { PageHeading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
+import { DecentCharts } from "../../components/espresso/charts/DecentCharts";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Espresso } from "../../types/espresso";
 import { getEyFromEspresso } from "../../utils";
 import { NotFound } from "../NotFound";
-import { DecentCharts } from "./DecentCharts";
 
 const EspressoDetails: React.FC = () => {
   console.log("EspressoDetails");
