@@ -7,11 +7,15 @@ import {
 } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
+import { PageHeading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
@@ -20,7 +24,7 @@ import { getEyFromEspresso } from "../../utils";
 import { NotFound } from "../NotFound";
 import { DecentCharts } from "./DecentCharts";
 
-const EspressoDetails = () => {
+const EspressoDetails: React.FC = () => {
   console.log("EspressoDetails");
 
   const { espressoId } = useParams();
@@ -42,15 +46,17 @@ const EspressoDetails = () => {
   }
 
   return (
-    <div tw="space-y-8">
-      <div>
-        <h3 tw="text-lg font-medium leading-6 text-gray-900">
-          Espresso with id {espressoId}
-        </h3>
-        <p tw="max-w-2xl mt-1 text-sm text-gray-500">
-          Subtitle in case it is needed.
-        </p>
-      </div>
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.espresso,
+          { label: "Boh", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Boh</PageHeading>
+
       <div tw="space-x-2">
         {!espresso.fromDecent && (
           <Button
@@ -107,142 +113,137 @@ const EspressoDetails = () => {
 
       {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
-      <Details
-        title="Rating"
-        rows={[
-          {
-            label: "Overall score",
-            value: espresso.rating ? `${espresso.rating}/10` : "",
-          },
-          {
-            label: "Notes",
-            value: (
-              <article tw="prose-sm prose">
-                <ReactMarkdown>{espresso.notes ?? ""}</ReactMarkdown>
-              </article>
-            ),
-          },
-        ]}
-      />
-
-      <Details
-        title="Tasting scores"
-        rows={[
-          {
-            label: "Aroma",
-            value: espresso.tastingScores?.aroma
-              ? `${espresso.tastingScores.aroma}/10`
-              : "",
-          },
-          {
-            label: "Acidity",
-            value: espresso.tastingScores?.acidity
-              ? `${espresso.tastingScores.acidity}/10`
-              : "",
-          },
-          {
-            label: "Sweetness",
-            value: espresso.tastingScores?.sweetness
-              ? `${espresso.tastingScores.sweetness}/10`
-              : "",
-          },
-          {
-            label: "Body",
-            value: espresso.tastingScores?.body
-              ? `${espresso.tastingScores.body}/10`
-              : "",
-          },
-          {
-            label: "Finish",
-            value: espresso.tastingScores?.finish
-              ? `${espresso.tastingScores.finish}/10`
-              : "",
-          },
-        ]}
-      />
-
-      <Details
-        title="Extraction"
-        rows={[
-          {
-            label: "Extraction yield",
-            value: `${getEyFromEspresso(espresso)}%`,
-          },
-          {
-            label: "TDS",
-            value: espresso.tds ? `${espresso.tds}%` : "",
-          },
-        ]}
-      />
-
-      <Details
-        title="Prep"
-        rows={[
-          {
-            label: "Date",
-            value: espresso.date
-              ? dayjs(espresso.date.toDate()).format("DD MMM YYYY | H:m")
-              : "",
-          },
-          ...(espresso.fromDecent
-            ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
-            : []),
-        ]}
-      />
-
-      {espresso.beans ? (
-        <BeansShortInfo
-          beansId={espresso.beans.id}
-          brewDate={espresso.date.toDate()}
+      <div tw="space-y-8">
+        <Details
+          title="Rating"
+          rows={[
+            {
+              label: "Overall score",
+              value: espresso.rating ? `${espresso.rating}/10` : "",
+            },
+            {
+              label: "Notes",
+              value: (
+                <article tw="prose-sm prose">
+                  <ReactMarkdown>{espresso.notes ?? ""}</ReactMarkdown>
+                </article>
+              ),
+            },
+          ]}
         />
-      ) : null}
-
-      <Details
-        title="Equipment"
-        rows={[
-          { label: "Machine", value: espresso.machine ?? "" },
-          { label: "Grinder", value: espresso.grinder ?? "" },
-          { label: "Burrs", value: espresso.grinderBurrs ?? "" },
-          { label: "Portafilter", value: espresso.portafilter ?? "" },
-          { label: "Basket", value: espresso.basket ?? "" },
-        ]}
-      />
-
-      <Details
-        title="Recipe"
-        rows={[
-          {
-            label: "Target weight",
-            value: espresso.targetWeight ? `${espresso.targetWeight} g` : "",
-          },
-          {
-            label: "Beans weight",
-            value: espresso.beansWeight ? `${espresso.beansWeight} g` : "",
-          },
-          ...(!espresso.fromDecent
-            ? [
-                {
-                  label: "Water temperature",
-                  value: espresso.waterTemperature
-                    ? `${espresso.waterTemperature} °C`
-                    : "",
-                },
-              ]
-            : []),
-          { label: "Grind setting", value: espresso.grindSetting ?? "" },
-        ]}
-      />
-
-      <Details
-        title="Time"
-        rows={[
-          {
-            label: "Time",
-            value: `${espresso.actualTime}s`,
-          },
-        ]}
-      />
-    </div>
+        <Details
+          title="Tasting scores"
+          rows={[
+            {
+              label: "Aroma",
+              value: espresso.tastingScores?.aroma
+                ? `${espresso.tastingScores.aroma}/10`
+                : "",
+            },
+            {
+              label: "Acidity",
+              value: espresso.tastingScores?.acidity
+                ? `${espresso.tastingScores.acidity}/10`
+                : "",
+            },
+            {
+              label: "Sweetness",
+              value: espresso.tastingScores?.sweetness
+                ? `${espresso.tastingScores.sweetness}/10`
+                : "",
+            },
+            {
+              label: "Body",
+              value: espresso.tastingScores?.body
+                ? `${espresso.tastingScores.body}/10`
+                : "",
+            },
+            {
+              label: "Finish",
+              value: espresso.tastingScores?.finish
+                ? `${espresso.tastingScores.finish}/10`
+                : "",
+            },
+          ]}
+        />
+        <Details
+          title="Extraction"
+          rows={[
+            {
+              label: "Extraction yield",
+              value: `${getEyFromEspresso(espresso)}%`,
+            },
+            {
+              label: "TDS",
+              value: espresso.tds ? `${espresso.tds}%` : "",
+            },
+          ]}
+        />
+        <Details
+          title="Prep"
+          rows={[
+            {
+              label: "Date",
+              value: espresso.date
+                ? dayjs(espresso.date.toDate()).format("DD MMM YYYY | H:m")
+                : "",
+            },
+            ...(espresso.fromDecent
+              ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
+              : []),
+          ]}
+        />
+        {espresso.beans ? (
+          <BeansShortInfo
+            beansId={espresso.beans.id}
+            brewDate={espresso.date.toDate()}
+          />
+        ) : null}
+        <Details
+          title="Equipment"
+          rows={[
+            { label: "Machine", value: espresso.machine ?? "" },
+            { label: "Grinder", value: espresso.grinder ?? "" },
+            { label: "Burrs", value: espresso.grinderBurrs ?? "" },
+            { label: "Portafilter", value: espresso.portafilter ?? "" },
+            { label: "Basket", value: espresso.basket ?? "" },
+          ]}
+        />
+        <Details
+          title="Recipe"
+          rows={[
+            {
+              label: "Target weight",
+              value: espresso.targetWeight ? `${espresso.targetWeight} g` : "",
+            },
+            {
+              label: "Beans weight",
+              value: espresso.beansWeight ? `${espresso.beansWeight} g` : "",
+            },
+            ...(!espresso.fromDecent
+              ? [
+                  {
+                    label: "Water temperature",
+                    value: espresso.waterTemperature
+                      ? `${espresso.waterTemperature} °C`
+                      : "",
+                  },
+                ]
+              : []),
+            { label: "Grind setting", value: espresso.grindSetting ?? "" },
+          ]}
+        />
+        <Details
+          title="Time"
+          rows={[
+            {
+              label: "Time",
+              value: `${espresso.actualTime}s`,
+            },
+          ]}
+        />
+      </div>
+    </>
   );
 };
 

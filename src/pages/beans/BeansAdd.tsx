@@ -1,4 +1,5 @@
 import { setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import {
@@ -6,6 +7,9 @@ import {
   beansFormEmptyValues,
   BeansFormInputs,
 } from "../../components/beans/BeansForm";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 
 export const BeansAdd: React.FC = () => {
@@ -18,13 +22,20 @@ export const BeansAdd: React.FC = () => {
   };
 
   return (
-    <BeansForm
-      defaultValues={beansFormEmptyValues}
-      title="Add beans"
-      buttonLabel="Add"
-      mutation={addBeans}
-      showStorageSection={false}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[navLinks.beans, { label: "Add", linkTo: "#" }]}
+      />
+
+      <PageHeading>Add beans</PageHeading>
+
+      <BeansForm
+        defaultValues={beansFormEmptyValues}
+        buttonLabel="Add"
+        mutation={addBeans}
+        showStorageSection={false}
+      />
+    </>
   );
 };
 

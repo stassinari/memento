@@ -2,6 +2,9 @@ import { doc, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   DecentEspressoForm,
   DecentEspressoFormInputs,
@@ -21,7 +24,7 @@ export const decentEspressoToFirestore = (
   beans: doc(db, espresso.beans ?? ""),
 });
 
-export const DecentEspressoEditDetails = () => {
+export const DecentEspressoEditDetails: React.FC = () => {
   console.log("DecentEspressoEditDetails");
 
   const user = useCurrentUser();
@@ -69,16 +72,27 @@ export const DecentEspressoEditDetails = () => {
   };
 
   return (
-    <React.Fragment>
-      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">
-        Edit Decent shot details
-      </h1>
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.espresso,
+          {
+            label: decentEspresso.profileName,
+            linkTo: `/drinks/espresso/${espressoId}`,
+          },
+          { label: "Edit info", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit info ({decentEspresso.profileName})</PageHeading>
+
       <DecentEspressoForm
         defaultValues={fromFirestore}
         espressoList={espressoList}
         mutation={editDecentEspresso}
         backLink={`/drinks/espresso/${espressoId}`}
       />
-    </React.Fragment>
+    </>
   );
 };

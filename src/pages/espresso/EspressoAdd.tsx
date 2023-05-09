@@ -2,6 +2,9 @@ import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   EspressoForm,
   EspressoFormInputs,
@@ -38,12 +41,23 @@ export const EspressoAdd: React.FC = () => {
   if (isLoading) return null;
 
   return (
-    <EspressoForm
-      defaultValues={espressoFormEmptyValues(espressoList[0])}
-      title="Add espresso"
-      buttonLabel="Add"
-      mutation={addEspresso}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.espresso,
+          { label: "Add", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Add espresso</PageHeading>
+
+      <EspressoForm
+        defaultValues={espressoFormEmptyValues(espressoList[0])}
+        buttonLabel="Add"
+        mutation={addEspresso}
+      />
+    </>
   );
 };
 

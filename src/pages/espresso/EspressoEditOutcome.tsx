@@ -2,6 +2,9 @@ import { doc } from "firebase/firestore";
 import React from "react";
 import { useParams } from "react-router-dom";
 import "twin.macro";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import { EspressoOutcomeForm } from "../../components/espresso/EspressoOutcomeForm";
 import { db } from "../../firebaseConfig";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -31,9 +34,16 @@ export const EspressoEditOutcome: React.FC = () => {
 
   return (
     <>
-      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">
-        Edit espresso outcome
-      </h1>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.espresso,
+          { label: "Boh", linkTo: `/drinks/espresso/${espressoId}` },
+          { label: "Outcome", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit espresso outcome</PageHeading>
 
       <EspressoOutcomeForm espresso={espresso} espressoRef={espressoRef} />
     </>

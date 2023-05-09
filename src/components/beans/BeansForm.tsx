@@ -85,7 +85,6 @@ export const beansFormEmptyValues: BeansFormInputs = {
 
 interface BeansFormProps {
   defaultValues: BeansFormInputs;
-  title: string;
   buttonLabel: string;
   mutation: (data: BeansFormInputs) => Promise<void>;
   showStorageSection?: boolean;
@@ -93,7 +92,6 @@ interface BeansFormProps {
 
 export const BeansForm: React.FC<BeansFormProps> = ({
   defaultValues,
-  title,
   buttonLabel,
   mutation,
   showStorageSection = true,
@@ -134,8 +132,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   if (isLoading) return null;
 
   return (
-    <div>
-      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">{title}</h1>
+    <>
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -326,6 +323,6 @@ export const BeansForm: React.FC<BeansFormProps> = ({
           </div>
         </form>
       </FormProvider>
-    </div>
+    </>
   );
 };

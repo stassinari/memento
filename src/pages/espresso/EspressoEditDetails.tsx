@@ -1,5 +1,9 @@
 import { doc, setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   EspressoForm,
   EspressoFormInputs,
@@ -11,7 +15,7 @@ import { useCurrentUser } from "../../hooks/useInitUser";
 import { BaseEspresso } from "../../types/espresso";
 import { espressoToFirestore } from "./EspressoAdd";
 
-export const EspressoEditDetails = () => {
+export const EspressoEditDetails: React.FC = () => {
   const user = useCurrentUser();
   const { espressoId } = useParams();
 
@@ -50,11 +54,23 @@ export const EspressoEditDetails = () => {
   };
 
   return (
-    <EspressoForm
-      defaultValues={fromFirestore}
-      title="Edit espresso details"
-      buttonLabel="Edit"
-      mutation={editEspresso}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.espresso,
+          { label: "Boh", linkTo: `/drinks/espresso/${espressoId}` },
+          { label: "Edit", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit espresso details</PageHeading>
+
+      <EspressoForm
+        defaultValues={fromFirestore}
+        buttonLabel="Edit"
+        mutation={editEspresso}
+      />
+    </>
   );
 };

@@ -1,5 +1,9 @@
 import { setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   EspressoForm,
   EspressoFormInputs,
@@ -11,7 +15,7 @@ import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { BaseEspresso } from "../../types/espresso";
 import { espressoToFirestore } from "./EspressoAdd";
 
-export const EspressoClone = () => {
+export const EspressoClone: React.FC = () => {
   const { espressoId } = useParams();
   const navigate = useNavigate();
 
@@ -47,11 +51,23 @@ export const EspressoClone = () => {
   };
 
   return (
-    <EspressoForm
-      defaultValues={fromFirestore}
-      title="Clone espresso"
-      buttonLabel="Clone"
-      mutation={addEspresso}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.espresso,
+          { label: "Boh", linkTo: `/drinks/espresso/${espressoId}` },
+          { label: "Clone", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit espresso details</PageHeading>
+
+      <EspressoForm
+        defaultValues={fromFirestore}
+        buttonLabel="Clone"
+        mutation={addEspresso}
+      />
+    </>
   );
 };

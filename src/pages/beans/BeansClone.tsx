@@ -1,5 +1,9 @@
 import { setDoc } from "firebase/firestore";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   BeansForm,
   BeansFormInputs,
@@ -10,7 +14,7 @@ import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOne
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 import { Beans } from "../../types/beans";
 
-export const BeansClone = () => {
+export const BeansClone: React.FC = () => {
   console.log("BeansClone");
 
   const { beansId } = useParams();
@@ -59,12 +63,23 @@ export const BeansClone = () => {
   };
 
   return (
-    <BeansForm
-      defaultValues={fromFirestore}
-      title="Clone beans"
-      buttonLabel="Clone"
-      mutation={addBeans}
-      showStorageSection={false}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.beans,
+          { label: beans.name, linkTo: `/beans/${beansId}` },
+          { label: "Clone", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Clone beans</PageHeading>
+
+      <BeansForm
+        defaultValues={fromFirestore}
+        buttonLabel="Clone"
+        mutation={addBeans}
+        showStorageSection={false}
+      />
+    </>
   );
 };

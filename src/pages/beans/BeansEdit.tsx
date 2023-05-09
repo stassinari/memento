@@ -1,6 +1,10 @@
 import { DocumentReference, setDoc } from "firebase/firestore";
 import { omit } from "lodash";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { navLinks } from "../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
+import { PageHeading } from "../../components/Heading";
 import {
   BeansForm,
   BeansFormInputs,
@@ -10,7 +14,7 @@ import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "../../hooks/firestore/useFirestoreDocOneTime";
 import { Beans } from "../../types/beans";
 
-export const BeansEdit = () => {
+export const BeansEdit: React.FC = () => {
   console.log("BeansEdit");
 
   const { beansId } = useParams();
@@ -43,11 +47,22 @@ export const BeansEdit = () => {
   };
 
   return (
-    <BeansForm
-      defaultValues={fromFirestore}
-      title="Edit beans"
-      buttonLabel="Edit"
-      mutation={editBeans}
-    />
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.beans,
+          { label: beans.name, linkTo: `/beans/${beansId}` },
+          { label: "Edit", linkTo: "#" },
+        ]}
+      />
+
+      <PageHeading>Edit beans</PageHeading>
+
+      <BeansForm
+        defaultValues={fromFirestore}
+        buttonLabel="Edit"
+        mutation={editBeans}
+      />
+    </>
   );
 };

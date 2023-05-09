@@ -42,14 +42,12 @@ type EspressoFormStep = "beansEquipment" | "recipe" | "time";
 
 interface EspressoFormProps {
   defaultValues: EspressoFormInputs;
-  title: string;
   buttonLabel: string;
   mutation: (data: EspressoFormInputs) => Promise<void>;
 }
 
 export const EspressoForm: React.FC<EspressoFormProps> = ({
   defaultValues,
-  title,
   buttonLabel,
   mutation,
 }) => {
@@ -82,9 +80,7 @@ export const EspressoForm: React.FC<EspressoFormProps> = ({
   if (areBeansLoading || areEspressosLoading) return null;
 
   return (
-    <React.Fragment>
-      <h1 tw="text-3xl font-bold tracking-tight text-gray-900">{title}</h1>
-
+    <>
       {activeStep === "beansEquipment" ? (
         <BeansEquipment
           espressoList={espressoList}
@@ -115,6 +111,6 @@ export const EspressoForm: React.FC<EspressoFormProps> = ({
           handleBack={() => setActiveStep("recipe")}
         />
       )}
-    </React.Fragment>
+    </>
   );
 };
