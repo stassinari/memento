@@ -86,16 +86,16 @@ export const InputSlider: React.FC<InputSliderProps> = ({
 
       <div tw="flex justify-between mt-2 -mx-2 text-sm text-gray-700 sm:text-xs">
         {overrideLabels ? (
-          <React.Fragment>
+          <>
             {overrideLabels.map((l) => (
               <span key={l}>{l}</span>
             ))}
-          </React.Fragment>
+          </>
         ) : (
-          <React.Fragment>
+          <>
             <span>{min}</span>
             <span>{max}</span>
-          </React.Fragment>
+          </>
         )}
       </div>
 

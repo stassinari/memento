@@ -72,7 +72,7 @@ export const BrewForm: React.FC<BrewFormProps> = ({
   if (areBeansLoading || areBrewsLoading) return null;
 
   return (
-    <React.Fragment>
+    <>
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewsList={brewsList}
@@ -103,6 +103,6 @@ export const BrewForm: React.FC<BrewFormProps> = ({
           handleBack={() => setActiveStep("recipe")}
         />
       )}
-    </React.Fragment>
+    </>
   );
 };

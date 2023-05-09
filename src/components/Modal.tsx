@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import { Fragment, ReactNode } from "react";
+import React, { Fragment, ReactNode } from "react";
 import tw, { theme } from "twin.macro";
 import { Button } from "./Button";
 
@@ -118,7 +118,7 @@ interface ExampleDialogContentProps {
 export const ExampleDialogContent: React.FC<ExampleDialogContentProps> = ({
   handleClose,
 }) => (
-  <Fragment>
+  <>
     <div>
       <div tw="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full">
         <CheckIcon tw="w-6 h-6 text-green-600" aria-hidden="true" />
@@ -149,7 +149,7 @@ export const ExampleDialogContent: React.FC<ExampleDialogContentProps> = ({
         Go back to dashboard
       </Button>
     </div>
-  </Fragment>
+  </>
 );
 
 export const LoremIpsum = () => (

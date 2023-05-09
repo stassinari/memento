@@ -32,7 +32,7 @@ interface DetailsProps {
 
 export const Details: React.FC<DetailsProps> = ({ title, subtitle, rows }) => {
   return (
-    <React.Fragment>
+    <>
       <div>
         <h3 tw="text-lg font-medium leading-6 text-gray-900">{title}</h3>
         {subtitle && (
@@ -46,6 +46,6 @@ export const Details: React.FC<DetailsProps> = ({ title, subtitle, rows }) => {
           ))}
         </dl>
       </div>
-    </React.Fragment>
+    </>
   );
 };

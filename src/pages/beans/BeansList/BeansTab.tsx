@@ -1,5 +1,5 @@
 import { QueryConstraint } from "firebase/firestore";
-import { Fragment, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import "twin.macro";
 import { DataList } from "../../../components/DataList";
 import { beansToDataListItem } from "../../../components/beans/utils";
@@ -34,7 +34,7 @@ export const BeansTab: React.FC<BeansTabProps> = ({
     )
     .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
 
-  if (sortedAndFiltered.length === 0) return <Fragment>{EmptyState}</Fragment>;
+  if (sortedAndFiltered.length === 0) return <>{EmptyState}</>;
 
   return <DataList items={sortedAndFiltered.map(beansToDataListItem)} />;
 };

@@ -208,7 +208,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
           <Divider tw="hidden sm:block" />
 
           {showStorageSection && (
-            <React.Fragment>
+            <>
               <FormSection
                 title="Storage"
                 subtitle="In case the beans are frozen or thawed."
@@ -227,7 +227,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
               </FormSection>
 
               <Divider tw="hidden sm:block" />
-            </React.Fragment>
+            </>
           )}
 
           <FormSection
@@ -245,7 +245,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
             />
 
             {isSingleOrigin ? (
-              <React.Fragment>
+              <>
                 <FormComboboxSingle
                   name="country"
                   label="Country"
@@ -302,7 +302,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
                   id="harvestDate"
                   placeholder="Select harvest date"
                 />
-              </React.Fragment>
+              </>
             ) : (
               <BeansBlendForm />
             )}

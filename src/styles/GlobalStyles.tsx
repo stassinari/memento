@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react";
 import React from "react";
-import tw, { css, GlobalStyles as BaseStyles, theme } from "twin.macro";
+import tw, { GlobalStyles as BaseStyles, css, theme } from "twin.macro";
 
 const customStyles = css({
   html: {
@@ -12,9 +12,9 @@ const customStyles = css({
   },
 });
 
-export const GlobalStyles = () => (
-  <React.Fragment>
+export const GlobalStyles: React.FC = () => (
+  <>
     <BaseStyles />
     <Global styles={customStyles} />
-  </React.Fragment>
+  </>
 );

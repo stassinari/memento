@@ -182,7 +182,7 @@ export const BeansDetails: React.FC = () => {
             ]}
           />
         ) : beans.origin === "blend" ? (
-          <React.Fragment>
+          <>
             {beans.blend.map((b, i) => (
               <Details
                 key={i}
@@ -199,7 +199,7 @@ export const BeansDetails: React.FC = () => {
                 ]}
               />
             ))}
-          </React.Fragment>
+          </>
         ) : null}
       </div>
     </>

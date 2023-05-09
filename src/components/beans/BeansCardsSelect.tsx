@@ -3,11 +3,11 @@ import { useFormContext } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../types/beans";
 import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "../../util";
-import { FormInputRadioCards } from "../form/FormInputRadioCards";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
 import { RadixModal } from "../Modal";
 import { Toggle } from "../Toggle";
+import { FormInputRadioCards } from "../form/FormInputRadioCards";
 
 const toBeansFormValue = (beans: Beans) => `beans/${beans.id ?? ""}`;
 
@@ -16,12 +16,12 @@ const beansRadioOption = (beans: Beans): InputRadioCardsOption => ({
   left: { top: beans.name, bottom: beans.roaster },
   right: {
     top: beans.roastDate && (
-      <React.Fragment>
+      <>
         Roasted{" "}
         <time dateTime={beans.roastDate?.toDate().toLocaleDateString()}>
           {getTimeAgo(beans.roastDate.toDate())}
         </time>
-      </React.Fragment>
+      </>
     ),
     bottom: beans.origin === "single-origin" ? beans.country : "Blend",
   },

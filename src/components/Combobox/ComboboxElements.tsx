@@ -69,7 +69,7 @@ export const ComboboxOption: React.FC<ComboboxOptionProps> = ({
     onClick={handleClick}
   >
     {({ selected }) => (
-      <React.Fragment>
+      <>
         <div tw="flex items-center">{renderOption(option)}</div>
 
         {selected && (
@@ -77,7 +77,7 @@ export const ComboboxOption: React.FC<ComboboxOptionProps> = ({
             <CheckIcon tw="w-5 h-5 ui-active:text-white" aria-hidden="true" />
           </span>
         )}
-      </React.Fragment>
+      </>
     )}
   </HuiCombobox.Option>
 );

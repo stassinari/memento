@@ -3,11 +3,11 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Beans } from "../../../types/beans";
 import { Brew } from "../../../types/brew";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
+import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { extractSuggestions } from "../../form/FormSuggestions";
@@ -105,7 +105,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           subtitle="This section is about equipment. Duh."
         >
           {showEquipmentForm ? (
-            <React.Fragment>
+            <>
               <FormComboboxSingle
                 label="Grinder"
                 name="grinder"
@@ -164,7 +164,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
                 ]}
                 suggestions={extractSuggestions(brewsList, "filterType")}
               />
-            </React.Fragment>
+            </>
           ) : (
             <EquipmentTable
               rows={[

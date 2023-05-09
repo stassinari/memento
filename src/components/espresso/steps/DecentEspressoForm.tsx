@@ -190,7 +190,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
           subtitle="This section is about equipment. Duh."
         >
           {showEquipmentForm ? (
-            <React.Fragment>
+            <>
               <FormComboboxSingle
                 label="Machine"
                 name="machine"
@@ -258,7 +258,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
                 ]}
                 suggestions={extractSuggestions(espressoList, "basket")}
               />
-            </React.Fragment>
+            </>
           ) : (
             <EquipmentTable
               rows={[

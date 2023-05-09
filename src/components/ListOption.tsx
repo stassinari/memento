@@ -18,8 +18,8 @@ export const TextWithImageOption: React.FC<TextWithImageOptionProps> = ({
   Image,
   text,
 }) => (
-  <React.Fragment>
+  <>
     <div tw="flex-shrink-0 w-6 overflow-hidden rounded">{Image}</div>
     <span tw="ml-3 truncate ui-selected:font-semibold">{text}</span>
-  </React.Fragment>
+  </>
 );

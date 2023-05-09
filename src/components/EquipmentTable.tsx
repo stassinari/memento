@@ -11,7 +11,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
   onClick,
 }) => {
   return (
-    <React.Fragment>
+    <>
       <dl tw="-my-3 divide-y divide-gray-200">
         {rows.map(({ label, value }) => (
           <EquipmentRow key={label} label={label} value={value} />
@@ -25,7 +25,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       >
         Change...
       </button>
-    </React.Fragment>
+    </>
   );
 };
 

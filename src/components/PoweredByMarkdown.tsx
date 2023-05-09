@@ -1,8 +1,8 @@
 import React from "react";
 import "twin.macro";
 
-export const PoweredByMarkdown = () => (
-  <React.Fragment>
+export const PoweredByMarkdown: React.FC = () => (
+  <>
     Powered by{" "}
     <a
       tw="underline hover:no-underline"
@@ -12,5 +12,5 @@ export const PoweredByMarkdown = () => (
     >
       Markdown
     </a>
-  </React.Fragment>
+  </>
 );
