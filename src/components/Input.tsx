@@ -1,7 +1,7 @@
 import {
-  HTMLAttributes,
-  InputHTMLAttributes,
-  LabelHTMLAttributes,
+  type HTMLAttributes,
+  type InputHTMLAttributes,
+  type LabelHTMLAttributes,
 } from "react";
 import tw, { styled } from "twin.macro";
 

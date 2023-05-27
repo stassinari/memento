@@ -195,8 +195,14 @@ export const DesignLibrary: React.FC = () => {
             handleChange={setFormRadioCardValue}
           />
         </div>
-        <div>
-          <Card>This is a card</Card>
+        <div tw="space-y-4">
+          <Card>This is a base card</Card>
+          <Card
+            headerSlot={<Card.Heading>Heading in a header</Card.Heading>}
+            footerSlot={<>And this is the footer</>}
+          >
+            This is a card with header and footer
+          </Card>
         </div>
         <div>
           <Stopwatch

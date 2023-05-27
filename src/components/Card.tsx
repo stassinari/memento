@@ -1,16 +1,28 @@
-import { ReactNode } from "react";
-import "twin.macro";
+import { type ReactNode } from "react";
+import tw from "twin.macro";
 
 interface CardProps {
   className?: string;
   children: ReactNode;
+  headerSlot?: ReactNode;
+  footerSlot?: ReactNode;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className }) => (
-  <div
-    tw="px-4 py-5 -mx-4 bg-white shadow sm:(rounded-lg p-6 mx-0)"
-    className={className}
-  >
-    {children}
+const CardRoot: React.FC<CardProps> = ({
+  children,
+  className,
+  headerSlot,
+  footerSlot,
+}) => (
+  <div className="overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
+    {headerSlot && <div className="px-4 py-5 sm:px-6">{headerSlot}</div>}
+    <div tw="px-4 py-5 sm:p-6" className={className}>
+      {children}
+    </div>
+    {footerSlot && <div className="px-4 py-4 sm:px-6">{footerSlot}</div>}
   </div>
 );
+
+const Heading = tw.h3`text-base font-semibold leading-6 text-gray-900`;
+
+export const Card = Object.assign(CardRoot, { Heading });
