@@ -1,11 +1,12 @@
-import { QueryConstraint } from "firebase/firestore";
-import React, { ReactNode } from "react";
+import { type QueryConstraint } from "firebase/firestore";
+import type React from "react";
+import type { ReactNode } from "react";
 import "twin.macro";
 import { DataList } from "../../../components/DataList";
 import { beansToDataListItem } from "../../../components/beans/utils";
 import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../../hooks/firestore/useFirestoreCollectionRealtime";
-import { Beans } from "../../../types/beans";
+import { type Beans } from "../../../types/beans";
 import { isNotFrozenOrIsThawed } from "../../../util";
 
 export interface BeansTabProps {
