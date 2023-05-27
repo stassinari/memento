@@ -11,7 +11,7 @@ import tw from "twin.macro";
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
-import { PageHeading } from "../components/Heading";
+import { Heading } from "../components/Heading";
 import { Link } from "../components/Link";
 import { notification } from "../components/Notification";
 import { Spinner } from "../components/Spinner";
@@ -99,7 +99,7 @@ export const DecentUpload: React.FC = () => {
     <>
       <BreadcrumbsWithHome items={[navLinks.decentUpload]} />
 
-      <PageHeading>Decent Upload</PageHeading>
+      <Heading>Decent Upload</Heading>
 
       <p>Manually upload your Decent Espresso shot files.</p>
       <p>

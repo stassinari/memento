@@ -6,7 +6,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { espressoToDataListItem } from "../../components/espresso/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
@@ -30,7 +30,7 @@ const EspressoList: React.FC = () => {
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.espresso]} />
 
-      <PageHeading>Espressos</PageHeading>
+      <Heading>Espressos</Heading>
 
       <div tw="mb-4 text-right">
         <Button as={RouterLink} to="add" variant="primary" colour="accent">

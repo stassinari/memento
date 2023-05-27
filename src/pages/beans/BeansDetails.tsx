@@ -18,7 +18,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { BeansBrewList } from "../../components/beans/BeansBrewList";
 import { BeansEspressoList } from "../../components/beans/BeansEspressoList";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -76,7 +76,7 @@ export const BeansDetails: React.FC = () => {
         items={[navLinks.beans, { label: beans.name, linkTo: "#" }]}
       />
 
-      <PageHeading>{beans.name}</PageHeading>
+      <Heading>{beans.name}</Heading>
 
       <div tw="space-x-2">
         <Button

@@ -1,9 +1,9 @@
 import React from "react";
-import { PageHeading } from "../components/Heading";
+import { Heading } from "../components/Heading";
 
 export const Home: React.FC = () => (
   <>
-    <PageHeading>Memento</PageHeading>
+    <Heading>Memento</Heading>
 
     <p>Dis da homepage, brah.</p>
     <p>Nobody knows what's going to appear here.</p>

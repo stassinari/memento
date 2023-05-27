@@ -9,7 +9,7 @@ import {
 } from "../../components/beans/BeansForm";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { useNewRef } from "../../hooks/firestore/useNewBeansRef";
 
 export const BeansAdd: React.FC = () => {
@@ -27,7 +27,7 @@ export const BeansAdd: React.FC = () => {
         items={[navLinks.beans, { label: "Add", linkTo: "#" }]}
       />
 
-      <PageHeading>Add beans</PageHeading>
+      <Heading>Add beans</Heading>
 
       <BeansForm
         defaultValues={beansFormEmptyValues}

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   BeansForm,
   BeansFormInputs,
@@ -72,7 +72,7 @@ export const BeansClone: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Clone beans</PageHeading>
+      <Heading>Clone beans</Heading>
 
       <BeansForm
         defaultValues={fromFirestore}

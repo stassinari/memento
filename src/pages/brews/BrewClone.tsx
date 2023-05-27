@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   BrewForm,
   BrewFormInputs,
@@ -63,7 +63,7 @@ export const BrewClone: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Clone brew</PageHeading>
+      <Heading>Clone brew</Heading>
 
       <BrewForm
         defaultValues={fromFirestore}

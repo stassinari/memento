@@ -15,7 +15,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { DecentCharts } from "../../components/espresso/charts/DecentCharts";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -55,7 +55,7 @@ const EspressoDetails: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Boh</PageHeading>
+      <Heading>Boh</Heading>
 
       <div tw="space-x-2">
         {!espresso.fromDecent && (

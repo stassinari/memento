@@ -20,7 +20,7 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
-import { PageHeading } from "../components/Heading";
+import { Heading } from "../components/Heading";
 import { IconButton } from "../components/IconButton";
 import { InputRadio } from "../components/InputRadio";
 import { InputRadioButtonGroup } from "../components/InputRadioButtonGroup";
@@ -35,6 +35,7 @@ import {
   RadixModal,
 } from "../components/Modal";
 import { notification } from "../components/Notification";
+import { PageHeadingExample } from "../components/PageHeading";
 import { Stopwatch } from "../components/Stopwatch";
 import { Textarea } from "../components/Textarea";
 import { Toggle } from "../components/Toggle";
@@ -115,7 +116,7 @@ export const DesignLibrary: React.FC = () => {
     <>
       <BreadcrumbsWithHome items={[navLinks.designLibrary]} />
 
-      <PageHeading>Design library</PageHeading>
+      <Heading>Design library</Heading>
 
       <div tw="space-y-8">
         <div>
@@ -134,6 +135,12 @@ export const DesignLibrary: React.FC = () => {
               { label: "Brew details", linkTo: "#" },
             ]}
           />
+        </div>
+        <div>
+          <p>Page heading</p>
+          <div tw="p-4 border rounded-lg">
+            <PageHeadingExample />
+          </div>
         </div>
         <div>
           <p>Modals</p>

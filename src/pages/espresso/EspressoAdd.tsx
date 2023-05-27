@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   EspressoForm,
   EspressoFormInputs,
@@ -50,7 +50,7 @@ export const EspressoAdd: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Add espresso</PageHeading>
+      <Heading>Add espresso</Heading>
 
       <EspressoForm
         defaultValues={espressoFormEmptyValues(espressoList[0])}

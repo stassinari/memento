@@ -14,12 +14,12 @@ const CardRoot: React.FC<CardProps> = ({
   headerSlot,
   footerSlot,
 }) => (
-  <div className="overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
-    {headerSlot && <div className="px-4 py-5 sm:px-6">{headerSlot}</div>}
+  <div tw="overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
+    {headerSlot && <div tw="px-4 py-5 sm:px-6">{headerSlot}</div>}
     <div tw="px-4 py-5 sm:p-6" className={className}>
       {children}
     </div>
-    {footerSlot && <div className="px-4 py-4 sm:px-6">{footerSlot}</div>}
+    {footerSlot && <div tw="px-4 py-4 sm:px-6">{footerSlot}</div>}
   </div>
 );
 

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { BrewOutcomeForm } from "../../components/brews/BrewOutcomeForm";
 import { db } from "../../firebaseConfig";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -42,7 +42,7 @@ export const BrewEditOutcome: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Edit brew outcome</PageHeading>
+      <Heading>Edit brew outcome</Heading>
 
       <BrewOutcomeForm brew={brew} brewRef={brewRef} />
     </>

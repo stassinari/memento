@@ -4,7 +4,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   BeansForm,
   BeansFormInputs,
@@ -56,7 +56,7 @@ export const BeansEdit: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Edit beans</PageHeading>
+      <Heading>Edit beans</Heading>
 
       <BeansForm
         defaultValues={fromFirestore}

@@ -14,7 +14,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { Details } from "../../components/Details";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
@@ -52,7 +52,7 @@ export const BrewDetails: React.FC = () => {
         ]}
       />
 
-      <PageHeading>{brew.method}</PageHeading>
+      <Heading>{brew.method}</Heading>
 
       <div tw="space-x-2">
         <Button

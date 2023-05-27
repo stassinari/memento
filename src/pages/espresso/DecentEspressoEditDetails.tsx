@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   DecentEspressoForm,
   DecentEspressoFormInputs,
@@ -85,7 +85,7 @@ export const DecentEspressoEditDetails: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Edit info ({decentEspresso.profileName})</PageHeading>
+      <Heading>Edit info ({decentEspresso.profileName})</Heading>
 
       <DecentEspressoForm
         defaultValues={fromFirestore}

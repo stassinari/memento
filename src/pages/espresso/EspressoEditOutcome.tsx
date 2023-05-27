@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { EspressoOutcomeForm } from "../../components/espresso/EspressoOutcomeForm";
 import { db } from "../../firebaseConfig";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -43,7 +43,7 @@ export const EspressoEditOutcome: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Edit espresso outcome</PageHeading>
+      <Heading>Edit espresso outcome</Heading>
 
       <EspressoOutcomeForm espresso={espresso} espressoRef={espressoRef} />
     </>

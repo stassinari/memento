@@ -7,7 +7,7 @@ import { navLinks } from "../../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../../components/Breadcrumbs";
 import { Button } from "../../../components/Button";
 import { EmptyState } from "../../../components/EmptyState";
-import { PageHeading } from "../../../components/Heading";
+import { Heading } from "../../../components/Heading";
 import { BeansTab, BeansTabProps } from "./BeansTab";
 
 const tabs: BeansTabProps[] = [
@@ -59,7 +59,7 @@ export const BeansList: React.FC = () => {
     <>
       <BreadcrumbsWithHome items={[navLinks.beans]} />
 
-      <PageHeading>Beans</PageHeading>
+      <Heading>Beans</Heading>
 
       <Button as={Link} to="add" variant="primary" colour="accent">
         Add beans

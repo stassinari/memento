@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   DecentEspressoForm,
   DecentEspressoFormInputs,
@@ -78,7 +78,7 @@ export const DecentEspressoAddDetails: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Add info ({partialEspresso.profileName})</PageHeading>
+      <Heading>Add info ({partialEspresso.profileName})</Heading>
 
       <DecentEspressoForm
         defaultValues={decentEspressoFormEmptyValues(

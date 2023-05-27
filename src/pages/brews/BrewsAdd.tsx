@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import {
   BrewForm,
   BrewFormInputs,
@@ -47,7 +47,7 @@ export const BrewsAdd: React.FC = () => {
         items={[navLinks.drinks, navLinks.brews, { label: "Add", linkTo: "#" }]}
       />
 
-      <PageHeading>Add brew</PageHeading>
+      <Heading>Add brew</Heading>
 
       <BrewForm
         defaultValues={brewFormEmptyValues(brewsList[0])}

@@ -6,11 +6,11 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
 import { DataList } from "../../components/DataList";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { brewToDataListItem } from "../../components/brews/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
-import { Brew } from "../../types/brew";
+import { type Brew } from "../../types/brew";
 
 export const BrewsList: React.FC = () => {
   const [brewLimit, setBrewLimit] = useState(50);
@@ -28,13 +28,22 @@ export const BrewsList: React.FC = () => {
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.brews]} />
 
-      <PageHeading>Brews</PageHeading>
+      <Heading
+        actionSlot={
+          <Button
+            as={RouterLink}
+            to="add"
+            variant="primary"
+            colour="accent"
+            size="sm"
+          >
+            Add brew
+          </Button>
+        }
+      >
+        Brews
+      </Heading>
 
-      <div tw="mb-4 text-right">
-        <Button as={RouterLink} to="add" variant="primary" colour="accent">
-          Add brew
-        </Button>
-      </div>
       <div>
         <DataList items={brewsList.map(brewToDataListItem)} />
       </div>

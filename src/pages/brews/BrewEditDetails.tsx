@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { PageHeading } from "../../components/Heading";
+import { Heading } from "../../components/Heading";
 import { BrewForm, BrewFormInputs } from "../../components/brews/BrewForm";
 import { db } from "../../firebaseConfig";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -56,7 +56,7 @@ export const BrewEditDetails: React.FC = () => {
         ]}
       />
 
-      <PageHeading>Edit brew details</PageHeading>
+      <Heading>Edit brew details</Heading>
 
       <BrewForm
         defaultValues={fromFirestore}

@@ -13,7 +13,7 @@ import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
 import { FormSection } from "../components/Form";
-import { PageHeading } from "../components/Heading";
+import { Heading } from "../components/Heading";
 import { Link } from "../components/Link";
 import { Toggle } from "../components/Toggle";
 import { auth, db } from "../firebaseConfig";
@@ -44,7 +44,7 @@ export const Settings: React.FC = () => {
     <>
       <BreadcrumbsWithHome items={[navLinks.settings]} />
 
-      <PageHeading>Settings</PageHeading>
+      <Heading>Settings</Heading>
 
       <div tw="space-y-6">
         <FormSection title="Decent setup">
