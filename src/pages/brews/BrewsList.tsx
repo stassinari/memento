@@ -10,6 +10,7 @@ import { Heading } from "../../components/Heading";
 import { brewToDataListItem } from "../../components/brews/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
+import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { type Brew } from "../../types/brew";
 
 export const BrewsList: React.FC = () => {
@@ -23,6 +24,8 @@ export const BrewsList: React.FC = () => {
   const query = useCollectionQuery<Brew>("brews", filters);
   const { list: brewsList } = useFirestoreCollectionRealtime<Brew>(query);
 
+  const isSm = useScreenMediaQuery("sm");
+
   console.log("brewList");
   return (
     <>
@@ -35,7 +38,7 @@ export const BrewsList: React.FC = () => {
             to="add"
             variant="primary"
             colour="accent"
-            size="sm"
+            size={isSm ? "md" : "sm"}
           >
             Add brew
           </Button>
@@ -44,7 +47,7 @@ export const BrewsList: React.FC = () => {
         Brews
       </Heading>
 
-      <div>
+      <div tw="mt-4">
         <DataList items={brewsList.map(brewToDataListItem)} />
       </div>
       <div tw="flex justify-center gap-4 mt-4">

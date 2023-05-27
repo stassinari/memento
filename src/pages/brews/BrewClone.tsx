@@ -1,6 +1,7 @@
 import { setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -63,7 +64,7 @@ export const BrewClone: React.FC = () => {
         ]}
       />
 
-      <Heading>Clone brew</Heading>
+      <Heading tw="mb-4">Clone brew</Heading>
 
       <BrewForm
         defaultValues={fromFirestore}

@@ -27,7 +27,7 @@ export const BeansAdd: React.FC = () => {
         items={[navLinks.beans, { label: "Add", linkTo: "#" }]}
       />
 
-      <Heading>Add beans</Heading>
+      <Heading tw="mb-4">Add beans</Heading>
 
       <BeansForm
         defaultValues={beansFormEmptyValues}

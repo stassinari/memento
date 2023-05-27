@@ -85,11 +85,7 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        tw="mt-6 space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
         <FormSection title="Scores" subtitle="Bla">
           <FormInputSlider
             label="Overall score"

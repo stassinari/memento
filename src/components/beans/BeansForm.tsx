@@ -2,14 +2,13 @@ import { orderBy } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { theme } from "twin.macro";
 import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
 import { varietals } from "../../data/varietals";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
-import useMediaQuery from "../../hooks/useMediaQuery";
+import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { Beans, BeansBlendPart, RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
@@ -106,7 +105,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
   const { list: beansList, isLoading } =
     useFirestoreCollectionOneTime<Beans>(query);
 
-  const isSm = useMediaQuery(`(min-width: ${theme`screens.sm`})`);
+  const isSm = useScreenMediaQuery("sm");
 
   const methods = useForm<BeansFormInputs>({
     defaultValues,

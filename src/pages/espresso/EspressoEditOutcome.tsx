@@ -43,7 +43,7 @@ export const EspressoEditOutcome: React.FC = () => {
         ]}
       />
 
-      <Heading>Edit espresso outcome</Heading>
+      <Heading tw="mb-4">Edit espresso outcome</Heading>
 
       <EspressoOutcomeForm espresso={espresso} espressoRef={espressoRef} />
     </>

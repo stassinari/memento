@@ -1,9 +1,9 @@
 import { Toaster } from "react-hot-toast";
 import { theme } from "twin.macro";
-import useMediaQuery from "../hooks/useMediaQuery";
+import useScreenMediaQuery from "../hooks/useScreenMediaQuery";
 
 export const NotificationContainer = () => {
-  const isMd = useMediaQuery(`(min-width: ${theme`screens.md`})`);
+  const isMd = useScreenMediaQuery("md");
 
   return (
     <Toaster

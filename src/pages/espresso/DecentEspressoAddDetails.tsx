@@ -78,7 +78,7 @@ export const DecentEspressoAddDetails: React.FC = () => {
         ]}
       />
 
-      <Heading>Add info ({partialEspresso.profileName})</Heading>
+      <Heading tw="mb-4">Add info ({partialEspresso.profileName})</Heading>
 
       <DecentEspressoForm
         defaultValues={decentEspressoFormEmptyValues(

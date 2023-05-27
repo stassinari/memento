@@ -42,7 +42,7 @@ export const BrewEditOutcome: React.FC = () => {
         ]}
       />
 
-      <Heading>Edit brew outcome</Heading>
+      <Heading tw="mb-4">Edit brew outcome</Heading>
 
       <BrewOutcomeForm brew={brew} brewRef={brewRef} />
     </>

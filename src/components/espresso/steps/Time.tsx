@@ -4,9 +4,9 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import "twin.macro";
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
-import { FormInput } from "../../form/FormInput";
 import { Stopwatch } from "../../Stopwatch";
 import { Toggle } from "../../Toggle";
+import { FormInput } from "../../form/FormInput";
 
 export interface EspressoTimeInputs {
   actualTime: number | null;
@@ -54,11 +54,7 @@ export const EspressoTime: React.FC<EspressoTimeProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        tw="mt-6 space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
         <FormSection
           title="Time"
           subtitle="Keep track of how long your espresso takes."

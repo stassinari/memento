@@ -101,7 +101,7 @@ export const DecentUpload: React.FC = () => {
 
       <Heading>Decent Upload</Heading>
 
-      <p>Manually upload your Decent Espresso shot files.</p>
+      <p tw="mt-4">Manually upload your Decent Espresso shot files.</p>
       <p>
         If you'd like to enable automatic uploads,{" "}
         <Link

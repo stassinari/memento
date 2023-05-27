@@ -7,7 +7,7 @@ import { db } from "../firebaseConfig";
 import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
 import { useActiveRoute } from "../hooks/useActiveRoute";
 import { useCurrentUser } from "../hooks/useInitUser";
-import useMediaQuery from "../hooks/useMediaQuery";
+import useScreenMediaQuery from "../hooks/useScreenMediaQuery";
 import { User } from "../types/user";
 import { navLinks } from "./BottomNav";
 
@@ -71,7 +71,7 @@ export const SidebarNav = () => {
   const { details: dbUser } = useFirestoreDocRealtime<User>(userRef);
   const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
 
-  const isLg = useMediaQuery(`(min-width: ${theme`screens.lg`})`);
+  const isLg = useScreenMediaQuery("lg");
 
   const sidebarNavLinks: SidebarNavItemProps[] = useMemo(
     () => [

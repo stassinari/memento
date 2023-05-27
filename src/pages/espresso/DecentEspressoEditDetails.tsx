@@ -85,7 +85,7 @@ export const DecentEspressoEditDetails: React.FC = () => {
         ]}
       />
 
-      <Heading>Edit info ({decentEspresso.profileName})</Heading>
+      <Heading tw="mb-4">Edit info ({decentEspresso.profileName})</Heading>
 
       <DecentEspressoForm
         defaultValues={fromFirestore}

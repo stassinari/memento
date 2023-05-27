@@ -95,11 +95,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        tw="mt-6 space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
         <FormSection
           title="Base information"
           subtitle="This section includes the information that boh I don't know."

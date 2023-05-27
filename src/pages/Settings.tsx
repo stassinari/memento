@@ -46,7 +46,7 @@ export const Settings: React.FC = () => {
 
       <Heading>Settings</Heading>
 
-      <div tw="space-y-6">
+      <div tw="mt-4 space-y-6">
         <FormSection title="Decent setup">
           <div tw="flex items-center justify-between">
             <span tw="font-medium">Enable Decent integration</span>

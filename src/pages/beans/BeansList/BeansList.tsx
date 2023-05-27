@@ -8,6 +8,7 @@ import { BreadcrumbsWithHome } from "../../../components/Breadcrumbs";
 import { Button } from "../../../components/Button";
 import { EmptyState } from "../../../components/EmptyState";
 import { Heading } from "../../../components/Heading";
+import useScreenMediaQuery from "../../../hooks/useScreenMediaQuery";
 import { BeansTab, BeansTabProps } from "./BeansTab";
 
 const tabs: BeansTabProps[] = [
@@ -53,46 +54,61 @@ const tabs: BeansTabProps[] = [
 export const BeansList: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const isSm = useScreenMediaQuery("sm");
+
   console.log("BeansList");
 
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.beans]} />
 
-      <Heading>Beans</Heading>
+      <Heading
+        actionSlot={
+          <Button
+            as={Link}
+            to="add"
+            variant="primary"
+            colour="accent"
+            size={isSm ? "md" : "sm"}
+          >
+            Add beans
+          </Button>
+        }
+      >
+        Beans
+      </Heading>
 
-      <Button as={Link} to="add" variant="primary" colour="accent">
-        Add beans
-      </Button>
-      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-        <Tab.List tw="flex -mb-px">
-          {tabs.map(({ name }, i) => (
-            <Tab
-              key={name}
-              css={[
-                tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
-                selectedIndex === i
-                  ? tw`text-orange-600 border-orange-500`
-                  : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
-              ]}
-            >
-              {name}
-            </Tab>
-          ))}
-        </Tab.List>
-        <Tab.Panels tw="mt-4">
-          {tabs.map((t, i) => (
-            <Tab.Panel key={t.name}>
-              <BeansTab
-                name={tabs[i].name}
-                filters={tabs[i].filters}
-                removeFrozen={tabs[i].removeFrozen}
-                EmptyState={tabs[i].EmptyState}
-              />
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
+      <div tw="mt-2">
+        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <Tab.List tw="flex -mb-px">
+            {tabs.map(({ name }, i) => (
+              <Tab
+                key={name}
+                css={[
+                  tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
+                  selectedIndex === i
+                    ? tw`text-orange-600 border-orange-500`
+                    : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
+                ]}
+              >
+                {name}
+              </Tab>
+            ))}
+          </Tab.List>
+          <Tab.Panels tw="mt-4">
+            {tabs.map((t, i) => (
+              <Tab.Panel key={t.name}>
+                <BeansTab
+                  name={tabs[i].name}
+                  filters={tabs[i].filters}
+                  removeFrozen={tabs[i].removeFrozen}
+                  EmptyState={tabs[i].EmptyState}
+                />
+              </Tab.Panel>
+            ))}
+          </Tab.Panels>
+        </Tab.Group>
+      </div>
     </>
   );
 };

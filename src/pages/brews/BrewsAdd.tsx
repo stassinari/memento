@@ -47,7 +47,7 @@ export const BrewsAdd: React.FC = () => {
         items={[navLinks.drinks, navLinks.brews, { label: "Add", linkTo: "#" }]}
       />
 
-      <Heading>Add brew</Heading>
+      <Heading tw="mb-4">Add brew</Heading>
 
       <BrewForm
         defaultValues={brewFormEmptyValues(brewsList[0])}

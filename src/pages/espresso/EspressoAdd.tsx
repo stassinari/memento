@@ -50,7 +50,7 @@ export const EspressoAdd: React.FC = () => {
         ]}
       />
 
-      <Heading>Add espresso</Heading>
+      <Heading tw="mb-4">Add espresso</Heading>
 
       <EspressoForm
         defaultValues={espressoFormEmptyValues(espressoList[0])}

@@ -10,6 +10,7 @@ import { Heading } from "../../components/Heading";
 import { espressoToDataListItem } from "../../components/espresso/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
+import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { Espresso } from "../../types/espresso";
 
 const EspressoList: React.FC = () => {
@@ -24,20 +25,31 @@ const EspressoList: React.FC = () => {
   const { list: espressoList } =
     useFirestoreCollectionRealtime<Espresso>(query);
 
+  const isSm = useScreenMediaQuery("sm");
+
   console.log("espressoList");
 
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.espresso]} />
 
-      <Heading>Espressos</Heading>
+      <Heading
+        actionSlot={
+          <Button
+            as={RouterLink}
+            to="add"
+            variant="primary"
+            colour="accent"
+            size={isSm ? "md" : "sm"}
+          >
+            Add espresso
+          </Button>
+        }
+      >
+        Espressos
+      </Heading>
 
-      <div tw="mb-4 text-right">
-        <Button as={RouterLink} to="add" variant="primary" colour="accent">
-          Add espresso
-        </Button>
-      </div>
-      <div>
+      <div tw="mt-4">
         <DataList items={espressoList.map(espressoToDataListItem)} />
       </div>
       <div tw="flex justify-center gap-4 mt-4">
