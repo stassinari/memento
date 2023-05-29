@@ -1,18 +1,12 @@
-import {
-  DocumentDuplicateIcon,
-  PencilSquareIcon,
-  SparklesIcon,
-} from "@heroicons/react/20/solid";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import React from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { Button } from "../../components/Button";
+import { ButtonWithDropdown } from "../../components/ButtonWithDropdown";
 import { Details } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
@@ -52,27 +46,24 @@ export const BrewDetails: React.FC = () => {
         ]}
       />
 
-      <Heading>{brew.method}</Heading>
-
-      <div tw="space-x-2">
-        <Button
-          variant="primary"
-          as={Link}
-          to="clone"
-          Icon={<DocumentDuplicateIcon />}
-        >
-          Clone
-        </Button>
-        <Button variant="white" as={Link} to="edit" Icon={<PencilSquareIcon />}>
-          Edit details
-        </Button>
-        <Button variant="white" as={Link} to="outcome" Icon={<SparklesIcon />}>
-          Edit outcome
-        </Button>
-        <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
-          Delete
-        </Button>
-      </div>
+      <Heading
+        actionSlot={
+          <ButtonWithDropdown
+            mainButton={{ type: "link", label: "Clone", href: "clone" }}
+            dropdownItems={[
+              { type: "link", label: "Edit details", href: "edit" },
+              { type: "link", label: "Edit outcome", href: "outcome" },
+              {
+                type: "button",
+                label: "Delete",
+                onClick: handleDelete,
+              },
+            ]}
+          />
+        }
+      >
+        {brew.method}
+      </Heading>
 
       <div tw="space-y-8">
         <Details

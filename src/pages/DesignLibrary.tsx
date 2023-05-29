@@ -17,6 +17,7 @@ import {
   BreadcrumbsWithoutHome,
 } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
+import { ButtonWithDropdown } from "../components/ButtonWithDropdown";
 import { Card } from "../components/Card";
 import { ComboboxMulti } from "../components/Combobox/ComboboxMulti";
 import { ComboboxSingle } from "../components/Combobox/ComboboxSingle";
@@ -141,6 +142,23 @@ export const DesignLibrary: React.FC = () => {
           <div tw="p-4 border rounded-lg">
             <PageHeadingExample />
           </div>
+        </div>
+        <div>
+          <p>Button with dropdown</p>
+          <ButtonWithDropdown
+            mainButton={{ type: "link", label: "Clone", href: "#" }}
+            dropdownItems={[
+              { type: "link", label: "Edit details", href: "#" },
+              { type: "link", label: "Edit outcome", href: "#" },
+              {
+                type: "button",
+                label: "Delete",
+                onClick: () => {
+                  console.log("Delete");
+                },
+              },
+            ]}
+          />
         </div>
         <div>
           <p>Modals</p>
