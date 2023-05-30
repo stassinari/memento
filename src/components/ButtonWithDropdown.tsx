@@ -18,7 +18,7 @@ interface ButtonAction {
 
 type Action = LinkAction | ButtonAction;
 
-interface ButtonWithDropdownProps {
+export interface ButtonWithDropdownProps {
   mainButton: Action;
   dropdownItems: Action[];
 }

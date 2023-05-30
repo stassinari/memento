@@ -1,6 +1,5 @@
 import { type QueryConstraint } from "firebase/firestore";
-import type React from "react";
-import type { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import "twin.macro";
 import { DataList } from "../../../components/DataList";
 import { beansToDataListItem } from "../../../components/beans/utils";

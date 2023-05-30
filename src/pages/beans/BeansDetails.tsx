@@ -1,26 +1,19 @@
-import {
-  DocumentDuplicateIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/20/solid";
-import {
-  ArchiveBoxArrowDownIcon,
-  ArchiveBoxXMarkIcon,
-  MoonIcon,
-  SunIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useCallback, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
-import { Button } from "../../components/Button";
+import {
+  ButtonWithDropdown,
+  ButtonWithDropdownProps,
+} from "../../components/ButtonWithDropdown";
 import { Details } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansBrewList } from "../../components/beans/BeansBrewList";
 import { BeansEspressoList } from "../../components/beans/BeansEspressoList";
+import { areBeansFresh, areBeansFrozen } from "../../components/beans/utils";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Beans } from "../../types/beans";
@@ -33,36 +26,81 @@ export const BeansDetails: React.FC = () => {
   const docRef = useDocRef<Beans>("beans", beansId);
   const { details: beans, isLoading } = useFirestoreDocRealtime<Beans>(docRef);
 
-  const handleArchive = async () => {
+  const handleArchive = useCallback(async () => {
     await updateDoc(docRef, {
       isFinished: true,
     });
     navigate(`/beans`);
-  };
+  }, [docRef, navigate]);
 
-  const handleUnarchive = async () => {
+  const handleUnarchive = useCallback(async () => {
     await updateDoc(docRef, {
       isFinished: false,
     });
-  };
+  }, [docRef]);
 
-  const handleFreeze = async () => {
+  const handleFreeze = useCallback(async () => {
     await updateDoc(docRef, {
       freezeDate: serverTimestamp(),
     });
-  };
+  }, [docRef]);
 
-  const handleThaw = async () => {
+  const handleThaw = useCallback(async () => {
     await updateDoc(docRef, {
       thawDate: serverTimestamp(),
     });
-  };
+  }, [docRef]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     // TODO check if beans have brews/espressos/tastings
     await deleteDoc(docRef);
     navigate(`/beans`);
-  };
+  }, [docRef, navigate]);
+
+  const dropdownButtons: ButtonWithDropdownProps = useMemo(
+    () => ({
+      mainButton: { type: "link", label: "Clone", href: "clone" },
+      dropdownItems: [
+        { type: "link", label: "Edit details", href: "edit" },
+        ...(beans?.isFinished
+          ? [
+              {
+                type: "button" as const,
+                label: "Unarchive",
+                onClick: handleUnarchive,
+              },
+            ]
+          : [
+              {
+                type: "button" as const,
+                label: "Archive",
+                onClick: handleArchive,
+              },
+            ]),
+        ...(areBeansFresh(beans)
+          ? [
+              {
+                type: "button" as const,
+                label: "Freeze",
+                onClick: handleFreeze,
+              },
+            ]
+          : areBeansFrozen(beans)
+          ? [{ type: "button" as const, label: "Thaw", onClick: handleThaw }]
+          : []),
+
+        { type: "button", label: "Delete", onClick: handleDelete },
+      ],
+    }),
+    [
+      beans,
+      handleArchive,
+      handleDelete,
+      handleFreeze,
+      handleThaw,
+      handleUnarchive,
+    ]
+  );
 
   if (isLoading) return null;
 
@@ -76,50 +114,9 @@ export const BeansDetails: React.FC = () => {
         items={[navLinks.beans, { label: beans.name, linkTo: "#" }]}
       />
 
-      <Heading>{beans.name}</Heading>
-
-      <div tw="space-x-2">
-        <Button
-          variant="primary"
-          as={Link}
-          to="clone"
-          Icon={<DocumentDuplicateIcon />}
-        >
-          Clone
-        </Button>
-        <Button variant="white" as={Link} to="edit" Icon={<PencilSquareIcon />}>
-          Edit
-        </Button>
-        {beans.isFinished ? (
-          <Button
-            variant="white"
-            Icon={<ArchiveBoxXMarkIcon />}
-            onClick={handleUnarchive}
-          >
-            Unarchive
-          </Button>
-        ) : (
-          <Button
-            variant="white"
-            Icon={<ArchiveBoxArrowDownIcon />}
-            onClick={handleArchive}
-          >
-            Archive
-          </Button>
-        )}
-        {!beans.freezeDate ? (
-          <Button variant="white" Icon={<MoonIcon />} onClick={handleFreeze}>
-            Freeze
-          </Button>
-        ) : !beans.thawDate ? (
-          <Button variant="white" Icon={<SunIcon />} onClick={handleThaw}>
-            Thaw
-          </Button>
-        ) : null}
-        <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
-          Delete
-        </Button>
-      </div>
+      <Heading actionSlot={<ButtonWithDropdown {...dropdownButtons} />}>
+        {beans.name}
+      </Heading>
 
       <div tw="grid gap-4 my-6 lg:grid-cols-2">
         <BeansBrewList beansId={beans.id ?? ""} />

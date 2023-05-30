@@ -1,19 +1,17 @@
-import {
-  DocumentDuplicateIcon,
-  PencilSquareIcon,
-  PuzzlePieceIcon,
-  SparklesIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
+import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
+import {
+  ButtonWithDropdown,
+  ButtonWithDropdownProps,
+} from "../../components/ButtonWithDropdown";
 import { Details } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
@@ -34,10 +32,33 @@ const EspressoDetails: React.FC = () => {
   const { details: espresso, isLoading } =
     useFirestoreDocRealtime<Espresso>(docRef);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     await deleteDoc(docRef);
     navigate(`/drinks/espresso`);
-  };
+  }, [docRef, navigate]);
+
+  const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
+    () => ({
+      mainButton: { type: "link", label: "Edit outcome", href: "outcome" },
+      dropdownItems: [
+        { type: "link", label: "Edit details", href: "decent/edit" },
+        { type: "button", label: "Delete", onClick: handleDelete },
+      ],
+    }),
+    [handleDelete]
+  );
+
+  const normalEspressoButtons: ButtonWithDropdownProps = useMemo(
+    () => ({
+      mainButton: { type: "link", label: "Clone", href: "clone" },
+      dropdownItems: [
+        { type: "link", label: "Edit details", href: "edit" },
+        { type: "link", label: "Edit outcome", href: "outcome" },
+        { type: "button", label: "Delete", onClick: handleDelete },
+      ],
+    }),
+    [handleDelete]
+  );
 
   if (isLoading) return null;
 
@@ -55,45 +76,17 @@ const EspressoDetails: React.FC = () => {
         ]}
       />
 
-      <Heading>Boh</Heading>
-
-      <div tw="space-x-2">
-        {!espresso.fromDecent && (
-          <Button
-            variant="primary"
-            as={Link}
-            to="clone"
-            Icon={<DocumentDuplicateIcon />}
-          >
-            Clone
-          </Button>
-        )}
-        {espresso.fromDecent ? (
-          <Button
-            variant="white"
-            as={Link}
-            to="decent/edit"
-            Icon={<PencilSquareIcon />}
-          >
-            Edit details
-          </Button>
-        ) : (
-          <Button
-            variant="white"
-            as={Link}
-            to="edit"
-            Icon={<PencilSquareIcon />}
-          >
-            Edit details
-          </Button>
-        )}
-        <Button variant="white" as={Link} to="outcome" Icon={<SparklesIcon />}>
-          Edit outcome
-        </Button>
-        <Button variant="white" Icon={<TrashIcon />} onClick={handleDelete}>
-          Delete
-        </Button>
-      </div>
+      <Heading
+        actionSlot={
+          <ButtonWithDropdown
+            {...(espresso.fromDecent
+              ? decentEspressoButtons
+              : normalEspressoButtons)}
+          />
+        }
+      >
+        Boh
+      </Heading>
 
       {espresso.fromDecent && espresso.partial && (
         <div tw="inline-flex items-center gap-4">
