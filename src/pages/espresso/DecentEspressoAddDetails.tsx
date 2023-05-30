@@ -70,10 +70,7 @@ export const DecentEspressoAddDetails: React.FC = () => {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          {
-            label: partialEspresso.profileName,
-            linkTo: `/drinks/espresso/${espressoId}`,
-          },
+          { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
           { label: "Add info", linkTo: "#" },
         ]}
       />

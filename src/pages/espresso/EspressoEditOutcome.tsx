@@ -38,7 +38,7 @@ export const EspressoEditOutcome: React.FC = () => {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          { label: "Boh", linkTo: `/drinks/espresso/${espressoId}` },
+          { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
           { label: "Outcome", linkTo: "#" },
         ]}
       />

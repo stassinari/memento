@@ -72,7 +72,7 @@ const EspressoDetails: React.FC = () => {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          { label: "Boh", linkTo: "#" },
+          { label: "Detail", linkTo: "#" },
         ]}
       />
 
@@ -85,7 +85,7 @@ const EspressoDetails: React.FC = () => {
           />
         }
       >
-        Boh
+        Espresso detail
       </Heading>
 
       {espresso.fromDecent && espresso.partial && (

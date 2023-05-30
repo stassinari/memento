@@ -30,7 +30,7 @@ export const EspressoClone: React.FC = () => {
     navigate(`/drinks/espresso/${newEspressoRef.id}`);
   };
 
-  if (!espresso) {
+  if (!espresso || !espressoId) {
     return null;
   }
 
@@ -57,7 +57,7 @@ export const EspressoClone: React.FC = () => {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          { label: "Boh", linkTo: `/drinks/espresso/${espressoId}` },
+          { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
           { label: "Clone", linkTo: "#" },
         ]}
       />
