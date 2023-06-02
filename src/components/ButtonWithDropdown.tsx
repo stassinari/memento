@@ -16,7 +16,7 @@ interface ButtonAction {
   onClick: () => void;
 }
 
-type Action = LinkAction | ButtonAction;
+export type Action = LinkAction | ButtonAction;
 
 export interface ButtonWithDropdownProps {
   mainButton: Action;

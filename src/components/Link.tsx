@@ -1,5 +1,5 @@
 import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
-import "twin.macro";
+import tw from "twin.macro";
 
 // Component-specific props specified separately
 type LinkOwnProps = {};
@@ -12,15 +12,11 @@ type LinkProps<E extends React.ElementType> = PolymorphicComponentProps<
 
 const defaultElement = "a";
 
+const linkStyles = tw`text-orange-600 underline hover:(text-orange-500 no-underline)`;
+
 export function Link<E extends React.ElementType = typeof defaultElement>({
   ...restProps
 }: LinkProps<E>): JSX.Element {
   // The `as` prop may be overridden by the passed props
-  return (
-    <Box
-      tw="text-orange-600 underline hover:(text-orange-500 no-underline)"
-      as={defaultElement}
-      {...restProps}
-    />
-  );
+  return <Box css={linkStyles} as={defaultElement} {...restProps} />;
 }

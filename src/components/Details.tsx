@@ -10,9 +10,9 @@ interface DetailsRowProps {
 }
 
 const DetailsRow: React.FC<DetailsRowProps> = ({ label, value, link }) => (
-  <div tw="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+  <div tw="py-4 sm:(grid grid-cols-3 gap-4 py-5)">
     <dt tw="text-sm font-medium text-gray-500">{label}</dt>
-    <dd tw="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+    <dd tw="mt-1 text-sm text-gray-900 sm:(col-span-2 mt-0)">
       {link ? (
         <Link as={RouterLink} to={link}>
           {value}

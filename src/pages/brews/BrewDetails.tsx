@@ -8,6 +8,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { ButtonWithDropdown } from "../../components/ButtonWithDropdown";
 import { Details } from "../../components/Details";
+import { DetailsCard } from "../../components/DetailsCard";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -65,26 +66,41 @@ export const BrewDetails: React.FC = () => {
         {brew.method}
       </Heading>
 
-      <div tw="space-y-8">
-        <Details
-          title="Rating"
+      <div tw="space-y-4">
+        <DetailsCard
+          title="Recipe"
+          action={{ type: "link", label: "Edit", href: "edit" }}
+          rows={[
+            {
+              label: "Water weight",
+              value: `${brew.waterWeight} g`,
+            },
+            {
+              label: "Beans weight",
+              value: `${brew.beansWeight} g`,
+            },
+            {
+              label: "Water temperature",
+              value: brew.waterTemperature ? `${brew.waterTemperature} °C` : "",
+            },
+            { label: "Grind setting", value: brew.grindSetting ?? "" },
+          ]}
+        />
+
+        <DetailsCard
+          title="Outcome"
+          action={{ type: "link", label: "Edit", href: "outcome" }}
           rows={[
             {
               label: "Overall score",
               value: brew.rating ? `${brew.rating}/10` : "",
             },
-            {
-              label: "Notes",
-              value: (
-                <article tw="prose-sm prose">
-                  <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
-                </article>
-              ),
-            },
           ]}
         />
-        <Details
-          title="Tasting scores"
+
+        <DetailsCard
+          title="Outcome"
+          action={{ type: "link", label: "Edit", href: "outcome" }}
           rows={[
             {
               label: "Aroma",
@@ -115,6 +131,37 @@ export const BrewDetails: React.FC = () => {
               value: brew.tastingScores?.finish
                 ? `${brew.tastingScores.finish}/10`
                 : "",
+            },
+          ]}
+        />
+
+        <DetailsCard
+          title="Equipment"
+          action={{ type: "link", label: "Edit", href: "edit" }}
+          rows={[
+            { label: "Grinder", value: brew.grinder ?? "" },
+            { label: "Burrs", value: brew.grinderBurrs ?? "" },
+            { label: "Water type", value: brew.waterType ?? "" },
+            { label: "Filter type", value: brew.filterType ?? "" },
+          ]}
+        />
+      </div>
+
+      <div tw="space-y-8">
+        <Details
+          title="Rating"
+          rows={[
+            {
+              label: "Overall score",
+              value: brew.rating ? `${brew.rating}/10` : "",
+            },
+            {
+              label: "Notes",
+              value: (
+                <article tw="prose-sm prose">
+                  <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
+                </article>
+              ),
             },
           ]}
         />
@@ -151,33 +198,6 @@ export const BrewDetails: React.FC = () => {
           ]}
         />
         <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
-        <Details
-          title="Equipment"
-          rows={[
-            { label: "Grinder", value: brew.grinder ?? "" },
-            { label: "Burrs", value: brew.grinderBurrs ?? "" },
-            { label: "Water type", value: brew.waterType ?? "" },
-            { label: "Filter type", value: brew.filterType ?? "" },
-          ]}
-        />
-        <Details
-          title="Recipe"
-          rows={[
-            {
-              label: "Water weight",
-              value: brew.waterWeight ? `${brew.waterWeight} g` : "",
-            },
-            {
-              label: "Beans weight",
-              value: brew.beansWeight ? `${brew.beansWeight} g` : "",
-            },
-            {
-              label: "Water temperature",
-              value: brew.waterTemperature ? `${brew.waterTemperature} °C` : "",
-            },
-            { label: "Grind setting", value: brew.grindSetting ?? "" },
-          ]}
-        />
         <Details
           title="Time"
           rows={[
