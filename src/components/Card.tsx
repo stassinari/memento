@@ -1,5 +1,7 @@
 import { type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import tw from "twin.macro";
+import { Action } from "./ButtonWithDropdown";
 
 interface CardProps {
   className?: string;
@@ -23,6 +25,50 @@ const CardRoot: React.FC<CardProps> = ({
   </div>
 );
 
-const Heading = tw.h3`text-base font-semibold leading-6 text-gray-900`;
+interface HeaderProps {
+  title: string;
+  action?: Action;
+}
 
-export const Card = Object.assign(CardRoot, { Heading });
+const actionStyles = tw`font-medium text-sm text-orange-600 hover:(text-orange-500 underline)`;
+
+const Header: React.FC<HeaderProps> = ({ title, action }) => (
+  <div tw="flex justify-between mb-3">
+    <h3 tw="text-sm font-bold leading-6 text-gray-900">{title}</h3>
+    {action &&
+      (action.type === "link" ? (
+        <Link to={action.href} css={actionStyles}>
+          {action.label}
+        </Link>
+      ) : (
+        <button type="button" onClick={action.onClick} css={actionStyles}>
+          {action.label}
+        </button>
+      ))}
+  </div>
+);
+
+interface DescriptionListRowProps {
+  label: string;
+  value: string | ReactNode;
+}
+
+interface DescriptionListProps {
+  rows: DescriptionListRowProps[];
+}
+
+const DescriptionList: React.FC<DescriptionListProps> = ({ rows }) => (
+  <div tw="divide-y divide-gray-100">
+    {rows.map(({ label, value }) => (
+      <dl
+        key={label}
+        tw="flex items-center justify-between py-1 gap-x-4 first-of-type:pt-0 last-of-type:pb-0"
+      >
+        <dt tw="text-sm font-normal text-gray-500">{label}</dt>
+        <dd tw="mt-1 text-sm font-medium text-gray-800 ">{value}</dd>
+      </dl>
+    ))}
+  </div>
+);
+
+export const Card = Object.assign(CardRoot, { Header, DescriptionList });

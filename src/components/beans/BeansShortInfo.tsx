@@ -1,7 +1,7 @@
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Beans } from "../../types/beans";
-import { Details } from "../Details";
+import { Card } from "../Card";
 
 interface BeansShortInfoProps {
   beansId?: string;
@@ -28,20 +28,28 @@ export const BeansShortInfo: React.FC<BeansShortInfoProps> = ({
   const daysBetween = Math.round(secondsBetween / (1000 * 60 * 60 * 24));
 
   return (
-    <Details
-      title="Beans"
-      rows={[
-        {
-          label: "Name",
-          value: beans.name,
-          link: beans.id ? `/beans/${beans.id}` : undefined,
-        },
-        { label: "Roaster", value: beans.roaster },
-        {
-          label: "Days post roast",
-          value: daysBetween ? `${daysBetween}` : "",
-        },
-      ]}
-    />
+    <Card>
+      <Card.Header
+        title="Beans"
+        action={{
+          type: "link",
+          label: "View",
+          href: beans.id ? `/beans/${beans.id}` : "",
+        }}
+      />
+      <Card.DescriptionList
+        rows={[
+          {
+            label: "Name",
+            value: beans.name,
+          },
+          { label: "Roaster", value: beans.roaster },
+          {
+            label: "Days post roast",
+            value: daysBetween ? `${daysBetween}` : "",
+          },
+        ]}
+      />
+    </Card>
   );
 };
