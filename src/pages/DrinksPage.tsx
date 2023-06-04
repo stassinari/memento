@@ -1,3 +1,4 @@
+import { ClockIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { orderBy, where } from "firebase/firestore";
 import { chain, entries } from "lodash";
@@ -15,12 +16,14 @@ import { Beans } from "../types/beans";
 import { Brew } from "../types/brew";
 import { Espresso } from "../types/espresso";
 
+const dateFormat = "ddd DD MMM YYYY";
+
 const mergeBrewsAndEspressoByUniqueDate = (
   brewsList: Brew[],
   espressoList: Espresso[]
 ) => {
   const brews = chain(brewsList)
-    .groupBy((brew) => dayjs(brew.date.toDate()).format("DD MMM YYYY"))
+    .groupBy((brew) => dayjs(brew.date.toDate()).format(dateFormat))
     .mapValues((values) =>
       values.map((brew) => ({
         drink: brew,
@@ -29,7 +32,7 @@ const mergeBrewsAndEspressoByUniqueDate = (
     )
     .value();
   const espressos = chain(espressoList)
-    .groupBy((espresso) => dayjs(espresso.date.toDate()).format("DD MMM YYYY"))
+    .groupBy((espresso) => dayjs(espresso.date.toDate()).format(dateFormat))
     .mapValues((values) =>
       values.map((espresso) => ({
         drink: espresso,
@@ -138,6 +141,10 @@ export const DrinksPage: React.FC = () => {
     beansList,
   });
 
+  if (brewsLoading || espressoLoading || beansLoading) {
+    return null;
+  }
+
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks]} />
@@ -168,30 +175,12 @@ export const DrinksPage: React.FC = () => {
             {date}
           </span>
           <ul tw="flex flex-col gap-4">
-            {drinks.map(({ drink, type }) => (
-              <li
-                key={drink.id}
-                css={[tw`w-5/6`, type === "espresso" && tw`self-end`]}
-              >
-                <RouterLink
-                  to={
-                    type === "brew"
-                      ? `brews/${drink.id ?? ""}`
-                      : `espresso/${drink.id ?? ""}`
-                  }
-                >
-                  <Card>
-                    <span tw="text-sm">
-                      {type === "brew"
-                        ? drink.method
-                        : `${drink.beansWeight ?? ""}g : ${
-                            drink.targetWeight ?? ""
-                          }g`}{" "}
-                      @ {dayjs(drink.date.toDate()).format("HH:mm")}
-                    </span>
-                  </Card>
-                </RouterLink>
-              </li>
+            {drinks.map((item, i) => (
+              <DrinkItemWithTime
+                key={item.drink.id}
+                {...item}
+                beans={beansList.find((b) => b.id === item.drink.beans?.id)}
+              />
             ))}
           </ul>
         </div>
@@ -199,3 +188,131 @@ export const DrinksPage: React.FC = () => {
     </>
   );
 };
+
+type DrinkItemProps =
+  | {
+      drink: Brew;
+      beans?: Beans;
+      type: "brew";
+    }
+  | {
+      drink: Espresso;
+      beans?: Beans;
+      type: "espresso";
+    };
+
+export const DrinkItemSimple = ({ drink, type, beans }: DrinkItemProps) => {
+  console.log(beans);
+
+  return (
+    <li key={drink.id} css={[tw`w-5/6`, type === "espresso" && tw`self-end`]}>
+      <RouterLink
+        to={
+          type === "brew"
+            ? `brews/${drink.id ?? ""}`
+            : `espresso/${drink.id ?? ""}`
+        }
+      >
+        <Card tw="flex-grow text-sm">
+          {type === "brew" ? (
+            <BrewCardContent brew={drink} beans={beans} />
+          ) : (
+            <EspressoCardContent espresso={drink} beans={beans} />
+          )}
+        </Card>
+      </RouterLink>
+    </li>
+  );
+};
+
+export const DrinkItemWithTime = ({ drink, type, beans }: DrinkItemProps) => (
+  <li
+    key={drink.id}
+    // css={[tw`w-5/6`, type === "espresso" && tw`self-end`]}
+  >
+    <RouterLink
+      to={
+        type === "brew"
+          ? `brews/${drink.id ?? ""}`
+          : `espresso/${drink.id ?? ""}`
+      }
+    >
+      <div
+        css={[
+          tw`flex items-center gap-2`,
+          type === "brew" && tw`flex-row-reverse`,
+        ]}
+      >
+        <span
+          css={[
+            tw`flex items-center gap-1 text-sm text-gray-500`,
+            type === "brew" && tw`flex-row-reverse`,
+          ]}
+        >
+          <ClockIcon tw="w-4 h-4 text-gray-400" />
+          {dayjs(drink.date.toDate()).format("HH:mm")}
+        </span>
+        <Card tw="flex-grow text-sm">
+          {type === "brew" ? (
+            <BrewCardContent brew={drink} beans={beans} />
+          ) : (
+            <EspressoCardContent espresso={drink} beans={beans} />
+          )}
+        </Card>
+      </div>
+    </RouterLink>
+  </li>
+);
+
+interface BrewCardContentProps {
+  brew: Brew;
+  beans?: Beans;
+}
+
+const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
+  <div tw="flex">
+    <div tw="flex-grow">
+      <p tw="font-medium text-gray-900">{brew.method}</p>
+      <p tw="text-gray-600">{beans?.name}</p>
+      <p tw="text-gray-600">
+        {brew.beansWeight}g : {brew.waterWeight}ml
+      </p>
+    </div>
+    {brew.rating && (
+      <div>
+        <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50">
+          {brew.rating}
+        </p>
+      </div>
+    )}
+  </div>
+);
+
+interface EspressoCardContentProps {
+  espresso: Espresso;
+  beans?: Beans;
+}
+
+const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
+  espresso,
+  beans,
+}) => (
+  <div tw="flex">
+    <div tw="flex-grow">
+      {espresso.fromDecent && (
+        <p tw="font-medium text-gray-900">{espresso.profileName}</p>
+      )}
+      <p tw="text-gray-600">{beans?.name}</p>
+      <p tw="text-gray-600">
+        {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
+      </p>
+    </div>
+    {espresso.rating && (
+      <div>
+        <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50">
+          {espresso.rating}
+        </p>
+      </div>
+    )}
+  </div>
+);
