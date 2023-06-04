@@ -10,6 +10,10 @@ import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Card } from "../components/Card";
 import { Heading } from "../components/Heading";
 import { Link } from "../components/Link";
+import { BeanIcon } from "../components/icons/BeanIcon";
+import { DripperIcon } from "../components/icons/DripperIcon";
+import { DropIcon } from "../components/icons/DropIcon";
+import { PortafilterIcon } from "../components/icons/PortafilterIcon";
 import { useCollectionQuery } from "../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../hooks/firestore/useFirestoreCollectionRealtime";
 import { Beans } from "../types/beans";
@@ -245,12 +249,19 @@ export const DrinkItemWithTime = ({ drink, type, beans }: DrinkItemProps) => (
       >
         <span
           css={[
-            tw`flex items-center gap-1 text-sm text-gray-500`,
-            type === "brew" && tw`flex-row-reverse`,
+            tw`flex flex-col items-center w-16 gap-1 text-sm text-gray-500`,
+            // type === "brew" && tw`flex-row-reverse`,
           ]}
         >
-          <ClockIcon tw="w-4 h-4 text-gray-400" />
-          {dayjs(drink.date.toDate()).format("HH:mm")}
+          {type === "brew" ? (
+            <DripperIcon tw="w-5 h-5 text-gray-500" />
+          ) : (
+            <PortafilterIcon tw="w-5 h-5 text-gray-500" />
+          )}
+          <div tw="flex items-center gap-1">
+            <ClockIcon tw="w-4 h-4 text-gray-400" />
+            {dayjs(drink.date.toDate()).format("HH:mm")}
+          </div>
         </span>
         <Card tw="flex-grow text-sm">
           {type === "brew" ? (
@@ -274,13 +285,15 @@ const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
     <div tw="flex-grow">
       <p tw="font-medium text-gray-900">{brew.method}</p>
       <p tw="text-gray-600">{beans?.name}</p>
-      <p tw="text-gray-600">
+      <p tw="flex items-center gap-1 text-gray-600">
+        <BeanIcon tw="w-3 h-3 text-gray-500" />
         {brew.beansWeight}g : {brew.waterWeight}ml
+        <DropIcon tw="w-3 h-3 text-gray-500" />
       </p>
     </div>
     {brew.rating && (
       <div>
-        <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50">
+        <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
           {brew.rating}
         </p>
       </div>
@@ -303,16 +316,17 @@ const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
         <p tw="font-medium text-gray-900">{espresso.profileName}</p>
       )}
       <p tw="text-gray-600">{beans?.name}</p>
-      <p tw="text-gray-600">
+      <p tw="flex items-center gap-1 text-gray-600">
+        <BeanIcon tw="w-3 h-3 text-gray-500" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
+        <DropIcon tw="w-3 h-3 text-gray-500" />
       </p>
     </div>
-    {espresso.rating && (
-      <div>
-        <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50">
-          {espresso.rating}
-        </p>
-      </div>
-    )}
+    <div tw="flex flex-col items-end justify-between">
+      <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
+        {espresso.rating}
+      </p>
+      {/* <PortafilterIcon tw="w-5 h-5 text-gray-500" /> */}
+    </div>
   </div>
 );
