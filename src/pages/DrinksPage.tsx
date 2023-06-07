@@ -105,7 +105,6 @@ const mergeBrewsAndEspressoByUniqueDate = (
       }),
     ];
   });
-  console.log(sortedDrinks, moreSortedDrinks);
 
   return moreSortedDrinks;
 };
@@ -140,11 +139,6 @@ export const DrinksPage: React.FC = () => {
     () => mergeBrewsAndEspressoByUniqueDate(brewsList, espressoList),
     [brewsList, espressoList]
   );
-
-  console.log({
-    drinks,
-    beansList,
-  });
 
   if (brewsLoading || espressoLoading || beansLoading) {
     return null;
@@ -207,8 +201,6 @@ type DrinkItemProps =
     };
 
 export const DrinkItemSimple = ({ drink, type, beans }: DrinkItemProps) => {
-  console.log(beans);
-
   return (
     <li key={drink.id} css={[tw`w-5/6`, type === "espresso" && tw`self-end`]}>
       <RouterLink
@@ -255,9 +247,9 @@ export const DrinkItemWithTime = ({ drink, type, beans }: DrinkItemProps) => (
           ]}
         >
           {type === "brew" ? (
-            <DripperIcon tw="w-5 h-5 text-gray-500" />
+            <DripperIcon tw="w-5 h-5 text-gray-400" />
           ) : (
-            <PortafilterIcon tw="w-5 h-5 text-gray-500" />
+            <PortafilterIcon tw="w-5 h-5 text-gray-400" />
           )}
           <div tw="flex items-center gap-1">
             <ClockIcon tw="w-4 h-4 text-gray-400" />
@@ -284,14 +276,14 @@ interface BrewCardContentProps {
 const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
   <div tw="flex">
     <div tw="flex-grow">
-      <p tw="font-medium text-gray-900">{brew.method}</p>
+      <p tw="font-semibold text-gray-900">{brew.method}</p>
       <p tw="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-500" /> {beans?.name}
+        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-400" /> {beans?.name}
       </p>
       <p tw="flex items-center gap-1 text-gray-600">
-        <BeanIcon tw="w-3 h-3 text-gray-500" />
+        <BeanIcon tw="w-3 h-3 text-gray-400" />
         {brew.beansWeight}g : {brew.waterWeight}ml
-        <DropIcon tw="w-3 h-3 text-gray-500" />
+        <DropIcon tw="w-3 h-3 text-gray-400" />
       </p>
     </div>
     {brew.rating && (
@@ -316,15 +308,15 @@ const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
   <div tw="flex">
     <div tw="flex-grow">
       {espresso.fromDecent && (
-        <p tw="font-medium text-gray-900">{espresso.profileName}</p>
+        <p tw="font-semibold text-gray-900">{espresso.profileName}</p>
       )}
       <p tw="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-500" /> {beans?.name}
+        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-400" /> {beans?.name}
       </p>
       <p tw="flex items-center gap-1 text-gray-600">
-        <BeanIcon tw="w-3 h-3 text-gray-500" />
+        <BeanIcon tw="w-3 h-3 text-gray-400" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
-        <DropIcon tw="w-3 h-3 text-gray-500" />
+        <DropIcon tw="w-3 h-3 text-gray-400" />
       </p>
     </div>
     <div tw="flex flex-col items-end justify-between">
