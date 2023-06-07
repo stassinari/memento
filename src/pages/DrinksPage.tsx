@@ -10,6 +10,7 @@ import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Card } from "../components/Card";
 import { Heading } from "../components/Heading";
 import { Link } from "../components/Link";
+import { BeanBagIcon } from "../components/icons/BeanBagIcon";
 import { BeanIcon } from "../components/icons/BeanIcon";
 import { DripperIcon } from "../components/icons/DripperIcon";
 import { DropIcon } from "../components/icons/DropIcon";
@@ -284,7 +285,9 @@ const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
   <div tw="flex">
     <div tw="flex-grow">
       <p tw="font-medium text-gray-900">{brew.method}</p>
-      <p tw="text-gray-600">{beans?.name}</p>
+      <p tw="flex items-center gap-1 text-gray-600">
+        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-500" /> {beans?.name}
+      </p>
       <p tw="flex items-center gap-1 text-gray-600">
         <BeanIcon tw="w-3 h-3 text-gray-500" />
         {brew.beansWeight}g : {brew.waterWeight}ml
@@ -315,7 +318,9 @@ const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
       {espresso.fromDecent && (
         <p tw="font-medium text-gray-900">{espresso.profileName}</p>
       )}
-      <p tw="text-gray-600">{beans?.name}</p>
+      <p tw="flex items-center gap-1 text-gray-600">
+        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-500" /> {beans?.name}
+      </p>
       <p tw="flex items-center gap-1 text-gray-600">
         <BeanIcon tw="w-3 h-3 text-gray-500" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
