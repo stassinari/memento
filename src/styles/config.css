@@ -4,6 +4,10 @@
 
 /* Styling for react-datepicker taken from https://github.com/msnegurski/tailwind-react-datepicker */
 
+.react-datepicker__aria-live {
+  @apply sr-only;
+}
+
 .react-datepicker__input-container input {
   @apply block w-full text-base sm:text-sm bg-white border border-gray-300 rounded-md shadow-sm form-input focus:ring-orange-500 focus:border-orange-500;
 }

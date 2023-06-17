@@ -2,7 +2,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import DatePicker from "react-datepicker";
 import { Controller, useFormContext } from "react-hook-form";
-import "twin.macro";
 import tw from "twin.macro";
 import { Input } from "../Input";
 
