@@ -3,27 +3,19 @@ import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import { Action } from "./ButtonWithDropdown";
 
+const Container = tw.div`overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow`;
+
+const Content = tw.div`px-4 py-4 sm:p-6`;
+
 interface CardProps {
   className?: string;
   children: ReactNode;
-  headerSlot?: ReactNode;
-  footerSlot?: ReactNode;
 }
 
-const CardRoot: React.FC<CardProps> = ({
-  children,
-  className,
-  headerSlot,
-  footerSlot,
-}) => (
-  <div
-    tw="overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow"
-    className={className}
-  >
-    {headerSlot && <div tw="px-4 py-4 sm:px-6">{headerSlot}</div>}
-    <div tw="px-4 py-4 sm:p-6">{children}</div>
-    {footerSlot && <div tw="px-4 py-4 sm:px-6">{footerSlot}</div>}
-  </div>
+const CardRoot: React.FC<CardProps> = ({ children, className }) => (
+  <Container className={className}>
+    <Content>{children}</Content>
+  </Container>
 );
 
 interface HeaderProps {
@@ -72,4 +64,9 @@ const DescriptionList: React.FC<DescriptionListProps> = ({ rows }) => (
   </div>
 );
 
-export const Card = Object.assign(CardRoot, { Header, DescriptionList });
+export const Card = Object.assign(CardRoot, {
+  Header,
+  DescriptionList,
+  Container,
+  Content,
+});

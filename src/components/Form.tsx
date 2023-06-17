@@ -19,9 +19,9 @@ export const FormSection: React.FC<FormSectionProps> = ({
         <h3 tw="text-lg font-medium leading-6 text-gray-900">{title}</h3>
         {subtitle && <p tw="mt-1 text-sm text-gray-500">{subtitle}</p>}
       </div>
-      <div tw="mt-5 md:col-span-2 md:mt-0">
-        <Card tw="space-y-6">{children}</Card>
-      </div>
+      <Card.Container tw="mt-5 md:col-span-2 md:mt-0">
+        <Card.Content tw="space-y-6">{children}</Card.Content>
+      </Card.Container>
     </div>
   );
 };
