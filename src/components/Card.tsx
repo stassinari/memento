@@ -41,6 +41,8 @@ const Header: React.FC<HeaderProps> = ({ title, action }) => (
   </div>
 );
 
+const Footer = tw.div`px-4 py-2 border-t border-gray-100 bg-gray-50/50 sm:px-6`;
+
 export interface DescriptionListRow {
   label: string;
   value: string | ReactNode;
@@ -66,6 +68,7 @@ const DescriptionList: React.FC<DescriptionListProps> = ({ rows }) => (
 
 export const Card = Object.assign(CardRoot, {
   Header,
+  Footer,
   DescriptionList,
   Container,
   Content,

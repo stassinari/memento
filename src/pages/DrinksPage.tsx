@@ -1,4 +1,3 @@
-import { ClockIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { orderBy, where } from "firebase/firestore";
 import { chain, entries } from "lodash";
@@ -223,10 +222,7 @@ export const DrinkItemSimple = ({ drink, type, beans }: DrinkItemProps) => {
 };
 
 export const DrinkItemWithTime = ({ drink, type, beans }: DrinkItemProps) => (
-  <li
-    key={drink.id}
-    // css={[tw`w-5/6`, type === "espresso" && tw`self-end`]}
-  >
+  <li key={drink.id}>
     <RouterLink
       to={
         type === "brew"
@@ -234,36 +230,27 @@ export const DrinkItemWithTime = ({ drink, type, beans }: DrinkItemProps) => (
           : `espresso/${drink.id ?? ""}`
       }
     >
-      <div
-        css={[
-          tw`flex items-center gap-2`,
-          type === "brew" && tw`flex-row-reverse`,
-        ]}
-      >
-        <span
-          css={[
-            tw`flex flex-col items-center w-16 gap-1 text-sm text-gray-500`,
-            // type === "brew" && tw`flex-row-reverse`,
-          ]}
-        >
-          {type === "brew" ? (
-            <DripperIcon tw="w-5 h-5 text-gray-400" />
-          ) : (
-            <PortafilterIcon tw="w-5 h-5 text-gray-400" />
-          )}
-          <div tw="flex items-center gap-1">
-            <ClockIcon tw="w-4 h-4 text-gray-400" />
-            {dayjs(drink.date.toDate()).format("HH:mm")}
-          </div>
-        </span>
-        <Card tw="flex-grow text-sm">
+      <Card.Container tw="flex-grow text-sm">
+        <Card.Content>
           {type === "brew" ? (
             <BrewCardContent brew={drink} beans={beans} />
           ) : (
             <EspressoCardContent espresso={drink} beans={beans} />
           )}
-        </Card>
-      </div>
+        </Card.Content>
+        <Card.Footer tw="flex items-center h-8 gap-1 text-xs text-gray-500">
+          {type === "brew" ? (
+            <>
+              <DripperIcon tw="w-4 h-4 mr-1 text-gray-400" /> Brewed at
+            </>
+          ) : (
+            <>
+              <PortafilterIcon tw="w-4 h-4 mr-1 text-gray-400" /> Pulled at
+            </>
+          )}
+          <span>{dayjs(drink.date.toDate()).format("HH:mm")}</span>
+        </Card.Footer>
+      </Card.Container>
     </RouterLink>
   </li>
 );
