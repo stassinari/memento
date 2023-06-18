@@ -12,7 +12,7 @@ import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
 } from "../../components/ButtonWithDropdown";
-import { Details } from "../../components/Details";
+import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { DecentCharts } from "../../components/espresso/charts/DecentCharts";
@@ -107,7 +107,7 @@ const EspressoDetails: React.FC = () => {
       {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
       <div tw="space-y-8">
-        <Details
+        <DetailsCard
           title="Rating"
           rows={[
             {
@@ -124,7 +124,7 @@ const EspressoDetails: React.FC = () => {
             },
           ]}
         />
-        <Details
+        <DetailsCard
           title="Tasting scores"
           rows={[
             {
@@ -159,7 +159,7 @@ const EspressoDetails: React.FC = () => {
             },
           ]}
         />
-        <Details
+        <DetailsCard
           title="Extraction"
           rows={[
             {
@@ -172,7 +172,7 @@ const EspressoDetails: React.FC = () => {
             },
           ]}
         />
-        <Details
+        <DetailsCard
           title="Prep"
           rows={[
             {
@@ -192,7 +192,7 @@ const EspressoDetails: React.FC = () => {
             brewDate={espresso.date.toDate()}
           />
         ) : null}
-        <Details
+        <DetailsCard
           title="Equipment"
           rows={[
             { label: "Machine", value: espresso.machine ?? "" },
@@ -202,7 +202,7 @@ const EspressoDetails: React.FC = () => {
             { label: "Basket", value: espresso.basket ?? "" },
           ]}
         />
-        <Details
+        <DetailsCard
           title="Recipe"
           rows={[
             {
@@ -226,7 +226,7 @@ const EspressoDetails: React.FC = () => {
             { label: "Grind setting", value: espresso.grindSetting ?? "" },
           ]}
         />
-        <Details
+        <DetailsCard
           title="Time"
           rows={[
             {

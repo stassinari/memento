@@ -8,6 +8,7 @@ import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { ButtonWithDropdown } from "../../components/ButtonWithDropdown";
 import { Card } from "../../components/Card";
+import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
@@ -66,173 +67,145 @@ export const BrewDetails: React.FC = () => {
       </Heading>
 
       <div tw="mt-4 space-y-4">
-        <Card>
-          <Card.Header
-            title="Prep"
-            action={{ type: "link", label: "Edit", href: "edit" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              {
-                label: "Date",
-                value: dayjs(brew.date.toDate()).format("DD MMM YYYY @ H:m"),
-              },
-              { label: "Method", value: brew.method },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Prep"
+          action={{ type: "link", label: "Edit", href: "edit" }}
+          rows={[
+            {
+              label: "Date",
+              value: dayjs(brew.date.toDate()).format("DD MMM YYYY @ H:m"),
+            },
+            { label: "Method", value: brew.method },
+          ]}
+        />
 
         <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
 
-        <Card>
-          <Card.Header
-            title="Recipe"
-            action={{ type: "link", label: "Edit", href: "edit" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              {
-                label: "Water weight",
-                value: `${brew.waterWeight} g`,
-              },
-              {
-                label: "Beans weight",
-                value: `${brew.beansWeight} g`,
-              },
-              {
-                label: "Water temperature",
-                value: brew.waterTemperature
-                  ? `${brew.waterTemperature} °C`
-                  : "",
-              },
-              { label: "Grind setting", value: brew.grindSetting ?? "" },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Recipe"
+          action={{ type: "link", label: "Edit", href: "edit" }}
+          rows={[
+            {
+              label: "Water weight",
+              value: `${brew.waterWeight} g`,
+            },
+            {
+              label: "Beans weight",
+              value: `${brew.beansWeight} g`,
+            },
+            {
+              label: "Water temperature",
+              value: brew.waterTemperature ? `${brew.waterTemperature} °C` : "",
+            },
+            { label: "Grind setting", value: brew.grindSetting ?? "" },
+          ]}
+        />
 
-        <Card>
-          <Card.Header
-            title="Outcome"
-            action={{ type: "link", label: "Edit", href: "outcome" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              {
-                label: "Overall score",
-                value: brew.rating ? `${brew.rating}/10` : "",
-              },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Outcome"
+          action={{ type: "link", label: "Edit", href: "outcome" }}
+          rows={[
+            {
+              label: "Overall score",
+              value: brew.rating ? `${brew.rating}/10` : "",
+            },
+          ]}
+        />
 
-        <Card>
+        <Card.Container>
           <Card.Header title="Notes" />
 
-          <article tw="prose-sm prose">
-            <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
-          </article>
-        </Card>
+          <Card.Content>
+            <article tw="prose-sm prose">
+              <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
+            </article>
+          </Card.Content>
+        </Card.Container>
 
-        <Card>
-          <Card.Header
-            title="Time"
-            action={{ type: "link", label: "Edit", href: "edit" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              {
-                label: "Time",
-                value:
-                  brew.timeMinutes ?? brew.timeSeconds
-                    ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
-                    : "",
-              },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Time"
+          action={{ type: "link", label: "Edit", href: "edit" }}
+          rows={[
+            {
+              label: "Time",
+              value:
+                brew.timeMinutes ?? brew.timeSeconds
+                  ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
+                  : "",
+            },
+          ]}
+        />
 
-        <Card>
-          <Card.Header
-            title="Tasting notes"
-            action={{ type: "link", label: "Edit", href: "outcome" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              {
-                label: "Aroma",
-                value: brew.tastingScores?.aroma
-                  ? `${brew.tastingScores.aroma}/10`
-                  : "",
-              },
-              {
-                label: "Acidity",
-                value: brew.tastingScores?.acidity
-                  ? `${brew.tastingScores.acidity}/10`
-                  : "",
-              },
-              {
-                label: "Sweetness",
-                value: brew.tastingScores?.sweetness
-                  ? `${brew.tastingScores.sweetness}/10`
-                  : "",
-              },
-              {
-                label: "Body",
-                value: brew.tastingScores?.body
-                  ? `${brew.tastingScores.body}/10`
-                  : "",
-              },
-              {
-                label: "Finish",
-                value: brew.tastingScores?.finish
-                  ? `${brew.tastingScores.finish}/10`
-                  : "",
-              },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Tasting notes"
+          action={{ type: "link", label: "Edit", href: "outcome" }}
+          rows={[
+            {
+              label: "Aroma",
+              value: brew.tastingScores?.aroma
+                ? `${brew.tastingScores.aroma}/10`
+                : "",
+            },
+            {
+              label: "Acidity",
+              value: brew.tastingScores?.acidity
+                ? `${brew.tastingScores.acidity}/10`
+                : "",
+            },
+            {
+              label: "Sweetness",
+              value: brew.tastingScores?.sweetness
+                ? `${brew.tastingScores.sweetness}/10`
+                : "",
+            },
+            {
+              label: "Body",
+              value: brew.tastingScores?.body
+                ? `${brew.tastingScores.body}/10`
+                : "",
+            },
+            {
+              label: "Finish",
+              value: brew.tastingScores?.finish
+                ? `${brew.tastingScores.finish}/10`
+                : "",
+            },
+          ]}
+        />
 
-        <Card>
-          <Card.Header
-            title="Extraction"
-            action={{ type: "link", label: "Edit", href: "outcome" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              {
-                label: "Extraction type",
-                value: brew.extractionType ?? "",
-              },
-              {
-                label: "Extraction yield",
-                value: `${getEyFromBrew(brew)}%`,
-              },
-              {
-                label: "Final brew weight",
-                value: brew.finalBrewWeight ? `${brew.finalBrewWeight}g` : "",
-              },
-              {
-                label: "TDS",
-                value: brew.tds ? `${brew.tds}%` : "",
-              },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Extraction"
+          action={{ type: "link", label: "Edit", href: "outcome" }}
+          rows={[
+            {
+              label: "Extraction type",
+              value: brew.extractionType ?? "",
+            },
+            {
+              label: "Extraction yield",
+              value: `${getEyFromBrew(brew)}%`,
+            },
+            {
+              label: "Final brew weight",
+              value: brew.finalBrewWeight ? `${brew.finalBrewWeight}g` : "",
+            },
+            {
+              label: "TDS",
+              value: brew.tds ? `${brew.tds}%` : "",
+            },
+          ]}
+        />
 
-        <Card>
-          <Card.Header
-            title="Equipment"
-            action={{ type: "link", label: "Edit", href: "edit" }}
-          />
-          <Card.DescriptionList
-            rows={[
-              { label: "Grinder", value: brew.grinder ?? "" },
-              { label: "Burrs", value: brew.grinderBurrs ?? "" },
-              { label: "Water type", value: brew.waterType ?? "" },
-              { label: "Filter type", value: brew.filterType ?? "" },
-            ]}
-          />
-        </Card>
+        <DetailsCard
+          title="Equipment"
+          action={{ type: "link", label: "Edit", href: "edit" }}
+          rows={[
+            { label: "Grinder", value: brew.grinder ?? "" },
+            { label: "Burrs", value: brew.grinderBurrs ?? "" },
+            { label: "Water type", value: brew.waterType ?? "" },
+            { label: "Filter type", value: brew.filterType ?? "" },
+          ]}
+        />
       </div>
     </>
   );

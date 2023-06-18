@@ -9,7 +9,7 @@ import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
 } from "../../components/ButtonWithDropdown";
-import { Details } from "../../components/Details";
+import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansBrewList } from "../../components/beans/BeansBrewList";
 import { BeansEspressoList } from "../../components/beans/BeansEspressoList";
@@ -124,7 +124,7 @@ export const BeansDetails: React.FC = () => {
       </div>
 
       <div tw="space-y-8">
-        <Details
+        <DetailsCard
           title="Roast information"
           rows={[
             { label: "Name", value: beans.name },
@@ -140,7 +140,7 @@ export const BeansDetails: React.FC = () => {
             { label: "Roasting notes", value: beans.roastingNotes.join(", ") },
           ]}
         />
-        <Details
+        <DetailsCard
           title="Storage"
           rows={[
             {
@@ -158,7 +158,7 @@ export const BeansDetails: React.FC = () => {
           ]}
         />
         {beans.origin === "single-origin" ? (
-          <Details
+          <DetailsCard
             title="Single-origin terroir"
             rows={[
               { label: "Country", value: beans.country ?? "" },
@@ -181,7 +181,7 @@ export const BeansDetails: React.FC = () => {
         ) : beans.origin === "blend" ? (
           <>
             {beans.blend.map((b, i) => (
-              <Details
+              <DetailsCard
                 key={i}
                 title={`Blend item ${i + 1}`}
                 rows={[

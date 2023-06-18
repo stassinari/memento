@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import { Action } from "./ButtonWithDropdown";
 
-const Container = tw.div`overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow`;
+const Container = tw.div`overflow-hidden bg-white rounded-lg shadow`;
 
-const Content = tw.div`px-4 py-4 sm:p-6`;
+const Content = tw.div`px-4 py-4 sm:px-6`;
 
 interface CardProps {
   className?: string;
@@ -26,7 +26,7 @@ interface HeaderProps {
 const actionStyles = tw`font-medium text-sm text-orange-600 hover:(text-orange-500 underline)`;
 
 const Header: React.FC<HeaderProps> = ({ title, action }) => (
-  <div tw="flex justify-between mb-3">
+  <div tw="flex justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50 sm:px-6">
     <h3 tw="text-sm font-bold leading-6 text-gray-900">{title}</h3>
     {action &&
       (action.type === "link" ? (
@@ -41,13 +41,13 @@ const Header: React.FC<HeaderProps> = ({ title, action }) => (
   </div>
 );
 
-interface DescriptionListRowProps {
+export interface DescriptionListRow {
   label: string;
   value: string | ReactNode;
 }
 
 interface DescriptionListProps {
-  rows: DescriptionListRowProps[];
+  rows: DescriptionListRow[];
 }
 
 const DescriptionList: React.FC<DescriptionListProps> = ({ rows }) => (
@@ -55,7 +55,7 @@ const DescriptionList: React.FC<DescriptionListProps> = ({ rows }) => (
     {rows.map(({ label, value }) => (
       <dl
         key={label}
-        tw="flex items-center justify-between py-1 gap-x-4 first-of-type:pt-0 last-of-type:pb-0"
+        tw="flex items-center justify-between py-1 gap-x-4 first-of-type:pt-0 last-of-type:pb-0 sm:py-2"
       >
         <dt tw="text-sm font-normal text-gray-500">{label}</dt>
         <dd tw="mt-1 text-sm font-medium text-gray-800 ">{value}</dd>
