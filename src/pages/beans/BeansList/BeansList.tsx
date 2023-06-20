@@ -51,6 +51,13 @@ const tabs: BeansTabProps[] = [
   },
 ];
 
+export const tabStyles = (isSelected: boolean) => [
+  tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
+  isSelected
+    ? tw`text-orange-600 border-orange-500`
+    : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
+];
+
 export const BeansList: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -82,15 +89,7 @@ export const BeansList: React.FC = () => {
         <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
           <Tab.List tw="flex -mb-px">
             {tabs.map(({ name }, i) => (
-              <Tab
-                key={name}
-                css={[
-                  tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
-                  selectedIndex === i
-                    ? tw`text-orange-600 border-orange-500`
-                    : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
-                ]}
-              >
+              <Tab key={name} css={tabStyles(selectedIndex === i)}>
                 {name}
               </Tab>
             ))}
