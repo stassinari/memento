@@ -11,8 +11,7 @@ import {
 } from "../../components/ButtonWithDropdown";
 import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
-import { BeansBrewList } from "../../components/beans/BeansBrewList";
-import { BeansEspressoList } from "../../components/beans/BeansEspressoList";
+import { BeansDrinks } from "../../components/beans/BeansDrinks";
 import { areBeansFresh, areBeansFrozen } from "../../components/beans/utils";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
@@ -119,85 +118,97 @@ export const BeansDetails: React.FC = () => {
       </Heading>
 
       <div tw="grid gap-4 my-6 lg:grid-cols-2">
-        <BeansBrewList beansId={beans.id ?? ""} />
-        <BeansEspressoList beansId={beans.id ?? ""} />
-      </div>
-
-      <div tw="space-y-8">
-        <DetailsCard
-          title="Roast information"
-          rows={[
-            { label: "Name", value: beans.name },
-            { label: "Roaster", value: beans.roaster },
-            {
-              label: "Roast date",
-              value: beans.roastDate
-                ? dayjs(beans.roastDate.toDate()).format("DD MMM YYYY")
-                : "",
-            },
-            { label: "Roast style", value: beans.roastStyle ?? "" },
-            { label: "Roast level", value: beans.roastLevel?.toString() ?? "" },
-            { label: "Roasting notes", value: beans.roastingNotes.join(", ") },
-          ]}
-        />
-        <DetailsCard
-          title="Storage"
-          rows={[
-            {
-              label: "Freeze date",
-              value: beans.freezeDate
-                ? dayjs(beans.freezeDate.toDate()).format("DD MMM YYYY")
-                : "",
-            },
-            {
-              label: "Thaw date",
-              value: beans.thawDate
-                ? dayjs(beans.thawDate.toDate()).format("DD MMM YYYY")
-                : "",
-            },
-          ]}
-        />
-        {beans.origin === "single-origin" ? (
+        <div tw="space-y-8">
+          <h2 tw="text-lg font-semibold text-center text-gray-900">
+            Beans info
+          </h2>
           <DetailsCard
-            title="Single-origin terroir"
+            title="Roast information"
             rows={[
-              { label: "Country", value: beans.country ?? "" },
-              { label: "Region", value: beans.region ?? "" },
-              { label: "Farmer", value: beans.farmer ?? "" },
+              { label: "Name", value: beans.name },
+              { label: "Roaster", value: beans.roaster },
               {
-                label: "Altitude",
-                value: beans.altitude ? `${beans.altitude} masl` : "",
+                label: "Roast date",
+                value: beans.roastDate
+                  ? dayjs(beans.roastDate.toDate()).format("DD MMM YYYY")
+                  : "",
               },
-              { label: "Process", value: beans.process ?? "" },
-              { label: "Varietal(s)", value: beans.varietals.join(", ") },
+              { label: "Roast style", value: beans.roastStyle ?? "" },
               {
-                label: "Harvest date",
-                value: beans.harvestDate
-                  ? dayjs(beans.harvestDate.toDate()).format("MMMM YYYY")
+                label: "Roast level",
+                value: beans.roastLevel?.toString() ?? "",
+              },
+              {
+                label: "Roasting notes",
+                value: beans.roastingNotes.join(", "),
+              },
+            ]}
+          />
+          <DetailsCard
+            title="Storage"
+            rows={[
+              {
+                label: "Freeze date",
+                value: beans.freezeDate
+                  ? dayjs(beans.freezeDate.toDate()).format("DD MMM YYYY")
+                  : "",
+              },
+              {
+                label: "Thaw date",
+                value: beans.thawDate
+                  ? dayjs(beans.thawDate.toDate()).format("DD MMM YYYY")
                   : "",
               },
             ]}
           />
-        ) : beans.origin === "blend" ? (
-          <>
-            {beans.blend.map((b, i) => (
-              <DetailsCard
-                key={i}
-                title={`Blend item ${i + 1}`}
-                rows={[
-                  { label: "Name", value: b.name ?? "" },
-                  {
-                    label: "Percentage",
-                    value: b.percentage ? `${b.percentage} %` : "",
-                  },
-                  { label: "Country", value: b.country ?? "" },
-                  { label: "Process", value: b.process ?? "" },
-                  { label: "Varietal(s)", value: b.varietals.join(", ") },
-                ]}
-              />
-            ))}
-          </>
-        ) : null}
+          {beans.origin === "single-origin" ? (
+            <DetailsCard
+              title="Single-origin terroir"
+              rows={[
+                { label: "Country", value: beans.country ?? "" },
+                { label: "Region", value: beans.region ?? "" },
+                { label: "Farmer", value: beans.farmer ?? "" },
+                {
+                  label: "Altitude",
+                  value: beans.altitude ? `${beans.altitude} masl` : "",
+                },
+                { label: "Process", value: beans.process ?? "" },
+                { label: "Varietal(s)", value: beans.varietals.join(", ") },
+                {
+                  label: "Harvest date",
+                  value: beans.harvestDate
+                    ? dayjs(beans.harvestDate.toDate()).format("MMMM YYYY")
+                    : "",
+                },
+              ]}
+            />
+          ) : beans.origin === "blend" ? (
+            <>
+              {beans.blend.map((b, i) => (
+                <DetailsCard
+                  key={i}
+                  title={`Blend item ${i + 1}`}
+                  rows={[
+                    { label: "Name", value: b.name ?? "" },
+                    {
+                      label: "Percentage",
+                      value: b.percentage ? `${b.percentage} %` : "",
+                    },
+                    { label: "Country", value: b.country ?? "" },
+                    { label: "Process", value: b.process ?? "" },
+                    { label: "Varietal(s)", value: b.varietals.join(", ") },
+                  ]}
+                />
+              ))}
+            </>
+          ) : null}
+        </div>
+
+        <div tw="-mt-3">
+          <h2 tw="text-lg font-semibold text-center text-gray-900">Drinks</h2>
+
+          <BeansDrinks beans={beans} />
+        </div>
       </div>
     </>
   );
