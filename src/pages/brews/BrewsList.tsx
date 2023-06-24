@@ -5,12 +5,15 @@ import "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
-import { DataList } from "../../components/DataList";
+import {
+  DrinksList,
+  mergeBrewsAndEspressoByUniqueDate,
+} from "../../components/DrinksList";
 import { Heading } from "../../components/Heading";
-import { brewToDataListItem } from "../../components/brews/utils";
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
 import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
+import { Beans } from "../../types/beans";
 import { type Brew } from "../../types/brew";
 
 export const BrewsList: React.FC = () => {
@@ -22,11 +25,26 @@ export const BrewsList: React.FC = () => {
   );
 
   const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: brewsList } = useFirestoreCollectionRealtime<Brew>(query);
+  const { list: brewsList, isLoading: brewsLoading } =
+    useFirestoreCollectionRealtime<Brew>(query);
+
+  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
+  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
+  const { list: beansList, isLoading: beansLoading } =
+    useFirestoreCollectionRealtime<Beans>(beansQuery);
+
+  const drinks = useMemo(
+    () => mergeBrewsAndEspressoByUniqueDate(brewsList, []),
+    [brewsList]
+  );
 
   const isSm = useScreenMediaQuery("sm");
 
   console.log("brewList");
+
+  if (brewsLoading || beansLoading) {
+    return null;
+  }
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.brews]} />
@@ -48,7 +66,7 @@ export const BrewsList: React.FC = () => {
       </Heading>
 
       <div tw="mt-4">
-        <DataList items={brewsList.map(brewToDataListItem)} />
+        <DrinksList drinks={drinks} beansList={beansList} />
       </div>
       <div tw="flex justify-center gap-4 mt-4">
         {brewsList.length >= brewLimit && (
