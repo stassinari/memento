@@ -147,8 +147,8 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
     <RouterLink
       to={
         type === "brew"
-          ? `brews/${drink.id ?? ""}`
-          : `espresso/${drink.id ?? ""}`
+          ? `/drinks/brews/${drink.id ?? ""}`
+          : `/drinks/espresso/${drink.id ?? ""}`
       }
     >
       <Card.Container tw="flex-grow text-sm">

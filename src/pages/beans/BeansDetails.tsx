@@ -26,7 +26,7 @@ interface BeansDetailsProps {
 }
 
 const BeansDetailsInfo: React.FC<BeansDetailsProps> = ({ beans }) => (
-  <>
+  <div tw="space-y-4">
     <DetailsCard
       title="Roast information"
       rows={[
@@ -107,7 +107,7 @@ const BeansDetailsInfo: React.FC<BeansDetailsProps> = ({ beans }) => (
         ))}
       </>
     ) : null}
-  </>
+  </div>
 );
 
 export const BeansDetails: React.FC = () => {
@@ -214,15 +214,15 @@ export const BeansDetails: React.FC = () => {
 
       {isSm ? (
         <div tw="grid grid-cols-2 gap-4 my-6">
-          <div tw="space-y-8">
-            <h2 tw="text-lg font-semibold text-center text-gray-900">
+          <div>
+            <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
               Beans info
             </h2>
 
             <BeansDetailsInfo beans={beans} />
           </div>
 
-          <div tw="-mt-3">
+          <div>
             <h2 tw="text-lg font-semibold text-center text-gray-900">Drinks</h2>
 
             <BeansDrinks beans={beans} />
