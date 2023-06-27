@@ -1,5 +1,4 @@
 import { InputHTMLAttributes } from "react";
-import "twin.macro";
 import tw from "twin.macro";
 
 export type RadioDirection = "vertical" | "horizontal";

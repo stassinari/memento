@@ -1,6 +1,5 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import React, { ReactElement, useRef, useState } from "react";
-import "twin.macro";
 import tw from "twin.macro";
 import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
@@ -74,7 +73,9 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
                     icon={{
                       Element: <BadgeTimesIcon />,
                       position: "right",
-                      onClick: () => removeItem(v),
+                      onClick: () => {
+                        removeItem(v);
+                      },
                     }}
                   />
                 ))}
@@ -84,7 +85,9 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
                 placeholder={placeholder}
                 displayValue={() => query}
                 tw="flex-grow text-sm border-none p-0 focus:(outline-none border-none border-transparent ring-0)"
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                }}
               />
             </div>
           </div>

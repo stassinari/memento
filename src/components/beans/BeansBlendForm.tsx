@@ -7,11 +7,11 @@ import { processes } from "../../data/processes";
 import { varietals } from "../../data/varietals";
 import { BeansBlendPart } from "../../types/beans";
 import { Button } from "../Button";
+import { IconButton } from "../IconButton";
+import { TextWithImageOption } from "../ListOption";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
-import { IconButton } from "../IconButton";
-import { TextWithImageOption } from "../ListOption";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 
 export const blendEmptyValues: BeansBlendPart = {
@@ -29,8 +29,12 @@ export const BeansBlendForm = () => {
     name: "blend",
   });
 
-  const handleAppend = () => append(blendEmptyValues);
-  const handleRemove = (index: number) => () => remove(index);
+  const handleAppend = () => {
+    append(blendEmptyValues);
+  };
+  const handleRemove = (index: number) => () => {
+    remove(index);
+  };
 
   return fields.length > 0 ? (
     <div tw="space-y-4">

@@ -1,16 +1,15 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import React, { ReactElement, useState } from "react";
-import "twin.macro";
 import tw from "twin.macro";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../ListOption";
 import {
   ComboboxButton,
-  comboboxButtonIconStyles,
-  comboboxButtonStyles,
   ComboboxOption,
   ComboboxOptions,
+  comboboxButtonIconStyles,
+  comboboxButtonStyles,
 } from "./ComboboxElements";
 
 export interface ComboboxSingleProps {

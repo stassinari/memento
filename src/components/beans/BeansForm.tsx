@@ -123,7 +123,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
     } else {
       data = { ...data, blend: [] };
     }
-    mutation(data);
+    void mutation(data);
   };
 
   const isSingleOrigin = watch("origin") === "single-origin";
@@ -308,7 +308,12 @@ export const BeansForm: React.FC<BeansFormProps> = ({
           </FormSection>
 
           <div className="flex justify-end gap-4">
-            <Button variant="white" onClick={() => navigate(-1)}>
+            <Button
+              variant="white"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
               Cancel
             </Button>
             <Button
