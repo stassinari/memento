@@ -112,7 +112,7 @@ export const DrinksList: React.FC<DrinksListProps> = ({
 }) => (
   <>
     {drinks.map(([date, drinks]) => (
-      <div key={date} tw="mt-6 sm:mt-8">
+      <div key={date} tw="mt-6 sm:mt-8 @container">
         <div tw="relative">
           <div tw="absolute inset-0 flex items-center" aria-hidden="true">
             <div tw="w-full border-t border-gray-300" />
@@ -123,7 +123,7 @@ export const DrinksList: React.FC<DrinksListProps> = ({
             </span>
           </div>
         </div>
-        <ul tw="grid gap-4 sm:grid-cols-2">
+        <ul tw="grid gap-4 @xl:grid-cols-2">
           {drinks.map((item, i) => (
             <DrinkItem
               key={item.drink.id}

@@ -213,7 +213,7 @@ export const BeansDetails: React.FC = () => {
       </Heading>
 
       {isSm ? (
-        <div tw="grid grid-cols-2 gap-4 my-6">
+        <div tw="grid grid-cols-[40%_60%] gap-4 my-6">
           <div>
             <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
               Beans info
