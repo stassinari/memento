@@ -8,10 +8,10 @@ import { varietals } from "../../data/varietals";
 import { BeansBlendPart } from "../../types/beans";
 import { Button } from "../Button";
 import { IconButton } from "../IconButton";
-import { TextWithImageOption } from "../ListOption";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
+import { TextWithImageOption } from "../form/ListOption";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 
 export const blendEmptyValues: BeansBlendPart = {

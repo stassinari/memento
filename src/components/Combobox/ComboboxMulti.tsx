@@ -3,7 +3,7 @@ import React, { ReactElement, useRef, useState } from "react";
 import tw from "twin.macro";
 import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
-import { TextOption } from "../ListOption";
+import { TextOption } from "../form/ListOption";
 import {
   ComboboxButton,
   ComboboxOption,

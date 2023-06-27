@@ -13,7 +13,6 @@ import { Beans, BeansBlendPart, RoastStyle } from "../../types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
-import { TextWithImageOption } from "../ListOption";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
@@ -23,6 +22,7 @@ import { FormInputRadio } from "../form/FormInputRadio";
 import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { extractSuggestions } from "../form/FormSuggestions";
+import { TextWithImageOption } from "../form/ListOption";
 import { BeansBlendForm, blendEmptyValues } from "./BeansBlendForm";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 

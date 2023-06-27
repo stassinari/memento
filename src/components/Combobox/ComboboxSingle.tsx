@@ -3,7 +3,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import React, { ReactElement, useState } from "react";
 import tw from "twin.macro";
 import { inputStyles, labelStyles } from "../Input";
-import { TextOption } from "../ListOption";
+import { TextOption } from "../form/ListOption";
 import {
   ComboboxButton,
   ComboboxOption,
