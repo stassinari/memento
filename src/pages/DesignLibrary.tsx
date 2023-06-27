@@ -1,4 +1,8 @@
 import {
+  AcademicCapIcon,
+  BeakerIcon,
+  BugAntIcon,
+  ChartPieIcon,
   PlusCircleIcon,
   PlusIcon as PlusIconMini,
 } from "@heroicons/react/20/solid";
@@ -29,6 +33,7 @@ import {
   InputRadioCards,
   InputRadioCardsOption,
 } from "../components/InputRadioCards";
+import { ListCard } from "../components/ListCard";
 import {
   ExampleDialogContent,
   LoremIpsum,
@@ -36,7 +41,6 @@ import {
   RadixModal,
 } from "../components/Modal";
 import { notification } from "../components/Notification";
-import { PageHeadingExample } from "../components/PageHeading";
 import { Stopwatch } from "../components/Stopwatch";
 import { Textarea } from "../components/Textarea";
 import { Toggle } from "../components/Toggle";
@@ -138,9 +142,42 @@ export const DesignLibrary: React.FC = () => {
           />
         </div>
         <div>
-          <p>Page heading</p>
-          <div tw="p-4 border rounded-lg">
-            <PageHeadingExample />
+          <p>List Cards</p>
+
+          <div tw="space-y-4">
+            <ListCard
+              linkTo="#"
+              footerSlot={
+                <ListCard.Footer
+                  text="Fake footer"
+                  Icon={<AcademicCapIcon />}
+                />
+              }
+            >
+              <div tw="flex">
+                <div tw="flex-grow">
+                  <ListCard.Title>Card title</ListCard.Title>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <BugAntIcon />
+                    </ListCard.RowIcon>
+                    Some info here
+                  </ListCard.Row>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <BeakerIcon />
+                    </ListCard.RowIcon>
+                    1st thing : 2nd thing
+                    <ListCard.RowIcon>
+                      <ChartPieIcon />
+                    </ListCard.RowIcon>
+                  </ListCard.Row>
+                </div>
+                <div>
+                  <ListCard.Rating>N/A</ListCard.Rating>
+                </div>
+              </div>
+            </ListCard>
           </div>
         </div>
         <div>

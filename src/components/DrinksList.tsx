@@ -203,9 +203,9 @@ const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
     </div>
     {brew.rating && (
       <div>
-        <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
+        <span tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
           {brew.rating}
-        </p>
+        </span>
       </div>
     )}
   </div>
@@ -234,7 +234,7 @@ const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
         <DropIcon tw="w-3 h-3 text-gray-400" />
       </p>
     </div>
-    <div tw="flex flex-col items-end justify-between">
+    <div>
       <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
         {espresso.rating}
       </p>
