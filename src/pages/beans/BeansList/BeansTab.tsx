@@ -1,8 +1,9 @@
+import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/20/solid";
 import { type QueryConstraint } from "firebase/firestore";
 import React, { ReactNode } from "react";
 import "twin.macro";
-import { DataList } from "../../../components/DataList";
-import { beansToDataListItem } from "../../../components/beans/utils";
+import { ListCard } from "../../../components/ListCard";
+import { BeanIcon } from "../../../components/icons/BeanIcon";
 import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../../hooks/firestore/useFirestoreCollectionRealtime";
 import { type Beans } from "../../../types/beans";
@@ -36,5 +37,57 @@ export const BeansTab: React.FC<BeansTabProps> = ({
 
   if (sortedAndFiltered.length === 0) return <>{EmptyState}</>;
 
-  return <DataList items={sortedAndFiltered.map(beansToDataListItem)} />;
+  return (
+    <ul tw="grid gap-4 sm:grid-cols-2">
+      {sortedAndFiltered.map((beans) => (
+        <li key={beans.id}>
+          <ListCard
+            linkTo={`/beans/${beans.id ?? ""}`}
+            footerSlot={
+              <ListCard.Footer text="Roasted 18 days ago" Icon={<BeanIcon />} />
+            }
+          >
+            <div tw="flex">
+              <div tw="flex-grow">
+                <ListCard.Title>{beans.name}</ListCard.Title>
+                <ListCard.Row>
+                  <ListCard.RowIcon>
+                    <FireIcon />
+                  </ListCard.RowIcon>
+                  {beans.roaster}
+                </ListCard.Row>
+                {beans.origin === "single-origin" ? (
+                  <>
+                    {beans.country && (
+                      <ListCard.Row>
+                        <ListCard.RowIcon>
+                          <MapPinIcon />
+                        </ListCard.RowIcon>
+                        {beans.country}
+                      </ListCard.Row>
+                    )}
+                    {beans.process && (
+                      <ListCard.Row>
+                        <ListCard.RowIcon>
+                          <BeakerIcon />
+                        </ListCard.RowIcon>
+                        {beans.process}
+                      </ListCard.Row>
+                    )}
+                  </>
+                ) : (
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <MapPinIcon />
+                    </ListCard.RowIcon>
+                    Blend
+                  </ListCard.Row>
+                )}
+              </div>
+            </div>
+          </ListCard>
+        </li>
+      ))}
+    </ul>
+  );
 };

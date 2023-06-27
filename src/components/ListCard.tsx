@@ -34,7 +34,7 @@ const ListCardRoot: React.FC<ListCardProps> = ({
   footerSlot,
 }) => {
   return (
-    <RouterLink to={linkTo}>
+    <RouterLink to={linkTo} tw="block">
       <Card.Container tw="flex-grow text-sm">
         <Card.Content>{children}</Card.Content>
         {footerSlot}

@@ -3,6 +3,8 @@ import {
   BeakerIcon,
   BugAntIcon,
   ChartPieIcon,
+  FireIcon,
+  MapPinIcon,
   PlusCircleIcon,
   PlusIcon as PlusIconMini,
 } from "@heroicons/react/20/solid";
@@ -44,6 +46,11 @@ import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
 import { Textarea } from "../components/Textarea";
 import { Toggle } from "../components/Toggle";
+import { BeanBagIcon } from "../components/icons/BeanBagIcon";
+import { BeanIcon } from "../components/icons/BeanIcon";
+import { DripperIcon } from "../components/icons/DripperIcon";
+import { DropIcon } from "../components/icons/DropIcon";
+import { PortafilterIcon } from "../components/icons/PortafilterIcon";
 
 const people = [
   "Durward Reynolds",
@@ -145,6 +152,7 @@ export const DesignLibrary: React.FC = () => {
           <p>List Cards</p>
 
           <div tw="space-y-4">
+            {/* Example ListCard */}
             <ListCard
               linkTo="#"
               footerSlot={
@@ -176,6 +184,111 @@ export const DesignLibrary: React.FC = () => {
                 <div>
                   <ListCard.Rating>N/A</ListCard.Rating>
                 </div>
+              </div>
+            </ListCard>
+
+            {/* Brew ListCard */}
+            <ListCard
+              linkTo="#"
+              footerSlot={
+                <ListCard.Footer
+                  text="Brewed at 08:10"
+                  Icon={<DripperIcon />}
+                />
+              }
+            >
+              <div tw="flex">
+                <div tw="flex-grow">
+                  <ListCard.Title>V60 V2</ListCard.Title>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <BeanBagIcon variant="solid" />
+                    </ListCard.RowIcon>
+                    Gitwe
+                  </ListCard.Row>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <BeanIcon />
+                    </ListCard.RowIcon>
+                    30g : 501ml
+                    <ListCard.RowIcon>
+                      <DropIcon />
+                    </ListCard.RowIcon>
+                  </ListCard.Row>
+                </div>
+                <div>
+                  <ListCard.Rating>7.5</ListCard.Rating>
+                </div>
+              </div>
+            </ListCard>
+
+            {/* Espresso ListCard */}
+            <ListCard
+              linkTo="#"
+              footerSlot={
+                <ListCard.Footer
+                  text="Pulled at 17:56"
+                  Icon={<PortafilterIcon />}
+                />
+              }
+            >
+              <div tw="flex">
+                <div tw="flex-grow">
+                  <ListCard.Title>Extractamundo Dos!</ListCard.Title>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <BeanBagIcon variant="solid" />
+                    </ListCard.RowIcon>
+                    El Ubérrimo Gesha
+                  </ListCard.Row>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <BeanIcon />
+                    </ListCard.RowIcon>
+                    18g : 48g
+                    <ListCard.RowIcon>
+                      <DropIcon />
+                    </ListCard.RowIcon>
+                  </ListCard.Row>
+                </div>
+                <div>
+                  <ListCard.Rating>8.5</ListCard.Rating>
+                </div>
+              </div>
+            </ListCard>
+
+            {/* Beans ListCard */}
+            <ListCard
+              linkTo="#"
+              footerSlot={
+                <ListCard.Footer
+                  text="Roasted 18 days ago"
+                  Icon={<BeanIcon />}
+                />
+              }
+            >
+              <div tw="flex">
+                <div tw="flex-grow">
+                  <ListCard.Title>Luiz Guzman</ListCard.Title>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <FireIcon />
+                    </ListCard.RowIcon>
+                    Prodigal Coffee
+                  </ListCard.Row>
+                  <ListCard.Row>
+                    <ListCard.RowIcon>
+                      <MapPinIcon />
+                    </ListCard.RowIcon>
+                    Colombia - Washed
+                    <ListCard.RowIcon>
+                      <BeakerIcon />
+                    </ListCard.RowIcon>
+                  </ListCard.Row>
+                </div>
+                {/* <div>
+                  <ListCard.Rating>8.5</ListCard.Rating>
+                </div> */}
               </div>
             </ListCard>
           </div>
