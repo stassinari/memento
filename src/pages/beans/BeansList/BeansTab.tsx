@@ -7,7 +7,7 @@ import { BeanIcon } from "../../../components/icons/BeanIcon";
 import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "../../../hooks/firestore/useFirestoreCollectionRealtime";
 import { type Beans } from "../../../types/beans";
-import { isNotFrozenOrIsThawed } from "../../../util";
+import { getTimeAgo, isNotFrozenOrIsThawed } from "../../../util";
 
 export interface BeansTabProps {
   name: "Archived" | "Frozen" | "Open";
@@ -44,7 +44,12 @@ export const BeansTab: React.FC<BeansTabProps> = ({
           <ListCard
             linkTo={`/beans/${beans.id ?? ""}`}
             footerSlot={
-              <ListCard.Footer text="Roasted 18 days ago" Icon={<BeanIcon />} />
+              beans.roastDate ? (
+                <ListCard.Footer
+                  text={`Roasted ${getTimeAgo(beans.roastDate.toDate())}`}
+                  Icon={<BeanIcon />}
+                />
+              ) : undefined
             }
           >
             <div tw="flex">
