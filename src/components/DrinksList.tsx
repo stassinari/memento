@@ -123,7 +123,7 @@ export const DrinksList: React.FC<DrinksListProps> = ({
             </span>
           </div>
         </div>
-        <ul tw="flex flex-col gap-4">
+        <ul tw="grid gap-4 sm:grid-cols-2">
           {drinks.map((item, i) => (
             <DrinkItem
               key={item.drink.id}
