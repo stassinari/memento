@@ -1,7 +1,21 @@
 {
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
   "functions": {
-    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"],
-    "source": "functions"
+    "source": "functions",
+    "codebase": "default",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
+    ],
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+  },
+  "storage": {
+    "rules": "storage.rules"
   },
   "emulators": {
     "auth": {
@@ -13,8 +27,12 @@
     "firestore": {
       "port": 8088
     },
+    "storage": {
+      "port": 9199
+    },
     "ui": {
       "enabled": true
-    }
+    },
+    "singleProjectMode": true
   }
 }
