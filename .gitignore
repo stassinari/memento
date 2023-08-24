@@ -12,7 +12,6 @@ dist/
 
 # Firebase
 .firebaserc
-seed/
 
 backups/
 external/decent/shots
