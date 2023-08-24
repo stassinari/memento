@@ -12,6 +12,7 @@ dist/
 
 # Firebase
 .firebaserc
+seed/
 
 backups/
 external/decent/shots
@@ -22,3 +23,8 @@ tmp/
 
 # temporary while rebuilding the whole app
 srcOld/
+
+# firebase
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*

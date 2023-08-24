@@ -130,6 +130,9 @@
   "scripts": {
     "start": "vite",
     "start:prod": "env-cmd -f ./.env.production vite",
+    "emulators:start": "firebase emulators:start",
+    "emulators:start-from-seed": "firebase emulators:start --import=./seed",
+    "emulators:export-seed": "firebase emulators:export ./seed",
     "build": "vite build",
     "serve": "vite preview",
     "type-check": "tsc --noEmit",

@@ -1,6 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import {
+  connectAuthEmulator,
+  getAuth,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { getMessaging } from "firebase/messaging";
 
 const {
@@ -28,11 +32,18 @@ export const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const db = getFirestore(app);
-export const auth = getAuth();
+const db = getFirestore(app);
+const auth = getAuth();
 export const provider = new GoogleAuthProvider();
 export const messaging = getMessaging(app);
 provider.setCustomParameters({ prompt: "select_account" });
+
+if (location.hostname === "localhost") {
+  connectFirestoreEmulator(db, "127.0.0.1", 8080);
+  connectAuthEmulator(auth, "http://127.0.0.1:9099");
+}
+
+export { auth, db };
 
 // FIXME revisit when looking into Firebase notifications
 // export const getMessagingToken = (setTokenFound: (arg0: boolean) => void) => {
