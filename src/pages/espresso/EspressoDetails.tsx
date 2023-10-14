@@ -40,7 +40,8 @@ const EspressoDetails: React.FC = () => {
 
   const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
-    espresso?.actualWeight ?? espresso?.targetWeight ?? 0
+    espresso?.actualWeight ?? espresso?.targetWeight ?? 0,
+    { waterByBeansFactor: 100 }
   );
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
