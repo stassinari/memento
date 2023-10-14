@@ -38,7 +38,7 @@ const EspressoDetails: React.FC = () => {
     navigate(`/drinks/espresso`);
   }, [docRef, navigate]);
 
-  const [_beansByWater, waterByBeans] = useDrinkRatio(
+  const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
     espresso?.actualWeight ?? espresso?.targetWeight ?? 0
   );

@@ -1,15 +1,17 @@
 export const useDrinkRatio = (
   beansWeight: number,
   waterWeight: number
-): [string, string] => {
-  let beansByWaterRatio = 0;
-  let waterByBeansRatio = 0;
+): { beansByWater: string; waterByBeans: string } => {
+  let beansByWater = 0;
+  let waterByBeans = 0;
 
   if (waterWeight && beansWeight) {
-    beansByWaterRatio =
-      Math.floor((beansWeight / (waterWeight / 1000)) * 10) / 10;
-    waterByBeansRatio = Math.floor((waterWeight / beansWeight) * 10) / 10;
+    beansByWater = Math.floor((beansWeight / (waterWeight / 1000)) * 10) / 10;
+    waterByBeans = Math.floor((waterWeight / beansWeight) * 10) / 10;
   }
 
-  return [`${beansByWaterRatio} g/l`, `1 : ${waterByBeansRatio}`];
+  return {
+    beansByWater: `${beansByWater} g/l`,
+    waterByBeans: `1 : ${waterByBeans}`,
+  };
 };

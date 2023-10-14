@@ -27,7 +27,7 @@ export const BrewDetails: React.FC = () => {
   const docRef = useDocRef<Brew>("brews", brewId);
   const { details: brew, isLoading } = useFirestoreDocRealtime<Brew>(docRef);
 
-  const [beansByWater, waterByBeans] = useDrinkRatio(
+  const { beansByWater, waterByBeans } = useDrinkRatio(
     brew?.beansWeight ?? 0,
     brew?.waterWeight ?? 0
   );
