@@ -1,5 +1,6 @@
 import { doc, DocumentReference } from "firebase/firestore";
 import { useMemo } from "react";
+import "twin.macro";
 import { db } from "../../../firebaseConfig";
 import { useFirestoreDocRealtime } from "../../../hooks/firestore/useFirestoreDocRealtime";
 import { useCurrentUser } from "../../../hooks/useInitUser";
@@ -36,7 +37,8 @@ export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
   if (isLoading || !decentReadings) return null;
 
   return (
-    <div>
+    <div tw="md:(grid grid-cols-2)">
+      {/* FIXME check this, couldn't see actual results because I was offline */}
       <PressureFlowWeightChart readings={decentReadings} />
 
       <TemperatureChart decentReadings={decentReadings} />
