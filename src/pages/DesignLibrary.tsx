@@ -46,6 +46,7 @@ import { notification } from "../components/Notification";
 import { Stopwatch } from "../components/Stopwatch";
 import { Textarea } from "../components/Textarea";
 import { Toggle } from "../components/Toggle";
+import { DrinkRatio } from "../components/drinks/DrinkRatio";
 import { BeanBagIcon } from "../components/icons/BeanBagIcon";
 import { BeanIcon } from "../components/icons/BeanIcon";
 import { DripperIcon } from "../components/icons/DripperIcon";
@@ -148,6 +149,12 @@ export const DesignLibrary: React.FC = () => {
             ]}
           />
         </div>
+
+        <div>
+          <p>Drink ratio prototype WIP</p>
+          <DrinkRatio beans={14.7} water={249.2} />
+        </div>
+
         <div>
           <p>List Cards</p>
 

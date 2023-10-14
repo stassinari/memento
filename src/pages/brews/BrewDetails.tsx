@@ -11,6 +11,7 @@ import { Card } from "../../components/Card";
 import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
+import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import { Brew } from "../../types/brew";
@@ -25,6 +26,11 @@ export const BrewDetails: React.FC = () => {
 
   const docRef = useDocRef<Brew>("brews", brewId);
   const { details: brew, isLoading } = useFirestoreDocRealtime<Brew>(docRef);
+
+  const [beansByWater, waterByBeans] = useDrinkRatio(
+    brew?.beansWeight ?? 0,
+    brew?.waterWeight ?? 0
+  );
 
   const handleDelete = async () => {
     await deleteDoc(docRef);
@@ -66,8 +72,13 @@ export const BrewDetails: React.FC = () => {
         {brew.method}
       </Heading>
 
+      <div tw="mb-2 text-sm text-gray-500">
+        {dayjs(brew.date.toDate()).format("DD MMM YYYY @ H:m")}
+      </div>
+
       <div tw="mt-4 space-y-4">
-        <DetailsCard
+        {/* This below is represented by the sections above */}
+        {/* <DetailsCard
           title="Prep"
           action={{ type: "link", label: "Edit", href: "edit" }}
           rows={[
@@ -77,7 +88,7 @@ export const BrewDetails: React.FC = () => {
             },
             { label: "Method", value: brew.method },
           ]}
-        />
+        /> */}
 
         <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
 
@@ -85,6 +96,8 @@ export const BrewDetails: React.FC = () => {
           title="Recipe"
           action={{ type: "link", label: "Edit", href: "edit" }}
           rows={[
+            { label: "Ratio (beans / water)", value: beansByWater },
+            { label: "Ratio (water / beans)", value: waterByBeans },
             {
               label: "Water weight",
               value: `${brew.waterWeight} g`,

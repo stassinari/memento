@@ -26,7 +26,7 @@ interface HeaderProps {
 const actionStyles = tw`font-medium text-sm text-orange-600 hover:(text-orange-500 underline)`;
 
 const Header: React.FC<HeaderProps> = ({ title, action }) => (
-  <div tw="flex justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50 sm:px-6">
+  <div tw="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50 sm:px-6">
     <h3 tw="text-sm font-bold leading-6 text-gray-900">{title}</h3>
     {action &&
       (action.type === "link" ? (

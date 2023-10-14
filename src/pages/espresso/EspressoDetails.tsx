@@ -15,6 +15,7 @@ import {
 import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
+import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
 import { DecentCharts } from "../../components/espresso/charts/DecentCharts";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
@@ -36,6 +37,11 @@ const EspressoDetails: React.FC = () => {
     await deleteDoc(docRef);
     navigate(`/drinks/espresso`);
   }, [docRef, navigate]);
+
+  const [_beansByWater, waterByBeans] = useDrinkRatio(
+    espresso?.beansWeight ?? 0,
+    espresso?.actualWeight ?? espresso?.targetWeight ?? 0
+  );
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({
@@ -88,6 +94,10 @@ const EspressoDetails: React.FC = () => {
         Espresso detail
       </Heading>
 
+      <div tw="mb-2 text-sm text-gray-500">
+        {dayjs(espresso.date.toDate()).format("DD MMM YYYY @ H:m")}
+      </div>
+
       {espresso.fromDecent && espresso.partial && (
         <div tw="inline-flex items-center gap-4">
           <Button
@@ -106,7 +116,7 @@ const EspressoDetails: React.FC = () => {
 
       {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
-      <div tw="space-y-8">
+      <div tw="mt-4 space-y-4">
         <DetailsCard
           title="Rating"
           rows={[
@@ -172,20 +182,23 @@ const EspressoDetails: React.FC = () => {
             },
           ]}
         />
-        <DetailsCard
-          title="Prep"
-          rows={[
-            {
-              label: "Date",
-              value: espresso.date
-                ? dayjs(espresso.date.toDate()).format("DD MMM YYYY | H:m")
-                : "",
-            },
-            ...(espresso.fromDecent
-              ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
-              : []),
-          ]}
-        />
+        {/* The date is rendered below the title */}
+        {espresso.fromDecent && (
+          <DetailsCard
+            title="Prep"
+            rows={[
+              // {
+              //   label: "Date",
+              //   value: espresso.date
+              //     ? dayjs(espresso.date.toDate()).format("DD MMM YYYY | H:m")
+              //     : "",
+              // },
+              ...(espresso.fromDecent
+                ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
+                : []),
+            ]}
+          />
+        )}
         {espresso.beans ? (
           <BeansShortInfo
             beansId={espresso.beans.id}
@@ -205,6 +218,7 @@ const EspressoDetails: React.FC = () => {
         <DetailsCard
           title="Recipe"
           rows={[
+            { label: "Ratio (water / beans)", value: waterByBeans },
             {
               label: "Target weight",
               value: espresso.targetWeight ? `${espresso.targetWeight} g` : "",
