@@ -1,22 +1,21 @@
+import { Tab } from "@headlessui/react";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
-import React from "react";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "twin.macro";
+import tw from "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { ButtonWithDropdown } from "../../components/ButtonWithDropdown";
-import { Card } from "../../components/Card";
-import { DetailsCard } from "../../components/Details";
 import { Heading } from "../../components/Heading";
-import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
-import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
+import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { Brew } from "../../types/brew";
-import { getEyFromBrew } from "../../utils";
 import { NotFound } from "../NotFound";
+import { tabStyles } from "../beans/BeansList/BeansList";
+import { BrewDetailsInfo } from "./BrewDetailsInfo";
+import { BrewDetailsOutcome } from "./BrewDetailsOutcome";
 
 export const BrewDetails: React.FC = () => {
   console.log("BrewDetails");
@@ -24,13 +23,11 @@ export const BrewDetails: React.FC = () => {
   const { brewId } = useParams();
   const navigate = useNavigate();
 
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const isSm = useScreenMediaQuery("sm");
+
   const docRef = useDocRef<Brew>("brews", brewId);
   const { details: brew, isLoading } = useFirestoreDocRealtime<Brew>(docRef);
-
-  const { beansByWater, waterByBeans } = useDrinkRatio(
-    brew?.beansWeight ?? 0,
-    brew?.waterWeight ?? 0
-  );
 
   const handleDelete = async () => {
     await deleteDoc(docRef);
@@ -76,150 +73,40 @@ export const BrewDetails: React.FC = () => {
         {dayjs(brew.date.toDate()).format("DD MMM YYYY @ H:m")}
       </div>
 
-      <div tw="mt-4 space-y-4">
-        {/* This below is represented by the sections above */}
-        {/* <DetailsCard
-          title="Prep"
-          action={{ type: "link", label: "Edit", href: "edit" }}
-          rows={[
-            {
-              label: "Date",
-              value: dayjs(brew.date.toDate()).format("DD MMM YYYY @ H:m"),
-            },
-            { label: "Method", value: brew.method },
-          ]}
-        /> */}
+      {isSm ? (
+        <div tw="grid grid-cols-2 gap-4 my-6">
+          <div>
+            <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
+              Brew info
+            </h2>
 
-        <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
+            <BrewDetailsInfo brew={brew} />
+          </div>
 
-        <DetailsCard
-          title="Recipe"
-          action={{ type: "link", label: "Edit", href: "edit" }}
-          rows={[
-            { label: "Ratio (beans / water)", value: beansByWater },
-            { label: "Ratio (water / beans)", value: waterByBeans },
-            {
-              label: "Water weight",
-              value: `${brew.waterWeight} g`,
-            },
-            {
-              label: "Beans weight",
-              value: `${brew.beansWeight} g`,
-            },
-            {
-              label: "Water temperature",
-              value: brew.waterTemperature ? `${brew.waterTemperature} °C` : "",
-            },
-            { label: "Grind setting", value: brew.grindSetting ?? "" },
-          ]}
-        />
+          <div>
+            <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
+              Outcome
+            </h2>
 
-        <DetailsCard
-          title="Outcome"
-          action={{ type: "link", label: "Edit", href: "outcome" }}
-          rows={[
-            {
-              label: "Overall score",
-              value: brew.rating ? `${brew.rating}/10` : "",
-            },
-          ]}
-        />
-
-        <Card.Container>
-          <Card.Header title="Notes" />
-
-          <Card.Content>
-            <article tw="prose-sm prose">
-              <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
-            </article>
-          </Card.Content>
-        </Card.Container>
-
-        <DetailsCard
-          title="Time"
-          action={{ type: "link", label: "Edit", href: "edit" }}
-          rows={[
-            {
-              label: "Time",
-              value:
-                brew.timeMinutes ?? brew.timeSeconds
-                  ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
-                  : "",
-            },
-          ]}
-        />
-
-        <DetailsCard
-          title="Tasting notes"
-          action={{ type: "link", label: "Edit", href: "outcome" }}
-          rows={[
-            {
-              label: "Aroma",
-              value: brew.tastingScores?.aroma
-                ? `${brew.tastingScores.aroma}/10`
-                : "",
-            },
-            {
-              label: "Acidity",
-              value: brew.tastingScores?.acidity
-                ? `${brew.tastingScores.acidity}/10`
-                : "",
-            },
-            {
-              label: "Sweetness",
-              value: brew.tastingScores?.sweetness
-                ? `${brew.tastingScores.sweetness}/10`
-                : "",
-            },
-            {
-              label: "Body",
-              value: brew.tastingScores?.body
-                ? `${brew.tastingScores.body}/10`
-                : "",
-            },
-            {
-              label: "Finish",
-              value: brew.tastingScores?.finish
-                ? `${brew.tastingScores.finish}/10`
-                : "",
-            },
-          ]}
-        />
-
-        <DetailsCard
-          title="Extraction"
-          action={{ type: "link", label: "Edit", href: "outcome" }}
-          rows={[
-            {
-              label: "Extraction type",
-              value: brew.extractionType ?? "",
-            },
-            {
-              label: "Extraction yield",
-              value: `${getEyFromBrew(brew)}%`,
-            },
-            {
-              label: "Final brew weight",
-              value: brew.finalBrewWeight ? `${brew.finalBrewWeight}g` : "",
-            },
-            {
-              label: "TDS",
-              value: brew.tds ? `${brew.tds}%` : "",
-            },
-          ]}
-        />
-
-        <DetailsCard
-          title="Equipment"
-          action={{ type: "link", label: "Edit", href: "edit" }}
-          rows={[
-            { label: "Grinder", value: brew.grinder ?? "" },
-            { label: "Burrs", value: brew.grinderBurrs ?? "" },
-            { label: "Water type", value: brew.waterType ?? "" },
-            { label: "Filter type", value: brew.filterType ?? "" },
-          ]}
-        />
-      </div>
+            <BrewDetailsOutcome brew={brew} />
+          </div>
+        </div>
+      ) : (
+        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <Tab.List tw="flex -mb-px">
+            <Tab css={[tabStyles(selectedIndex === 0), tw`w-1/2`]}>Info</Tab>
+            <Tab css={[tabStyles(selectedIndex === 1), tw`w-1/2`]}>Outcome</Tab>
+          </Tab.List>
+          <Tab.Panels tw="mt-4">
+            <Tab.Panel>
+              <BrewDetailsInfo brew={brew} />
+            </Tab.Panel>
+            <Tab.Panel>
+              <BrewDetailsOutcome brew={brew} />
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+      )}
     </>
   );
 };
