@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getMessaging } from "firebase/messaging";
 
 const {
@@ -36,11 +37,13 @@ const db = getFirestore(app);
 const auth = getAuth();
 export const provider = new GoogleAuthProvider();
 export const messaging = getMessaging(app);
+const functions = getFunctions(app);
 provider.setCustomParameters({ prompt: "select_account" });
 
 if (location.hostname === "localhost") {
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001); // this is not used now, as we're targeting the endpoint manually
 }
 
 export { auth, db };

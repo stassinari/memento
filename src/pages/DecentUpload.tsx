@@ -37,7 +37,10 @@ export const DecentUpload: React.FC = () => {
   const [isFileUploading, setIsFileUploading] = useState(false);
 
   const handleUpload = async (files: File[]) => {
-    const url = import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
+    const url =
+      location.hostname === "localhost"
+        ? "http://127.0.0.1:5001/brewlog-dev/europe-west2/decentUpload"
+        : import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
     if (!url) {
       throw new Error("decent upload endpoint not set");
     }
