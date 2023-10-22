@@ -51,7 +51,7 @@ export const TemperatureChart: React.FC<TemperatureChartProps> = ({
     ) - 1;
 
   return (
-    <div tw="h-56">
+    <div tw="h-44 md:h-56">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} syncId="decentChart">
           <CartesianGrid

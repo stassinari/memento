@@ -38,7 +38,6 @@ export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
 
   return (
     <div tw="md:(grid grid-cols-2)">
-      {/* FIXME check this, couldn't see actual results because I was offline */}
       <PressureFlowWeightChart readings={decentReadings} />
 
       <TemperatureChart decentReadings={decentReadings} />

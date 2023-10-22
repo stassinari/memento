@@ -64,7 +64,8 @@ export const PressureFlowWeightChart: React.FC<
     ) + 1;
 
   return (
-    <div tw="h-72">
+    <div tw="h-56 md:h-[248px]">
+      {/* FIXME find a way to better define height (of the legend in particular) */}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} syncId="decentChart">
           <CartesianGrid

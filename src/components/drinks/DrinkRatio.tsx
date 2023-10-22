@@ -14,7 +14,7 @@ export const DrinkRatio: React.FC<DrinkRatioProps> = ({
   water,
   waterMeasurementUnit = "ml",
 }) => {
-  const [beansByWater, waterByBeans] = useDrinkRatio(beans, water);
+  const { beansByWater, waterByBeans } = useDrinkRatio(beans, water);
 
   return (
     <div tw="text-gray-900 grid grid-cols-[30%_40%_30%]">
