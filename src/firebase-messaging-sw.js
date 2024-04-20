@@ -23,18 +23,6 @@
 // //   VITE_FB_MEASUREMENT_ID,
 // // } = import.meta.env;
 
-// // Firebase configuration
-// const config = {
-//   apiKey: "AIzaSyB34N6u6BKCuSZt2cQPcfWT_GHV_jDIhks",
-//   authDomain: "brewlog-prod.firebaseapp.com",
-//   databaseURL: "https://brewlog-prod.firebaseio.com",
-//   projectId: "brewlog-prod",
-//   storageBucket: "brewlog-prod.appspot.com",
-//   messagingSenderId: "905888347744",
-//   appId: "1:905888347744:web:967e3f40833abbe3beb505",
-//   measurementId: "G-JKQ1J4VGZD",
-// };
-
 // firebase.initializeApp(config);
 
 // console.log(self.__WB_MANIFEST);
