@@ -5,24 +5,23 @@ import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import { App } from "./App";
 import { ErrorFallback } from "./components/ErrorFallback";
+import './instrument';
 import { GlobalStyles } from "./styles/GlobalStyles";
 import "./styles/config.css";
 
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
-  // set to capture all transactions since it's such a small app
-  tracesSampleRate: 1.0,
-
-  // Capture Replay for 10% of all sessions,
-  // plus for 100% of sessions with an error
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-});
 
 const container = document.querySelector("#root");
-const root = createRoot(container as Element);
+const root = createRoot(container as Element, {
+// Callback called when an error is thrown and not caught by an ErrorBoundary.
+onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
+  console.warn('Uncaught error', error, errorInfo.componentStack);
+}),
+// Callback called when React catches an error in an ErrorBoundary.
+onCaughtError: Sentry.reactErrorHandler(),
+// Callback called when React automatically recovers from errors.
+onRecoverableError: Sentry.reactErrorHandler(),
+});
 
 root.render(
   <React.StrictMode>
