@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 // FIXME revisit when looking into Firebase notifications
 
 // // Scripts for firebase and firebase messaging
