@@ -1,6 +1,6 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
+import clsx from "clsx";
 import React, { ReactElement, useRef, useState } from "react";
-import tw from "twin.macro";
 import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../form/ListOption";
@@ -53,17 +53,19 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
       name={name}
       multiple
     >
-      <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
+      <HuiCombobox.Label className={clsx(labelStyles)}>
+        {label}
+      </HuiCombobox.Label>
 
-      <div tw="relative mt-1">
+      <div className="relative mt-1">
         <div
-          css={[
+          className={clsx([
             inputStyles,
-            tw`relative py-2 pl-3 pr-10 bg-white border focus:(outline-none ring-1)`,
-          ]}
+            "relative py-2 pl-3 pr-10 bg-white border focus:outline-none focus:ring-1",
+          ])}
         >
-          <div tw="min-h-[1.25rem]">
-            <div tw="flex flex-wrap gap-2">
+          <div className="min-h-[1.25rem]">
+            <div className="flex flex-wrap gap-2">
               {values.length > 0 &&
                 values.map((v) => (
                   <Badge
@@ -84,7 +86,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
                 type="text"
                 placeholder={placeholder}
                 displayValue={() => query}
-                tw="flex-grow text-sm border-none p-0 focus:(outline-none border-none border-transparent ring-0)"
+                className="flex-grow text-sm border-none p-0 focus:outline-none focus:border-none focus:border-transparent focus:ring-0"
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}

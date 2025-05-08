@@ -1,8 +1,8 @@
 import { Tab } from "@headlessui/react";
+import clsx from "clsx";
 import { orderBy, where } from "firebase/firestore";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import tw from "twin.macro";
 import { navLinks } from "../../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../../components/Breadcrumbs";
 import { Button } from "../../../components/Button";
@@ -52,10 +52,10 @@ const tabs: BeansTabProps[] = [
 ];
 
 export const tabStyles = (isSelected: boolean) => [
-  tw`w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2`,
+  "w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2",
   isSelected
-    ? tw`text-orange-600 border-orange-500`
-    : tw`text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300`,
+    ? "text-orange-600 border-orange-500"
+    : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300",
 ];
 
 export const BeansList: React.FC = () => {
@@ -85,16 +85,16 @@ export const BeansList: React.FC = () => {
         Beans
       </Heading>
 
-      <div tw="mt-2">
+      <div className="mt-2">
         <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List tw="flex -mb-px">
+          <Tab.List className="flex -mb-px">
             {tabs.map(({ name }, i) => (
-              <Tab key={name} css={tabStyles(selectedIndex === i)}>
+              <Tab key={name} className={clsx(tabStyles(selectedIndex === i))}>
                 {name}
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels tw="mt-4">
+          <Tab.Panels className="mt-4">
             {tabs.map((t, i) => (
               <Tab.Panel key={t.name}>
                 <BeansTab

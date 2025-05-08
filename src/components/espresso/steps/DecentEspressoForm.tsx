@@ -2,7 +2,7 @@ import { orderBy } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import "twin.macro";
+
 import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "../../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../../types/beans";
@@ -35,7 +35,7 @@ export interface DecentEspressoFormInputs {
 
 export const decentEspressoFormEmptyValues: (
   partialEspresso: DecentEspressoPrep,
-  latestEspresso?: Espresso
+  latestEspresso?: Espresso,
 ) => DecentEspressoFormInputs = (partialEspresso, latestEspresso) => ({
   date: partialEspresso.date.toDate(),
 
@@ -95,7 +95,11 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection
           title="Base information"
           subtitle="This section includes the information that boh I don't know."
@@ -195,7 +199,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ machine }) => (machine ? [machine] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "machine")}
@@ -209,7 +213,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "grinder")}
@@ -223,9 +227,9 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ grinderBurrs }) =>
-                        grinderBurrs ? [grinderBurrs] : []
+                        grinderBurrs ? [grinderBurrs] : [],
                       )
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "grinderBurrs")}
@@ -249,7 +253,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ basket }) => (basket ? [basket] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "basket")}
@@ -269,7 +273,7 @@ export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
           )}
         </FormSection>
 
-        <div tw="flex justify-end gap-4">
+        <div className="flex justify-end gap-4">
           <Button variant="white" as={Link} to={backLink}>
             Back
           </Button>

@@ -17,11 +17,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import { orderBy } from "firebase/firestore";
 import { countBy, maxBy, mean } from "lodash";
 import React, { Fragment, useMemo, useState } from "react";
-import tw from "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { IconButton } from "../../components/IconButton";
@@ -85,7 +85,7 @@ const columns = [
     {
       id: "time",
       header: "Time",
-    }
+    },
   ),
   columnHelper.accessor("rating", {
     header: "Rating",
@@ -126,10 +126,10 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
       brewsList.map((brew) => ({
         ...brew,
         beans: beansList.find(
-          (bean) => `beans/${bean.id ?? ""}` === brew.beans.path
+          (bean) => `beans/${bean.id ?? ""}` === brew.beans.path,
         ),
       })),
-    [beansList, brewsList]
+    [beansList, brewsList],
   );
 
   const table = useReactTable({
@@ -152,9 +152,11 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
       name: "Average (mean) rating",
       stat: roundToDecimal(
         mean(
-          brewsList.filter((b) => b.rating && b.rating > 0).map((b) => b.rating)
+          brewsList
+            .filter((b) => b.rating && b.rating > 0)
+            .map((b) => b.rating),
         ),
-        2
+        2,
       ).toString(),
       statSmall: "/ 10",
     };
@@ -174,7 +176,7 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
   }, [brewsList]);
 
   return (
-    <div tw="relative">
+    <div className="relative">
       <BreadcrumbsWithHome
         items={[
           navLinks.drinks,
@@ -209,12 +211,12 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
         </Transition>
       </Popover>
 
-      <div tw="flow-root mt-4">
-        <div tw="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div tw="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div tw="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-              <table tw="min-w-full divide-y divide-gray-300">
-                <thead tw="bg-gray-50">
+      <div className="flow-root mt-4">
+        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead className="bg-gray-50">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => {
@@ -222,32 +224,34 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
                           <th
                             key={header.id}
                             scope="col"
-                            tw="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 first-of-type:(pl-4 pr-3 sm:pl-6) last-of-type:(pl-3 pr-4 sm:pr-6)"
+                            className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 first-of-type:pl-4 first-of-type:pr-3 first-of-type:sm:pl-6 last-of-type:pl-3 last-of-type:pr-4 last-of-type:sm:pr-6"
                           >
                             {header.isPlaceholder ? null : (
                               <div
-                                css={tw`inline-flex`}
-                                {...{
-                                  className: header.column.getCanSort()
+                                className={clsx(
+                                  "inline-flex",
+                                  header.column.getCanSort()
                                     ? "group cursor-pointer select-none"
                                     : "group",
+                                )}
+                                {...{
                                   onClick:
                                     header.column.getToggleSortingHandler(),
                                 }}
                               >
                                 {flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
-                                <span tw="flex-none ml-2 text-gray-900 bg-gray-200 rounded group-hover:bg-gray-300">
+                                <span className="flex-none ml-2 text-gray-900 bg-gray-200 rounded group-hover:bg-gray-300">
                                   {header.column.getIsSorted() === "asc" ? (
                                     <ChevronUpIcon
-                                      tw="w-5 h-5"
+                                      className="w-5 h-5"
                                       aria-hidden="true"
                                     />
                                   ) : header.column.getIsSorted() === "desc" ? (
                                     <ChevronDownIcon
-                                      tw="w-5 h-5"
+                                      className="w-5 h-5"
                                       aria-hidden="true"
                                     />
                                   ) : null}
@@ -260,17 +264,17 @@ const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
                     </tr>
                   ))}
                 </thead>
-                <tbody tw="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {table.getRowModel().rows.map((row) => (
                     <tr key={row.id}>
                       {row.getVisibleCells().map((cell) => (
                         <td
                           key={cell.id}
-                          tw="px-3 py-4 text-sm text-gray-500 whitespace-nowrap first-of-type:(pl-4 pr-3 sm:pl-6) last-of-type:(pl-3 pr-4 sm:pr-6)"
+                          className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap first-of-type:pl-4 first-of-type:pr-3 first-of-type:sm:pl-6 last-of-type:pl-3 last-of-type:pr-4 last-of-type:sm:pr-6"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </td>
                       ))}
@@ -321,18 +325,22 @@ interface StatProps {
 const Stats: React.FC<StatProps> = ({ title, stats }) => {
   return (
     <div>
-      <h3 tw="text-base font-semibold leading-6 text-gray-900">{title}</h3>
-      <dl tw="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-3">
+      <h3 className="text-base font-semibold leading-6 text-gray-900">
+        {title}
+      </h3>
+      <dl className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-3">
         {stats.map((item) => (
           <div
             key={item.name}
-            tw="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
+            className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
           >
-            <dt tw="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-            <dd tw="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+            <dt className="text-sm font-medium text-gray-500 truncate">
+              {item.name}
+            </dt>
+            <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
               {item.stat}
               {item.statSmall && (
-                <span tw="pl-1 text-xl ">{item.statSmall}</span>
+                <span className="pl-1 text-xl ">{item.statSmall}</span>
               )}
             </dd>
           </div>

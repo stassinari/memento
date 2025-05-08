@@ -1,6 +1,6 @@
+import clsx from "clsx";
 import React, { ReactNode } from "react";
 import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
-import tw from "twin.macro";
 
 // Component-specific props specified separately
 export type IconButtonOwnProps = {
@@ -17,7 +17,7 @@ export type IconButtonProps<E extends React.ElementType> =
 const defaultElement = "button";
 
 export const IconButton: <E extends React.ElementType = typeof defaultElement>(
-  props: IconButtonProps<E>
+  props: IconButtonProps<E>,
 ) => React.ReactElement | null = React.forwardRef(
   <E extends React.ElementType = typeof defaultElement>(
     {
@@ -29,71 +29,71 @@ export const IconButton: <E extends React.ElementType = typeof defaultElement>(
       children,
       ...restProps
     }: IconButtonProps<E>,
-    ref: typeof restProps.ref
+    ref: typeof restProps.ref,
   ) => (
     <Box
       as={defaultElement}
-      css={[
-        tw`inline-flex items-center p-2 text-white border rounded-full`,
-        tw`disabled:(cursor-not-allowed bg-gray-100! from-gray-100 text-gray-500! hover:from-gray-100)`,
-        tw`focus:(outline-none ring-2 ring-offset-2)`,
+      className={clsx([
+        "inline-flex items-center p-2 text-white border rounded-full",
+        "disabled:cursor-not-allowed disabled:bg-gray-100! disabled:from-gray-100 disabled:text-gray-500! disabled:hover:from-gray-100",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2",
         colour === "main"
           ? variant === "primary"
-            ? tw`bg-orange-600 hover:bg-orange-700`
+            ? "bg-orange-600 hover:bg-orange-700"
             : variant === "secondary"
-            ? tw`text-orange-700 bg-orange-100 hover:bg-orange-200`
-            : variant === "gradient"
-            ? tw`bg-gradient-to-br from-orange-600 to-rose-600 bg-origin-border hover:(from-orange-700 to-rose-700)`
-            : null
+              ? "text-orange-700 bg-orange-100 hover:bg-orange-200"
+              : variant === "gradient"
+                ? "bg-gradient-to-br from-orange-600 to-rose-600 bg-origin-border hover:from-orange-700 hover:to-rose-700"
+                : null
           : colour === "accent"
-          ? variant === "primary"
-            ? tw`bg-blue-600 hover:bg-blue-700`
-            : variant === "secondary"
-            ? tw`text-blue-700 bg-blue-100 hover:bg-blue-200`
-            : variant === "gradient"
-            ? tw`bg-gradient-to-br from-blue-600 to-purple-600 bg-origin-border hover:(from-blue-700 to-purple-700)`
-            : null
-          : null,
+            ? variant === "primary"
+              ? "bg-blue-600 hover:bg-blue-700"
+              : variant === "secondary"
+                ? "text-blue-700 bg-blue-100 hover:bg-blue-200"
+                : variant === "gradient"
+                  ? "bg-gradient-to-br from-blue-600 to-purple-600 bg-origin-border hover:from-blue-700 hover:to-purple-700"
+                  : null
+            : null,
         colour === "main"
-          ? tw`ring-orange-500`
+          ? "ring-orange-500"
           : colour === "accent"
-          ? tw`ring-blue-500`
-          : null,
+            ? "ring-blue-500"
+            : null,
         variant === "primary" || variant === "gradient"
-          ? tw`text-white border-transparent shadow-sm `
+          ? "text-white border-transparent shadow-sm "
           : variant === "secondary"
-          ? tw`border-transparent `
-          : variant === "white"
-          ? tw`text-gray-700 bg-white border-gray-300 shadow-sm hover:bg-gray-50`
-          : null,
+            ? "border-transparent "
+            : variant === "white"
+              ? "text-gray-700 bg-white border-gray-300 shadow-sm hover:bg-gray-50"
+              : null,
         size === "xs"
-          ? tw`p-1`
+          ? "p-1"
           : size === "sm"
-          ? tw`p-1.5`
-          : size === "md"
-          ? tw`p-2`
-          : size === "lg"
-          ? tw`p-2`
-          : size === "xl"
-          ? tw`p-3`
-          : null,
-        width === "full" && tw`w-full`,
-      ]}
+            ? "p-1.5"
+            : size === "md"
+              ? "p-2"
+              : size === "lg"
+                ? "p-2"
+                : size === "xl"
+                  ? "p-3"
+                  : null,
+        width === "full" && "w-full",
+      ])}
       ref={ref}
       {...restProps}
     >
       <span
-        css={[
+        className={clsx([
           size === "xs" || size === "sm" || size === "md"
-            ? tw`w-5 h-5`
+            ? "w-5 h-5"
             : size === "lg" || size === "xl"
-            ? tw`w-6 h-6`
-            : null,
-        ]}
+              ? "w-6 h-6"
+              : null,
+        ])}
         aria-hidden="true"
       >
         {Icon}
       </span>
     </Box>
-  )
+  ),
 );

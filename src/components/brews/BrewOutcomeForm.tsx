@@ -3,7 +3,7 @@ import { pick } from "lodash";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import { Brew, ExtractionType } from "../../types/brew";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
@@ -85,7 +85,11 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection title="Scores" subtitle="Bla">
           <FormInputSlider
             label="Overall score"

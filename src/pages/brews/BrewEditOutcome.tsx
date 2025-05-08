@@ -1,7 +1,7 @@
 import { doc } from "firebase/firestore";
 import React from "react";
 import { useParams } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -42,7 +42,7 @@ export const BrewEditOutcome: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Edit brew outcome</Heading>
+      <Heading className="mb-4">Edit brew outcome</Heading>
 
       <BrewOutcomeForm brew={brew} brewRef={brewRef} />
     </>

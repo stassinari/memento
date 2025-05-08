@@ -1,5 +1,5 @@
 import ReactMarkdown from "react-markdown";
-import "twin.macro";
+
 import { Card } from "../../components/Card";
 import { DetailsCard } from "../../components/Details";
 import { Brew } from "../../types/brew";
@@ -13,7 +13,7 @@ export const BrewDetailsOutcome: React.FC<BrewDetailsOutcomeProp> = ({
   brew,
 }) => {
   return (
-    <div tw="space-y-4">
+    <div className="space-y-4">
       <DetailsCard
         title="Outcome"
         action={{ type: "link", label: "Edit", href: "outcome" }}
@@ -29,7 +29,7 @@ export const BrewDetailsOutcome: React.FC<BrewDetailsOutcomeProp> = ({
         <Card.Header title="Notes" />
 
         <Card.Content>
-          <article tw="prose-sm prose">
+          <article className="prose-sm prose">
             <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
           </article>
         </Card.Content>
@@ -42,7 +42,7 @@ export const BrewDetailsOutcome: React.FC<BrewDetailsOutcomeProp> = ({
           {
             label: "Time",
             value:
-              brew.timeMinutes ?? brew.timeSeconds
+              (brew.timeMinutes ?? brew.timeSeconds)
                 ? `${brew.timeMinutes ?? ""}:${brew.timeSeconds ?? ""}`
                 : "",
           },

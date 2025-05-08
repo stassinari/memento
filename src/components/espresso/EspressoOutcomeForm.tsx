@@ -3,7 +3,7 @@ import { pick } from "lodash";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import { Espresso } from "../../types/espresso";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
@@ -77,7 +77,7 @@ export const EspressoOutcomeForm: React.FC<EspressoOutcomeFormProps> = ({
       <form
         onSubmit={handleSubmit(onSubmit)}
         autoComplete="off"
-        tw="mt-6 space-y-6"
+        className="mt-6 space-y-6"
       >
         <FormSection title="Scores" subtitle="Bla">
           <FormInputSlider

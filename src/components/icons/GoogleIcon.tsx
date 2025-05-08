@@ -1,5 +1,3 @@
-import "twin.macro";
-
 interface GoogleIconProps {
   className?: string;
   colour?: "default" | "current";

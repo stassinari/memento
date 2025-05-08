@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import { ReactNode, useMemo } from "react";
-import tw from "twin.macro";
 
 interface BadgeProps {
   label: string;
@@ -14,67 +14,67 @@ interface BadgeProps {
   };
 }
 
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge = ({
   label,
   icon,
   size = "small",
   clickable = false,
   colour = "grey",
-}) => {
+}: BadgeProps) => {
   const iconElement = useMemo(
     () =>
       icon ? (
         <button
           type="button"
           onClick={icon.onClick}
-          css={[
-            tw`inline-flex items-center justify-center flex-shrink-0 w-4 h-4 rounded-full focus:outline-none`,
-            tw`after:(content block absolute h-full rounded-full aspect-square)`, // see why this shouts
-            clickable && tw`after:w-full`,
+          className={clsx([
+            "inline-flex items-center justify-center flex-shrink-0 w-4 h-4 rounded-full focus:outline-none",
+            "after:content after:block after:absolute after:h-full after:rounded-full after:aspect-square", // see why this shouts
+            clickable && "after:w-full",
             icon.position === "left"
-              ? tw`mr-0.5 after:left-0`
+              ? "mr-0.5 after:left-0"
               : icon.position === "right"
-              ? tw`ml-0.5 after:right-0`
-              : null,
+                ? "ml-0.5 after:right-0"
+                : null,
             colour === "grey"
-              ? tw`text-gray-400 bg-gray-100 hover:(text-gray-500 bg-gray-200) focus:(bg-gray-500 text-white)`
+              ? "text-gray-400 bg-gray-100 hover:text-gray-500 hover:bg-gray-200 focus:bg-gray-500 focus:text-white"
               : colour === "orange"
-              ? tw`text-orange-400 bg-orange-100 hover:(text-orange-500 bg-orange-200) focus:(bg-orange-500 text-white)`
-              : null,
-          ]}
+                ? "text-orange-400 bg-orange-100 hover:text-orange-500 hover:bg-orange-200 focus:bg-orange-500 focus:text-white"
+                : null,
+          ])}
         >
-          <span tw="w-2 h-2">{icon.Element}</span>
+          <span className="w-2 h-2">{icon.Element}</span>
         </button>
       ) : null,
-    [clickable, colour, icon]
+    [clickable, colour, icon],
   );
 
   return (
     <span
-      css={[
-        tw`relative inline-flex items-center rounded-full py-0.5 text-xs font-medium`,
+      className={clsx([
+        "relative inline-flex items-center rounded-full py-0.5 text-xs font-medium",
         size === "small"
-          ? tw`px-2.5 text-xs`
+          ? "px-2.5 text-xs"
           : size === "large"
-          ? tw`px-3 text-sm`
-          : null,
+            ? "px-3 text-sm"
+            : null,
         colour === "grey"
-          ? tw`text-gray-800 bg-gray-100`
+          ? "text-gray-800 bg-gray-100"
           : colour === "orange"
-          ? tw`text-orange-800 bg-orange-100`
-          : null,
+            ? "text-orange-800 bg-orange-100"
+            : null,
         icon
           ? icon.position === "left"
             ? size === "small"
-              ? tw`pl-0.5 pr-2`
-              : tw`pl-1 pr-2.5`
+              ? "pl-0.5 pr-2"
+              : "pl-1 pr-2.5"
             : icon.position === "right"
-            ? size === "small"
-              ? tw`pl-2 pr-0.5`
-              : tw`pl-2.5 pr-1`
-            : null
-          : tw`px-2.5`,
-      ]}
+              ? size === "small"
+                ? "pl-2 pr-0.5"
+                : "pl-2.5 pr-1"
+              : null
+          : "px-2.5",
+      ])}
     >
       {icon?.position === "left" && iconElement}
 
@@ -100,4 +100,6 @@ export const BadgeTimesIcon = ({ className }: BadgeTimesIconProps) => (
   </svg>
 );
 
-export const BadgePlusIcon = () => <BadgeTimesIcon tw="transform rotate-45" />;
+export const BadgePlusIcon = () => (
+  <BadgeTimesIcon className="transform rotate-45" />
+);

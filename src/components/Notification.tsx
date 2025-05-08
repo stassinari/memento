@@ -1,8 +1,8 @@
 import { Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
 import { Fragment, ReactNode } from "react";
 import toast, { Toast } from "react-hot-toast";
-import tw from "twin.macro";
 
 type NotificationButton = {
   label: string;
@@ -40,26 +40,26 @@ export const notification = ({
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div tw="w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
-          <div tw="p-4">
-            <div tw="flex items-start">
+        <div className="w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
+          <div className="p-4">
+            <div className="flex items-start">
               {Icon && (
-                <div tw="flex-shrink-0">
-                  <div tw="w-6 h-6 text-gray-400" aria-hidden="true">
+                <div className="flex-shrink-0">
+                  <div className="w-6 h-6 text-gray-400" aria-hidden="true">
                     {Icon}
                   </div>
                 </div>
               )}
-              <div css={[tw`flex-1 w-0`, Icon && tw`pt-0.5 ml-3`]}>
-                <p tw="text-sm font-medium text-gray-900">{title}</p>
-                <p tw="mt-1 text-sm text-gray-500">{subtitle}</p>
+              <div className={clsx(["flex-1 w-0", Icon && "pt-0.5 ml-3"])}>
+                <p className="text-sm font-medium text-gray-900">{title}</p>
+                <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
                 {(primaryButton || secondaryButton) && (
-                  <div tw="flex mt-3 space-x-7">
+                  <div className="flex mt-3 space-x-7">
                     {primaryButton && (
                       <button
                         onClick={() => primaryButton.onClick(t)}
                         type="button"
-                        tw="text-sm font-medium text-orange-600 bg-white rounded-md hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        className="text-sm font-medium text-orange-600 bg-white rounded-md hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                       >
                         {primaryButton.label}
                       </button>
@@ -68,7 +68,7 @@ export const notification = ({
                       <button
                         onClick={() => secondaryButton.onClick(t)}
                         type="button"
-                        tw="text-sm font-medium text-gray-700 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        className="text-sm font-medium text-gray-700 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                       >
                         {secondaryButton.label}
                       </button>
@@ -77,14 +77,14 @@ export const notification = ({
                 )}
               </div>
               {showClose && (
-                <div tw="flex flex-shrink-0 ml-4">
+                <div className="flex flex-shrink-0 ml-4">
                   <button
                     type="button"
-                    tw="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                    className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                     onClick={() => toast.dismiss(t.id)}
                   >
-                    <span tw="sr-only">Close</span>
-                    <XMarkIcon tw="w-5 h-5" aria-hidden="true" />
+                    <span className="sr-only">Close</span>
+                    <XMarkIcon className="w-5 h-5" aria-hidden="true" />
                   </button>
                 </div>
               )}
@@ -93,6 +93,6 @@ export const notification = ({
         </div>
       </Transition>
     ),
-    { duration }
+    { duration },
   );
 };

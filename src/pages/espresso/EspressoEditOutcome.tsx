@@ -1,7 +1,7 @@
 import { doc } from "firebase/firestore";
 import React from "react";
 import { useParams } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -43,7 +43,7 @@ export const EspressoEditOutcome: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Edit espresso outcome</Heading>
+      <Heading className="mb-4">Edit espresso outcome</Heading>
 
       <EspressoOutcomeForm espresso={espresso} espressoRef={espressoRef} />
     </>

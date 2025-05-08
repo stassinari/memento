@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/*  Global styles
+
+FIXME check this is needed
+
+Replacing a horrible emotion/twin.macro nonsense:
+
+const customStyles = css({
+  html: {
+    ..."h-full bg-gray-50",
+  },
+  body: {
+    WebkitTapHighlightColor: theme`colors.transparent`,
+    ..."h-full antialiased",
+  },
+});
+
+export const GlobalStyles: React.FC = () => (
+  <>
+    <BaseStyles /> was this ever really needed?
+    <Global styles={customStyles} />
+  </>
+);
+
+*/
+
+html {
+  @apply h-full bg-gray-50;
+}
+
+body {
+  @apply h-full antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Styling for react-datepicker taken from https://github.com/msnegurski/tailwind-react-datepicker */
 
 .react-datepicker__aria-live {

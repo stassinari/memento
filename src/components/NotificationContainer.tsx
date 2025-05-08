@@ -1,5 +1,4 @@
 import { Toaster } from "react-hot-toast";
-import { theme } from "twin.macro";
 import useScreenMediaQuery from "../hooks/useScreenMediaQuery";
 
 export const NotificationContainer = () => {
@@ -10,9 +9,9 @@ export const NotificationContainer = () => {
       position={isMd ? "top-right" : "bottom-center"}
       containerStyle={{
         ...(isMd
-          ? { top: theme`spacing.6`, right: theme`spacing.6` }
+          ? { top: "1.5rem", right: "1rem" }
           : {
-              bottom: `calc(env(safe-area-inset-bottom) + ${theme`spacing.14`} + ${theme`spacing.4`})`,
+              bottom: `calc(env(safe-area-inset-bottom) + 3.5rem + 1rem)`,
             }),
       }}
     />

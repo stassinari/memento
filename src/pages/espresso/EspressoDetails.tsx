@@ -1,10 +1,10 @@
 import { Tab } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import React, { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import tw from "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
@@ -49,7 +49,7 @@ const EspressoDetails: React.FC = () => {
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
     }),
-    [handleDelete]
+    [handleDelete],
   );
 
   const normalEspressoButtons: ButtonWithDropdownProps = useMemo(
@@ -61,7 +61,7 @@ const EspressoDetails: React.FC = () => {
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
     }),
-    [handleDelete]
+    [handleDelete],
   );
 
   if (isLoading) return null;
@@ -92,19 +92,19 @@ const EspressoDetails: React.FC = () => {
         Espresso detail
       </Heading>
 
-      <div tw="mb-2 text-sm text-gray-500">
+      <div className="mb-2 text-sm text-gray-500">
         {dayjs(espresso.date.toDate()).format("DD MMM YYYY @ H:m")}
       </div>
 
       {espresso.fromDecent && espresso.partial && (
-        <div tw="inline-flex items-center gap-4">
+        <div className="inline-flex items-center gap-4">
           <Button
             variant="secondary"
             size="sm"
             as={Link}
             to="decent/add"
             Icon={<PuzzlePieceIcon />}
-            tw="shrink-0"
+            className="shrink-0"
           >
             Add shot info
           </Button>
@@ -115,9 +115,9 @@ const EspressoDetails: React.FC = () => {
       {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
       {isSm ? (
-        <div tw="grid grid-cols-2 gap-4 my-6">
+        <div className="grid grid-cols-2 gap-4 my-6">
           <div>
-            <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
+            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">
               Espresso info
             </h2>
 
@@ -125,7 +125,7 @@ const EspressoDetails: React.FC = () => {
           </div>
 
           <div>
-            <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
+            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">
               Outcome
             </h2>
 
@@ -134,11 +134,15 @@ const EspressoDetails: React.FC = () => {
         </div>
       ) : (
         <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List tw="flex -mb-px">
-            <Tab css={[tabStyles(selectedIndex === 0), tw`w-1/2`]}>Info</Tab>
-            <Tab css={[tabStyles(selectedIndex === 1), tw`w-1/2`]}>Outcome</Tab>
+          <Tab.List className="flex -mb-px">
+            <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
+              Info
+            </Tab>
+            <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
+              Outcome
+            </Tab>
           </Tab.List>
-          <Tab.Panels tw="mt-4">
+          <Tab.Panels className="mt-4">
             <Tab.Panel>
               <EspressoDetailsInfo espresso={espresso} />
             </Tab.Panel>

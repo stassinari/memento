@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { chain, entries } from "lodash";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import "twin.macro";
+
 import { Beans } from "../types/beans";
 import { Brew } from "../types/brew";
 import { Espresso } from "../types/espresso";
@@ -17,7 +17,7 @@ const dateFormat = "ddd DD MMM YYYY";
 
 export const mergeBrewsAndEspressoByUniqueDate = (
   brewsList: Brew[],
-  espressoList: Espresso[]
+  espressoList: Espresso[],
 ) => {
   const brews = chain(brewsList)
     .groupBy((brew) => dayjs(brew.date.toDate()).format(dateFormat))
@@ -25,7 +25,7 @@ export const mergeBrewsAndEspressoByUniqueDate = (
       values.map((brew) => ({
         drink: brew,
         type: "brew" as const,
-      }))
+      })),
     )
     .value();
   const espressos = chain(espressoList)
@@ -34,7 +34,7 @@ export const mergeBrewsAndEspressoByUniqueDate = (
       values.map((espresso) => ({
         drink: espresso,
         type: "espresso" as const,
-      }))
+      })),
     )
     .value();
 
@@ -77,7 +77,7 @@ export const mergeBrewsAndEspressoByUniqueDate = (
             drink: Espresso;
             type: "espresso";
           }
-      >
+      >,
     ]
   > = sortedDrinks.map(([date, drinks]) => {
     return [
@@ -112,18 +112,21 @@ export const DrinksList: React.FC<DrinksListProps> = ({
 }) => (
   <>
     {drinks.map(([date, drinks]) => (
-      <div key={date} tw="mt-6 sm:mt-8 @container">
-        <div tw="relative">
-          <div tw="absolute inset-0 flex items-center" aria-hidden="true">
-            <div tw="w-full border-t border-gray-300" />
+      <div key={date} className="mt-6 sm:mt-8 @container">
+        <div className="relative">
+          <div
+            className="absolute inset-0 flex items-center"
+            aria-hidden="true"
+          >
+            <div className="w-full border-t border-gray-300" />
           </div>
-          <div tw="relative flex justify-start mb-2">
-            <span tw="px-2 ml-2 text-sm text-gray-500 bg-gray-50 sm:ml-4">
+          <div className="relative flex justify-start mb-2">
+            <span className="px-2 ml-2 text-sm text-gray-500 bg-gray-50 sm:ml-4">
               {date}
             </span>
           </div>
         </div>
-        <ul tw="grid gap-4 @xl:grid-cols-2">
+        <ul className="grid gap-4 @xl:grid-cols-2">
           {drinks.map((item, i) => (
             <DrinkItem
               key={item.drink.id}
@@ -158,7 +161,7 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
           : `/drinks/espresso/${drink.id ?? ""}`
       }
     >
-      <Card.Container tw="flex-grow text-sm">
+      <Card.Container className="flex-grow text-sm">
         <Card.Content>
           {type === "brew" ? (
             <BrewCardContent brew={drink} beans={beans} />
@@ -166,14 +169,15 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
             <EspressoCardContent espresso={drink} beans={beans} />
           )}
         </Card.Content>
-        <Card.Footer tw="flex items-center h-8 gap-1 text-xs text-gray-500">
+        <Card.Footer className="flex items-center h-8 gap-1 text-xs text-gray-500">
           {type === "brew" ? (
             <>
-              <DripperIcon tw="w-4 h-4 mr-1 text-gray-400" /> Brewed at
+              <DripperIcon className="w-4 h-4 mr-1 text-gray-400" /> Brewed at
             </>
           ) : (
             <>
-              <PortafilterIcon tw="w-4 h-4 mr-1 text-gray-400" /> Pulled at
+              <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" /> Pulled
+              at
             </>
           )}
           <span>{dayjs(drink.date.toDate()).format("HH:mm")}</span>
@@ -189,21 +193,22 @@ interface BrewCardContentProps {
 }
 
 const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
-  <div tw="flex">
-    <div tw="flex-grow">
-      <p tw="font-semibold text-gray-900">{brew.method}</p>
-      <p tw="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-400" /> {beans?.name}
+  <div className="flex">
+    <div className="flex-grow">
+      <p className="font-semibold text-gray-900">{brew.method}</p>
+      <p className="flex items-center gap-1 text-gray-600">
+        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" />{" "}
+        {beans?.name}
       </p>
-      <p tw="flex items-center gap-1 text-gray-600">
-        <BeanIcon tw="w-3 h-3 text-gray-400" />
+      <p className="flex items-center gap-1 text-gray-600">
+        <BeanIcon className="w-3 h-3 text-gray-400" />
         {brew.beansWeight}g : {brew.waterWeight}ml
-        <DropIcon tw="w-3 h-3 text-gray-400" />
+        <DropIcon className="w-3 h-3 text-gray-400" />
       </p>
     </div>
     {brew.rating && (
       <div>
-        <span tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
+        <span className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
           {brew.rating}
         </span>
       </div>
@@ -220,22 +225,23 @@ const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
   espresso,
   beans,
 }) => (
-  <div tw="flex">
-    <div tw="flex-grow">
+  <div className="flex">
+    <div className="flex-grow">
       {espresso.fromDecent && (
-        <p tw="font-semibold text-gray-900">{espresso.profileName}</p>
+        <p className="font-semibold text-gray-900">{espresso.profileName}</p>
       )}
-      <p tw="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" tw="w-3 h-3 text-gray-400" /> {beans?.name}
+      <p className="flex items-center gap-1 text-gray-600">
+        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" />{" "}
+        {beans?.name}
       </p>
-      <p tw="flex items-center gap-1 text-gray-600">
-        <BeanIcon tw="w-3 h-3 text-gray-400" />
+      <p className="flex items-center gap-1 text-gray-600">
+        <BeanIcon className="w-3 h-3 text-gray-400" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
-        <DropIcon tw="w-3 h-3 text-gray-400" />
+        <DropIcon className="w-3 h-3 text-gray-400" />
       </p>
     </div>
     <div>
-      <p tw="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
+      <p className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
         {espresso.rating}
       </p>
     </div>

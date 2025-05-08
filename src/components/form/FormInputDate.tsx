@@ -1,8 +1,8 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import DatePicker from "react-datepicker";
 import { Controller, useFormContext } from "react-hook-form";
-import tw from "twin.macro";
 import { Input } from "../Input";
 
 interface FormInputDateProps {
@@ -15,7 +15,7 @@ interface FormInputDateProps {
   error?: string;
 }
 
-export const FormInputDate: React.FC<FormInputDateProps> = ({
+export const FormInputDate = ({
   label,
   id,
   placeholder,
@@ -23,13 +23,13 @@ export const FormInputDate: React.FC<FormInputDateProps> = ({
   showMonthYearPicker,
   requiredMsg,
   error,
-}) => {
+}: FormInputDateProps) => {
   // Consider creating reusable components rather than relying on this Provider
   const { control } = useFormContext();
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-1">
+      <div className="mt-1">
         <Controller
           control={control}
           name={id}
@@ -80,17 +80,17 @@ interface CalendarHeaderProps {
   nextButtonDisabled: boolean;
 }
 
-export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
+export const CalendarHeader = ({
   date,
   dateFormat,
   decrease,
   increase,
   prevButtonDisabled,
   nextButtonDisabled,
-}) => {
+}: CalendarHeaderProps) => {
   return (
-    <div tw="flex items-center justify-between px-2 py-2">
-      <span tw="flex-auto font-semibold text-gray-900">
+    <div className="flex items-center justify-between px-2 py-2">
+      <span className="flex-auto font-semibold text-gray-900">
         {dayjs(date).format(dateFormat)}
       </span>
 
@@ -98,25 +98,25 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         onClick={decrease}
         disabled={prevButtonDisabled}
         type="button"
-        css={[
-          tw`-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500`,
-          prevButtonDisabled && tw`opacity-50 cursor-not-allowed`,
-        ]}
+        className={clsx([
+          "-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500",
+          prevButtonDisabled && "opacity-50 cursor-not-allowed",
+        ])}
       >
-        <span tw="sr-only">Previous month</span>
-        <ChevronLeftIcon tw="w-5 h-5" aria-hidden="true" />
+        <span className="sr-only">Previous month</span>
+        <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
       </button>
       <button
         onClick={increase}
         disabled={nextButtonDisabled}
         type="button"
-        css={[
-          tw`-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500`,
-          nextButtonDisabled && tw`text-gray-300! cursor-not-allowed`,
-        ]}
+        className={clsx([
+          "-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500",
+          nextButtonDisabled && "text-gray-300! cursor-not-allowed",
+        ])}
       >
-        <span tw="sr-only">Next month</span>
-        <ChevronRightIcon tw="w-5 h-5" aria-hidden="true" />
+        <span className="sr-only">Next month</span>
+        <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
       </button>
     </div>
   );

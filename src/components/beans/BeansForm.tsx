@@ -136,7 +136,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
         <form
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
-          tw="mt-6 space-y-6"
+          className="mt-6 space-y-6"
         >
           <FormSection
             title="Roast information"
@@ -204,7 +204,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
             />
           </FormSection>
 
-          <Divider tw="hidden sm:block" />
+          <Divider className="hidden sm:block" />
 
           {showStorageSection && (
             <>
@@ -225,7 +225,7 @@ export const BeansForm: React.FC<BeansFormProps> = ({
                 />
               </FormSection>
 
-              <Divider tw="hidden sm:block" />
+              <Divider className="hidden sm:block" />
             </>
           )}
 

@@ -1,9 +1,8 @@
-import { css } from "@emotion/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
+import clsx from "clsx";
 import React, { Fragment, ReactNode } from "react";
-import tw, { theme } from "twin.macro";
 import { Button } from "./Button";
 
 interface ModalProps {
@@ -19,7 +18,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" tw="relative z-10" onClose={handleClose}>
+      <Dialog as="div" className="relative z-10" onClose={handleClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -29,22 +28,18 @@ export const Modal: React.FC<ModalProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div tw="fixed inset-0 transition-opacity bg-gray-500/75" />
+          <div className="fixed inset-0 transition-opacity bg-gray-500/75" />
         </Transition.Child>
 
-        <div tw="fixed inset-0 z-10 overflow-y-auto">
+        <div className="fixed inset-0 z-10 overflow-y-auto">
           <div
-            css={[
-              tw`flex items-end justify-center min-h-full px-4 text-center sm:(items-center p-0)`,
-              css`
-                padding-top: calc(
-                  env(safe-area-inset-top) + ${theme`spacing.4`}
-                );
-                padding-bottom: calc(
-                  env(safe-area-inset-bottom) + ${theme`spacing.4`}
-                );
-              `,
-            ]}
+            className={clsx([
+              "flex items-end justify-center min-h-full px-4 text-center sm:items-center sm:p-0",
+            ])}
+            style={{
+              paddingTop: `calc(env(safe-area-inset-top) + 1rem)`,
+              paddingBottom: `calc(env(safe-area-inset-bottom) + 1rem)`,
+            }}
           >
             <Transition.Child
               as={Fragment}
@@ -55,7 +50,7 @@ export const Modal: React.FC<ModalProps> = ({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel tw="relative w-full px-4 pt-5 pb-4 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl sm:(my-8 max-w-lg p-6)">
+              <Dialog.Panel className="relative w-full px-4 pt-5 pb-4 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:max-w-lg sm:p-6">
                 {children}
               </Dialog.Panel>
             </Transition.Child>
@@ -83,25 +78,17 @@ export const RadixModal: React.FC<RadixProps> = ({
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>{triggerSlot}</RadixDialog.Trigger>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay tw="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 sm:place-items-center">
+        <RadixDialog.Overlay className="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 sm:place-items-center">
           <RadixDialog.Content
-            css={[
-              tw`p-4 mx-4 bg-white rounded`,
-              css`
-                /* will probably need to be smarter about widths */
-                width: calc(100vw - ${theme`spacing.8`});
-                @media (min-width: ${theme`screens.sm`}) {
-                  width: auto;
-                  max-width: 512px;
-                }
-                margin-top: calc(
-                  env(safe-area-inset-top) + ${theme`spacing.4`}
-                );
-                margin-bottom: calc(
-                  env(safe-area-inset-bottom) + ${theme`spacing.4`}
-                );
-              `,
-            ]}
+            className={clsx([
+              "p-4 mx-4 bg-white rounded",
+              "sm:w-auto sm:max-w-md",
+            ])}
+            style={{
+              width: `calc(100vw - 2rem)`,
+              marginTop: `calc(env(safe-area-inset-top) + 1rem)`,
+              marginBottom: `calc(env(safe-area-inset-bottom) + 1rem)`,
+            }}
           >
             {children}
           </RadixDialog.Content>
@@ -120,26 +107,26 @@ export const ExampleDialogContent: React.FC<ExampleDialogContentProps> = ({
 }) => (
   <>
     <div>
-      <div tw="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full">
-        <CheckIcon tw="w-6 h-6 text-green-600" aria-hidden="true" />
+      <div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full">
+        <CheckIcon className="w-6 h-6 text-green-600" aria-hidden="true" />
       </div>
-      <div tw="text-center sm:mt-5">
+      <div className="text-center sm:mt-5">
         {/* Use proper title component */}
-        {/* <Dialog.Title as="h3" tw="text-lg font-medium leading-6 text-gray-900">
+        {/* <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
           Payment successful
         </Dialog.Title> */}
-        <h2 tw="text-lg font-medium leading-6 text-gray-900">
+        <h2 className="text-lg font-medium leading-6 text-gray-900">
           Payment successful
         </h2>
-        <div tw="mt-2">
-          <p tw="text-sm text-gray-500">
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
             amet labore.
           </p>
         </div>
       </div>
     </div>
-    <div tw="mt-5 sm:mt-6">
+    <div className="mt-5 sm:mt-6">
       <Button
         variant="primary"
         width="full"

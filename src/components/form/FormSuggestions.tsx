@@ -1,4 +1,3 @@
-import "twin.macro";
 import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { Badge, BadgePlusIcon } from "../Badge";
 
@@ -13,7 +12,7 @@ interface FormSuggestionsProps {
 export function extractSuggestions<T>(arr: T[], field: keyof T, limit = 3) {
   return [...new Set(arr.map((b) => b[field]).filter((f) => !!f))].slice(
     0,
-    limit
+    limit,
   ) as string[];
 }
 export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
@@ -22,9 +21,9 @@ export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
   const isSm = useScreenMediaQuery("sm");
   if (suggestions?.length === 0) return null;
   return (
-    <div tw="flex items-baseline mt-2 text-xs text-gray-600">
+    <div className="flex items-baseline mt-2 text-xs text-gray-600">
       Recent:
-      <ul tw="flex flex-wrap items-center gap-2 ml-2">
+      <ul className="flex flex-wrap items-center gap-2 ml-2">
         {suggestions?.map(({ label, onClick }) => (
           <li key={label}>
             <Badge

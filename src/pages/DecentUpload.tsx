@@ -3,11 +3,11 @@ import {
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import axios from "axios";
+import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import tw from "twin.macro";
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
@@ -24,7 +24,7 @@ export const DecentUpload: React.FC = () => {
   const user = useCurrentUser();
   const userRef = useMemo(
     () => doc(db, "users", user?.uid || "") as DocumentReference<User>,
-    [user?.uid]
+    [user?.uid],
   );
 
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ export const DecentUpload: React.FC = () => {
         notification({
           title: "Upload error",
           subtitle: "One or more files are invalid",
-          Icon: <ExclamationCircleIcon tw="text-red-400" />,
+          Icon: <ExclamationCircleIcon className="text-red-400" />,
         });
         return;
       }
@@ -104,7 +104,7 @@ export const DecentUpload: React.FC = () => {
 
       <Heading>Decent Upload</Heading>
 
-      <p tw="mt-4">Manually upload your Decent Espresso shot files.</p>
+      <p className="mt-4">Manually upload your Decent Espresso shot files.</p>
       <p>
         If you'd like to enable automatic uploads,{" "}
         <Link
@@ -143,43 +143,42 @@ export const DecentUpload: React.FC = () => {
       )}
 
       {secretKey && (
-        <div tw="mt-8">
-          <div tw="relative">
+        <div className="mt-8">
+          <div className="relative">
             <div
-              css={[
-                tw`flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:(ring-2 ring-offset-2 ring-orange-600/75 outline-none)`,
+              className={clsx([
+                "group flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-600/75 focus-visible:outline-none",
                 isFileUploading &&
-                  tw`after:(content absolute inset-0 bg-gray-50/50)`,
-              ]}
-              className="group"
+                  "after:content after:absolute after:inset-0 after:bg-gray-50/50",
+              ])}
               {...getRootProps()}
             >
-              <div tw="text-center">
+              <div className="text-center">
                 <ArrowUpTrayIcon
-                  tw="w-12 h-12 mx-auto text-gray-300"
+                  className="w-12 h-12 mx-auto text-gray-300"
                   aria-hidden="true"
                 />
-                <div tw="flex justify-center mt-4 text-sm leading-6 text-gray-600">
+                <div className="flex justify-center mt-4 text-sm leading-6 text-gray-600">
                   <label
                     htmlFor="file-upload"
-                    css={[
-                      tw`relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2`,
+                    className={clsx([
+                      "relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2",
                       !isFileUploading &&
-                        tw`group-hover:(text-orange-500 underline)`,
-                    ]}
+                        "group-hover:text-orange-500 group-hover:underline",
+                    ])}
                   >
                     <span>Upload a file</span>
-                    <input {...getInputProps()} tw="sr-only" />
+                    <input {...getInputProps()} className="sr-only" />
                   </label>
-                  <p tw="pl-1">or drag and drop</p>
+                  <p className="pl-1">or drag and drop</p>
                 </div>
-                <p tw="text-xs leading-5 text-gray-600">
+                <p className="text-xs leading-5 text-gray-600">
                   SHOT or JSON files, maximum of 20 files
                 </p>
               </div>
             </div>
             {isFileUploading && (
-              <div tw="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+              <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
                 <Spinner />
               </div>
             )}

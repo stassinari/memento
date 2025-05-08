@@ -1,11 +1,15 @@
-import { theme } from "twin.macro";
 import useMediaQuery from "./useMediaQuery";
 
 const useScreenMediaQuery = (size: "sm" | "md" | "lg" | "xl" | "2xl") => {
-  const breakpoints: Record<string, string> = theme`screens`;
+  // FIXME find a better way to handle breakpoints
+  const breakpoints: Record<string, string> = {
+    sm: "640px",
+    md: "768px",
+    lg: "1024px",
+    xl: "1280px",
+    "2xl": "1536px",
+  };
   const screen = breakpoints[size];
-
-  console.log(screen);
 
   return useMediaQuery(`(min-width: ${screen})`);
 };

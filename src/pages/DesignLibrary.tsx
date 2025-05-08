@@ -12,10 +12,10 @@ import {
   ArrowPathIcon,
   PlusIcon as PlusIconOutline,
 } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import { atom } from "jotai";
-import React, { useState } from "react";
+import React, { HTMLAttributes, useState } from "react";
 import toast from "react-hot-toast";
-import tw, { theme } from "twin.macro";
 import { Badge, BadgePlusIcon, BadgeTimesIcon } from "../components/Badge";
 import { navLinks } from "../components/BottomNav";
 import {
@@ -114,7 +114,7 @@ export const DesignLibrary: React.FC = () => {
   const [switchEnabled, setSwitchEnabled] = useState(false);
 
   const [formRadioCardValue, setFormRadioCardValue] = useState(
-    radioCardOptions[1]
+    radioCardOptions[1],
   );
 
   const [radioButtonGroupValue, setRadioButtonGroupValue] = useState<string>();
@@ -131,7 +131,7 @@ export const DesignLibrary: React.FC = () => {
 
       <Heading>Design library</Heading>
 
-      <div tw="space-y-8">
+      <div className="space-y-8">
         <div>
           <p>Breadcrumbs</p>
           <BreadcrumbsWithoutHome
@@ -158,7 +158,7 @@ export const DesignLibrary: React.FC = () => {
         <div>
           <p>List Cards</p>
 
-          <div tw="space-y-4">
+          <div className="space-y-4">
             {/* Example ListCard */}
             <ListCard
               linkTo="#"
@@ -169,8 +169,8 @@ export const DesignLibrary: React.FC = () => {
                 />
               }
             >
-              <div tw="flex">
-                <div tw="flex-grow">
+              <div className="flex">
+                <div className="flex-grow">
                   <ListCard.Title>Card title</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -204,8 +204,8 @@ export const DesignLibrary: React.FC = () => {
                 />
               }
             >
-              <div tw="flex">
-                <div tw="flex-grow">
+              <div className="flex">
+                <div className="flex-grow">
                   <ListCard.Title>V60 V2</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -239,8 +239,8 @@ export const DesignLibrary: React.FC = () => {
                 />
               }
             >
-              <div tw="flex">
-                <div tw="flex-grow">
+              <div className="flex">
+                <div className="flex-grow">
                   <ListCard.Title>Extractamundo Dos!</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -274,8 +274,8 @@ export const DesignLibrary: React.FC = () => {
                 />
               }
             >
-              <div tw="flex">
-                <div tw="flex-grow">
+              <div className="flex">
+                <div className="flex-grow">
                   <ListCard.Title>Luiz Guzman</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -377,7 +377,7 @@ export const DesignLibrary: React.FC = () => {
             handleChange={setFormRadioCardValue}
           />
         </div>
-        <div tw="space-y-4">
+        <div className="space-y-4">
           <Card>This is a base card</Card>
         </div>
         <div>
@@ -387,7 +387,7 @@ export const DesignLibrary: React.FC = () => {
             setFormMinutes={setMinutes}
           />
         </div>
-        <div tw="flex gap-4">
+        <div className="flex gap-4">
           <Toggle checked={switchEnabled} onChange={setSwitchEnabled} />
           <Toggle
             checked={switchEnabled}
@@ -395,7 +395,7 @@ export const DesignLibrary: React.FC = () => {
             colour="accent"
           />
         </div>
-        <div tw="space-y-4">
+        <div className="space-y-4">
           <InputRadio
             label="Test radio"
             direction="horizontal"
@@ -475,22 +475,24 @@ export const DesignLibrary: React.FC = () => {
           </Button>
         </div>
         <div>
-          <div tw="flex flex-col overflow-hidden rounded-md w-min">
-            <div tw="flex items-center h-12 pl-6 text-sm font-medium text-white bg-orange-600 w-72">
-              Primary{" "}
-              <span tw="ml-3 uppercase">{theme`colors.orange.600`}</span>
+          <div className="flex flex-col overflow-hidden rounded-md w-min">
+            <div className="flex items-center h-12 pl-6 text-sm font-medium text-white bg-orange-600 w-72">
+              Primary <span className="ml-3 uppercase">#ea580c</span>{" "}
+              {/* FIXME better tw theme theme`colors.orange.600` */}
             </div>
-            <div tw="flex items-center h-12 pl-6 text-sm font-medium text-black bg-orange-300 w-72">
+            <div className="flex items-center h-12 pl-6 text-sm font-medium text-black bg-orange-300 w-72">
               Primary alt
-              <span tw="ml-3 uppercase">{theme`colors.orange.300`}</span>
+              <span className="ml-3 uppercase">#fdba74</span>
+              {/* FIXME better tw theme theme`colors.orange.300` */}
             </div>
-            <div tw="flex items-center h-12 pl-6 text-sm font-medium text-white bg-blue-600 w-72">
-              Secondary{" "}
-              <span tw="ml-3 uppercase">{theme`colors.blue.600`}</span>
+            <div className="flex items-center h-12 pl-6 text-sm font-medium text-white bg-blue-600 w-72">
+              Secondary <span className="ml-3 uppercase">#2563eb</span>
+              {/* FIXME better tw theme theme`colors.blue.600` */}
             </div>
-            <div tw="flex items-center h-12 pl-6 text-sm font-medium text-black bg-blue-300 w-72">
+            <div className="flex items-center h-12 pl-6 text-sm font-medium text-black bg-blue-300 w-72">
               Secondary alt
-              <span tw="ml-3 uppercase">{theme`colors.blue.300`}</span>
+              <span className="ml-3 uppercase">#93c5fd</span>
+              {/* FIXME better tw theme theme`colors.blue.300` */}
             </div>
           </div>
         </div>
@@ -545,9 +547,9 @@ export const DesignLibrary: React.FC = () => {
             }}
           />
         </div>
-        <div tw="space-y-2">
+        <div className="space-y-2">
           <h2>Buttons</h2>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="gradient" size="xs">
               Button xs
             </Button>
@@ -565,7 +567,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="primary" size="xs">
               Button xs
             </Button>
@@ -583,7 +585,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="secondary" size="xs">
               Button xs
             </Button>
@@ -601,7 +603,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button colour="accent" variant="gradient" size="xs">
               Button xs
             </Button>
@@ -621,7 +623,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button colour="accent" variant="primary" size="xs">
               Button xs
             </Button>
@@ -641,7 +643,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button colour="accent" variant="secondary" size="xs">
               Button xs
             </Button>
@@ -661,7 +663,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="white" size="xs">
               Button xs
             </Button>
@@ -679,7 +681,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="primary" size="xs" Icon={<PlusCircleIcon />}>
               Button xs
             </Button>
@@ -699,7 +701,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
               Button xs
             </Button>
@@ -719,7 +721,7 @@ export const DesignLibrary: React.FC = () => {
               Button md
             </Button>
           </div>
-          <div tw="space-x-2">
+          <div className="space-x-2">
             <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
               Button xs
             </Button>
@@ -978,32 +980,54 @@ export const DesignLibrary: React.FC = () => {
             </IconButton>
           </div>
           Colour palette
-          <div tw="flex gap-2">
+          <div className="flex gap-2">
             <div>
               Brown - TW
-              <ColourShade tw="bg-tw-brown-50">50</ColourShade>
-              <ColourShade tw="bg-tw-brown-100">100</ColourShade>
-              <ColourShade tw="bg-tw-brown-200">200</ColourShade>
-              <ColourShade tw="bg-tw-brown-300">300</ColourShade>
-              <ColourShade tw="bg-tw-brown-400">400</ColourShade>
-              <ColourShade tw="bg-tw-brown-500">500</ColourShade>
-              <ColourShade tw="text-white bg-tw-brown-600">600</ColourShade>
-              <ColourShade tw="text-white bg-tw-brown-700">700</ColourShade>
-              <ColourShade tw="text-white bg-tw-brown-800">800</ColourShade>
-              <ColourShade tw="text-white bg-tw-brown-900">900</ColourShade>
+              <ColourShade className="bg-tw-brown-50">50</ColourShade>
+              <ColourShade className="bg-tw-brown-100">100</ColourShade>
+              <ColourShade className="bg-tw-brown-200">200</ColourShade>
+              <ColourShade className="bg-tw-brown-300">300</ColourShade>
+              <ColourShade className="bg-tw-brown-400">400</ColourShade>
+              <ColourShade className="bg-tw-brown-500">500</ColourShade>
+              <ColourShade className="text-white bg-tw-brown-600">
+                600
+              </ColourShade>
+              <ColourShade className="text-white bg-tw-brown-700">
+                700
+              </ColourShade>
+              <ColourShade className="text-white bg-tw-brown-800">
+                800
+              </ColourShade>
+              <ColourShade className="text-white bg-tw-brown-900">
+                900
+              </ColourShade>
             </div>
             <div>
               Brown - Material
-              <ColourShade tw="bg-mui-brown-50">50</ColourShade>
-              <ColourShade tw="bg-mui-brown-100">100</ColourShade>
-              <ColourShade tw="bg-mui-brown-200">200</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-300">300</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-400">400</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-500">500</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-600">600</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-700">700</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-800">800</ColourShade>
-              <ColourShade tw="text-white bg-mui-brown-900">900</ColourShade>
+              <ColourShade className="bg-mui-brown-50">50</ColourShade>
+              <ColourShade className="bg-mui-brown-100">100</ColourShade>
+              <ColourShade className="bg-mui-brown-200">200</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-300">
+                300
+              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-400">
+                400
+              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-500">
+                500
+              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-600">
+                600
+              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-700">
+                700
+              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-800">
+                800
+              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-900">
+                900
+              </ColourShade>
             </div>
           </div>
         </div>
@@ -1012,4 +1036,16 @@ export const DesignLibrary: React.FC = () => {
   );
 };
 
-const ColourShade = tw.div`flex items-center justify-center w-32 h-8 text-sm`;
+const ColourShade = ({
+  className,
+  children,
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={clsx(
+      "flex items-center justify-center w-32 h-8 text-sm",
+      className,
+    )}
+  >
+    {children}
+  </div>
+);

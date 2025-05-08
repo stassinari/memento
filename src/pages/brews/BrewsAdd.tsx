@@ -1,7 +1,7 @@
 import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -47,7 +47,7 @@ export const BrewsAdd: React.FC = () => {
         items={[navLinks.drinks, navLinks.brews, { label: "Add", linkTo: "#" }]}
       />
 
-      <Heading tw="mb-4">Add brew</Heading>
+      <Heading className="mb-4">Add brew</Heading>
 
       <BrewForm
         defaultValues={brewFormEmptyValues(brewsList[0])}

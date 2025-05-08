@@ -1,7 +1,7 @@
 import { doc, orderBy, updateDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -19,7 +19,7 @@ import { useCurrentUser } from "../../hooks/useInitUser";
 import { DecentEspressoPrep, Espresso } from "../../types/espresso";
 
 export const decentEspressoToFirestore = (
-  espresso: DecentEspressoFormInputs
+  espresso: DecentEspressoFormInputs,
 ) => ({
   ...espresso,
   partial: false,
@@ -36,7 +36,7 @@ export const DecentEspressoAddDetails: React.FC = () => {
 
   const existingEspressoRef = useDocRef<DecentEspressoPrep>(
     "espresso",
-    espressoId
+    espressoId,
   );
   const { details: partialEspresso, isLoading } =
     useFirestoreDocOneTime<DecentEspressoPrep>(existingEspressoRef);
@@ -48,7 +48,7 @@ export const DecentEspressoAddDetails: React.FC = () => {
 
   const lastNonPartialEspresso = useMemo(
     () => espressoList.filter((e) => e.fromDecent && !e.partial)[0],
-    [espressoList]
+    [espressoList],
   );
 
   if (!user) throw new Error("User is not logged in.");
@@ -75,12 +75,14 @@ export const DecentEspressoAddDetails: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Add info ({partialEspresso.profileName})</Heading>
+      <Heading className="mb-4">
+        Add info ({partialEspresso.profileName})
+      </Heading>
 
       <DecentEspressoForm
         defaultValues={decentEspressoFormEmptyValues(
           partialEspresso,
-          lastNonPartialEspresso
+          lastNonPartialEspresso,
         )}
         espressoList={espressoList}
         mutation={editDecentEspresso}

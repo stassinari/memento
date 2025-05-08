@@ -1,5 +1,5 @@
 import React from "react";
-import "twin.macro";
+
 import { Action } from "./ButtonWithDropdown";
 import { Card, DescriptionListRow } from "./Card";
 

@@ -1,5 +1,5 @@
 import ReactMarkdown from "react-markdown";
-import "twin.macro";
+
 import { DetailsCard } from "../../components/Details";
 import { Espresso } from "../../types/espresso";
 import { getEyFromEspresso } from "../../utils";
@@ -12,7 +12,7 @@ export const EspressoDetailsOutcome: React.FC<EspressoDetailsOutcomeProps> = ({
   espresso,
 }) => {
   return (
-    <div tw="mt-4 space-y-4">
+    <div className="mt-4 space-y-4">
       <DetailsCard
         title="Rating"
         rows={[
@@ -23,7 +23,7 @@ export const EspressoDetailsOutcome: React.FC<EspressoDetailsOutcomeProps> = ({
           {
             label: "Notes",
             value: (
-              <article tw="prose-sm prose">
+              <article className="prose-sm prose">
                 <ReactMarkdown>{espresso.notes ?? ""}</ReactMarkdown>
               </article>
             ),

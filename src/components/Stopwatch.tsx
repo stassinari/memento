@@ -4,7 +4,7 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 // import { CircularProgressbar } from "react-circular-progressbar";
 // import "react-circular-progressbar/dist/styles.css";
-import tw from "twin.macro";
+import clsx from "clsx";
 import { IconButton } from "./IconButton";
 
 interface StopwatchProps {
@@ -66,7 +66,7 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
   }, [isRunning, seconds, setSeconds, disabled]);
 
   return (
-    <div tw="flex items-center gap-2">
+    <div className="flex items-center gap-2">
       <IconButton
         Icon={isRunning ? <PauseIcon /> : <PlayIcon />}
         variant="secondary"
@@ -76,7 +76,10 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
       />
 
       <span
-        css={[tw`w-20 text-2xl text-gray-900`, disabled && tw`text-gray-400`]}
+        className={clsx([
+          "w-20 text-2xl text-gray-900",
+          disabled && "text-gray-400",
+        ])}
       >
         {displayMinutes}:{displaySeconds}
       </span>

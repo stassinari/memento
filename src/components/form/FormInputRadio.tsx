@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from "react";
-import "twin.macro";
+
 import { Input } from "../Input";
 import { InputRadio, RadioDirection, RadioOption } from "../InputRadio";
 
@@ -26,7 +26,7 @@ export const FormInputRadio: React.FC<FormInputRadioProps> = ({
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
       {helperText && (
-        <Input.Helper id={`${id}-description`} tw="mt-0.5">
+        <Input.Helper id={`${id}-description`} className="mt-0.5">
           {helperText}
         </Input.Helper>
       )}

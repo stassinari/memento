@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { orderBy, where } from "firebase/firestore";
 import React, { useCallback, useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import {
@@ -22,12 +22,12 @@ export const DrinksPage: React.FC = () => {
 
   const aMonthAgo = useCallback(
     () => dayjs(new Date()).subtract(1, "month").toDate(), // FIXME use 1 month
-    []
+    [],
   );
 
   const filters = useMemo(
     () => [orderBy("date", "desc"), where("date", ">", aMonthAgo())],
-    [aMonthAgo]
+    [aMonthAgo],
   );
 
   const brewQuery = useCollectionQuery<Brew>("brews", filters);
@@ -45,7 +45,7 @@ export const DrinksPage: React.FC = () => {
 
   const drinks = useMemo(
     () => mergeBrewsAndEspressoByUniqueDate(brewsList, espressoList),
-    [brewsList, espressoList]
+    [brewsList, espressoList],
   );
 
   if (brewsLoading || espressoLoading || beansLoading) {
@@ -58,7 +58,7 @@ export const DrinksPage: React.FC = () => {
 
       <Heading>Drinks</Heading>
 
-      <ul tw="mt-4">
+      <ul className="mt-4">
         <li>
           <Link as={RouterLink} to="brews">
             Go to brews

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import "twin.macro";
+
 import { Beans } from "../../types/beans";
 import { DetailsCard } from "../Details";
 
@@ -10,7 +10,7 @@ interface BeansDetailsInfoProps {
 export const BeansDetailsInfo: React.FC<BeansDetailsInfoProps> = ({
   beans,
 }) => (
-  <div tw="space-y-4">
+  <div className="space-y-4">
     <DetailsCard
       title="Roast information"
       rows={[

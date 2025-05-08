@@ -1,12 +1,12 @@
-import "twin.macro";
+import clsx from "clsx";
+
 interface IconProps {
   className?: string;
 }
 
 export const PortafilterIcon: React.FC<IconProps> = ({ className }) => (
   <svg
-    className={className}
-    tw="fill-current"
+    className={clsx("fill-current", className)}
     viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"
     xmlSpace="preserve"

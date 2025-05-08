@@ -1,5 +1,5 @@
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import "twin.macro";
+
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { FormInput } from "../../form/FormInput";
@@ -45,7 +45,11 @@ export const BrewRecipe: React.FC<BrewRecipeProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection
           title="Recipe"
           subtitle="All the info unique to this brew."

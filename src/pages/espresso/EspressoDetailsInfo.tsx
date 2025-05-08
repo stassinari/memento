@@ -1,4 +1,3 @@
-import "twin.macro";
 import { DetailsCard } from "../../components/Details";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
@@ -14,11 +13,11 @@ export const EspressoDetailsInfo: React.FC<EspressoDetailsInfoProps> = ({
   const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
     espresso?.actualWeight ?? espresso?.targetWeight ?? 0,
-    { waterByBeansFactor: 100 }
+    { waterByBeansFactor: 100 },
   );
 
   return (
-    <div tw="mt-4 space-y-4">
+    <div className="mt-4 space-y-4">
       {espresso.fromDecent && (
         <DetailsCard
           title="Prep"

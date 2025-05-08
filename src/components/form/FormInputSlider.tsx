@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
-import "twin.macro";
+
 import { Input } from "../Input";
 import { InputSlider, InputSliderProps } from "../InputSlider";
 
@@ -20,7 +20,7 @@ export const FormInputSlider: React.FC<FormInputSlider> = ({
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-3">
+      <div className="mt-3">
         <Controller
           control={control}
           name={id}

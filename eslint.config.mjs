@@ -33,6 +33,9 @@ export default defineConfig([
       ...reactPlugin.configs.flat.recommended.languageOptions,
       globals: { ...globals.serviceworker, ...globals.browser },
     },
+    rules: {
+      "react/react-in-jsx-scope": "off",
+    },
   },
 
   // JSON

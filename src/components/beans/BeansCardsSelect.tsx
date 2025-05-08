@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import "twin.macro";
+
+import clsx from "clsx";
 import { Beans } from "../../types/beans";
 import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "../../util";
 import { Input, labelStyles } from "../Input";
@@ -91,7 +92,7 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
             {showMore && (
               <button
                 type="button"
-                tw="mt-2 text-sm font-medium text-orange-500 hover:underline"
+                className="mt-2 text-sm font-medium text-orange-500 hover:underline"
                 onClick={() => setIsModalOpen(true)}
               >
                 More...
@@ -102,12 +103,12 @@ export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
         open={isModalOpen}
         setOpen={setIsModalOpen}
       >
-        <div tw="w-full space-y-5">
+        <div className="w-full space-y-5">
           <div>
-            <span css={labelStyles}>Filters</span>
+            <span className={clsx(labelStyles)}>Filters</span>
             <Input
               type="text"
-              tw="mt-2 mb-4"
+              className="mt-2 mb-4"
               id="beans-radio-search"
               placeholder="Search..."
               value={searchQuery}

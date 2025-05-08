@@ -1,4 +1,4 @@
-import "twin.macro";
+import clsx from "clsx";
 
 interface IconProps {
   variant: "outline" | "solid";
@@ -8,8 +8,7 @@ interface IconProps {
 export const BeanBagIcon: React.FC<IconProps> = ({ className, variant }) =>
   variant === "solid" ? (
     <svg
-      className={className}
-      tw="fill-current"
+      className={clsx("fill-current", className)}
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
       xmlSpace="preserve"
@@ -25,8 +24,7 @@ export const BeanBagIcon: React.FC<IconProps> = ({ className, variant }) =>
     </svg>
   ) : (
     <svg
-      className={className}
-      tw="fill-current"
+      className={clsx("fill-current", className)}
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
       xmlSpace="preserve"

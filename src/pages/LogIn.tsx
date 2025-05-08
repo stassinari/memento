@@ -1,15 +1,21 @@
-import "twin.macro";
+import clsx from "clsx";
 import { Card } from "../components/Card";
 import { Divider } from "../components/Divider";
 import { EmailPasswordLogin } from "../components/EmailPasswordLogin";
 import { GoogleLogin } from "../components/GoogleLogin";
-import { layoutContainerStyles } from "../components/Layout";
+import {
+  layoutContainerCssStyles,
+  layoutContainerTailwindStyles,
+} from "../components/Layout";
 
 export const LogIn = () => {
   return (
-    <div css={layoutContainerStyles}>
-      <div tw="px-4 sm:(px-0 mx-auto max-w-md)">
-        <h2 tw="my-6 text-3xl font-bold tracking-tight text-center text-gray-900">
+    <div
+      className={clsx(layoutContainerTailwindStyles)}
+      style={layoutContainerCssStyles}
+    >
+      <div className="px-4 sm:px-0 sm:mx-auto sm:max-w-md">
+        <h2 className="my-6 text-3xl font-bold tracking-tight text-center text-gray-900">
           Sign in to Memento
         </h2>
         <Card>

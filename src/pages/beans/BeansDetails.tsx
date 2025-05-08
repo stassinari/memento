@@ -1,8 +1,8 @@
 import { Tab } from "@headlessui/react";
+import clsx from "clsx";
 import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import tw from "twin.macro";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import {
@@ -90,8 +90,8 @@ export const BeansDetails: React.FC = () => {
               },
             ]
           : areBeansFrozen(beans)
-          ? [{ type: "button" as const, label: "Thaw", onClick: handleThaw }]
-          : []),
+            ? [{ type: "button" as const, label: "Thaw", onClick: handleThaw }]
+            : []),
 
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
@@ -103,7 +103,7 @@ export const BeansDetails: React.FC = () => {
       handleFreeze,
       handleThaw,
       handleUnarchive,
-    ]
+    ],
   );
 
   if (isLoading) return null;
@@ -123,9 +123,9 @@ export const BeansDetails: React.FC = () => {
       </Heading>
 
       {isSm ? (
-        <div tw="grid grid-cols-[40%_60%] gap-4 my-6">
+        <div className="grid grid-cols-[40%_60%] gap-4 my-6">
           <div>
-            <h2 tw="mb-5 text-lg font-semibold text-center text-gray-900">
+            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">
               Beans info
             </h2>
 
@@ -133,18 +133,24 @@ export const BeansDetails: React.FC = () => {
           </div>
 
           <div>
-            <h2 tw="text-lg font-semibold text-center text-gray-900">Drinks</h2>
+            <h2 className="text-lg font-semibold text-center text-gray-900">
+              Drinks
+            </h2>
 
             <BeansDrinks beans={beans} />
           </div>
         </div>
       ) : (
         <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List tw="flex -mb-px">
-            <Tab css={[tabStyles(selectedIndex === 0), tw`w-1/2`]}>Info</Tab>
-            <Tab css={[tabStyles(selectedIndex === 1), tw`w-1/2`]}>Drinks</Tab>
+          <Tab.List className="flex -mb-px">
+            <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
+              Info
+            </Tab>
+            <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
+              Drinks
+            </Tab>
           </Tab.List>
-          <Tab.Panels tw="mt-4">
+          <Tab.Panels className="mt-4">
             <Tab.Panel>
               <BeansDetailsInfo beans={beans} />
             </Tab.Panel>

@@ -1,7 +1,7 @@
 import { atom, useAtomValue } from "jotai";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import "twin.macro";
+
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
 import { Stopwatch } from "../../Stopwatch";
@@ -54,7 +54,11 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection
           title="Time"
           subtitle="Keep track of how long your brew takes."
@@ -75,7 +79,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
             disabled={isStopwatchRunning}
           />
 
-          <div tw="flex items-end gap-4">
+          <div className="flex items-end gap-4">
             <FormInput
               label="Minutes"
               id="timeMinutes"
@@ -94,7 +98,7 @@ export const BrewTime: React.FC<BrewTimeProps> = ({
               }}
               error={errors.timeMinutes?.message}
             />
-            <span tw="py-[9px]">:</span>
+            <span className="py-[9px]">:</span>
             <FormInput
               label="Seconds"
               id="timeSeconds"

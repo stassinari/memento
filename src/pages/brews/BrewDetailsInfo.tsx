@@ -1,4 +1,3 @@
-import "twin.macro";
 import { DetailsCard } from "../../components/Details";
 import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
 import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
@@ -11,11 +10,11 @@ interface BrewDetailsInfoProp {
 export const BrewDetailsInfo: React.FC<BrewDetailsInfoProp> = ({ brew }) => {
   const { beansByWater, waterByBeans } = useDrinkRatio(
     brew?.beansWeight ?? 0,
-    brew?.waterWeight ?? 0
+    brew?.waterWeight ?? 0,
   );
 
   return (
-    <div tw="space-y-4">
+    <div className="space-y-4">
       <BeansShortInfo beansId={brew.beans.id} brewDate={brew.date.toDate()} />
 
       <DetailsCard
