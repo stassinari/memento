@@ -122,7 +122,7 @@ export const DecentUpload: React.FC = () => {
             It looks like you haven't uploaded any shot files yet. For security
             reasons, we require you to generate a secret token (the same used
             used by auto-upload feature). Click the button below or head over to{" "}
-            <Link>
+            <Link asChild>
               <RouterLink to="/account">your Account page</RouterLink>
             </Link>{" "}
             to create your token.

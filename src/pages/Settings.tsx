@@ -78,7 +78,7 @@ export const Settings: React.FC = () => {
               </div>
               <p className="text-sm text-gray-600">
                 You can{" "}
-                <Link>
+                <Link asChild>
                   <RouterLink to="/decent-upload">
                     upload shots from here
                   </RouterLink>
