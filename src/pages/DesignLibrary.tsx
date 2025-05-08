@@ -682,62 +682,79 @@ export const DesignLibrary: React.FC = () => {
             </Button>
           </div>
           <div className="space-x-2">
-            <Button variant="primary" size="xs" Icon={<PlusCircleIcon />}>
-              Button xs
+            <Button variant="primary" size="xs">
+              <PlusCircleIcon /> Button xs
             </Button>
-            <Button variant="primary" size="sm" Icon={<PlusCircleIcon />}>
+            <Button variant="primary" size="sm">
+              <PlusCircleIcon />
               Button sm
             </Button>
-            <Button variant="primary" Icon={<PlusCircleIcon />}>
+            <Button variant="primary">
+              <PlusCircleIcon />
               Button md
             </Button>
-            <Button variant="primary" size="lg" Icon={<PlusCircleIcon />}>
+            <Button variant="primary" size="lg">
+              <PlusCircleIcon />
               Button lg
             </Button>
-            <Button variant="primary" size="xl" Icon={<PlusCircleIcon />}>
+            <Button variant="primary" size="xl">
+              <PlusCircleIcon />
               Button xl
             </Button>
-            <Button variant="primary" Icon={<PlusCircleIcon />} disabled>
+            <Button variant="primary" disabled>
+              <PlusCircleIcon />
               Button md
             </Button>
           </div>
           <div className="space-x-2">
-            <Button variant="secondary" size="xs" Icon={<PlusCircleIcon />}>
+            <Button variant="secondary" size="xs">
+              <PlusCircleIcon />
               Button xs
             </Button>
-            <Button variant="secondary" size="sm" Icon={<PlusCircleIcon />}>
+            <Button variant="secondary" size="sm">
+              <PlusCircleIcon />
               Button sm
             </Button>
-            <Button variant="secondary" Icon={<PlusCircleIcon />}>
+            <Button variant="secondary">
+              <PlusCircleIcon />
               Button md
             </Button>
-            <Button variant="secondary" size="lg" Icon={<PlusCircleIcon />}>
+            <Button variant="secondary" size="lg">
+              <PlusCircleIcon />
               Button lg
             </Button>
-            <Button variant="secondary" size="xl" Icon={<PlusCircleIcon />}>
+            <Button variant="secondary" size="xl">
+              <PlusCircleIcon />
               Button xl
             </Button>
-            <Button variant="secondary" Icon={<PlusCircleIcon />} disabled>
+            <Button variant="secondary" disabled>
+              <PlusCircleIcon />
               Button md
             </Button>
           </div>
           <div className="space-x-2">
-            <Button variant="white" size="xs" Icon={<PlusCircleIcon />}>
+            <Button variant="white" size="xs">
+              <PlusCircleIcon />
               Button xs
             </Button>
-            <Button variant="white" size="sm" Icon={<PlusCircleIcon />}>
+            <Button variant="white" size="sm">
+              <PlusCircleIcon />
               Button sm
             </Button>
-            <Button variant="white" Icon={<PlusCircleIcon />}>
+            <Button variant="white">
+              <PlusCircleIcon />
               Button md
             </Button>
-            <Button variant="white" size="lg" Icon={<PlusCircleIcon />}>
+            <Button variant="white" size="lg">
+              <PlusCircleIcon />
               Button lg
             </Button>
-            <Button variant="white" size="xl" Icon={<PlusCircleIcon />}>
+            <Button variant="white" size="xl">
+              <PlusCircleIcon />
               Button xl
             </Button>
-            <Button variant="white" Icon={<PlusCircleIcon />} disabled>
+            <Button variant="white" disabled>
+              <PlusCircleIcon />
               Button md
             </Button>
           </div>
@@ -745,240 +762,148 @@ export const DesignLibrary: React.FC = () => {
         <div>
           <h2>IconButtons</h2>
           <div>
-            <IconButton variant="gradient" size="xs" Icon={<PlusIconMini />}>
-              Button xs
+            <IconButton variant="gradient" size="xs">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="gradient" size="sm" Icon={<PlusIconMini />}>
-              Button sm
+            <IconButton variant="gradient" size="sm">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="gradient" Icon={<PlusIconMini />}>
-              Button md
+            <IconButton variant="gradient">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="gradient" size="lg" Icon={<PlusIconOutline />}>
-              Button lg
+            <IconButton variant="gradient" size="lg">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton variant="gradient" size="xl" Icon={<PlusIconOutline />}>
-              Button xl
+            <IconButton variant="gradient" size="xl">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton variant="gradient" Icon={<PlusIconMini />} disabled>
-              Button md
-            </IconButton>
-          </div>
-          <div>
-            <IconButton variant="primary" size="xs" Icon={<PlusIconMini />}>
-              Button xs
-            </IconButton>
-            <IconButton variant="primary" size="sm" Icon={<PlusIconMini />}>
-              Button sm
-            </IconButton>
-            <IconButton variant="primary" Icon={<PlusIconMini />}>
-              Button md
-            </IconButton>
-            <IconButton variant="primary" size="lg" Icon={<PlusIconOutline />}>
-              Button lg
-            </IconButton>
-            <IconButton variant="primary" size="xl" Icon={<PlusIconOutline />}>
-              Button xl
-            </IconButton>
-            <IconButton variant="primary" Icon={<PlusIconMini />} disabled>
-              Button md
+            <IconButton variant="gradient" disabled>
+              <PlusIconMini />
             </IconButton>
           </div>
           <div>
-            <IconButton variant="secondary" size="xs" Icon={<PlusIconMini />}>
-              Button xs
+            <IconButton variant="primary" size="xs">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="secondary" size="sm" Icon={<PlusIconMini />}>
-              Button sm
+            <IconButton variant="primary" size="sm">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="secondary" Icon={<PlusIconMini />}>
-              Button md
+            <IconButton variant="primary">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              variant="secondary"
-              size="lg"
-              Icon={<PlusIconOutline />}
-            >
-              Button lg
+            <IconButton variant="primary" size="lg">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              variant="secondary"
-              size="xl"
-              Icon={<PlusIconOutline />}
-            >
-              Button xl
+            <IconButton variant="primary" size="xl">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton variant="secondary" Icon={<PlusIconMini />} disabled>
-              Button md
+            <IconButton variant="primary" disabled>
+              <PlusIconMini />
             </IconButton>
           </div>
           <div>
-            <IconButton
-              colour="accent"
-              variant="gradient"
-              size="xs"
-              Icon={<PlusIconMini />}
-            >
-              Button xs
+            <IconButton variant="secondary" size="xs">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="gradient"
-              size="sm"
-              Icon={<PlusIconMini />}
-            >
-              Button sm
+            <IconButton variant="secondary" size="sm">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="gradient"
-              Icon={<PlusIconMini />}
-            >
-              Button md
+            <IconButton variant="secondary">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="gradient"
-              size="lg"
-              Icon={<PlusIconOutline />}
-            >
-              Button lg
+            <IconButton variant="secondary" size="lg">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="gradient"
-              size="xl"
-              Icon={<PlusIconOutline />}
-            >
-              Button xl
+            <IconButton variant="secondary" size="xl">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="gradient"
-              Icon={<PlusIconMini />}
-              disabled
-            >
-              Button md
+            <IconButton variant="secondary" disabled>
+              <PlusIconMini />
             </IconButton>
           </div>
           <div>
-            <IconButton
-              colour="accent"
-              variant="primary"
-              size="xs"
-              Icon={<PlusIconMini />}
-            >
-              Button xs
+            <IconButton colour="accent" variant="gradient" size="xs">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="primary"
-              size="sm"
-              Icon={<PlusIconMini />}
-            >
-              Button sm
+            <IconButton colour="accent" variant="gradient" size="sm">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="primary"
-              Icon={<PlusIconMini />}
-            >
-              Button md
+            <IconButton colour="accent" variant="gradient">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="primary"
-              size="lg"
-              Icon={<PlusIconOutline />}
-            >
-              Button lg
+            <IconButton colour="accent" variant="gradient" size="lg">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="primary"
-              size="xl"
-              Icon={<PlusIconOutline />}
-            >
-              Button xl
+            <IconButton colour="accent" variant="gradient" size="xl">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="primary"
-              Icon={<PlusIconMini />}
-              disabled
-            >
-              Button md
+            <IconButton colour="accent" variant="gradient" disabled>
+              <PlusIconMini />
             </IconButton>
           </div>
           <div>
-            <IconButton
-              colour="accent"
-              variant="secondary"
-              size="xs"
-              Icon={<PlusIconMini />}
-            >
-              Button xs
+            <IconButton colour="accent" variant="primary" size="xs">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="secondary"
-              size="sm"
-              Icon={<PlusIconMini />}
-            >
-              Button sm
+            <IconButton colour="accent" variant="primary" size="sm">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="secondary"
-              Icon={<PlusIconMini />}
-            >
-              Button md
+            <IconButton colour="accent" variant="primary">
+              <PlusIconMini />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="secondary"
-              size="lg"
-              Icon={<PlusIconOutline />}
-            >
-              Button lg
+            <IconButton colour="accent" variant="primary" size="lg">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="secondary"
-              size="xl"
-              Icon={<PlusIconOutline />}
-            >
-              Button xl
+            <IconButton colour="accent" variant="primary" size="xl">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton
-              colour="accent"
-              variant="secondary"
-              Icon={<PlusIconMini />}
-              disabled
-            >
-              Button md
+            <IconButton colour="accent" variant="primary" disabled>
+              <PlusIconMini />
             </IconButton>
           </div>
           <div>
-            <IconButton variant="white" size="xs" Icon={<PlusIconMini />}>
-              Button xs
+            <IconButton colour="accent" variant="secondary" size="xs">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="white" size="sm" Icon={<PlusIconMini />}>
-              Button sm
+            <IconButton colour="accent" variant="secondary" size="sm">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="white" Icon={<PlusIconMini />}>
-              Button md
+            <IconButton colour="accent" variant="secondary">
+              <PlusIconMini />
             </IconButton>
-            <IconButton variant="white" size="lg" Icon={<PlusIconOutline />}>
-              Button lg
+            <IconButton colour="accent" variant="secondary" size="lg">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton variant="white" size="xl" Icon={<PlusIconOutline />}>
-              Button xl
+            <IconButton colour="accent" variant="secondary" size="xl">
+              <PlusIconOutline />
             </IconButton>
-            <IconButton variant="white" Icon={<PlusIconMini />} disabled>
-              Button md
+            <IconButton colour="accent" variant="secondary" disabled>
+              <PlusIconMini />
             </IconButton>
           </div>
+          <div>
+            <IconButton variant="white" size="xs">
+              <PlusIconMini />
+            </IconButton>
+            <IconButton variant="white" size="sm">
+              <PlusIconMini />
+            </IconButton>
+            <IconButton variant="white">
+              <PlusIconMini />
+            </IconButton>
+            <IconButton variant="white" size="lg">
+              <PlusIconOutline />
+            </IconButton>
+            <IconButton variant="white" size="xl">
+              <PlusIconOutline />
+            </IconButton>
+            <IconButton variant="white" disabled>
+              <PlusIconMini />
+            </IconButton>
+          </div>
+        </div>
+
+        <div>
           Colour palette
           <div className="flex gap-2">
             <div>

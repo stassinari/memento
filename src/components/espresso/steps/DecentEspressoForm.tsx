@@ -1,5 +1,5 @@
 import { orderBy } from "firebase/firestore";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
@@ -274,8 +274,8 @@ export const DecentEspressoForm = ({
         </FormSection>
 
         <div className="flex justify-end gap-4">
-          <Button variant="white" as={Link} to={backLink}>
-            Back
+          <Button variant="white" asChild>
+            <Link to={backLink}>Back</Link>
           </Button>
           <Button variant="primary" type="submit" colour="accent">
             Update

@@ -78,8 +78,10 @@ export const Settings: React.FC = () => {
               </div>
               <p className="text-sm text-gray-600">
                 You can{" "}
-                <Link as={RouterLink} to="/decent-upload">
-                  upload shots from here
+                <Link>
+                  <RouterLink to="/decent-upload">
+                    upload shots from here
+                  </RouterLink>
                 </Link>
                 , or follow{" "}
                 <Link
@@ -107,13 +109,8 @@ export const Settings: React.FC = () => {
             Sign out
           </Button>
         </FormSection>
-        <Button
-          variant="white"
-          as={RouterLink}
-          to="/design-library"
-          className="sm:hidden"
-        >
-          Design Library
+        <Button variant="white" className="sm:hidden" asChild>
+          <RouterLink to="/design-library">Design Library</RouterLink>
         </Button>
       </div>
     </>

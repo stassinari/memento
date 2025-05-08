@@ -1,7 +1,7 @@
 // import NoSleep from "nosleep.js";
 import { PauseIcon, PlayIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { PrimitiveAtom, useAtom } from "jotai";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import { CircularProgressbar } from "react-circular-progressbar";
 // import "react-circular-progressbar/dist/styles.css";
 import clsx from "clsx";
@@ -68,12 +68,13 @@ export const Stopwatch = ({
   return (
     <div className="flex items-center gap-2">
       <IconButton
-        Icon={isRunning ? <PauseIcon /> : <PlayIcon />}
         variant="secondary"
         type="button"
         onClick={toggle}
         disabled={disabled}
-      />
+      >
+        {isRunning ? <PauseIcon /> : <PlayIcon />}
+      </IconButton>
 
       <span
         className={clsx([
@@ -85,12 +86,13 @@ export const Stopwatch = ({
       </span>
 
       <IconButton
-        Icon={<XMarkIcon />}
         variant="white"
         type="button"
         onClick={reset}
         disabled={disabled}
-      />
+      >
+        <XMarkIcon />
+      </IconButton>
     </div>
   );
 };

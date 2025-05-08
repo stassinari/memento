@@ -98,15 +98,9 @@ const EspressoDetails: React.FC = () => {
 
       {espresso.fromDecent && espresso.partial && (
         <div className="inline-flex items-center gap-4">
-          <Button
-            variant="secondary"
-            size="sm"
-            as={Link}
-            to="decent/add"
-            Icon={<PuzzlePieceIcon />}
-            className="shrink-0"
-          >
-            Add shot info
+          <Button variant="secondary" size="sm" className="shrink-0" asChild>
+            <PuzzlePieceIcon />
+            <Link to="decent/add">Add shot info</Link>
           </Button>
           <span>This shot is missing some information!</span>
         </div>

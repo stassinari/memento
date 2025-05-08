@@ -41,8 +41,10 @@ export const ErrorPage = ({
                 Try again
               </Button>
             )}
-            <Button as="a" href="/" variant="secondary">
-              Go back home<span aria-hidden="true"> &rarr;</span>
+            <Button variant="secondary" asChild>
+              <a href="/">
+                Go back home<span aria-hidden="true"> &rarr;</span>
+              </a>
             </Button>
           </div>
         </div>

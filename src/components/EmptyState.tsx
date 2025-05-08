@@ -1,6 +1,5 @@
 import { CubeTransparentIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-
 import { Button } from "./Button";
 
 interface EmptyStateProps {
@@ -21,8 +20,8 @@ export const EmptyState = ({
       <p className="mt-1 text-sm text-gray-500">{description}</p>
       {buttonLabel && (
         <div className="mt-6">
-          <Button variant="primary" as={Link} to="add">
-            {buttonLabel}
+          <Button variant="primary" asChild>
+            <Link to="add">{buttonLabel}</Link>
           </Button>
         </div>
       )}

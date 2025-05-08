@@ -110,8 +110,6 @@ export const DecentUpload: React.FC = () => {
         <Link
           target="_blank"
           rel="noreferrer noopener"
-          // FIXME allow external links
-          //   href="https://github.com/stassinari/memento#decent-espresso-integration"
           href="https://github.com/stassinari/memento#decent-espresso-integration"
         >
           follow the guide here
@@ -124,8 +122,8 @@ export const DecentUpload: React.FC = () => {
             It looks like you haven't uploaded any shot files yet. For security
             reasons, we require you to generate a secret token (the same used
             used by auto-upload feature). Click the button below or head over to{" "}
-            <Link as={RouterLink} to="/account">
-              your Account page
+            <Link>
+              <RouterLink to="/account">your Account page</RouterLink>
             </Link>{" "}
             to create your token.
           </div>

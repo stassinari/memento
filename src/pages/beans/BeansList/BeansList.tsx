@@ -72,13 +72,12 @@ export const BeansList: React.FC = () => {
       <Heading
         actionSlot={
           <Button
-            as={Link}
-            to="add"
             variant="primary"
             colour="accent"
             size={isSm ? "md" : "sm"}
+            asChild
           >
-            Add beans
+            <Link to="add">Add beans </Link>
           </Button>
         }
       >

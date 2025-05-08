@@ -1,25 +1,26 @@
+import { Slot } from "@radix-ui/react-slot";
 import clsx from "clsx";
-import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
+import React, { forwardRef } from "react";
 
-// Component-specific props specified separately
-type LinkOwnProps = {};
-
-// Merge own props with others inherited from the underlying element type
-type LinkProps<E extends React.ElementType> = PolymorphicComponentProps<
-  E,
-  LinkOwnProps
->;
-
-const defaultElement = "a";
+type LinkProps = {
+  asChild?: boolean;
+  className?: string;
+  children: React.ReactNode;
+} & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const linkStyles =
   "text-orange-600 underline hover:text-orange-500 hover:no-underline";
 
-export function Link<E extends React.ElementType = typeof defaultElement>({
-  ...restProps
-}: LinkProps<E>): JSX.Element {
-  // The `as` prop may be overridden by the passed props
-  return (
-    <Box className={clsx(linkStyles)} as={defaultElement} {...restProps} />
-  );
-}
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
+  ({ asChild = false, className, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : "a";
+
+    return (
+      <Comp className={clsx(linkStyles, className)} ref={ref} {...props}>
+        {children}
+      </Comp>
+    );
+  },
+);
+
+Link.displayName = "Link";

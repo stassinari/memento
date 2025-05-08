@@ -21,12 +21,12 @@ export const GoogleLogin = () => {
     <Button
       width="full"
       variant="white"
-      Icon={<GoogleIcon />}
       onClick={async () => {
         await signInWithGoogle(auth);
         navigate(redirectTo ? redirectTo : "/");
       }}
     >
+      <GoogleIcon />
       Sign in with Google
     </Button>
   );

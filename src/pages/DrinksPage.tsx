@@ -60,18 +60,18 @@ export const DrinksPage: React.FC = () => {
 
       <ul className="mt-4">
         <li>
-          <Link as={RouterLink} to="brews">
-            Go to brews
+          <Link>
+            <RouterLink to="brews">Go to brews</RouterLink>
           </Link>
         </li>
         <li>
-          <Link as={RouterLink} to="espresso">
-            Go to espressos
+          <Link>
+            <RouterLink to="espresso">Go to espressos</RouterLink>
           </Link>
         </li>
         <li>
-          <Link as={RouterLink} to="tastings">
-            Go to tastings
+          <Link>
+            <RouterLink to="tastings">Go to tastings</RouterLink>
           </Link>
         </li>
       </ul>

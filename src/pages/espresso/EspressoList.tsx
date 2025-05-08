@@ -53,13 +53,12 @@ const EspressoList: React.FC = () => {
       <Heading
         actionSlot={
           <Button
-            as={RouterLink}
-            to="add"
             variant="primary"
             colour="accent"
             size={isSm ? "md" : "sm"}
+            asChild
           >
-            Add espresso
+            <RouterLink to="add">Add espresso</RouterLink>
           </Button>
         }
       >
@@ -79,8 +78,8 @@ const EspressoList: React.FC = () => {
             Load more
           </Button>
         )}
-        <Button as={RouterLink} to="#" variant="white" colour="accent">
-          View all espresso (TBD)
+        <Button variant="white" colour="accent" asChild>
+          <RouterLink to="#">View all espresso (TBD)</RouterLink>
         </Button>
       </div>
     </>

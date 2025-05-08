@@ -21,7 +21,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { orderBy } from "firebase/firestore";
 import { countBy, maxBy, mean } from "lodash";
-import React, { Fragment, useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { IconButton } from "../../components/IconButton";
@@ -188,11 +188,11 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
       <Stats title="Brew stats" stats={totalStats} />
 
       <Popover className="relative my-4 text-right">
-        <IconButton
-          as={Popover.Button}
-          Icon={<ViewColumnsIcon />}
-          variant="white"
-        />
+        <IconButton variant="white">
+          <Popover.Button>
+            <ViewColumnsIcon />
+          </Popover.Button>
+        </IconButton>
 
         <Transition
           as={Fragment}

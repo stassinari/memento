@@ -50,8 +50,9 @@ export const BeansBlendForm = () => {
               variant="white"
               colour="main"
               size="xs"
-              Icon={<TrashIcon />}
-            />
+            >
+              <TrashIcon />
+            </IconButton>
           </div>
           <div className="p-4 space-y-4">
             <FormInput

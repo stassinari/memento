@@ -52,13 +52,12 @@ export const BrewsList: React.FC = () => {
       <Heading
         actionSlot={
           <Button
-            as={RouterLink}
-            to="add"
             variant="primary"
             colour="accent"
             size={isSm ? "md" : "sm"}
+            asChild
           >
-            Add brew
+            <RouterLink to="add">Add brew</RouterLink>
           </Button>
         }
       >
@@ -78,8 +77,8 @@ export const BrewsList: React.FC = () => {
             Load more
           </Button>
         )}
-        <Button as={RouterLink} to="table" variant="white" colour="accent">
-          View all brews
+        <Button variant="white" colour="accent" asChild>
+          <RouterLink to="table">View all brews</RouterLink>
         </Button>
       </div>
     </>

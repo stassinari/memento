@@ -1,6 +1,5 @@
 import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import { pick } from "lodash";
-import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -50,10 +49,7 @@ interface BrewOutcomeFormProps {
   brewRef: DocumentReference<DocumentData>;
 }
 
-export const BrewOutcomeForm = ({
-  brew,
-  brewRef,
-}: BrewOutcomeFormProps) => {
+export const BrewOutcomeForm = ({ brew, brewRef }: BrewOutcomeFormProps) => {
   const navigate = useNavigate();
 
   const methods = useForm<BrewOutcomeInputs>({
@@ -201,13 +197,8 @@ export const BrewOutcomeForm = ({
         </FormSection>
 
         <div className="flex justify-end gap-4">
-          <Button
-            variant="white"
-            type="button"
-            as={Link}
-            to={`/drinks/brews/${brew.id ?? ""}`}
-          >
-            Back
+          <Button variant="white" type="button" asChild>
+            <Link to={`/drinks/brews/${brew.id ?? ""}`}>Back</Link>
           </Button>
           <Button
             variant="primary"
