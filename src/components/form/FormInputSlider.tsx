@@ -10,11 +10,11 @@ interface FormInputSlider
   helperText?: string;
 }
 
-export const FormInputSlider: React.FC<FormInputSlider> = ({
+export const FormInputSlider = ({
   label,
   id,
   ...rest
-}) => {
+}: FormInputSlider) => {
   const { control } = useFormContext();
 
   return (

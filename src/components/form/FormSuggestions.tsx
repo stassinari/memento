@@ -15,9 +15,9 @@ export function extractSuggestions<T>(arr: T[], field: keyof T, limit = 3) {
     limit,
   ) as string[];
 }
-export const FormSuggestions: React.FC<FormSuggestionsProps> = ({
+export const FormSuggestions = ({
   suggestions,
-}) => {
+}: FormSuggestionsProps) => {
   const isSm = useScreenMediaQuery("sm");
   if (suggestions?.length === 0) return null;
   return (

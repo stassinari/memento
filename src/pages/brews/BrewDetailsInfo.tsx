@@ -7,7 +7,7 @@ interface BrewDetailsInfoProp {
   brew: Brew;
 }
 
-export const BrewDetailsInfo: React.FC<BrewDetailsInfoProp> = ({ brew }) => {
+export const BrewDetailsInfo = ({ brew }: BrewDetailsInfoProp) => {
   const { beansByWater, waterByBeans } = useDrinkRatio(
     brew?.beansWeight ?? 0,
     brew?.waterWeight ?? 0,

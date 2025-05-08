@@ -11,13 +11,13 @@ export interface FormComboboxMultiProps {
   renderOption?: (option: string) => ReactElement;
 }
 
-export const FormComboboxMulti: React.FC<FormComboboxMultiProps> = ({
+export const FormComboboxMulti = ({
   name,
   label,
   options,
   placeholder,
   renderOption,
-}) => {
+}: FormComboboxMultiProps) => {
   const { control, getValues, setValue } = useFormContext();
   const removeItem = (item: string) =>
     setValue(name, immutableRemove(getValues(name), item));

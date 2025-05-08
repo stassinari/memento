@@ -10,12 +10,12 @@ import React, { ReactElement, ReactNode } from "react";
 //   increasePadding?: boolean;
 // }
 
-// export const ComboboxInput: React.FC<ComboboxInputProps> = ({
+// export const ComboboxInput = ({
 //   placeholder,
 //   handleChange,
 //   displayValue = (option: string) => option,
 //   increasePadding,
-// }) => (
+// }: ComboboxInputProps) => (
 //   <HuiCombobox.Input
 //     className={clsx([//       inputStyles,
 //       "relative py-2 pl-3 pr-10 bg-white border focus:outline-none focus:ring-1",
@@ -44,9 +44,9 @@ interface ComboboxOptionsProps {
   children: ReactNode;
 }
 
-export const ComboboxOptions: React.FC<ComboboxOptionsProps> = ({
+export const ComboboxOptions = ({
   children,
-}) => (
+}: ComboboxOptionsProps) => (
   <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
     {children}
   </HuiCombobox.Options>
@@ -58,11 +58,11 @@ interface ComboboxOptionProps {
   handleClick?: VoidFunction;
 }
 
-export const ComboboxOption: React.FC<ComboboxOptionProps> = ({
+export const ComboboxOption = ({
   option,
   renderOption,
   handleClick,
-}) => (
+}: ComboboxOptionProps) => (
   <HuiCombobox.Option
     key={option}
     value={option}

@@ -12,7 +12,7 @@ export interface InputSliderProps {
   hideThumbMarker?: boolean;
 }
 
-export const InputSlider: React.FC<InputSliderProps> = ({
+export const InputSlider = ({
   min,
   max,
   step,
@@ -20,7 +20,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
   onChange,
   overrideLabels,
   hideThumbMarker = false,
-}) => {
+}: InputSliderProps) => {
   return (
     <div className="mx-2">
       <Range

@@ -8,11 +8,11 @@ interface DrinkRatioProps {
   waterMeasurementUnit?: string;
 }
 
-export const DrinkRatio: React.FC<DrinkRatioProps> = ({
+export const DrinkRatio = ({
   beans,
   water,
   waterMeasurementUnit = "ml",
-}) => {
+}: DrinkRatioProps) => {
   const { beansByWater, waterByBeans } = useDrinkRatio(beans, water);
 
   return (

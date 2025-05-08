@@ -10,12 +10,12 @@ import useScreenMediaQuery from "../hooks/useScreenMediaQuery";
 import { User } from "../types/user";
 import { navLinks } from "./BottomNav";
 
-const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
+const SidebarNavItem = ({
   Icon,
   label,
   linkTo,
   nested = false,
-}) => {
+}: SidebarNavItemProps) => {
   const isActive = useActiveRoute(linkTo);
 
   return (

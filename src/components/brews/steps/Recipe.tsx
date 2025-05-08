@@ -24,11 +24,11 @@ interface BrewRecipeProps {
   handleBack: () => void;
 }
 
-export const BrewRecipe: React.FC<BrewRecipeProps> = ({
+export const BrewRecipe = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
-}) => {
+}: BrewRecipeProps) => {
   const methods = useForm<BrewRecipeInputs>({
     defaultValues,
   });

@@ -5,10 +5,10 @@ interface EquipmentTableProps {
   onClick: () => void;
 }
 
-export const EquipmentTable: React.FC<EquipmentTableProps> = ({
+export const EquipmentTable = ({
   rows,
   onClick,
-}) => {
+}: EquipmentTableProps) => {
   return (
     <>
       <dl className="-my-3 divide-y divide-gray-200">
@@ -34,7 +34,7 @@ interface EquipmentRowProps {
   value: string | null;
 }
 
-const EquipmentRow: React.FC<EquipmentRowProps> = ({ label, value }) => (
+const EquipmentRow = ({ label, value }: EquipmentRowProps) => (
   <div className="flex justify-between py-3 text-sm font-medium">
     <dt className="text-gray-500">{label}</dt>
     {value ? (

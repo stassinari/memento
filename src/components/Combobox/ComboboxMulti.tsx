@@ -21,7 +21,7 @@ export interface ComboboxMultiProps {
   renderOption?: (option: string) => ReactElement;
 }
 
-export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
+export const ComboboxMulti = ({
   name,
   label,
   options,
@@ -30,7 +30,7 @@ export const ComboboxMulti: React.FC<ComboboxMultiProps> = ({
   removeItem,
   placeholder,
   renderOption = (option) => <TextOption text={option} />,
-}) => {
+}: ComboboxMultiProps) => {
   const [query, setQuery] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 

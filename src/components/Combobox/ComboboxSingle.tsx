@@ -23,7 +23,7 @@ export interface ComboboxSingleProps {
   renderOption?: (option: string) => ReactElement;
 }
 
-export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
+export const ComboboxSingle = ({
   name,
   label,
   options,
@@ -32,7 +32,7 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
   reset,
   placeholder,
   renderOption = (option) => <TextOption text={option} />,
-}) => {
+}: ComboboxSingleProps) => {
   const [query, setQuery] = useState("");
 
   const showResetButton = !!value;

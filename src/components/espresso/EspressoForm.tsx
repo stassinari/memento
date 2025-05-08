@@ -46,11 +46,11 @@ interface EspressoFormProps {
   mutation: (data: EspressoFormInputs) => Promise<void>;
 }
 
-export const EspressoForm: React.FC<EspressoFormProps> = ({
+export const EspressoForm = ({
   defaultValues,
   buttonLabel,
   mutation,
-}) => {
+}: EspressoFormProps) => {
   console.log("EspressoForm");
 
   const [espressoFormInputs, setEspressoFormInputs] = useState(defaultValues);

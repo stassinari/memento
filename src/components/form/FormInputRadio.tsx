@@ -13,7 +13,7 @@ interface FormInputRadioProps {
   error?: string;
 }
 
-export const FormInputRadio: React.FC<FormInputRadioProps> = ({
+export const FormInputRadio = ({
   label,
   id,
   options,
@@ -21,7 +21,7 @@ export const FormInputRadio: React.FC<FormInputRadioProps> = ({
   inputProps,
   helperText,
   error,
-}) => {
+}: FormInputRadioProps) => {
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>

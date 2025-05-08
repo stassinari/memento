@@ -19,7 +19,7 @@ export interface DataListItem {
 interface DataListProps {
   items: DataListItem[];
 }
-export const DataList: React.FC<DataListProps> = ({ items }) => {
+export const DataList = ({ items }: DataListProps) => {
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">

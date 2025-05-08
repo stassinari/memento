@@ -8,11 +8,11 @@ interface FormSectionProps {
   subtitle?: string;
 }
 
-export const FormSection: React.FC<FormSectionProps> = ({
+export const FormSection = ({
   children,
   title,
   subtitle,
-}) => {
+}: FormSectionProps) => {
   return (
     <div className="md:grid md:grid-cols-3 md:gap-6">
       <div className="md:col-span-1">

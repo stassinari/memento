@@ -4,7 +4,7 @@ interface TextOptionProps {
   text: string;
 }
 
-export const TextOption: React.FC<TextOptionProps> = ({ text }) => (
+export const TextOption = ({ text }: TextOptionProps) => (
   <span className="block truncate ui-selected:font-semibold">{text}</span>
 );
 
@@ -13,10 +13,10 @@ interface TextWithImageOptionProps {
   text: string;
 }
 
-export const TextWithImageOption: React.FC<TextWithImageOptionProps> = ({
+export const TextWithImageOption = ({
   Image,
   text,
-}) => (
+}: TextWithImageOptionProps) => (
   <>
     <div className="flex-shrink-0 w-6 overflow-hidden rounded">{Image}</div>
     <span className="ml-3 truncate ui-selected:font-semibold">{text}</span>

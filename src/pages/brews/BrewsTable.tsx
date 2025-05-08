@@ -115,7 +115,7 @@ interface BrewsTableProps {
   beansList: Beans[];
 }
 
-const BrewsTable: React.FC<BrewsTableProps> = ({ brewsList, beansList }) => {
+const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
   console.log("BrewsTable");
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -322,7 +322,7 @@ interface StatProps {
   stats: Stat[];
 }
 
-const Stats: React.FC<StatProps> = ({ title, stats }) => {
+const Stats = ({ title, stats }: StatProps) => {
   return (
     <div>
       <h3 className="text-base font-semibold leading-6 text-gray-900">

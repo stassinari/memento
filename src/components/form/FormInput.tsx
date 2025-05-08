@@ -13,14 +13,14 @@ interface FormInputProps {
   suggestions?: string[];
 }
 
-export const FormInput: React.FC<FormInputProps> = ({
+export const FormInput = ({
   label,
   id,
   helperText,
   error,
   inputProps,
   suggestions,
-}) => {
+}: FormInputProps) => {
   const { setValue } = useFormContext();
 
   return (

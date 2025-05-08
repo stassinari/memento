@@ -5,7 +5,7 @@ interface IconProps {
   className?: string;
 }
 
-export const BeanBagIcon: React.FC<IconProps> = ({ className, variant }) =>
+export const BeanBagIcon = ({ className, variant }: IconProps) =>
   variant === "solid" ? (
     <svg
       className={clsx("fill-current", className)}

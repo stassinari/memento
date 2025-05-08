@@ -32,9 +32,9 @@ interface BeansCardsSelectProps {
   beansList: Beans[];
 }
 
-export const BeansCardsSelect: React.FC<BeansCardsSelectProps> = ({
+export const BeansCardsSelect = ({
   beansList,
-}) => {
+}: BeansCardsSelectProps) => {
   const { watch, formState } = useFormContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);

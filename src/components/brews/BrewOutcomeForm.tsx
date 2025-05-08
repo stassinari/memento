@@ -50,10 +50,10 @@ interface BrewOutcomeFormProps {
   brewRef: DocumentReference<DocumentData>;
 }
 
-export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
+export const BrewOutcomeForm = ({
   brew,
   brewRef,
-}) => {
+}: BrewOutcomeFormProps) => {
   const navigate = useNavigate();
 
   const methods = useForm<BrewOutcomeInputs>({

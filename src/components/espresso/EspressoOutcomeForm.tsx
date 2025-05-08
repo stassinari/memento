@@ -46,10 +46,10 @@ interface EspressoOutcomeFormProps {
   espressoRef: DocumentReference<DocumentData>;
 }
 
-export const EspressoOutcomeForm: React.FC<EspressoOutcomeFormProps> = ({
+export const EspressoOutcomeForm = ({
   espresso,
   espressoRef,
-}) => {
+}: EspressoOutcomeFormProps) => {
   const navigate = useNavigate();
 
   const methods = useForm<EspressoOutcomeInputs>({

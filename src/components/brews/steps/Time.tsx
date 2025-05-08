@@ -27,12 +27,12 @@ interface BrewTimeProps {
 
 export const brewStopwatchAtom = atom<boolean>(false);
 
-export const BrewTime: React.FC<BrewTimeProps> = ({
+export const BrewTime = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
   ctaLabel,
-}) => {
+}: BrewTimeProps) => {
   const isStopwatchRunning = useAtomValue(brewStopwatchAtom);
 
   const methods = useForm<BrewTimeInputs>({

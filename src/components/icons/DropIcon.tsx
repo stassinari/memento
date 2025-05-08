@@ -4,7 +4,7 @@ interface IconProps {
   className?: string;
 }
 
-export const DropIcon: React.FC<IconProps> = ({ className }) => (
+export const DropIcon = ({ className }: IconProps) => (
   <svg
     className={clsx("fill-current", className)}
     viewBox="0 0 20 20"

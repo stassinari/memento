@@ -27,12 +27,12 @@ interface EspressoTimeProps {
 
 export const espressoStopwatchAtom = atom<boolean>(false);
 
-export const EspressoTime: React.FC<EspressoTimeProps> = ({
+export const EspressoTime = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
   ctaLabel,
-}) => {
+}: EspressoTimeProps) => {
   const isStopwatchRunning = useAtomValue(espressoStopwatchAtom);
 
   const methods = useForm<EspressoTimeInputs>({

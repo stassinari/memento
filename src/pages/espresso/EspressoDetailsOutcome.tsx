@@ -8,9 +8,9 @@ interface EspressoDetailsOutcomeProps {
   espresso: Espresso;
 }
 
-export const EspressoDetailsOutcome: React.FC<EspressoDetailsOutcomeProps> = ({
+export const EspressoDetailsOutcome = ({
   espresso,
-}) => {
+}: EspressoDetailsOutcomeProps) => {
   return (
     <div className="mt-4 space-y-4">
       <DetailsCard

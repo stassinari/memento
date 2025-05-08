@@ -9,9 +9,9 @@ interface BrewDetailsOutcomeProp {
   brew: Brew;
 }
 
-export const BrewDetailsOutcome: React.FC<BrewDetailsOutcomeProp> = ({
+export const BrewDetailsOutcome = ({
   brew,
-}) => {
+}: BrewDetailsOutcomeProp) => {
   return (
     <div className="space-y-4">
       <DetailsCard

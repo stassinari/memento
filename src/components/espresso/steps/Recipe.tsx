@@ -24,11 +24,11 @@ interface EspressoRecipeProps {
   handleBack: () => void;
 }
 
-export const EspressoRecipe: React.FC<EspressoRecipeProps> = ({
+export const EspressoRecipe = ({
   defaultValues,
   handleNestedSubmit,
   handleBack,
-}) => {
+}: EspressoRecipeProps) => {
   const methods = useForm<EspressoRecipeInputs>({
     defaultValues,
   });

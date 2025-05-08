@@ -4,7 +4,7 @@ interface IconProps {
   className?: string;
 }
 
-export const BeanIcon: React.FC<IconProps> = ({ className }) => (
+export const BeanIcon = ({ className }: IconProps) => (
   <svg
     className={clsx("fill-current", className)}
     viewBox="0 0 20 20"

@@ -15,7 +15,7 @@ export interface FormComboboxSingleProps {
   suggestions?: string[];
 }
 
-export const FormComboboxSingle: React.FC<FormComboboxSingleProps> = ({
+export const FormComboboxSingle = ({
   name,
   label,
   options,
@@ -24,7 +24,7 @@ export const FormComboboxSingle: React.FC<FormComboboxSingleProps> = ({
   requiredMsg,
   error,
   suggestions,
-}) => {
+}: FormComboboxSingleProps) => {
   const { control, resetField, setValue } = useFormContext();
   return (
     <div>

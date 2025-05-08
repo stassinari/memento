@@ -12,13 +12,13 @@ interface FormInputMonthYearProps {
   error?: string;
 }
 
-export const FormInputMonthYear: React.FC<FormInputMonthYearProps> = ({
+export const FormInputMonthYear = ({
   label,
   id,
   placeholder,
   helperText,
   error,
-}) => {
+}: FormInputMonthYearProps) => {
   // Consider creating reusable components rather than relying on this Provider
   const { control } = useFormContext();
   return (

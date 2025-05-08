@@ -12,7 +12,7 @@ interface DecentChartProps {
   espressoId?: string;
 }
 
-export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
+export const DecentCharts = ({ espressoId }: DecentChartProps) => {
   console.log("DecentCharts");
 
   const user = useCurrentUser();

@@ -7,9 +7,9 @@ interface EspressoDetailsInfoProps {
   espresso: Espresso;
 }
 
-export const EspressoDetailsInfo: React.FC<EspressoDetailsInfoProps> = ({
+export const EspressoDetailsInfo = ({
   espresso,
-}) => {
+}: EspressoDetailsInfoProps) => {
   const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
     espresso?.actualWeight ?? espresso?.targetWeight ?? 0,

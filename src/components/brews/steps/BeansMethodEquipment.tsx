@@ -43,12 +43,12 @@ interface BeansMethodEquipmentProps {
   handleNestedSubmit: (data: BeansMethodEquipmentInputs) => void;
 }
 
-export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
+export const BeansMethodEquipment = ({
   brewsList,
   beansList,
   defaultValues,
   handleNestedSubmit,
-}) => {
+}: BeansMethodEquipmentProps) => {
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
   const methods = useForm<BeansMethodEquipmentInputs>({

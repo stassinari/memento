@@ -61,12 +61,12 @@ interface DecentEspressoFormProps {
   backLink: string;
 }
 
-export const DecentEspressoForm: React.FC<DecentEspressoFormProps> = ({
+export const DecentEspressoForm = ({
   defaultValues,
   espressoList,
   mutation,
   backLink,
-}) => {
+}: DecentEspressoFormProps) => {
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
   // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one

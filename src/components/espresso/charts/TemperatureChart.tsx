@@ -16,9 +16,9 @@ interface TemperatureChartProps {
   decentReadings: DecentReadings;
 }
 
-export const TemperatureChart: React.FC<TemperatureChartProps> = ({
+export const TemperatureChart = ({
   decentReadings,
-}) => {
+}: TemperatureChartProps) => {
   const data = decentReadings.time.map((t, i) => ({
     time: t,
     mix: decentReadings.temperatureMix[i],

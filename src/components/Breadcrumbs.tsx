@@ -10,9 +10,7 @@ interface BreadcrumbItem {
   linkTo: string;
 }
 
-export const BreadcrumbsWithoutHome: React.FC<BreadcrumbsProps> = ({
-  items,
-}) => {
+export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
   return (
     <nav className="flex overflow-hidden" aria-label="Breadcrumb">
       <ol role="list" className="flex items-center space-x-4 overflow-x-scroll">
@@ -40,7 +38,7 @@ export const BreadcrumbsWithoutHome: React.FC<BreadcrumbsProps> = ({
   );
 };
 
-export const BreadcrumbsWithHome: React.FC<BreadcrumbsProps> = ({ items }) => {
+export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
   return (
     <nav className="flex mb-2 overflow-hidden" aria-label="Breadcrumb">
       <ol

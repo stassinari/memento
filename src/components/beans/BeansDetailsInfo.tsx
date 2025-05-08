@@ -7,9 +7,9 @@ interface BeansDetailsInfoProps {
   beans: Beans;
 }
 
-export const BeansDetailsInfo: React.FC<BeansDetailsInfoProps> = ({
+export const BeansDetailsInfo = ({
   beans,
-}) => (
+}: BeansDetailsInfoProps) => (
   <div className="space-y-4">
     <DetailsCard
       title="Roast information"

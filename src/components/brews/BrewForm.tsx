@@ -42,11 +42,11 @@ interface BrewFormProps {
   mutation: (data: BrewFormInputs) => Promise<void>;
 }
 
-export const BrewForm: React.FC<BrewFormProps> = ({
+export const BrewForm = ({
   defaultValues,
   buttonLabel,
   mutation,
-}) => {
+}: BrewFormProps) => {
   console.log("BrewForm");
 
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);

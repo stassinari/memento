@@ -9,11 +9,11 @@ interface EmptyStateProps {
   buttonLabel?: string;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({
+export const EmptyState = ({
   title,
   description,
   buttonLabel,
-}) => {
+}: EmptyStateProps) => {
   return (
     <div className="mt-32 text-center">
       <CubeTransparentIcon className="w-12 h-12 mx-auto text-gray-400" />

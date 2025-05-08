@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { chain, entries } from "lodash";
-import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import { Beans } from "../types/beans";
@@ -106,10 +105,7 @@ interface DrinksListProps {
   beansList: Beans[];
 }
 
-export const DrinksList: React.FC<DrinksListProps> = ({
-  drinks,
-  beansList,
-}) => (
+export const DrinksList = ({ drinks, beansList }: DrinksListProps) => (
   <>
     {drinks.map(([date, drinks]) => (
       <div key={date} className="mt-6 sm:mt-8 @container">
@@ -127,7 +123,7 @@ export const DrinksList: React.FC<DrinksListProps> = ({
           </div>
         </div>
         <ul className="grid gap-4 @xl:grid-cols-2">
-          {drinks.map((item, i) => (
+          {drinks.map((item) => (
             <DrinkItem
               key={item.drink.id}
               {...item}
@@ -192,7 +188,7 @@ interface BrewCardContentProps {
   beans?: Beans;
 }
 
-const BrewCardContent: React.FC<BrewCardContentProps> = ({ brew, beans }) => (
+const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
   <div className="flex">
     <div className="flex-grow">
       <p className="font-semibold text-gray-900">{brew.method}</p>
@@ -221,10 +217,7 @@ interface EspressoCardContentProps {
   beans?: Beans;
 }
 
-const EspressoCardContent: React.FC<EspressoCardContentProps> = ({
-  espresso,
-  beans,
-}) => (
+const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
   <div className="flex">
     <div className="flex-grow">
       {espresso.fromDecent && (

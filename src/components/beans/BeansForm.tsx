@@ -89,12 +89,12 @@ interface BeansFormProps {
   showStorageSection?: boolean;
 }
 
-export const BeansForm: React.FC<BeansFormProps> = ({
+export const BeansForm = ({
   defaultValues,
   buttonLabel,
   mutation,
   showStorageSection = true,
-}) => {
+}: BeansFormProps) => {
   console.log("BeansForm");
 
   const navigate = useNavigate();

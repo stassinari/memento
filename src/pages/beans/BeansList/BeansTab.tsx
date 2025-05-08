@@ -16,11 +16,11 @@ export interface BeansTabProps {
   EmptyState: ReactNode;
 }
 
-export const BeansTab: React.FC<BeansTabProps> = ({
+export const BeansTab = ({
   filters,
   removeFrozen,
   EmptyState,
-}) => {
+}: BeansTabProps) => {
   console.log("BeansTab");
 
   const query = useCollectionQuery<Beans>("beans", filters);

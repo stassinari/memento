@@ -11,11 +11,11 @@ interface ModalProps {
   children: ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal = ({
   open,
   handleClose,
   children,
-}) => {
+}: ModalProps) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={handleClose}>
@@ -68,12 +68,12 @@ interface RadixProps {
   setOpen: (open: boolean) => void;
 }
 
-export const RadixModal: React.FC<RadixProps> = ({
+export const RadixModal = ({
   children,
   triggerSlot,
   open,
   setOpen,
-}) => {
+}: RadixProps) => {
   return (
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>{triggerSlot}</RadixDialog.Trigger>
@@ -102,9 +102,9 @@ interface ExampleDialogContentProps {
   handleClose: () => void;
 }
 
-export const ExampleDialogContent: React.FC<ExampleDialogContentProps> = ({
+export const ExampleDialogContent = ({
   handleClose,
-}) => (
+}: ExampleDialogContentProps) => (
   <>
     <div>
       <div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full">

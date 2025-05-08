@@ -4,7 +4,7 @@ interface IconProps {
   className?: string;
 }
 
-export const PortafilterIcon: React.FC<IconProps> = ({ className }) => (
+export const PortafilterIcon = ({ className }: IconProps) => (
   <svg
     className={clsx("fill-current", className)}
     viewBox="0 0 20 20"

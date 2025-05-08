@@ -16,14 +16,14 @@ interface StopwatchProps {
   disabled?: boolean;
 }
 
-export const Stopwatch: React.FC<StopwatchProps> = ({
+export const Stopwatch = ({
   atom,
   disabled = false,
   initialSeconds = 0,
   initialMinutes = 0,
   setFormSeconds,
   setFormMinutes,
-}) => {
+}: StopwatchProps) => {
   const [seconds, setSeconds] = useState(initialMinutes * 60 + initialSeconds);
   const [isRunning, setIsRunning] = useAtom(atom);
 
