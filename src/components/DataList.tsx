@@ -21,7 +21,7 @@ interface DataListProps {
 }
 export const DataList = ({ items }: DataListProps) => {
   return (
-    <div className="overflow-hidden bg-white shadow sm:rounded-md">
+    <div className="overflow-hidden bg-white shadow-sm sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">
         {items.map(({ topRow, bottomRow, link }, i) => (
           <li key={`${topRow.title}-${i}`}>
@@ -32,7 +32,7 @@ export const DataList = ({ items }: DataListProps) => {
                     {topRow.title}
                   </p>
                   {topRow.pill && (
-                    <div className="flex flex-shrink-0 ml-2">
+                    <div className="flex shrink-0 ml-2">
                       <p className="inline-flex px-2 text-xs font-semibold leading-5 text-gray-500 bg-gray-100 rounded-full">
                         {topRow.pill}
                       </p>
@@ -48,7 +48,7 @@ export const DataList = ({ items }: DataListProps) => {
                       >
                         {icon && (
                           <span
-                            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                            className="mr-1.5 h-5 w-5 shrink-0 text-gray-400"
                             aria-hidden="true"
                           >
                             {icon}
@@ -61,7 +61,7 @@ export const DataList = ({ items }: DataListProps) => {
                   {bottomRow.date && (
                     <div className="flex items-center mt-2 text-sm text-gray-500 sm:mt-0">
                       <CalendarIcon
-                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        className="mr-1.5 h-5 w-5 shrink-0 text-gray-400"
                         aria-hidden="true"
                       />
                       <p>

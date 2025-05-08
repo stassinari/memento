@@ -44,7 +44,7 @@ export const notification = ({
           <div className="p-4">
             <div className="flex items-start">
               {Icon && (
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="w-6 h-6 text-gray-400" aria-hidden="true">
                     {Icon}
                   </div>
@@ -59,7 +59,7 @@ export const notification = ({
                       <button
                         onClick={() => primaryButton.onClick(t)}
                         type="button"
-                        className="text-sm font-medium text-orange-600 bg-white rounded-md hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        className="text-sm font-medium text-orange-600 bg-white rounded-md hover:text-orange-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                       >
                         {primaryButton.label}
                       </button>
@@ -68,7 +68,7 @@ export const notification = ({
                       <button
                         onClick={() => secondaryButton.onClick(t)}
                         type="button"
-                        className="text-sm font-medium text-gray-700 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        className="text-sm font-medium text-gray-700 bg-white rounded-md hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                       >
                         {secondaryButton.label}
                       </button>
@@ -77,10 +77,10 @@ export const notification = ({
                 )}
               </div>
               {showClose && (
-                <div className="flex flex-shrink-0 ml-4">
+                <div className="flex shrink-0 ml-4">
                   <button
                     type="button"
-                    className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                    className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                     onClick={() => toast.dismiss(t.id)}
                   >
                     <span className="sr-only">Close</span>

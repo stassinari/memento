@@ -33,7 +33,7 @@ export const ChartTooltip = ({ title, payload }: CustomTooltipProps) => {
   }
 
   return (
-    <div className="p-2 bg-white rounded shadow-md opacity-75">
+    <div className="p-2 bg-white rounded-sm shadow-md opacity-75">
       <table>
         <thead>
           <tr className="p-0 text-sm text-left text-gray-700">

@@ -35,7 +35,7 @@ export const InputRadioCards = <T,>({
           <RadioGroup.Option
             key={option.value}
             value={option.value}
-            className="relative block px-6 py-4 bg-white border rounded-lg shadow-sm cursor-pointer focus:outline-none sm:flex sm:justify-between ui-checked:border-orange-500 ui-checked:ring-2 ui-checked:ring-orange-500 ui-not-checked:border-gray-300"
+            className="relative block px-6 py-4 bg-white border rounded-lg shadow-xs cursor-pointer focus:outline-hidden sm:flex sm:justify-between ui-checked:border-orange-500 ui-checked:ring-2 ui-checked:ring-orange-500 ui-not-checked:border-gray-300"
           >
             <span className="flex items-center">
               <span className="flex flex-col text-sm">

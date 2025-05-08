@@ -116,7 +116,7 @@ export const BeansBlendForm = () => {
     <button
       type="button"
       onClick={handleAppend}
-      className="relative block w-full p-8 text-center border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      className="relative block w-full p-8 text-center border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
     >
       <span className="block w-12 h-12 mx-auto text-gray-400">
         <PuzzlePieceIcon />

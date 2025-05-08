@@ -18,7 +18,7 @@ import React, { ReactElement, ReactNode } from "react";
 // }: ComboboxInputProps) => (
 //   <HuiCombobox.Input
 //     className={clsx([//       inputStyles,
-//       "relative py-2 pl-3 pr-10 bg-white border focus:outline-none focus:ring-1",
+//       "relative py-2 pl-3 pr-10 bg-white border focus:outline-hidden focus:ring-1",
 //       increasePadding && "pr-16",
 //])}
 //     onChange={handleChange}
@@ -29,7 +29,7 @@ import React, { ReactElement, ReactNode } from "react";
 // );
 
 export const comboboxButtonStyles =
-  "absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-none";
+  "absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-hidden";
 
 export const comboboxButtonIconStyles =
   "w-5 h-5 text-gray-400 hover:text-gray-600";
@@ -47,7 +47,7 @@ interface ComboboxOptionsProps {
 export const ComboboxOptions = ({
   children,
 }: ComboboxOptionsProps) => (
-  <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+  <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
     {children}
   </HuiCombobox.Options>
 );

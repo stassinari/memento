@@ -18,7 +18,7 @@ export const TextWithImageOption = ({
   text,
 }: TextWithImageOptionProps) => (
   <>
-    <div className="flex-shrink-0 w-6 overflow-hidden rounded">{Image}</div>
+    <div className="shrink-0 w-6 overflow-hidden rounded-sm">{Image}</div>
     <span className="ml-3 truncate ui-selected:font-semibold">{text}</span>
   </>
 );

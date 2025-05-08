@@ -29,7 +29,7 @@ const SidebarNavItem = ({
     >
       <span
         className={clsx([
-          "flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-orange-600",
+          "shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-orange-600",
           isActive && "text-orange-600",
         ])}
         aria-hidden="true"
@@ -99,13 +99,7 @@ export const SidebarNav = () => {
           })`,
         }}
       >
-        <div className="flex items-center h-16 shrink-0">
-          <img
-            className="w-auto h-8"
-            src="https://tailwindui.com/img/logos/workflow-mark.svg?color=orange&shade=600"
-            alt="Workflow"
-          />
-        </div>
+        <div className="flex items-center h-16 shrink-0">Memento logo here</div>
         <nav className="flex flex-col flex-1">
           <ul role="list" className="flex flex-col flex-1 gap-y-7">
             <li>

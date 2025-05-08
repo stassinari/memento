@@ -157,7 +157,7 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
           : `/drinks/espresso/${drink.id ?? ""}`
       }
     >
-      <Card.Container className="flex-grow text-sm">
+      <Card.Container className="grow text-sm">
         <Card.Content>
           {type === "brew" ? (
             <BrewCardContent brew={drink} beans={beans} />
@@ -190,7 +190,7 @@ interface BrewCardContentProps {
 
 const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
   <div className="flex">
-    <div className="flex-grow">
+    <div className="grow">
       <p className="font-semibold text-gray-900">{brew.method}</p>
       <p className="flex items-center gap-1 text-gray-600">
         <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" />{" "}
@@ -204,7 +204,7 @@ const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
     </div>
     {brew.rating && (
       <div>
-        <span className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
+        <span className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded-sm">
           {brew.rating}
         </span>
       </div>
@@ -219,7 +219,7 @@ interface EspressoCardContentProps {
 
 const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
   <div className="flex">
-    <div className="flex-grow">
+    <div className="grow">
       {espresso.fromDecent && (
         <p className="font-semibold text-gray-900">{espresso.profileName}</p>
       )}
@@ -234,7 +234,7 @@ const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
       </p>
     </div>
     <div>
-      <p className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded">
+      <p className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded-sm">
         {espresso.rating}
       </p>
     </div>

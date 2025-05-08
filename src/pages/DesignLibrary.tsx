@@ -170,7 +170,7 @@ export const DesignLibrary: React.FC = () => {
               }
             >
               <div className="flex">
-                <div className="flex-grow">
+                <div className="grow">
                   <ListCard.Title>Card title</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -205,7 +205,7 @@ export const DesignLibrary: React.FC = () => {
               }
             >
               <div className="flex">
-                <div className="flex-grow">
+                <div className="grow">
                   <ListCard.Title>V60 V2</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -240,7 +240,7 @@ export const DesignLibrary: React.FC = () => {
               }
             >
               <div className="flex">
-                <div className="flex-grow">
+                <div className="grow">
                   <ListCard.Title>Extractamundo Dos!</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>
@@ -275,7 +275,7 @@ export const DesignLibrary: React.FC = () => {
               }
             >
               <div className="flex">
-                <div className="flex-grow">
+                <div className="grow">
                   <ListCard.Title>Luiz Guzman</ListCard.Title>
                   <ListCard.Row>
                     <ListCard.RowIcon>

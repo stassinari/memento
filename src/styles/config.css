@@ -1,6 +1,171 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin '@tailwindcss/forms'; /* this is only needed for the react-datepicker and only used once for form-input */
+@plugin '@tailwindcss/typography';
+
+@plugin '@headlessui/tailwindcss';
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-black: #000;
+  --color-white: #fff;
+
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
+
+  --color-orange-50: #fff7ed;
+  --color-orange-100: #ffedd5;
+  --color-orange-200: #fed7aa;
+  --color-orange-300: #fdba74;
+  --color-orange-400: #fb923c;
+  --color-orange-500: #f97316;
+  --color-orange-600: #ea580c;
+  --color-orange-700: #c2410c;
+  --color-orange-800: #9a3412;
+  --color-orange-900: #7c2d12;
+  --color-orange-950: #431407;
+
+  --color-indigo-50: #eef2ff;
+  --color-indigo-100: #e0e7ff;
+  --color-indigo-200: #c7d2fe;
+  --color-indigo-300: #a5b4fc;
+  --color-indigo-400: #818cf8;
+  --color-indigo-500: #6366f1;
+  --color-indigo-600: #4f46e5;
+  --color-indigo-700: #4338ca;
+  --color-indigo-800: #3730a3;
+  --color-indigo-900: #312e81;
+  --color-indigo-950: #1e1b4b;
+
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-green-950: #052e16;
+
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #172554;
+
+  --color-purple-50: #faf5ff;
+  --color-purple-100: #f3e8ff;
+  --color-purple-200: #e9d5ff;
+  --color-purple-300: #d8b4fe;
+  --color-purple-400: #c084fc;
+  --color-purple-500: #a855f7;
+  --color-purple-600: #9333ea;
+  --color-purple-700: #7e22ce;
+  --color-purple-800: #6b21a8;
+  --color-purple-900: #581c87;
+  --color-purple-950: #3b0764;
+
+  --color-rose-50: #fff1f2;
+  --color-rose-100: #ffe4e6;
+  --color-rose-200: #fecdd3;
+  --color-rose-300: #fda4af;
+  --color-rose-400: #fb7185;
+  --color-rose-500: #f43f5e;
+  --color-rose-600: #e11d48;
+  --color-rose-700: #be123c;
+  --color-rose-800: #9f1239;
+  --color-rose-900: #881337;
+  --color-rose-950: #4c0519;
+
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-amber-950: #451a03;
+
+  --color-tw-brown-50: #fdf8f6;
+  --color-tw-brown-100: #f2e8e5;
+  --color-tw-brown-200: #eaddd7;
+  --color-tw-brown-300: #e0cec7;
+  --color-tw-brown-400: #d2bab0;
+  --color-tw-brown-500: #bfa094;
+  --color-tw-brown-600: #a18072;
+  --color-tw-brown-700: #977669;
+  --color-tw-brown-800: #846358;
+  --color-tw-brown-900: #43302b;
+
+  --color-mui-brown-50: #efebe9;
+  --color-mui-brown-100: #d7ccc8;
+  --color-mui-brown-200: #bcaaa4;
+  --color-mui-brown-300: #a1887f;
+  --color-mui-brown-400: #8d6e63;
+  --color-mui-brown-500: #795548;
+  --color-mui-brown-600: #6d4c41;
+  --color-mui-brown-700: #5d4037;
+  --color-mui-brown-800: #4e342e;
+  --color-mui-brown-900: #3e2723;
+
+  --font-sans:
+    Inter var, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --spacing-5\/4: 125%;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 /*  Global styles
 
@@ -43,23 +208,23 @@ body {
 }
 
 .react-datepicker__input-container input {
-  @apply block w-full text-base sm:text-sm bg-white border border-gray-300 rounded-md shadow-sm form-input focus:ring-orange-500 focus:border-orange-500;
+  @apply block w-full text-base sm:text-sm bg-white border border-gray-300 rounded-md shadow-xs form-input focus:ring-orange-500 focus:border-orange-500;
 }
 
 .react-datepicker-popper {
-  @apply z-40 w-72 text-sm bg-white shadow px-3 py-2 border border-gray-200 rounded;
+  @apply z-40 w-72 text-sm bg-white shadow-sm px-3 py-2 border border-gray-200 rounded-sm;
 }
 
 .react-datepicker-left {
-  @apply absolute left-0 right-auto top-11 transform-none !important;
+  @apply absolute! left-0! right-auto! top-11! transform-none!;
 }
 
 .react-datepicker-right {
-  @apply absolute right-0 left-auto top-11 transform-none !important;
+  @apply absolute! right-0! left-auto! top-11! transform-none!;
 }
 
 .react-datepicker__portal {
-  @apply absolute z-10 w-72 text-sm transform-none bg-white shadow px-3 py-2 top-12 right-0 border-2 border-gray-200 rounded;
+  @apply absolute z-10 w-72 text-sm transform-none bg-white shadow-sm px-3 py-2 top-12 right-0 border-2 border-gray-200 rounded-sm;
 }
 
 .react-datepicker__month-container {
@@ -91,11 +256,11 @@ body {
 }
 
 .react-datepicker__navigation--previous {
-  @apply right-12 w-8 h-8 rounded transition flex items-center justify-center hover:bg-gray-200;
+  @apply right-12 w-8 h-8 rounded-sm transition flex items-center justify-center hover:bg-gray-200;
 }
 
 .react-datepicker__navigation--next {
-  @apply right-4 w-8 h-8 rounded transition flex items-center justify-center hover:bg-gray-200;
+  @apply right-4 w-8 h-8 rounded-sm transition flex items-center justify-center hover:bg-gray-200;
 }
 
 .react-datepicker__day {
@@ -111,7 +276,7 @@ body {
 }
 
 .react-datepicker__day--disabled {
-  @apply cursor-not-allowed text-gray-300 hover:bg-transparent !important;
+  @apply cursor-not-allowed! text-gray-300! hover:bg-transparent!;
 }
 
 .react-datepicker__day--outside-month {
@@ -135,7 +300,7 @@ body {
 }
 
 .react-datepicker__day--selected {
-  @apply bg-orange-500 text-white font-semibold !important;
+  @apply bg-orange-500! text-white! font-semibold!;
 }
 
 .react-datepicker__day--range-start {
@@ -167,9 +332,9 @@ body {
 }
 
 .react-datepicker__month--selected {
-  @apply bg-orange-500 text-white font-semibold !important;
+  @apply bg-orange-500! text-white! font-semibold!;
 }
 
 .react-datepicker__month--disabled {
-  @apply cursor-not-allowed text-gray-300 hover:bg-transparent !important;
+  @apply cursor-not-allowed! text-gray-300! hover:bg-transparent!;
 }

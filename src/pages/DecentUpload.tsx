@@ -147,7 +147,7 @@ export const DecentUpload: React.FC = () => {
           <div className="relative">
             <div
               className={clsx([
-                "group flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-600/75 focus-visible:outline-none",
+                "group flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-600/75 focus-visible:outline-hidden",
                 isFileUploading &&
                   "after:content after:absolute after:inset-0 after:bg-gray-50/50",
               ])}
@@ -162,7 +162,7 @@ export const DecentUpload: React.FC = () => {
                   <label
                     htmlFor="file-upload"
                     className={clsx([
-                      "relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-none focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2",
+                      "relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-hidden focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2",
                       !isFileUploading &&
                         "group-hover:text-orange-500 group-hover:underline",
                     ])}

@@ -22,7 +22,7 @@ export const ErrorPage = ({
     className={clsx("pt-16 pb-12", layoutContainerTailwindStyles)}
     style={layoutContainerCssStyles}
   >
-    <main className="flex flex-col justify-center flex-grow w-full h-screen px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <main className="flex flex-col justify-center grow w-full h-screen px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div className="py-16">
         <div className="text-center">
           <p className="text-base font-semibold text-orange-600">Error</p>
@@ -31,7 +31,7 @@ export const ErrorPage = ({
           </h1>
           <p className="mt-2 text-base text-gray-500">{description}</p>
           {errorMessage && (
-            <pre className="max-w-xl px-4 py-2 mx-auto mt-4 overflow-scroll bg-gray-100 rounded">
+            <pre className="max-w-xl px-4 py-2 mx-auto mt-4 overflow-scroll bg-gray-100 rounded-sm">
               {errorMessage}
             </pre>
           )}

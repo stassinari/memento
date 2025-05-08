@@ -81,7 +81,7 @@ export const RadixModal = ({
         <RadixDialog.Overlay className="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 sm:place-items-center">
           <RadixDialog.Content
             className={clsx([
-              "p-4 mx-4 bg-white rounded",
+              "p-4 mx-4 bg-white rounded-sm",
               "sm:w-auto sm:max-w-md",
             ])}
             style={{

@@ -22,9 +22,9 @@ export const Toggle = ({
       onChange={onChange}
       disabled={disabled}
       className={clsx([
-        "group relative inline-flex flex-shrink-0 h-6 transition-colors duration-200 ease-in-out border-2 border-transparent rounded-full cursor-pointer w-11",
+        "group relative inline-flex shrink-0 h-6 transition-colors duration-200 ease-in-out border-2 border-transparent rounded-full cursor-pointer w-11",
         "disabled:bg-gray-100 disabled:cursor-not-allowed",
-        "focus:outline-none focus:ring-2 focus:ring-offset-2",
+        "focus:outline-hidden focus:ring-2 focus:ring-offset-2",
         colour === "main"
           ? "focus:ring-orange-500"
           : colour === "accent"
@@ -42,7 +42,7 @@ export const Toggle = ({
       <span
         aria-hidden="true"
         className={clsx([
-          "inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow pointer-events-none ring-0 group-disabled:bg-gray-50",
+          "inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-sm pointer-events-none ring-0 group-disabled:bg-gray-50",
           checked ? "translate-x-5" : "translate-x-0",
         ])}
       />

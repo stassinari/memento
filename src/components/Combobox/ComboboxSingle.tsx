@@ -60,7 +60,7 @@ export const ComboboxSingle = ({
         <HuiCombobox.Input
           className={clsx([
             inputStyles,
-            "relative py-2 pl-3 bg-white border focus:outline-none focus:ring-1",
+            "relative py-2 pl-3 bg-white border focus:outline-hidden focus:ring-1",
             showResetButton ? "pr-16" : "pr-10",
           ])}
           onChange={(event) => {

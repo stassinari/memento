@@ -53,7 +53,7 @@ export const BeansTab = ({
             }
           >
             <div className="flex">
-              <div className="flex-grow">
+              <div className="grow">
                 <ListCard.Title>{beans.name}</ListCard.Title>
                 <ListCard.Row>
                   <ListCard.RowIcon>

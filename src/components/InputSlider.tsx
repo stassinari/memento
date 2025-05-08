@@ -50,9 +50,9 @@ export const InputSlider = ({
           <div
             {...props}
             className={clsx([
-              "relative w-4 h-4 bg-white border border-gray-300 rounded-full shadow",
+              "relative w-4 h-4 bg-white border border-gray-300 rounded-full shadow-sm",
               "before:content before:rounded-full before:opacity-20 before:w-12 before:h-12 before:block before:-top-5/4 before:-left-5/4 before:absolute",
-              "focus:outline-none focus:ring-orange-500 focus:border-orange-500",
+              "focus:outline-hidden focus:ring-orange-500 focus:border-orange-500",
             ])}
             style={{
               transform: "translate(-8px, -4px)",
@@ -62,7 +62,7 @@ export const InputSlider = ({
             {!hideThumbMarker && (
               <div
                 className={clsx([
-                  "absolute px-2 py-0.5 font-medium text-xs text-white bg-orange-600 rounded -top-6 -left-1 transition-opacity",
+                  "absolute px-2 py-0.5 font-medium text-xs text-white bg-orange-600 rounded-sm -top-6 -left-1 transition-opacity",
                   isDragged ? "opacity-90" : "opacity-0",
                 ])}
               >

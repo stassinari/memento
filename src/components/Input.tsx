@@ -7,7 +7,7 @@ import {
 
 export const labelStyles = "block text-sm font-medium text-gray-700";
 export const inputStyles =
-  "block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:ring-orange-500 focus:border-orange-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500";
+  "block w-full border-gray-300 rounded-md shadow-xs sm:text-sm focus:ring-orange-500 focus:border-orange-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500";
 
 const Label = ({
   className,

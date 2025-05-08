@@ -12,7 +12,7 @@ export const Textarea: React.FC<TextareaProps> = React.forwardRef(
       <TextareaAutosize
         minRows={3}
         {...props}
-        className="block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+        className="block w-full border-gray-300 rounded-md shadow-xs focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
         ref={ref}
       />
     );

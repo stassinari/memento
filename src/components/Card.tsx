@@ -5,7 +5,7 @@ import { Action } from "./ButtonWithDropdown";
 
 const Container = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={clsx("overflow-hidden bg-white rounded-lg shadow", className)}
+    className={clsx("overflow-hidden bg-white rounded-lg shadow-sm", className)}
     {...props}
   />
 );

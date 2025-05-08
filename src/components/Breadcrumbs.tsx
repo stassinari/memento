@@ -26,7 +26,7 @@ export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
               </Link>
               {i !== items.length - 1 && (
                 <ChevronRightIcon
-                  className="flex-shrink-0 w-5 h-5 text-gray-400"
+                  className="shrink-0 w-5 h-5 text-gray-400"
                   aria-hidden="true"
                 />
               )}
@@ -48,7 +48,7 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
         <li>
           <div>
             <Link to="/" className="text-gray-400 hover:text-gray-500">
-              <HomeIcon className="flex-shrink-0 w-5 h-5" aria-hidden="true" />
+              <HomeIcon className="shrink-0 w-5 h-5" aria-hidden="true" />
               <span className="sr-only">Home</span>
             </Link>
           </div>
@@ -57,7 +57,7 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
           <li key={item.label}>
             <div className="flex items-center">
               <ChevronRightIcon
-                className="flex-shrink-0 w-5 h-5 text-gray-400"
+                className="shrink-0 w-5 h-5 text-gray-400"
                 aria-hidden="true"
               />
               {i === items.length - 1 ? (

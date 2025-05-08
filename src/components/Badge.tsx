@@ -28,7 +28,7 @@ export const Badge = ({
           type="button"
           onClick={icon.onClick}
           className={clsx([
-            "inline-flex items-center justify-center flex-shrink-0 w-4 h-4 rounded-full focus:outline-none",
+            "inline-flex items-center justify-center shrink-0 w-4 h-4 rounded-full focus:outline-hidden",
             "after:content after:block after:absolute after:h-full after:rounded-full after:aspect-square", // see why this shouts
             clickable && "after:w-full",
             icon.position === "left"

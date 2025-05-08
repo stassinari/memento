@@ -61,7 +61,7 @@ export const ComboboxMulti = ({
         <div
           className={clsx([
             inputStyles,
-            "relative py-2 pl-3 pr-10 bg-white border focus:outline-none focus:ring-1",
+            "relative py-2 pl-3 pr-10 bg-white border focus:outline-hidden focus:ring-1",
           ])}
         >
           <div className="min-h-[1.25rem]">
@@ -86,7 +86,7 @@ export const ComboboxMulti = ({
                 type="text"
                 placeholder={placeholder}
                 displayValue={() => query}
-                className="flex-grow text-sm border-none p-0 focus:outline-none focus:border-none focus:border-transparent focus:ring-0"
+                className="grow text-sm border-none p-0 focus:outline-hidden focus:border-none focus:border-transparent focus:ring-0"
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}

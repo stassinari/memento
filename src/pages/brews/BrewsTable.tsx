@@ -214,7 +214,7 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
       <div className="flow-root mt-4">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+            <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5 sm:rounded-lg">
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -224,7 +224,7 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
                           <th
                             key={header.id}
                             scope="col"
-                            className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 first-of-type:pl-4 first-of-type:pr-3 first-of-type:sm:pl-6 last-of-type:pl-3 last-of-type:pr-4 last-of-type:sm:pr-6"
+                            className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 first-of-type:pl-4 first-of-type:pr-3 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
                           >
                             {header.isPlaceholder ? null : (
                               <div
@@ -243,7 +243,7 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
                                   header.column.columnDef.header,
                                   header.getContext(),
                                 )}
-                                <span className="flex-none ml-2 text-gray-900 bg-gray-200 rounded group-hover:bg-gray-300">
+                                <span className="flex-none ml-2 text-gray-900 bg-gray-200 rounded-sm group-hover:bg-gray-300">
                                   {header.column.getIsSorted() === "asc" ? (
                                     <ChevronUpIcon
                                       className="w-5 h-5"
@@ -270,7 +270,7 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
                       {row.getVisibleCells().map((cell) => (
                         <td
                           key={cell.id}
-                          className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap first-of-type:pl-4 first-of-type:pr-3 first-of-type:sm:pl-6 last-of-type:pl-3 last-of-type:pr-4 last-of-type:sm:pr-6"
+                          className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap first-of-type:pl-4 first-of-type:pr-3 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -332,7 +332,7 @@ const Stats = ({ title, stats }: StatProps) => {
         {stats.map((item) => (
           <div
             key={item.name}
-            className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
+            className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow-sm sm:p-6"
           >
             <dt className="text-sm font-medium text-gray-500 truncate">
               {item.name}

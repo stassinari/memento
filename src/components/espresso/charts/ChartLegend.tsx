@@ -8,7 +8,7 @@ interface LegendRectangleProps {
 const LegendRectangle = ({ color }: LegendRectangleProps) => {
   return (
     <div
-      className={clsx(["inline-block w-4 h-2 mr-4 rounded"])}
+      className={clsx(["inline-block w-4 h-2 mr-4 rounded-sm"])}
       style={{
         backgroundColor: color,
       }}

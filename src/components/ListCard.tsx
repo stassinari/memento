@@ -36,7 +36,7 @@ const RowIcon = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 const Rating = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
   <span
     className={clsx(
-      "px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded",
+      "px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded-sm",
       className,
     )}
     {...props}
@@ -52,7 +52,7 @@ interface ListCardProps {
 const ListCardRoot = ({ linkTo, children, footerSlot }: ListCardProps) => {
   return (
     <RouterLink to={linkTo} className="block">
-      <Card.Container className="flex-grow text-sm">
+      <Card.Container className="grow text-sm">
         <Card.Content>{children}</Card.Content>
         {footerSlot}
       </Card.Container>
