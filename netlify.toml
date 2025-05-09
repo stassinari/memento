@@ -8,5 +8,5 @@ for = "/manifest.webmanifest"
 [headers.values]
 Content-Type = "application/manifest+json"
 
-[build.environment]
-NODE_VERSION = "22"
+# [build.environment]
+# NODE_VERSION = "22"
