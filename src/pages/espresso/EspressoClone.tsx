@@ -1,7 +1,7 @@
 import { setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -62,7 +62,7 @@ export const EspressoClone: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Edit espresso details</Heading>
+      <Heading className="mb-4">Edit espresso details</Heading>
 
       <EspressoForm
         defaultValues={fromFirestore}

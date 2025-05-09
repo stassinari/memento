@@ -1,32 +1,11 @@
-import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react({
-      jsxImportSource: "@emotion/react",
-      babel: {
-        plugins: [
-          "babel-plugin-macros",
-          "@emotion/babel-plugin",
-          [
-            "@emotion/babel-plugin-jsx-pragmatic",
-            {
-              export: "jsx",
-              import: "__cssprop",
-              module: "@emotion/react",
-            },
-          ],
-          [
-            "@babel/plugin-transform-react-jsx",
-            { pragma: "__cssprop" },
-            "twin.macro",
-          ],
-        ],
-      },
-    }),
+    tailwindcss(),
     VitePWA({
       includeAssets: [
         "favicon.svg",

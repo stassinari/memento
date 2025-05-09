@@ -1,7 +1,7 @@
 import { doc, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -18,7 +18,7 @@ import { useCurrentUser } from "../../hooks/useInitUser";
 import { DecentEspresso, Espresso } from "../../types/espresso";
 
 export const decentEspressoToFirestore = (
-  espresso: DecentEspressoFormInputs
+  espresso: DecentEspressoFormInputs,
 ) => ({
   ...espresso,
   beans: doc(db, espresso.beans ?? ""),
@@ -54,7 +54,7 @@ export const DecentEspressoEditDetails: React.FC = () => {
     "users",
     user.uid,
     "espresso",
-    espressoId
+    espressoId,
   );
 
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
@@ -82,7 +82,9 @@ export const DecentEspressoEditDetails: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Edit info ({decentEspresso.profileName})</Heading>
+      <Heading className="mb-4">
+        Edit info ({decentEspresso.profileName})
+      </Heading>
 
       <DecentEspressoForm
         defaultValues={fromFirestore}

@@ -1,105 +1,134 @@
-import React, { ReactNode } from "react";
-import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
-import tw from "twin.macro";
+import { Slot } from "@radix-ui/react-slot";
+import clsx from "clsx";
+import React, { forwardRef } from "react";
 
-// Component-specific props specified separately
-export type ButtonOwnProps = {
-  variant: "primary" | "secondary" | "white" | "gradient";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-  colour?: "main" | "accent";
-  width?: "auto" | "full";
-  Icon?: ReactNode;
+import { cva, type VariantProps } from "class-variance-authority";
+
+export const baseButtonStyles = [
+  "inline-flex items-center justify-center font-medium border",
+  "focus:outline-hidden focus:ring-2 focus:ring-offset-2", // focus
+  "disabled:cursor-not-allowed disabled:bg-gray-100! disabled:from-gray-100 disabled:to-gray-100 disabled:text-gray-500! disabled:hover:from-gray-100", // disabled
+  "[&_svg]:pointer-events-none [&_svg]:shrink-0", // svg icons handling
+];
+
+export const compoundButtonStyles = {
+  primaryMain:
+    "bg-orange-600 hover:bg-orange-700 text-white border-transparent shadow-xs ring-orange-500",
+  secondaryMain:
+    "text-orange-700 bg-orange-100 hover:bg-orange-200 border-transparent ring-orange-500",
+  gradientMain:
+    "bg-linear-to-br from-orange-600 to-rose-600 bg-origin-border hover:from-orange-700 hover:to-rose-700 text-white border-transparent shadow-xs ring-orange-500",
+  primaryAccent:
+    "bg-blue-600 hover:bg-blue-700 text-white border-transparent shadow-xs ring-blue-500",
+  secondaryAccent:
+    "text-blue-700 bg-blue-100 hover:bg-blue-200 border-transparent ring-blue-500",
+  gradientAccent:
+    "bg-linear-to-br from-blue-600 to-purple-600 bg-origin-border hover:from-blue-700 hover:to-purple-700 text-white border-transparent shadow-xs ring-blue-500",
 };
 
-// Merge own props with others inherited from the underlying element type
-export type ButtonProps<E extends React.ElementType> =
-  PolymorphicComponentProps<E, ButtonOwnProps>;
-
-const defaultElement = "button";
-
-export const Button: <E extends React.ElementType = typeof defaultElement>(
-  props: ButtonProps<E>
-) => React.ReactElement | null = React.forwardRef(
-  <E extends React.ElementType = typeof defaultElement>(
+const buttonVariants = cva(baseButtonStyles.join(" "), {
+  variants: {
+    variant: {
+      primary: "",
+      secondary: "",
+      white:
+        "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
+      gradient: "",
+    },
+    colour: {
+      main: "",
+      accent: "",
+    },
+    size: {
+      xs: "px-2.5 py-1.5 text-xs rounded-sm gap-2 [&_svg]:size-4 has-[>svg]:px-2",
+      sm: "px-3 py-2 text-sm leading-4 rounded-md gap-2 [&_svg]:size-4 has-[>svg]:px-2.5",
+      md: "px-4 py-2 text-sm rounded-md gap-2 [&_svg]:size-5 has-[>svg]:px-3",
+      lg: "px-4 py-2 text-base rounded-md gap-3 [&_svg]:size-5 has-[>svg]:px-3",
+      xl: "px-6 py-3 text-base rounded-md gap-3 [&_svg]:size-5 has-[>svg]:px-4",
+    },
+    width: {
+      auto: "",
+      full: "w-full",
+    },
+  },
+  compoundVariants: [
     {
+      variant: "primary",
+      colour: "main",
+      className: compoundButtonStyles.primaryMain,
+    },
+    {
+      variant: "secondary",
+      colour: "main",
+      className: compoundButtonStyles.secondaryMain,
+    },
+    {
+      variant: "gradient",
+      colour: "main",
+      className: compoundButtonStyles.gradientMain,
+    },
+    {
+      variant: "primary",
+      colour: "accent",
+      className: compoundButtonStyles.primaryAccent,
+    },
+    {
+      variant: "secondary",
+      colour: "accent",
+      className: compoundButtonStyles.secondaryAccent,
+    },
+    {
+      variant: "gradient",
+      colour: "accent",
+      className: compoundButtonStyles.gradientAccent,
+    },
+  ],
+  defaultVariants: {
+    variant: "primary",
+    size: "md",
+    colour: "main",
+    width: "auto",
+  },
+});
+
+type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+
+type ButtonProps = {
+  asChild?: boolean;
+  className?: string;
+  children: React.ReactNode;
+} & ButtonVariantProps &
+  React.ButtonHTMLAttributes<HTMLButtonElement>;
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      asChild = false,
       variant,
-      colour = "main",
-      size = "md",
-      width = "auto",
-      Icon,
+      size,
+      colour,
+      width,
+      className,
       children,
-      ...restProps
-    }: ButtonProps<E>,
-    ref: typeof restProps.ref
-  ) => (
-    <Box
-      as={defaultElement}
-      css={[
-        tw`inline-flex items-center justify-center font-medium border`,
-        tw`disabled:(cursor-not-allowed bg-gray-100! from-gray-100 text-gray-500! hover:from-gray-100)`,
-        tw`focus:(outline-none ring-2 ring-offset-2)`,
-        colour === "main"
-          ? variant === "primary"
-            ? tw`bg-orange-600 hover:bg-orange-700`
-            : variant === "secondary"
-            ? tw`text-orange-700 bg-orange-100 hover:bg-orange-200`
-            : variant === "gradient"
-            ? tw`bg-gradient-to-br from-orange-600 to-rose-600 bg-origin-border hover:(from-orange-700 to-rose-700)`
-            : null
-          : colour === "accent"
-          ? variant === "primary"
-            ? tw`bg-blue-600 hover:bg-blue-700`
-            : variant === "secondary"
-            ? tw`text-blue-700 bg-blue-100 hover:bg-blue-200`
-            : variant === "gradient"
-            ? tw`bg-gradient-to-br from-blue-600 to-purple-600 bg-origin-border hover:(from-blue-700 to-purple-700)`
-            : null
-          : null,
-        colour === "main"
-          ? tw`ring-orange-500`
-          : colour === "accent"
-          ? tw`ring-blue-500`
-          : null,
-        variant === "primary" || variant === "gradient"
-          ? tw`text-white border-transparent shadow-sm `
-          : variant === "secondary"
-          ? tw`border-transparent `
-          : variant === "white"
-          ? tw`text-gray-700 bg-white border-gray-300 shadow-sm hover:bg-gray-50`
-          : null,
-        size === "xs"
-          ? tw`px-2.5 py-1.5 text-xs rounded`
-          : size === "sm"
-          ? tw`px-3 py-2 text-sm leading-4 rounded-md`
-          : size === "md"
-          ? tw`px-4 py-2 text-sm rounded-md`
-          : size === "lg"
-          ? tw`px-4 py-2 text-base rounded-md`
-          : size === "xl"
-          ? tw`px-6 py-3 text-base rounded-md`
-          : null,
-        width === "full" && tw`w-full`,
-      ]}
-      ref={ref}
-      {...restProps}
-    >
-      {Icon && (
-        <span
-          css={[
-            size === "xs" || size === "sm"
-              ? tw`-ml-0.5 mr-2 h-4 w-4`
-              : size === "md"
-              ? tw`w-5 h-5 mr-2 -ml-1`
-              : size === "lg" || size === "xl"
-              ? tw`w-5 h-5 mr-3 -ml-1`
-              : null,
-          ]}
-          aria-hidden="true"
-        >
-          {Icon}
-        </span>
-      )}
-      {children}
-    </Box>
-  )
+      ...props
+    },
+    ref,
+  ) => {
+    const Comp = asChild ? Slot : "button";
+
+    return (
+      <Comp
+        className={clsx(
+          buttonVariants({ variant, size, colour, width }),
+          className,
+        )}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </Comp>
+    );
+  },
 );
+
+Button.displayName = "Button";

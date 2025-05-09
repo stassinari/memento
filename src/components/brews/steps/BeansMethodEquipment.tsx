@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import "twin.macro";
+
 import { Beans } from "../../../types/beans";
 import { Brew } from "../../../types/brew";
 import { Button } from "../../Button";
@@ -24,7 +24,7 @@ export interface BeansMethodEquipmentInputs {
 }
 
 export const beansMethodEquipmentEmptyValues: (
-  copyFrom?: Brew
+  copyFrom?: Brew,
 ) => BeansMethodEquipmentInputs = (copyFrom) => ({
   date: new Date(),
   method: null,
@@ -43,12 +43,12 @@ interface BeansMethodEquipmentProps {
   handleNestedSubmit: (data: BeansMethodEquipmentInputs) => void;
 }
 
-export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
+export const BeansMethodEquipment = ({
   brewsList,
   beansList,
   defaultValues,
   handleNestedSubmit,
-}) => {
+}: BeansMethodEquipmentProps) => {
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
   const methods = useForm<BeansMethodEquipmentInputs>({
@@ -68,7 +68,11 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection
           title="Base information"
           subtitle="This section includes the information that boh I don't know."
@@ -94,7 +98,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           <BeansCardsSelect beansList={beansList} />
         </FormSection>
 
-        <Divider tw="hidden sm:block" />
+        <Divider className="hidden sm:block" />
 
         <FormSection
           title="Equipment information"
@@ -110,7 +114,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
                   ...new Set(
                     brewsList
                       .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(brewsList, "grinder")}
@@ -123,9 +127,9 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
                   ...new Set(
                     brewsList
                       .flatMap(({ grinderBurrs }) =>
-                        grinderBurrs ? [grinderBurrs] : []
+                        grinderBurrs ? [grinderBurrs] : [],
                       )
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(brewsList, "grinderBurrs")}
@@ -138,9 +142,9 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
                   ...new Set(
                     brewsList
                       .flatMap(({ waterType }) =>
-                        waterType ? [waterType] : []
+                        waterType ? [waterType] : [],
                       )
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(brewsList, "waterType")}
@@ -153,9 +157,9 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
                   ...new Set(
                     brewsList
                       .flatMap(({ filterType }) =>
-                        filterType ? [filterType] : []
+                        filterType ? [filterType] : [],
                       )
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(brewsList, "filterType")}
@@ -174,7 +178,7 @@ export const BeansMethodEquipment: React.FC<BeansMethodEquipmentProps> = ({
           )}
         </FormSection>
 
-        <div tw="flex justify-end gap-4">
+        <div className="flex justify-end gap-4">
           <Button variant="white" type="button" disabled>
             Back
           </Button>

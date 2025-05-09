@@ -1,8 +1,7 @@
-import { css } from "@emotion/react";
+import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import { ReactNode, useMemo } from "react";
 import { Link } from "react-router-dom";
-import tw, { theme } from "twin.macro";
 import { db } from "../firebaseConfig";
 import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
 import { useActiveRoute } from "../hooks/useActiveRoute";
@@ -11,29 +10,28 @@ import useScreenMediaQuery from "../hooks/useScreenMediaQuery";
 import { User } from "../types/user";
 import { navLinks } from "./BottomNav";
 
-const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
+const SidebarNavItem = ({
   Icon,
   label,
   linkTo,
   nested = false,
-}) => {
+}: SidebarNavItemProps) => {
   const isActive = useActiveRoute(linkTo);
 
   return (
     <Link
       to={linkTo}
-      className="group"
-      css={[
-        tw`flex items-center px-2 py-2 text-sm font-medium rounded-md hover:(bg-gray-50 text-orange-600) `,
-        nested && tw`ml-4`,
-        isActive && tw`text-orange-600 bg-gray-50`,
-      ]}
+      className={clsx([
+        "group flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-50 hover:text-orange-600 ",
+        nested && "ml-4",
+        isActive && "text-orange-600 bg-gray-50",
+      ])}
     >
       <span
-        css={[
-          tw`flex-shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-orange-600`,
-          isActive && tw`text-orange-600`,
-        ]}
+        className={clsx([
+          "shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-orange-600",
+          isActive && "text-orange-600",
+        ])}
         aria-hidden="true"
       >
         {Icon}
@@ -65,7 +63,7 @@ export const SidebarNav = () => {
   const user = useCurrentUser();
   const userRef = useMemo(
     () => doc(db, "users", user.uid) as DocumentReference<User>,
-    [user?.uid]
+    [user?.uid],
   );
 
   const { details: dbUser } = useFirestoreDocRealtime<User>(userRef);
@@ -86,33 +84,26 @@ export const SidebarNav = () => {
         ? [navLinks.designLibrary]
         : []),
     ],
-    [secretKey]
+    [secretKey],
   );
 
   return (
-    <div tw="hidden md:(flex w-48 flex-col fixed inset-y-0) lg:w-64">
+    <div className="hidden md:flex md:w-48 md:flex-col md:fixed md:inset-y-0 lg:w-64">
       <div
-        css={[
-          tw`flex flex-col px-4 pb-4 overflow-y-auto bg-white border-r border-gray-200 gap-y-5 grow lg:px-6`,
-          css`
-            padding-left: calc(
-              env(safe-area-inset-left) +
-                ${isLg ? theme`spacing.6` : theme`spacing.4`}
-            );
-          `,
-        ]}
+        className={clsx([
+          "flex flex-col px-4 pb-4 overflow-y-auto bg-white border-r border-gray-200 gap-y-5 grow lg:px-6",
+        ])}
+        style={{
+          paddingLeft: `calc(env(safe-area-inset-left) + ${
+            isLg ? "1.5rem" : "1rem"
+          })`,
+        }}
       >
-        <div tw="flex items-center h-16 shrink-0">
-          <img
-            tw="w-auto h-8"
-            src="https://tailwindui.com/img/logos/workflow-mark.svg?color=orange&shade=600"
-            alt="Workflow"
-          />
-        </div>
-        <nav tw="flex flex-col flex-1">
-          <ul role="list" tw="flex flex-col flex-1 gap-y-7">
+        <div className="flex items-center h-16 shrink-0">Memento logo here</div>
+        <nav className="flex flex-col flex-1">
+          <ul role="list" className="flex flex-col flex-1 gap-y-7">
             <li>
-              <ul role="list" tw="-mx-2 space-y-1 ">
+              <ul role="list" className="-mx-2 space-y-1 ">
                 {sidebarNavLinks.map(({ Icon, label, linkTo, nested }) => (
                   <li key={label}>
                     <SidebarNavItem
@@ -125,7 +116,7 @@ export const SidebarNav = () => {
                 ))}
               </ul>
             </li>
-            <li tw="mt-auto">
+            <li className="mt-auto">
               <SidebarNavItem
                 Icon={navLinks.settings.Icon}
                 label={navLinks.settings.label}

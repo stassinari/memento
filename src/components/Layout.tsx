@@ -1,39 +1,41 @@
-import { css } from "@emotion/react";
+import clsx from "clsx";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import tw, { theme } from "twin.macro";
 import { BottomNav } from "./BottomNav";
 import { ReloadPrompt } from "./ReloadPrompt";
 import { SidebarNav } from "./SidebarNav";
 
-export const layoutContainerStyles = [
-  tw`min-h-screen md:pb-0`,
-  css`
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: calc(env(safe-area-inset-bottom) + ${theme`spacing.14`});
-  `,
-];
+// FIXME this is not ideal, look into TW custom utilities or any other way to handle this
+export const layoutContainerTailwindStyles = "min-h-screen md:pb-0";
+
+export const layoutContainerCssStyles = {
+  paddingTop: "env(safe-area-inset-top)",
+  paddingBottom: "calc(env(safe-area-inset-bottom) + 3.5rem)",
+};
 
 interface LayoutProps {
   fullWidth?: boolean;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ fullWidth = false }) => {
+export const Layout = ({ fullWidth = false }: LayoutProps) => {
   return (
-    <div css={layoutContainerStyles}>
+    <div
+      className={clsx(layoutContainerTailwindStyles)}
+      style={layoutContainerCssStyles}
+    >
       <SidebarNav />
-      <div tw="md:pl-48 lg:pl-64">
+      <div className="md:pl-48 lg:pl-64">
         <BottomNav />
 
-        <main css={tw`flex-1`}>
-          <div tw="py-6">
+        <main className={clsx("flex-1")}>
+          <div className="py-6">
             <div
-              css={[
-                tw`mx-auto`,
+              className={clsx([
+                "mx-auto",
                 fullWidth
-                  ? tw`px-4 sm:px-6 lg:px-8 2xl:px-12`
-                  : tw`px-4 max-w-7xl sm:px-6 lg:px-16 2xl:px-32`,
-              ]}
+                  ? "px-4 sm:px-6 lg:px-8 2xl:px-12"
+                  : "px-4 max-w-7xl sm:px-6 lg:px-16 2xl:px-32",
+              ])}
             >
               <Suspense>
                 <Outlet />

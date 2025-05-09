@@ -1,7 +1,7 @@
 import { orderBy } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
-import "twin.macro";
+
 import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
 import { Beans } from "../../types/beans";
@@ -25,7 +25,7 @@ export interface BrewFormInputs
     BrewTimeInputs {}
 
 export const brewFormEmptyValues: (copyFrom?: Brew) => BrewFormInputs = (
-  copyFrom
+  copyFrom,
 ) => ({
   ...beansMethodEquipmentEmptyValues(copyFrom),
 
@@ -42,16 +42,16 @@ interface BrewFormProps {
   mutation: (data: BrewFormInputs) => Promise<void>;
 }
 
-export const BrewForm: React.FC<BrewFormProps> = ({
+export const BrewForm = ({
   defaultValues,
   buttonLabel,
   mutation,
-}) => {
+}: BrewFormProps) => {
   console.log("BrewForm");
 
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] = useState<BrewFormStep>(
-    "beansMethodEquipment"
+    "beansMethodEquipment",
   );
 
   // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one

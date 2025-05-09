@@ -1,6 +1,6 @@
 import { doc, DocumentReference } from "firebase/firestore";
 import { useMemo } from "react";
-import "twin.macro";
+
 import { db } from "../../../firebaseConfig";
 import { useFirestoreDocRealtime } from "../../../hooks/firestore/useFirestoreDocRealtime";
 import { useCurrentUser } from "../../../hooks/useInitUser";
@@ -12,7 +12,7 @@ interface DecentChartProps {
   espressoId?: string;
 }
 
-export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
+export const DecentCharts = ({ espressoId }: DecentChartProps) => {
   console.log("DecentCharts");
 
   const user = useCurrentUser();
@@ -26,9 +26,9 @@ export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
         "espresso",
         espressoId ?? "",
         "decentReadings",
-        "decentReadings"
+        "decentReadings",
       ) as DocumentReference<DecentReadings>,
-    [espressoId, user?.uid]
+    [espressoId, user?.uid],
   );
 
   const { details: decentReadings, isLoading } =
@@ -37,7 +37,7 @@ export const DecentCharts: React.FC<DecentChartProps> = ({ espressoId }) => {
   if (isLoading || !decentReadings) return null;
 
   return (
-    <div tw="md:(grid grid-cols-2)">
+    <div className="md:grid md:grid-cols-2">
       <PressureFlowWeightChart readings={decentReadings} />
 
       <TemperatureChart decentReadings={decentReadings} />

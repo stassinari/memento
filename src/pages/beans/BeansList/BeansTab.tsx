@@ -1,7 +1,7 @@
 import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/20/solid";
 import { type QueryConstraint } from "firebase/firestore";
 import React, { ReactNode } from "react";
-import "twin.macro";
+
 import { ListCard } from "../../../components/ListCard";
 import { BeanIcon } from "../../../components/icons/BeanIcon";
 import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
@@ -16,11 +16,11 @@ export interface BeansTabProps {
   EmptyState: ReactNode;
 }
 
-export const BeansTab: React.FC<BeansTabProps> = ({
+export const BeansTab = ({
   filters,
   removeFrozen,
   EmptyState,
-}) => {
+}: BeansTabProps) => {
   console.log("BeansTab");
 
   const query = useCollectionQuery<Beans>("beans", filters);
@@ -31,14 +31,14 @@ export const BeansTab: React.FC<BeansTabProps> = ({
 
   const sortedAndFiltered = beansList
     .sort((a, b) =>
-      (a.roastDate?.toDate() ?? 0) < (b.roastDate?.toDate() ?? 0) ? 1 : -1
+      (a.roastDate?.toDate() ?? 0) < (b.roastDate?.toDate() ?? 0) ? 1 : -1,
     )
     .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
 
   if (sortedAndFiltered.length === 0) return <>{EmptyState}</>;
 
   return (
-    <ul tw="grid gap-4 sm:grid-cols-2">
+    <ul className="grid gap-4 sm:grid-cols-2">
       {sortedAndFiltered.map((beans) => (
         <li key={beans.id}>
           <ListCard
@@ -52,8 +52,8 @@ export const BeansTab: React.FC<BeansTabProps> = ({
               ) : undefined
             }
           >
-            <div tw="flex">
-              <div tw="flex-grow">
+            <div className="flex">
+              <div className="grow">
                 <ListCard.Title>{beans.name}</ListCard.Title>
                 <ListCard.Row>
                   <ListCard.RowIcon>

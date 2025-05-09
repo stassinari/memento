@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
-import "twin.macro";
+
 import { Input } from "../Input";
 import { InputSlider, InputSliderProps } from "../InputSlider";
 
@@ -10,17 +10,17 @@ interface FormInputSlider
   helperText?: string;
 }
 
-export const FormInputSlider: React.FC<FormInputSlider> = ({
+export const FormInputSlider = ({
   label,
   id,
   ...rest
-}) => {
+}: FormInputSlider) => {
   const { control } = useFormContext();
 
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-3">
+      <div className="mt-3">
         <Controller
           control={control}
           name={id}

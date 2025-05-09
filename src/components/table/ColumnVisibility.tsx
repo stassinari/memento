@@ -6,9 +6,9 @@ interface ColumnVisibilityProps {
   table: Table<any>;
 }
 
-export const ColumnVisibility: React.FC<ColumnVisibilityProps> = ({
+export const ColumnVisibility = ({
   table,
-}) => {
+}: ColumnVisibilityProps) => {
   return (
     <div className="text-left">
       <InputCheckbox

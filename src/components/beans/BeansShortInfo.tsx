@@ -8,10 +8,10 @@ interface BeansShortInfoProps {
   brewDate: Date;
 }
 
-export const BeansShortInfo: React.FC<BeansShortInfoProps> = ({
+export const BeansShortInfo = ({
   beansId,
   brewDate,
-}) => {
+}: BeansShortInfoProps) => {
   console.log("BeansShortInfo");
 
   const docRef = useDocRef<Beans>("beans", beansId);

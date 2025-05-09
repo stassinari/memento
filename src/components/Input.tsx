@@ -1,27 +1,40 @@
+import clsx from "clsx";
 import {
   type HTMLAttributes,
   type InputHTMLAttributes,
   type LabelHTMLAttributes,
 } from "react";
-import tw, { styled } from "twin.macro";
 
-export const labelStyles = tw`block text-sm font-medium text-gray-700`;
-export const inputStyles = tw`block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:(ring-orange-500 border-orange-500) disabled:(cursor-not-allowed border-gray-200 bg-gray-50 text-gray-500)`;
+export const labelStyles = "block text-sm font-medium text-gray-700";
+export const inputStyles =
+  "block w-full border-gray-300 rounded-md shadow-xs sm:text-sm focus:ring-orange-500 focus:border-orange-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500";
 
-interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {}
-const Label: React.FC<LabelProps> = styled.label`
-  ${labelStyles}
-`;
+const Label = ({
+  className,
+  ...props
+}: LabelHTMLAttributes<HTMLLabelElement>) => (
+  <label className={clsx(labelStyles, className)} {...props} />
+);
 
-interface HelperProps extends HTMLAttributes<HTMLParagraphElement> {}
-const Helper: React.FC<HelperProps> = tw.p`mt-2 text-sm text-gray-500`;
+const Helper = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLParagraphElement>) => (
+  <p className={clsx("mt-2 text-sm text-gray-500", className)} {...props} />
+);
 
-interface ErrorProps extends HTMLAttributes<HTMLParagraphElement> {}
-const Error: React.FC<ErrorProps> = tw.p`mt-2 text-sm text-red-600`;
+const Error = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLParagraphElement>) => (
+  <p className={clsx("mt-2 text-sm text-red-600", className)} {...props} />
+);
 
-interface InputRootProps extends InputHTMLAttributes<HTMLInputElement> {}
-const InputRoot: React.FC<InputRootProps> = styled.input`
-  ${inputStyles}
-`;
+const InputRoot = ({
+  className,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement>) => (
+  <input className={clsx(inputStyles, className)} {...props} />
+);
 
 export const Input = Object.assign(InputRoot, { Helper, Label, Error });

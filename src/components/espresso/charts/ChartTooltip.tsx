@@ -1,10 +1,9 @@
-import { css } from "@emotion/react";
+import clsx from "clsx";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
-import tw from "twin.macro";
 import { roundToDecimal } from "../../../utils";
 import { propertyToValues } from "./PressureFlowWeightChart";
 
@@ -17,32 +16,27 @@ interface CircleProps {
   color: string;
 }
 
-const Circle: React.FC<CircleProps> = ({ color }) => {
+const Circle = ({ color }: CircleProps) => {
   return (
     <div
-      css={[
-        tw`inline-block w-2.5 h-2.5 rounded-full mr-1`,
-        css`
-          background-color: ${color};
-        `,
-      ]}
+      className={clsx(["inline-block w-2.5 h-2.5 rounded-full mr-1"])}
+      style={{
+        backgroundColor: color,
+      }}
     />
   );
 };
 
-export const ChartTooltip: React.FC<CustomTooltipProps> = ({
-  title,
-  payload,
-}) => {
+export const ChartTooltip = ({ title, payload }: CustomTooltipProps) => {
   if (!payload) {
     return null;
   }
 
   return (
-    <div tw="p-2 bg-white rounded shadow-md opacity-75">
+    <div className="p-2 bg-white rounded-sm shadow-md opacity-75">
       <table>
         <thead>
-          <tr tw="p-0 text-sm text-left text-gray-700">
+          <tr className="p-0 text-sm text-left text-gray-700">
             <th colSpan={2}>t={roundToDecimal(title)}s</th>
           </tr>
         </thead>
@@ -53,11 +47,11 @@ export const ChartTooltip: React.FC<CustomTooltipProps> = ({
               return null;
             }
             return (
-              <tr key={p.name} tw="p-0 text-sm leading-4 text-gray-600">
-                <td tw="pr-2">{property.label}:</td>
+              <tr key={p.name} className="p-0 text-sm leading-4 text-gray-600">
+                <td className="pr-2">{property.label}:</td>
                 <td>
                   <Circle color={p.color} />
-                  <strong tw="text-gray-700">
+                  <strong className="text-gray-700">
                     {roundToDecimal(p.value as number)}
                   </strong>
                   {property.unit}

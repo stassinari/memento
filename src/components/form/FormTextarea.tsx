@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import "twin.macro";
+
 import { Input } from "../Input";
 import { Textarea, TextareaProps } from "../Textarea";
 
@@ -10,16 +10,16 @@ interface FormTextareaProps {
   textareaProps?: TextareaProps;
 }
 
-export const FormTextarea: React.FC<FormTextareaProps> = ({
+export const FormTextarea = ({
   label,
   id,
   helperText,
   textareaProps,
-}) => {
+}: FormTextareaProps) => {
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-1">
+      <div className="mt-1">
         <Textarea
           id={id}
           aria-describedby={helperText ? `${id}-description` : undefined}

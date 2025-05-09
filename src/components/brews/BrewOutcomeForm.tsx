@@ -1,9 +1,8 @@
 import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import { pick } from "lodash";
-import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import { Brew, ExtractionType } from "../../types/brew";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
@@ -50,10 +49,7 @@ interface BrewOutcomeFormProps {
   brewRef: DocumentReference<DocumentData>;
 }
 
-export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
-  brew,
-  brewRef,
-}) => {
+export const BrewOutcomeForm = ({ brew, brewRef }: BrewOutcomeFormProps) => {
   const navigate = useNavigate();
 
   const methods = useForm<BrewOutcomeInputs>({
@@ -85,7 +81,11 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection title="Scores" subtitle="Bla">
           <FormInputSlider
             label="Overall score"
@@ -197,13 +197,8 @@ export const BrewOutcomeForm: React.FC<BrewOutcomeFormProps> = ({
         </FormSection>
 
         <div className="flex justify-end gap-4">
-          <Button
-            variant="white"
-            type="button"
-            as={Link}
-            to={`/drinks/brews/${brew.id ?? ""}`}
-          >
-            Back
+          <Button variant="white" type="button" asChild>
+            <Link to={`/drinks/brews/${brew.id ?? ""}`}>Back</Link>
           </Button>
           <Button
             variant="primary"

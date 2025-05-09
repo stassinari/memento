@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import "twin.macro";
+
 import { Beans } from "../../../types/beans";
 import { Espresso } from "../../../types/espresso";
 import { Button } from "../../Button";
@@ -25,7 +25,7 @@ export interface BeansEquipmentInputs {
 }
 
 export const beansEquipmentEmptyValues: (
-  copyFrom?: Espresso
+  copyFrom?: Espresso,
 ) => BeansEquipmentInputs = (copyFrom) => ({
   date: new Date(),
   beans: null,
@@ -44,12 +44,12 @@ interface BeansEquipmentProps {
   handleNestedSubmit: (data: BeansEquipmentInputs) => void;
 }
 
-export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
+export const BeansEquipment = ({
   espressoList,
   beansList,
   defaultValues,
   handleNestedSubmit,
-}) => {
+}: BeansEquipmentProps) => {
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
   const methods = useForm<BeansEquipmentInputs>({
@@ -69,7 +69,11 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" tw="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="space-y-6"
+      >
         <FormSection
           title="Base information"
           subtitle="This section includes the information that boh I don't know."
@@ -85,7 +89,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
           <BeansCardsSelect beansList={beansList} />
         </FormSection>
 
-        <Divider tw="hidden sm:block" />
+        <Divider className="hidden sm:block" />
 
         <FormSection
           title="Equipment information"
@@ -101,7 +105,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ machine }) => (machine ? [machine] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "machine")}
@@ -115,7 +119,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "grinder")}
@@ -129,9 +133,9 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ grinderBurrs }) =>
-                        grinderBurrs ? [grinderBurrs] : []
+                        grinderBurrs ? [grinderBurrs] : [],
                       )
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "grinderBurrs")}
@@ -155,7 +159,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
                   ...new Set(
                     espressoList
                       .flatMap(({ basket }) => (basket ? [basket] : []))
-                      .sort()
+                      .sort(),
                   ),
                 ]}
                 suggestions={extractSuggestions(espressoList, "basket")}
@@ -175,7 +179,7 @@ export const BeansEquipment: React.FC<BeansEquipmentProps> = ({
           )}
         </FormSection>
 
-        <div tw="flex justify-end gap-4">
+        <div className="flex justify-end gap-4">
           <Button variant="white" type="button" disabled>
             Back
           </Button>

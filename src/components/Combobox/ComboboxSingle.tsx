@@ -1,7 +1,7 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
 import React, { ReactElement, useState } from "react";
-import tw from "twin.macro";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../form/ListOption";
 import {
@@ -23,7 +23,7 @@ export interface ComboboxSingleProps {
   renderOption?: (option: string) => ReactElement;
 }
 
-export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
+export const ComboboxSingle = ({
   name,
   label,
   options,
@@ -32,7 +32,7 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
   reset,
   placeholder,
   renderOption = (option) => <TextOption text={option} />,
-}) => {
+}: ComboboxSingleProps) => {
   const [query, setQuery] = useState("");
 
   const showResetButton = !!value;
@@ -52,15 +52,17 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
       name={name}
       nullable
     >
-      <HuiCombobox.Label css={labelStyles}>{label}</HuiCombobox.Label>
+      <HuiCombobox.Label className={clsx(labelStyles)}>
+        {label}
+      </HuiCombobox.Label>
 
-      <div tw="relative mt-1">
+      <div className="relative mt-1">
         <HuiCombobox.Input
-          css={[
+          className={clsx([
             inputStyles,
-            tw`relative py-2 pl-3 bg-white border focus:(outline-none ring-1)`,
-            showResetButton ? tw`pr-16` : tw`pr-10`,
-          ]}
+            "relative py-2 pl-3 bg-white border focus:outline-hidden focus:ring-1",
+            showResetButton ? "pr-16" : "pr-10",
+          ])}
           onChange={(event) => {
             onChange(event.target.value);
             setQuery(event.target.value);
@@ -73,10 +75,10 @@ export const ComboboxSingle: React.FC<ComboboxSingleProps> = ({
           <button
             onClick={reset}
             type="button"
-            css={[comboboxButtonStyles, tw`right-6`]}
+            className={clsx([comboboxButtonStyles, "right-6"])}
             tabIndex={-1}
           >
-            <XMarkIcon css={comboboxButtonIconStyles} />
+            <XMarkIcon className={clsx(comboboxButtonIconStyles)} />
           </button>
         )}
 

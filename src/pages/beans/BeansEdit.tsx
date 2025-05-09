@@ -2,7 +2,7 @@ import { DocumentReference, setDoc } from "firebase/firestore";
 import { omit } from "lodash";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -43,7 +43,7 @@ export const BeansEdit: React.FC = () => {
     thawDate: beans.thawDate?.toDate() ?? null,
     harvestDate:
       beans.origin === "single-origin"
-        ? beans.harvestDate?.toDate() ?? null
+        ? (beans.harvestDate?.toDate() ?? null)
         : null,
   };
 
@@ -57,7 +57,7 @@ export const BeansEdit: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Edit beans</Heading>
+      <Heading className="mb-4">Edit beans</Heading>
 
       <BeansForm
         defaultValues={fromFirestore}

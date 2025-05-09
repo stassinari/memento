@@ -1,14 +1,12 @@
-import "twin.macro";
-
 interface GoogleIconProps {
   className?: string;
   colour?: "default" | "current";
 }
 
-export const GoogleIcon: React.FC<GoogleIconProps> = ({
+export const GoogleIcon = ({
   className,
   colour = "current",
-}) => (
+}: GoogleIconProps) => (
   <svg aria-label="Google" viewBox="0 0 512 512" className={className}>
     <path
       fill={colour === "default" ? "#4285f4" : "currentColor"}

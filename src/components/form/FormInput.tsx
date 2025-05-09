@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from "react";
 import { useFormContext } from "react-hook-form";
-import "twin.macro";
+
 import { Input } from "../Input";
 import { FormSuggestions } from "./FormSuggestions";
 
@@ -13,20 +13,20 @@ interface FormInputProps {
   suggestions?: string[];
 }
 
-export const FormInput: React.FC<FormInputProps> = ({
+export const FormInput = ({
   label,
   id,
   helperText,
   error,
   inputProps,
   suggestions,
-}) => {
+}: FormInputProps) => {
   const { setValue } = useFormContext();
 
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-1">
+      <div className="mt-1">
         <Input
           type="text"
           id={id}

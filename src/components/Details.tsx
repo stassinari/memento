@@ -1,5 +1,5 @@
 import React from "react";
-import "twin.macro";
+
 import { Action } from "./ButtonWithDropdown";
 import { Card, DescriptionListRow } from "./Card";
 
@@ -9,11 +9,11 @@ interface DetailsCardProps {
   rows: DescriptionListRow[];
 }
 
-export const DetailsCard: React.FC<DetailsCardProps> = ({
+export const DetailsCard = ({
   title,
   action,
   rows,
-}) => (
+}: DetailsCardProps) => (
   <Card.Container>
     <Card.Header title={title} action={action} />
     <Card.Content>

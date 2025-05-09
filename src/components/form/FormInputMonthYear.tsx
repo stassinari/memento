@@ -1,6 +1,6 @@
 import DatePicker from "react-datepicker";
 import { Controller, useFormContext } from "react-hook-form";
-import "twin.macro";
+
 import { Input } from "../Input";
 import { CalendarHeader } from "./FormInputDate";
 
@@ -12,19 +12,19 @@ interface FormInputMonthYearProps {
   error?: string;
 }
 
-export const FormInputMonthYear: React.FC<FormInputMonthYearProps> = ({
+export const FormInputMonthYear = ({
   label,
   id,
   placeholder,
   helperText,
   error,
-}) => {
+}: FormInputMonthYearProps) => {
   // Consider creating reusable components rather than relying on this Provider
   const { control } = useFormContext();
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
-      <div tw="mt-1">
+      <div className="mt-1">
         <Controller
           control={control}
           name={id}

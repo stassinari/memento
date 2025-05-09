@@ -1,7 +1,7 @@
 import { limit, orderBy } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
@@ -21,7 +21,7 @@ export const BrewsList: React.FC = () => {
 
   const filters = useMemo(
     () => [orderBy("date", "desc"), limit(brewLimit)],
-    [brewLimit]
+    [brewLimit],
   );
 
   const query = useCollectionQuery<Brew>("brews", filters);
@@ -35,7 +35,7 @@ export const BrewsList: React.FC = () => {
 
   const drinks = useMemo(
     () => mergeBrewsAndEspressoByUniqueDate(brewsList, []),
-    [brewsList]
+    [brewsList],
   );
 
   const isSm = useScreenMediaQuery("sm");
@@ -52,23 +52,22 @@ export const BrewsList: React.FC = () => {
       <Heading
         actionSlot={
           <Button
-            as={RouterLink}
-            to="add"
             variant="primary"
             colour="accent"
             size={isSm ? "md" : "sm"}
+            asChild
           >
-            Add brew
+            <RouterLink to="add">Add brew</RouterLink>
           </Button>
         }
       >
         Brews
       </Heading>
 
-      <div tw="mt-4">
+      <div className="mt-4">
         <DrinksList drinks={drinks} beansList={beansList} />
       </div>
-      <div tw="flex justify-center gap-4 mt-4">
+      <div className="flex justify-center gap-4 mt-4">
         {brewsList.length >= brewLimit && (
           <Button
             variant="white"
@@ -78,8 +77,8 @@ export const BrewsList: React.FC = () => {
             Load more
           </Button>
         )}
-        <Button as={RouterLink} to="table" variant="white" colour="accent">
-          View all brews
+        <Button variant="white" colour="accent" asChild>
+          <RouterLink to="table">View all brews</RouterLink>
         </Button>
       </div>
     </>

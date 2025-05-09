@@ -12,7 +12,7 @@ interface BeansDrinksProps {
   beans: Beans;
 }
 
-export const BeansDrinks: React.FC<BeansDrinksProps> = ({ beans }) => {
+export const BeansDrinks = ({ beans }: BeansDrinksProps) => {
   console.log("BeansDrinks");
 
   const filters = useMemo(

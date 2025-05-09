@@ -1,7 +1,7 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import { auth } from "../firebaseConfig";
 import { useRedirectTo } from "../hooks/useRedirectTo";
 import { Button } from "./Button";
@@ -29,7 +29,7 @@ export const EmailPasswordLogin = () => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} tw="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormInput
           label="Email"
           id="email"
@@ -53,9 +53,12 @@ export const EmailPasswordLogin = () => {
           error={errors.password?.message}
         />
 
-        <div tw="flex items-center justify-end">
-          <div tw="text-sm">
-            <a href="#" tw="font-medium text-orange-600 hover:text-orange-500">
+        <div className="flex items-center justify-end">
+          <div className="text-sm">
+            <a
+              href="#"
+              className="font-medium text-orange-600 hover:text-orange-500"
+            >
               Forgot your password?
             </a>
           </div>

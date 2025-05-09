@@ -1,10 +1,10 @@
 // import NoSleep from "nosleep.js";
 import { PauseIcon, PlayIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { PrimitiveAtom, useAtom } from "jotai";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import { CircularProgressbar } from "react-circular-progressbar";
 // import "react-circular-progressbar/dist/styles.css";
-import tw from "twin.macro";
+import clsx from "clsx";
 import { IconButton } from "./IconButton";
 
 interface StopwatchProps {
@@ -16,14 +16,14 @@ interface StopwatchProps {
   disabled?: boolean;
 }
 
-export const Stopwatch: React.FC<StopwatchProps> = ({
+export const Stopwatch = ({
   atom,
   disabled = false,
   initialSeconds = 0,
   initialMinutes = 0,
   setFormSeconds,
   setFormMinutes,
-}) => {
+}: StopwatchProps) => {
   const [seconds, setSeconds] = useState(initialMinutes * 60 + initialSeconds);
   const [isRunning, setIsRunning] = useAtom(atom);
 
@@ -66,28 +66,33 @@ export const Stopwatch: React.FC<StopwatchProps> = ({
   }, [isRunning, seconds, setSeconds, disabled]);
 
   return (
-    <div tw="flex items-center gap-2">
+    <div className="flex items-center gap-2">
       <IconButton
-        Icon={isRunning ? <PauseIcon /> : <PlayIcon />}
         variant="secondary"
         type="button"
         onClick={toggle}
         disabled={disabled}
-      />
+      >
+        {isRunning ? <PauseIcon /> : <PlayIcon />}
+      </IconButton>
 
       <span
-        css={[tw`w-20 text-2xl text-gray-900`, disabled && tw`text-gray-400`]}
+        className={clsx([
+          "w-20 text-2xl text-gray-900",
+          disabled && "text-gray-400",
+        ])}
       >
         {displayMinutes}:{displaySeconds}
       </span>
 
       <IconButton
-        Icon={<XMarkIcon />}
         variant="white"
         type="button"
         onClick={reset}
         disabled={disabled}
-      />
+      >
+        <XMarkIcon />
+      </IconButton>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Heading } from "../../components/Heading";
@@ -50,7 +50,7 @@ export const EspressoAdd: React.FC = () => {
         ]}
       />
 
-      <Heading tw="mb-4">Add espresso</Heading>
+      <Heading className="mb-4">Add espresso</Heading>
 
       <EspressoForm
         defaultValues={espressoFormEmptyValues(espressoList[0])}

@@ -1,6 +1,5 @@
 import { CubeTransparentIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import "twin.macro";
 import { Button } from "./Button";
 
 interface EmptyStateProps {
@@ -9,20 +8,20 @@ interface EmptyStateProps {
   buttonLabel?: string;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({
+export const EmptyState = ({
   title,
   description,
   buttonLabel,
-}) => {
+}: EmptyStateProps) => {
   return (
-    <div tw="mt-32 text-center">
-      <CubeTransparentIcon tw="w-12 h-12 mx-auto text-gray-400" />
-      <h3 tw="mt-2 text-sm font-medium text-gray-900">{title}</h3>
-      <p tw="mt-1 text-sm text-gray-500">{description}</p>
+    <div className="mt-32 text-center">
+      <CubeTransparentIcon className="w-12 h-12 mx-auto text-gray-400" />
+      <h3 className="mt-2 text-sm font-medium text-gray-900">{title}</h3>
+      <p className="mt-1 text-sm text-gray-500">{description}</p>
       {buttonLabel && (
-        <div tw="mt-6">
-          <Button variant="primary" as={Link} to="add">
-            {buttonLabel}
+        <div className="mt-6">
+          <Button variant="primary" asChild>
+            <Link to="add">{buttonLabel}</Link>
           </Button>
         </div>
       )}

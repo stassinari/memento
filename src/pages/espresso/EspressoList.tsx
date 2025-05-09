@@ -1,7 +1,7 @@
 import { limit, orderBy } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
@@ -21,7 +21,7 @@ const EspressoList: React.FC = () => {
 
   const filters = useMemo(
     () => [orderBy("date", "desc"), limit(espressoLimit)],
-    [espressoLimit]
+    [espressoLimit],
   );
 
   const query = useCollectionQuery<Espresso>("espresso", filters);
@@ -35,7 +35,7 @@ const EspressoList: React.FC = () => {
 
   const drinks = useMemo(
     () => mergeBrewsAndEspressoByUniqueDate([], espressoList),
-    [espressoList]
+    [espressoList],
   );
 
   const isSm = useScreenMediaQuery("sm");
@@ -53,23 +53,22 @@ const EspressoList: React.FC = () => {
       <Heading
         actionSlot={
           <Button
-            as={RouterLink}
-            to="add"
             variant="primary"
             colour="accent"
             size={isSm ? "md" : "sm"}
+            asChild
           >
-            Add espresso
+            <RouterLink to="add">Add espresso</RouterLink>
           </Button>
         }
       >
         Espressos
       </Heading>
 
-      <div tw="mt-4">
+      <div className="mt-4">
         <DrinksList drinks={drinks} beansList={beansList} />
       </div>
-      <div tw="flex justify-center gap-4 mt-4">
+      <div className="flex justify-center gap-4 mt-4">
         {espressoList.length >= espressoLimit && (
           <Button
             variant="white"
@@ -79,8 +78,8 @@ const EspressoList: React.FC = () => {
             Load more
           </Button>
         )}
-        <Button as={RouterLink} to="#" variant="white" colour="accent">
-          View all espresso (TBD)
+        <Button variant="white" colour="accent" asChild>
+          <RouterLink to="#">View all espresso (TBD)</RouterLink>
         </Button>
       </div>
     </>

@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { theme } from "twin.macro";
 import { DecentReadings } from "../../../types/espresso";
 import { ChartLegend } from "./ChartLegend";
 import { ChartTooltip } from "./ChartTooltip";
@@ -59,18 +58,18 @@ export const PressureFlowWeightChart: React.FC<
         Math.max(...readings.pressure),
         Math.max(...readings.pressure),
         Math.max(...readings.flow),
-        Math.max(...readings.flowGoal)
-      )
+        Math.max(...readings.flowGoal),
+      ),
     ) + 1;
 
   return (
-    <div tw="h-56 md:h-[248px]">
+    <div className="h-56 md:h-[248px]">
       {/* FIXME find a way to better define height (of the legend in particular) */}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} syncId="decentChart">
           <CartesianGrid
             vertical={false}
-            stroke={theme`colors.gray.300`}
+            stroke={"#d1d5db"} // FIXME better tw theme theme`colors.gray.300`
             strokeDasharray="3 3"
           />
           <XAxis
@@ -79,7 +78,7 @@ export const PressureFlowWeightChart: React.FC<
             unit="s"
             domain={[0, roundedTime]}
             minTickGap={48}
-            tick={{ fill: theme`colors.gray.800` }}
+            tick={{ fill: "#1f2937" }} // FIXME better tw theme theme`colors.gray.800`
             tickCount={xAxisTickCount}
             tickSize={4}
             interval="preserveStart"
@@ -87,7 +86,7 @@ export const PressureFlowWeightChart: React.FC<
           <YAxis
             type="number"
             domain={[0, maxYAxis]}
-            tick={{ fill: theme`colors.gray.800` }}
+            tick={{ fill: "#1f2937" }} // FIXME better tw theme theme`colors.gray.800`
             tickCount={maxYAxis + 1}
             tickSize={4}
             allowDataOverflow={true}
@@ -107,14 +106,14 @@ export const PressureFlowWeightChart: React.FC<
             type="basis"
             dot={false}
             dataKey="pressure"
-            stroke={theme`colors.green.700`}
+            stroke={"#15803d"} // FIXME better tw theme theme`colors.green.700`
             strokeWidth={2}
           />
           <Line
             type="basis"
             dot={false}
             dataKey="pressureGoal"
-            stroke={theme`colors.green.500`}
+            stroke={"#22c55e"} // FIXME better tw theme theme`colors.green.500`
             strokeWidth={2}
             strokeDasharray="5 5"
             activeDot={(props) =>
@@ -125,14 +124,14 @@ export const PressureFlowWeightChart: React.FC<
             type="basis"
             dot={false}
             dataKey="flow"
-            stroke={theme`colors.blue.500`}
+            stroke={"#3b82f6"} // FIXME better tw theme theme`colors.blue.500`
             strokeWidth={2}
           />
           <Line
             type="basis"
             dot={false}
             dataKey="flowGoal"
-            stroke={theme`colors.blue.300`}
+            stroke={"#7dd3fc"} // FIXME better tw theme theme`colors.blue.300`
             strokeWidth={2}
             strokeDasharray="5 5"
             activeDot={(props) =>
@@ -144,7 +143,7 @@ export const PressureFlowWeightChart: React.FC<
             dot={false}
             dataKey="weight"
             strokeWidth={2}
-            stroke={theme`colors.mui-brown.500`}
+            stroke={"#795548"} // FIXME better tw theme theme`colors.mui-brown.500`
           />
         </LineChart>
       </ResponsiveContainer>

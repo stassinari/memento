@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import React, { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import "twin.macro";
+
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
@@ -31,7 +31,7 @@ export const Settings: React.FC = () => {
   const user = useCurrentUser();
   const userRef = useMemo(
     () => doc(db, "users", user.uid) as DocumentReference<User>,
-    [user?.uid]
+    [user?.uid],
   );
 
   const { details: dbUser, isLoading } = useFirestoreDocRealtime<User>(userRef);
@@ -46,10 +46,10 @@ export const Settings: React.FC = () => {
 
       <Heading>Settings</Heading>
 
-      <div tw="mt-4 space-y-6">
+      <div className="mt-4 space-y-6">
         <FormSection title="Decent setup">
-          <div tw="flex items-center justify-between">
-            <span tw="font-medium">Enable Decent integration</span>
+          <div className="flex items-center justify-between">
+            <span className="font-medium">Enable Decent integration</span>
             <Toggle
               checked={!!secretKey}
               onChange={async () =>
@@ -61,9 +61,10 @@ export const Settings: React.FC = () => {
           </div>
           {secretKey ? (
             <>
-              <div tw="flex items-center justify-between">
-                <p tw="text-sm">
-                  Secret key: <strong tw="font-semibold">{secretKey}</strong>
+              <div className="flex items-center justify-between">
+                <p className="text-sm">
+                  Secret key:{" "}
+                  <strong className="font-semibold">{secretKey}</strong>
                 </p>
                 <Button
                   variant="white"
@@ -75,10 +76,12 @@ export const Settings: React.FC = () => {
                   Copy
                 </Button>
               </div>
-              <p tw="text-sm text-gray-600">
+              <p className="text-sm text-gray-600">
                 You can{" "}
-                <Link as={RouterLink} to="/decent-upload">
-                  upload shots from here
+                <Link asChild>
+                  <RouterLink to="/decent-upload">
+                    upload shots from here
+                  </RouterLink>
                 </Link>
                 , or follow{" "}
                 <Link
@@ -92,27 +95,22 @@ export const Settings: React.FC = () => {
               </p>
             </>
           ) : (
-            <p tw="mt-2 mb-4 text-sm text-gray-600">
+            <p className="mt-2 mb-4 text-sm text-gray-600">
               If you have a Decent Espresso machine, and would like to enable
               uploading shots from it, start by enabling the integration here.
             </p>
           )}
         </FormSection>
         <FormSection title="Account">
-          <p tw="text-sm">
-            Email: <strong tw="font-semibold">{user.email}</strong>
+          <p className="text-sm">
+            Email: <strong className="font-semibold">{user.email}</strong>
           </p>
           <Button variant="white" onClick={async () => await signOut(auth)}>
             Sign out
           </Button>
         </FormSection>
-        <Button
-          variant="white"
-          as={RouterLink}
-          to="/design-library"
-          tw="sm:hidden"
-        >
-          Design Library
+        <Button variant="white" className="sm:hidden" asChild>
+          <RouterLink to="/design-library">Design Library</RouterLink>
         </Button>
       </div>
     </>

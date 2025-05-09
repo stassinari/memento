@@ -1,22 +1,26 @@
-import { Box, PolymorphicComponentProps } from "react-polymorphic-box";
-import tw from "twin.macro";
+import { Slot } from "@radix-ui/react-slot";
+import clsx from "clsx";
+import React, { forwardRef } from "react";
 
-// Component-specific props specified separately
-type LinkOwnProps = {};
+type LinkProps = {
+  asChild?: boolean;
+  className?: string;
+  children: React.ReactNode;
+} & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-// Merge own props with others inherited from the underlying element type
-type LinkProps<E extends React.ElementType> = PolymorphicComponentProps<
-  E,
-  LinkOwnProps
->;
+const linkStyles =
+  "text-orange-600 underline hover:text-orange-500 hover:no-underline";
 
-const defaultElement = "a";
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
+  ({ asChild = false, className, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : "a";
 
-const linkStyles = tw`text-orange-600 underline hover:(text-orange-500 no-underline)`;
+    return (
+      <Comp className={clsx(linkStyles, className)} ref={ref} {...props}>
+        {children}
+      </Comp>
+    );
+  },
+);
 
-export function Link<E extends React.ElementType = typeof defaultElement>({
-  ...restProps
-}: LinkProps<E>): JSX.Element {
-  // The `as` prop may be overridden by the passed props
-  return <Box css={linkStyles} as={defaultElement} {...restProps} />;
-}
+Link.displayName = "Link";

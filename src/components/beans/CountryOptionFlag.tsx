@@ -4,9 +4,9 @@ interface CountryOptionFlagProps {
   country: string;
 }
 
-export const CountryOptionFlag: React.FC<CountryOptionFlagProps> = ({
+export const CountryOptionFlag = ({
   country,
-}) => {
+}: CountryOptionFlagProps) => {
   const countryCode = countries.find((c) => c.name === country)?.code;
 
   return <img src={`/images/flags/${countryCode}.svg`} />;

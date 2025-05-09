@@ -1,4 +1,4 @@
-import tw from "twin.macro";
+import clsx from "clsx";
 
 interface DividerProps {
   className?: string;
@@ -6,34 +6,30 @@ interface DividerProps {
   spacing?: "xs" | "sm" | "md" | "lg" | "xl"; // this is improvised, not TailwindUI
 }
 
-export const Divider: React.FC<DividerProps> = ({
-  label,
-  className,
-  spacing = "lg",
-}) => (
+export const Divider = ({ label, className, spacing = "lg" }: DividerProps) => (
   <div
-    css={[
-      tw`relative`,
+    className={clsx([
+      "relative",
       spacing === "xs"
-        ? tw`my-2`
+        ? "my-2"
         : spacing === "sm"
-        ? tw`my-3`
-        : spacing === "md"
-        ? tw`my-4`
-        : spacing === "lg"
-        ? tw`my-6`
-        : spacing === "xl"
-        ? tw`my-8`
-        : null,
-    ]}
-    className={className}
+          ? "my-3"
+          : spacing === "md"
+            ? "my-4"
+            : spacing === "lg"
+              ? "my-6"
+              : spacing === "xl"
+                ? "my-8"
+                : null,
+      className,
+    ])}
     aria-hidden="true"
   >
-    <div tw="absolute inset-0 flex items-center">
-      <div tw="w-full border-t border-gray-200" />
+    <div className="absolute inset-0 flex items-center">
+      <div className="w-full border-t border-gray-200" />
     </div>
-    <div tw="relative flex justify-center text-sm">
-      <span tw="px-2 text-gray-500 bg-white">{label}</span>
+    <div className="relative flex justify-center text-sm">
+      <span className="px-2 text-gray-500 bg-white">{label}</span>
     </div>
   </div>
 );

@@ -1,7 +1,7 @@
 import { setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "twin.macro";
+
 import {
   BeansForm,
   beansFormEmptyValues,
@@ -27,7 +27,7 @@ export const BeansAdd: React.FC = () => {
         items={[navLinks.beans, { label: "Add", linkTo: "#" }]}
       />
 
-      <Heading tw="mb-4">Add beans</Heading>
+      <Heading className="mb-4">Add beans</Heading>
 
       <BeansForm
         defaultValues={beansFormEmptyValues}
