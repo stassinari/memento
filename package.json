@@ -71,8 +71,8 @@
     "type-watch": "tsc --noEmit --watch"
   },
   "engines": {
-    "npm": ">=6.14.13",
-    "node": ">=14.18.0"
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
   },
   "browserslist": {
     "production": [
