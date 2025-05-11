@@ -50,6 +50,11 @@ export const navLinks = {
     linkTo: "/decent-upload",
     Icon: <ArrowUpOnSquareIcon />,
   },
+  aiPlayground: {
+    label: "AI playground",
+    linkTo: "/ai",
+    Icon: <CurrencyYenIcon />,
+  },
   settings: {
     label: "Settings",
     linkTo: "/settings",

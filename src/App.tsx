@@ -22,6 +22,7 @@ import { EspressoClone } from "./pages/espresso/EspressoClone";
 import { EspressoEditDetails } from "./pages/espresso/EspressoEditDetails";
 import { EspressoEditOutcome } from "./pages/espresso/EspressoEditOutcome";
 // import { LogIn } from "./pages/LogIn";
+import { AiPlayground } from "./pages/AiPlayground";
 import { BrewsTableWrapper } from "./pages/brews/BrewsTable";
 import { DecentUpload } from "./pages/DecentUpload";
 import { Home } from "./pages/Home";
@@ -31,25 +32,25 @@ import { TastingsPage } from "./pages/TastingsPage";
 
 const BeansAdd = React.lazy(async () => await import("./pages/beans/BeansAdd"));
 const BeansDetails = React.lazy(
-  async () => await import("./pages/beans/BeansDetails")
+  async () => await import("./pages/beans/BeansDetails"),
 );
 const BeansList = React.lazy(
-  async () => await import("./pages/beans/BeansList/BeansList")
+  async () => await import("./pages/beans/BeansList/BeansList"),
 );
 
 const BrewsAdd = React.lazy(async () => await import("./pages/brews/BrewsAdd"));
 const BrewDetails = React.lazy(
-  async () => await import("./pages/brews/BrewDetails")
+  async () => await import("./pages/brews/BrewDetails"),
 );
 
 const EspressoList = React.lazy(
-  async () => await import("./pages/espresso/EspressoList")
+  async () => await import("./pages/espresso/EspressoList"),
 );
 const EspressoDetails = React.lazy(
-  async () => await import("./pages/espresso/EspressoDetails")
+  async () => await import("./pages/espresso/EspressoDetails"),
 );
 const EspressoAdd = React.lazy(
-  async () => await import("./pages/espresso/EspressoAdd")
+  async () => await import("./pages/espresso/EspressoAdd"),
 );
 
 const LogIn = React.lazy(async () => await import("./pages/LogIn"));
@@ -135,6 +136,8 @@ export const App = () => {
               <Route path="decent-upload" element={<DecentUpload />} />
 
               <Route path="drinks/tastings" element={<TastingsPage />} />
+
+              <Route path="ai" element={<AiPlayground />} />
 
               <Route path="settings" element={<Settings />} />
 
