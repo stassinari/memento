@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { getGenerativeModel, Schema } from "firebase/vertexai";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -9,6 +10,8 @@ import { Input } from "../components/Input";
 import { Textarea } from "../components/Textarea";
 import sampleText from "../data/beans-page-example.txt?raw";
 import { vertex } from "../firebaseConfig";
+import { BeansSingleOrigin, RoastStyle } from "../types/beans";
+import { BeansCard } from "./beans/BeansList/BeansTab";
 
 const beansSchema = Schema.object({
   properties: {
@@ -99,6 +102,57 @@ const beansSchema = Schema.object({
   },
 });
 
+function parseBeansSingleOrigin(json: any): BeansSingleOrigin | null {
+  try {
+    // Basic type checks for required fields
+    if (
+      typeof json.name !== "string" ||
+      typeof json.roaster !== "string" ||
+      typeof json.roastStyle !== "string" ||
+      typeof json.roastLevel !== "number" ||
+      !Array.isArray(json.roastingNotes) ||
+      typeof json.country !== "string" ||
+      !Array.isArray(json.varietals) ||
+      typeof json.process !== "string"
+    ) {
+      return null;
+    }
+
+    // Optional fields with safe parsing
+    const roastDate =
+      typeof json.roastDate === "number"
+        ? Timestamp.fromDate(new Date(json.roastDate * 1000))
+        : null;
+
+    const harvestDate =
+      typeof json.harvestDate === "string"
+        ? Timestamp.fromDate(new Date(json.harvestDate))
+        : null;
+
+    return {
+      id: "generated",
+      origin: "single-origin",
+      name: json.name,
+      roaster: json.roaster,
+      roastDate,
+      roastStyle: json.roastStyle as RoastStyle,
+      roastLevel: json.roastLevel,
+      roastingNotes: json.roastingNotes,
+      country: json.country,
+      varietals: json.varietals,
+      altitude: typeof json.altitude === "number" ? json.altitude : null,
+      process: json.process,
+      farmer: typeof json.farmer === "string" ? json.farmer : null,
+      harvestDate,
+      region: typeof json.region === "string" ? json.region : null,
+      freezeDate: null,
+      thawDate: null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export const AiPlayground = () => {
   return (
     <>
@@ -170,7 +224,7 @@ const StructuredOutputText = () => {
   const [structuredOutput, setStructuredOutput] = useState<string>();
 
   const prompt = `
-  You are a helpful assistant form the coffee companion app Memento Coffee. 
+  You are a helpful assistant for the coffee companion app Memento Coffee. 
   Please extract the information about the coffee beans from the text below.
   
   ${text}`;
@@ -235,20 +289,27 @@ const StructuredOutputWeb = () => {
 
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [structuredOutput, setStructuredOutput] = useState<string>();
+  const [structuredOutput, setStructuredOutput] = useState<BeansSingleOrigin>();
 
   const generateStructuredOutput = async () => {
     setIsLoading(true);
     try {
       const prompt = `
-        You are a helpful assistant form the coffee companion app Memento Coffee. 
+        You are a helpful assistant for the coffee companion app Memento Coffee. 
         Please extract the information about the coffee beans from the following website.
          
         ${url}`;
 
       const result = await model.generateContent(prompt);
       const response = result.response;
-      setStructuredOutput(JSON.parse(response.text()));
+
+      const json = JSON.parse(response.text());
+      const beans = parseBeansSingleOrigin(json);
+      if (!beans) throw new Error("Invalid beans data");
+
+      setStructuredOutput(beans);
+    } catch {
+      setStructuredOutput(undefined);
     } finally {
       setIsLoading(false);
     }
@@ -276,6 +337,8 @@ const StructuredOutputWeb = () => {
             {JSON.stringify(structuredOutput, null, 2)}
           </pre>
         )}
+
+        {structuredOutput && <BeansCard beans={structuredOutput} />}
       </div>
     </div>
   );
@@ -368,7 +431,7 @@ const StructuredOutputImage = () => {
 
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [structuredOutput, setStructuredOutput] = useState<string>();
+  const [structuredOutput, setStructuredOutput] = useState<BeansSingleOrigin>();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
@@ -383,11 +446,18 @@ const StructuredOutputImage = () => {
       const imagePart = await fileToGenerativePart(file);
 
       const prompt = `
-        You are a helpful assistant form the coffee companion app Memento Coffee. 
+        You are a helpful assistant for the coffee companion app Memento Coffee. 
         Please extract the information about the coffee beans from the following image.`;
       const result = await model.generateContent([prompt, imagePart]);
       const response = result.response;
-      setStructuredOutput(JSON.parse(response.text()));
+
+      const json = JSON.parse(response.text());
+      const beans = parseBeansSingleOrigin(json);
+      if (!beans) throw new Error("Invalid beans data");
+
+      setStructuredOutput(beans);
+    } catch {
+      setStructuredOutput(undefined);
     } finally {
       setIsLoading(false);
     }
@@ -413,6 +483,8 @@ const StructuredOutputImage = () => {
               {JSON.stringify(structuredOutput, null, 2)}
             </pre>
           )}
+
+          {structuredOutput && <BeansCard beans={structuredOutput} />}
         </div>
       </div>
     </div>
