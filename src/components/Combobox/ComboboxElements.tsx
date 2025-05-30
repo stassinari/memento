@@ -1,7 +1,7 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import React, { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
 // interface ComboboxInputProps {
 //   placeholder?: string;
@@ -44,9 +44,7 @@ interface ComboboxOptionsProps {
   children: ReactNode;
 }
 
-export const ComboboxOptions = ({
-  children,
-}: ComboboxOptionsProps) => (
+export const ComboboxOptions = ({ children }: ComboboxOptionsProps) => (
   <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
     {children}
   </HuiCombobox.Options>
@@ -55,7 +53,7 @@ export const ComboboxOptions = ({
 interface ComboboxOptionProps {
   option: string;
   renderOption: (option: string) => ReactElement;
-  handleClick?: VoidFunction;
+  handleClick?: () => void;
 }
 
 export const ComboboxOption = ({

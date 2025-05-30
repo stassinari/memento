@@ -7,6 +7,7 @@ import {
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getMessaging } from "firebase/messaging";
+import { getVertexAI } from "firebase/vertexai";
 
 const {
   VITE_FB_API_KEY,
@@ -40,13 +41,15 @@ export const messaging = getMessaging(app);
 const functions = getFunctions(app);
 provider.setCustomParameters({ prompt: "select_account" });
 
+const vertex = getVertexAI(app);
+
 if (location.hostname === "localhost") {
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
   connectFunctionsEmulator(functions, "127.0.0.1", 5001); // this is not used now, as we're targeting the endpoint manually
 }
 
-export { auth, db };
+export { auth, db, vertex };
 
 // FIXME revisit when looking into Firebase notifications
 // export const getMessagingToken = (setTokenFound: (arg0: boolean) => void) => {

@@ -80,6 +80,7 @@ export const SidebarNav = () => {
       { ...navLinks.espresso, nested: true },
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
+      navLinks.aiPlayground,
       ...(process.env.NODE_ENV === "development"
         ? [navLinks.designLibrary]
         : []),

@@ -1,5 +1,5 @@
 import { orderBy } from "firebase/firestore";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import countries from "../../data/countries";
@@ -23,6 +23,7 @@ import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { extractSuggestions } from "../form/FormSuggestions";
 import { TextWithImageOption } from "../form/ListOption";
+import { BeansAi } from "./BeansAi";
 import { BeansBlendForm, blendEmptyValues } from "./BeansBlendForm";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 
@@ -115,6 +116,7 @@ export const BeansForm = ({
     formState: { errors },
     register,
     watch,
+    reset,
   } = methods;
 
   const onSubmit: SubmitHandler<BeansFormInputs> = async (data) => {
@@ -132,6 +134,12 @@ export const BeansForm = ({
 
   return (
     <>
+      <BeansAi
+        onBeansParsed={(beans) => {
+          reset({ ...defaultValues, ...beans });
+        }}
+      />
+
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(onSubmit)}
