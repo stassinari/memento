@@ -5,6 +5,11 @@
 
 @plugin '@headlessui/tailwindcss';
 
+/* Remove firebase emulator warning at the bottom of the page */
+.firebase-emulator-warning {
+  display: none;
+}
+
 @theme {
   --color-*: initial;
   --color-transparent: transparent;
