@@ -62,7 +62,7 @@ export const ButtonWithDropdown = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 w-48 mt-2 -mr-1 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden">
+        <Menu.Items className="absolute right-0 z-10 w-48 mt-2 -mr-1 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black/5 focus:outline-hidden">
           <div className="py-1">
             {dropdownItems.map((item) => (
               <Menu.Item key={item.label}>

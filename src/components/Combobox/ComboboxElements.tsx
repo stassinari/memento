@@ -45,7 +45,7 @@ interface ComboboxOptionsProps {
 }
 
 export const ComboboxOptions = ({ children }: ComboboxOptionsProps) => (
-  <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
+  <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black/5 focus:outline-hidden sm:text-sm">
     {children}
   </HuiCombobox.Options>
 );
