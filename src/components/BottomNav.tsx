@@ -82,12 +82,7 @@ export const BottomNav = () => (
       height: `calc(env(safe-area-inset-bottom) + 3.5rem)`,
     }}
   >
-    <ol
-      className="flex justify-between"
-      style={{
-        height: `calc(env(safe-area-inset-bottom) + 3.5rem)`,
-      }}
-    >
+    <ol className="flex justify-between h-14">
       {bottomNavLinks.map(({ Icon, label, linkTo: to }) => (
         <BottomNavItem key={label} Icon={Icon} label={label} linkTo={to} />
       ))}
