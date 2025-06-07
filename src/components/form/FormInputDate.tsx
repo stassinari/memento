@@ -74,8 +74,8 @@ export const FormInputDate = ({
 interface CalendarHeaderProps {
   date: Date;
   dateFormat: string;
-  decrease: VoidFunction;
-  increase: VoidFunction;
+  decrease: () => void;
+  increase: () => void;
   prevButtonDisabled: boolean;
   nextButtonDisabled: boolean;
 }

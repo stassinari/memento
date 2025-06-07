@@ -9,7 +9,7 @@ interface ErrorPageProps {
   title: string;
   description: string;
   errorMessage?: string;
-  retry?: VoidFunction;
+  retry?: () => void;
 }
 
 export const ErrorPage = ({

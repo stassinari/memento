@@ -330,7 +330,7 @@ const StructuredOutputWeb = () => {
           className="mt-4 p-2 border border-gray-300 rounded"
         />
         <Button onClick={generateStructuredOutput} disabled={isLoading}>
-          {isLoading ? "Extracting..." : "Extracted structured output"}
+          {isLoading ? "Extracting..." : "Extract structured output"}
         </Button>
         {structuredOutput && (
           <pre className="mt-4 p-4 bg-gray-100 rounded">

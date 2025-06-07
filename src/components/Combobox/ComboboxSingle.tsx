@@ -1,7 +1,7 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import React, { ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../form/ListOption";
 import {
@@ -18,7 +18,7 @@ export interface ComboboxSingleProps {
   options: string[];
   value: any;
   onChange: (...event: any[]) => void;
-  reset: VoidFunction;
+  reset: () => void;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
