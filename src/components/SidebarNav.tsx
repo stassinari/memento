@@ -48,17 +48,6 @@ export interface SidebarNavItemProps {
   nested?: boolean;
 }
 
-const sidebarNavLinks: SidebarNavItemProps[] = [
-  navLinks.home,
-  navLinks.beans,
-  navLinks.drinks,
-  { ...navLinks.brews, nested: true },
-  { ...navLinks.espresso, nested: true },
-  { ...navLinks.tastings, nested: true },
-  navLinks.decentUpload,
-  ...(process.env.NODE_ENV === "development" ? [navLinks.designLibrary] : []),
-];
-
 export const SidebarNav = () => {
   const user = useCurrentUser();
   const userRef = useMemo(
@@ -80,9 +69,8 @@ export const SidebarNav = () => {
       { ...navLinks.espresso, nested: true },
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
-      navLinks.aiPlayground,
       ...(process.env.NODE_ENV === "development"
-        ? [navLinks.designLibrary]
+        ? [navLinks.aiPlayground, navLinks.designLibrary]
         : []),
     ],
     [secretKey],
