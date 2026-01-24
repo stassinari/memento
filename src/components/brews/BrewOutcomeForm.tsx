@@ -1,7 +1,7 @@
+import { Link, useNavigate } from "@tanstack/react-router";
 import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import { pick } from "lodash";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
 
 import { Brew, ExtractionType } from "../../types/brew";
 import { Button } from "../Button";
@@ -75,7 +75,7 @@ export const BrewOutcomeForm = ({ brew, brewRef }: BrewOutcomeFormProps) => {
   const onSubmit: SubmitHandler<BrewOutcomeInputs> = async (data) => {
     if (brew.id) {
       await updateDoc(brewRef, { ...data });
-      navigate(`/drinks/brews/${brew.id}`);
+      navigate({ to: "/drinks/brews/$brewId", params: { brewId: brew.id } });
     }
   };
 
@@ -198,7 +198,12 @@ export const BrewOutcomeForm = ({ brew, brewRef }: BrewOutcomeFormProps) => {
 
         <div className="flex justify-end gap-4">
           <Button variant="white" type="button" asChild>
-            <Link to={`/drinks/brews/${brew.id ?? ""}`}>Back</Link>
+            <Link
+              to="/drinks/brews/$brewId"
+              params={{ brewId: brew.id ?? "" }}
+            >
+              Back
+            </Link>
           </Button>
           <Button
             variant="primary"

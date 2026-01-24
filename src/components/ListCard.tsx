@@ -1,6 +1,6 @@
+import { Link as RouterLink } from "@tanstack/react-router";
 import clsx from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
-import { Link as RouterLink } from "react-router-dom";
 import { Card } from "./Card";
 
 interface FooterProps {

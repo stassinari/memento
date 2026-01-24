@@ -1,6 +1,6 @@
+import { useNavigate } from "@tanstack/react-router";
 import { setDoc } from "firebase/firestore";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 import {
   BeansForm,
@@ -18,7 +18,7 @@ export const BeansAdd: React.FC = () => {
 
   const addBeans = async (data: BeansFormInputs) => {
     await setDoc(newBeansRef, data);
-    navigate(`/beans/${newBeansRef.id}`);
+    navigate({ to: "/beans/$beansId", params: { beansId: newBeansRef.id } });
   };
 
   return (

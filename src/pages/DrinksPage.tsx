@@ -1,7 +1,7 @@
+import { Link as RouterLink } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { orderBy, where } from "firebase/firestore";
 import React, { useCallback, useMemo } from "react";
-import { Link as RouterLink } from "react-router-dom";
 
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
@@ -61,17 +61,17 @@ export const DrinksPage: React.FC = () => {
       <ul className="mt-4">
         <li>
           <Link asChild>
-            <RouterLink to="brews">Go to brews</RouterLink>
+            <RouterLink to="./brews">Go to brews</RouterLink>
           </Link>
         </li>
         <li>
           <Link asChild>
-            <RouterLink to="espresso">Go to espressos</RouterLink>
+            <RouterLink to="./espresso">Go to espressos</RouterLink>
           </Link>
         </li>
         <li>
           <Link asChild>
-            <RouterLink to="tastings">Go to tastings</RouterLink>
+            <RouterLink to="./tastings">Go to tastings</RouterLink>
           </Link>
         </li>
       </ul>

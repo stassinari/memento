@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { setDoc } from "firebase/firestore";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -18,7 +18,7 @@ import { Beans } from "../../types/beans";
 export const BeansClone: React.FC = () => {
   console.log("BeansClone");
 
-  const { beansId } = useParams();
+  const { beansId } = useParams({ strict: false });
 
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ export const BeansClone: React.FC = () => {
 
   const addBeans = async (data: BeansFormInputs) => {
     await setDoc(newBeansRef, data);
-    navigate(`/beans/${newBeansRef.id}`);
+    navigate({ to: "/beans/$beansId", params: { beansId: newBeansRef.id } });
   };
 
   if (!beans) {

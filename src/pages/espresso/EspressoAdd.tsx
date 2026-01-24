@@ -1,6 +1,6 @@
+import { useNavigate } from "@tanstack/react-router";
 import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -35,7 +35,10 @@ export const EspressoAdd: React.FC = () => {
 
   const addEspresso = async (data: EspressoFormInputs) => {
     await setDoc(newEspressoRef, espressoToFirestore(data));
-    navigate(`/drinks/espresso/${newEspressoRef.id}`);
+    navigate({
+      to: "/drinks/espresso/$espressoId",
+      params: { espressoId: newEspressoRef.id },
+    });
   };
 
   if (isLoading) return null;

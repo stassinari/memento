@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { setDoc } from "firebase/firestore";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -19,7 +19,7 @@ import { brewToFirestore } from "./BrewsAdd";
 export const BrewClone: React.FC = () => {
   console.log("BrewClone");
 
-  const { brewId } = useParams();
+  const { brewId } = useParams({ strict: false });
   const navigate = useNavigate();
 
   const docRef = useDocRef<Brew>("brews", brewId);
@@ -29,7 +29,7 @@ export const BrewClone: React.FC = () => {
 
   const addBrew = async (data: BrewFormInputs) => {
     await setDoc(newBrewRef, brewToFirestore(data));
-    navigate(`/drinks/brews/${newBrewRef.id}`);
+    navigate({ to: "/drinks/brews/$brewId", params: { brewId: newBrewRef.id } });
   };
 
   if (!brew || !brewId) {

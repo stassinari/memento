@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { doc, setDoc } from "firebase/firestore";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -17,7 +17,7 @@ export const BrewEditDetails: React.FC = () => {
   console.log("BrewEditDetails");
 
   const user = useCurrentUser();
-  const { brewId } = useParams();
+  const { brewId } = useParams({ strict: false });
 
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ export const BrewEditDetails: React.FC = () => {
 
   const editBrew = async (data: BrewFormInputs) => {
     await setDoc(existingBrewRef, brewToFirestore(data));
-    navigate(`/drinks/brews/${brewId}`);
+    navigate({ to: "/drinks/brews/$brewId", params: { brewId: brewId! } });
   };
 
   // TODO find an automated way to do this

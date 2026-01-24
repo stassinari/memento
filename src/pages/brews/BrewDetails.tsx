@@ -1,9 +1,9 @@
 import { Tab } from "@headlessui/react";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { ButtonWithDropdown } from "../../components/ButtonWithDropdown";
@@ -20,7 +20,7 @@ import { BrewDetailsOutcome } from "./BrewDetailsOutcome";
 export const BrewDetails: React.FC = () => {
   console.log("BrewDetails");
 
-  const { brewId } = useParams();
+  const { brewId } = useParams({ strict: false });
   const navigate = useNavigate();
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -31,7 +31,7 @@ export const BrewDetails: React.FC = () => {
 
   const handleDelete = async () => {
     await deleteDoc(docRef);
-    navigate(`/drinks/brews`);
+    navigate({ to: "/drinks/brews" });
   };
 
   if (isLoading) return null;

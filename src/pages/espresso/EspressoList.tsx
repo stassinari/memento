@@ -1,6 +1,6 @@
+import { Link as RouterLink } from "@tanstack/react-router";
 import { limit, orderBy } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -58,7 +58,7 @@ const EspressoList: React.FC = () => {
             size={isSm ? "md" : "sm"}
             asChild
           >
-            <RouterLink to="add">Add espresso</RouterLink>
+            <RouterLink to="./add">Add espresso</RouterLink>
           </Button>
         }
       >

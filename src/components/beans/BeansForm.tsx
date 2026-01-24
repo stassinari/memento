@@ -1,7 +1,7 @@
+import { useNavigate } from "@tanstack/react-router";
 import { orderBy } from "firebase/firestore";
 import { useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import countries from "../../data/countries";
 import { processes } from "../../data/processes";
 import { notesToOptions, tastingNotes } from "../../data/tasting-notes";
@@ -319,7 +319,7 @@ export const BeansForm = ({
             <Button
               variant="white"
               onClick={() => {
-                navigate(-1);
+                window.history.back();
               }}
             >
               Cancel

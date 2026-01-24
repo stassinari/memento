@@ -1,10 +1,10 @@
 import { Tab } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
+import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import React, { useCallback, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import { Button } from "../../components/Button";
@@ -26,7 +26,7 @@ import { EspressoDetailsOutcome } from "./EspressoDetailsOutcome";
 const EspressoDetails: React.FC = () => {
   console.log("EspressoDetails");
 
-  const { espressoId } = useParams();
+  const { espressoId } = useParams({ strict: false });
   const navigate = useNavigate();
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -38,7 +38,7 @@ const EspressoDetails: React.FC = () => {
 
   const handleDelete = useCallback(async () => {
     await deleteDoc(docRef);
-    navigate(`/drinks/espresso`);
+    navigate({ to: "/drinks/espresso" });
   }, [docRef, navigate]);
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
@@ -99,7 +99,7 @@ const EspressoDetails: React.FC = () => {
       {espresso.fromDecent && espresso.partial && (
         <div className="inline-flex items-center gap-4">
           <Button variant="secondary" size="sm" className="shrink-0" asChild>
-            <Link to="decent/add">
+            <Link to="./decent/add">
               <PuzzlePieceIcon /> Add shot info
             </Link>
           </Button>

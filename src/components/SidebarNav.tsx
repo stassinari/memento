@@ -1,7 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import { ReactNode, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { db } from "../firebaseConfig";
 import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
 import { useActiveRoute } from "../hooks/useActiveRoute";

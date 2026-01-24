@@ -2,12 +2,12 @@ import {
   ArrowUpTrayIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";
 import { Button } from "../components/Button";
@@ -60,7 +60,7 @@ export const DecentUpload: React.FC = () => {
           password: secretKey,
         },
       })
-      .then(() => navigate("/drinks/espresso"))
+      .then(() => navigate({ to: "/drinks/espresso" }))
       .catch((error) => {
         throw new Error(error);
       })

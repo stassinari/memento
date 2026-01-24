@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { setDoc } from "firebase/firestore";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -17,7 +17,7 @@ import { BaseEspresso } from "../../types/espresso";
 import { espressoToFirestore } from "./EspressoAdd";
 
 export const EspressoClone: React.FC = () => {
-  const { espressoId } = useParams();
+  const { espressoId } = useParams({ strict: false });
   const navigate = useNavigate();
 
   const docRef = useDocRef<BaseEspresso>("espresso", espressoId);
@@ -27,7 +27,10 @@ export const EspressoClone: React.FC = () => {
 
   const addEspresso = async (data: EspressoFormInputs) => {
     await setDoc(newEspressoRef, espressoToFirestore(data));
-    navigate(`/drinks/espresso/${newEspressoRef.id}`);
+    navigate({
+      to: "/drinks/espresso/$espressoId",
+      params: { espressoId: newEspressoRef.id },
+    });
   };
 
   if (!espresso || !espressoId) {

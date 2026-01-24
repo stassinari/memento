@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { doc, setDoc } from "firebase/firestore";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -18,7 +18,7 @@ import { espressoToFirestore } from "./EspressoAdd";
 
 export const EspressoEditDetails: React.FC = () => {
   const user = useCurrentUser();
-  const { espressoId } = useParams();
+  const { espressoId } = useParams({ strict: false });
 
   const navigate = useNavigate();
 
@@ -44,7 +44,10 @@ export const EspressoEditDetails: React.FC = () => {
 
   const editEspresso = async (data: EspressoFormInputs) => {
     await setDoc(existingEspressoRef, espressoToFirestore(data));
-    navigate(`/drinks/espresso/${espressoId}`);
+    navigate({
+      to: "/drinks/espresso/$espressoId",
+      params: { espressoId: espressoId! },
+    });
   };
 
   // TODO find an automated way to do this

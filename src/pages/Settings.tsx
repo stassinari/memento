@@ -1,3 +1,4 @@
+import { Link as RouterLink } from "@tanstack/react-router";
 import { Auth } from "firebase/auth";
 import {
   DocumentReference,
@@ -7,7 +8,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useMemo } from "react";
-import { Link as RouterLink } from "react-router-dom";
 
 import { navLinks } from "../components/BottomNav";
 import { BreadcrumbsWithHome } from "../components/Breadcrumbs";

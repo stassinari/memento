@@ -1,6 +1,6 @@
+import { useParams } from "@tanstack/react-router";
 import { doc } from "firebase/firestore";
 import React from "react";
-import { useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -16,7 +16,7 @@ export const BrewEditOutcome: React.FC = () => {
   console.log("BrewEditOutcome");
 
   const user = useCurrentUser();
-  const { brewId } = useParams();
+  const { brewId } = useParams({ strict: false });
 
   const docRef = useDocRef<Brew>("brews", brewId);
   const { details: brew, isLoading } = useFirestoreDocOneTime<Brew>(docRef);

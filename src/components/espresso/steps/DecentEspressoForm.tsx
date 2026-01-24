@@ -1,7 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import { orderBy } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 
 import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "../../../hooks/firestore/useFirestoreCollectionOneTime";

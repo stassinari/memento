@@ -1,7 +1,7 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { DocumentReference, setDoc } from "firebase/firestore";
 import { omit } from "lodash";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -18,7 +18,7 @@ import { Beans } from "../../types/beans";
 export const BeansEdit: React.FC = () => {
   console.log("BeansEdit");
 
-  const { beansId } = useParams();
+  const { beansId } = useParams({ strict: false });
 
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ export const BeansEdit: React.FC = () => {
 
   const editBeans = async (data: BeansFormInputs) => {
     await setDoc(docRef as DocumentReference, data);
-    navigate(`/beans/${docRef.id}`);
+    navigate({ to: "/beans/$beansId", params: { beansId: docRef.id } });
   };
 
   if (!beans) {

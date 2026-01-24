@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 import { CalendarIcon } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { getTimeAgo } from "../util";
 
 export interface DataListItem {

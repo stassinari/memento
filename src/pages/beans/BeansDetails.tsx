@@ -1,8 +1,8 @@
 import { Tab } from "@headlessui/react";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import clsx from "clsx";
 import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React, { useCallback, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
 import {
@@ -21,7 +21,7 @@ import { NotFound } from "../NotFound";
 import { tabStyles } from "./BeansList/BeansList";
 
 export const BeansDetails: React.FC = () => {
-  const { beansId } = useParams();
+  const { beansId } = useParams({ strict: false });
   const navigate = useNavigate();
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -34,7 +34,7 @@ export const BeansDetails: React.FC = () => {
     await updateDoc(docRef, {
       isFinished: true,
     });
-    navigate(`/beans`);
+    navigate({ to: "/beans" });
   }, [docRef, navigate]);
 
   const handleUnarchive = useCallback(async () => {
@@ -58,7 +58,7 @@ export const BeansDetails: React.FC = () => {
   const handleDelete = useCallback(async () => {
     // TODO check if beans have brews/espressos/tastings
     await deleteDoc(docRef);
-    navigate(`/beans`);
+    navigate({ to: "/beans" });
   }, [docRef, navigate]);
 
   const dropdownButtons: ButtonWithDropdownProps = useMemo(

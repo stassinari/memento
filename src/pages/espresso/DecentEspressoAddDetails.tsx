@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { doc, orderBy, updateDoc } from "firebase/firestore";
 import React, { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { navLinks } from "../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../components/Breadcrumbs";
@@ -30,7 +30,7 @@ export const DecentEspressoAddDetails: React.FC = () => {
   console.log("DecentEspressoAddDetails");
 
   const user = useCurrentUser();
-  const { espressoId } = useParams();
+  const { espressoId } = useParams({ strict: false });
 
   const navigate = useNavigate();
 
@@ -61,7 +61,10 @@ export const DecentEspressoAddDetails: React.FC = () => {
 
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
     await updateDoc(existingEspressoRef, decentEspressoToFirestore(data));
-    navigate(`/drinks/espresso/${espressoId}`);
+    navigate({
+      to: "/drinks/espresso/$espressoId",
+      params: { espressoId: espressoId! },
+    });
   };
 
   return (

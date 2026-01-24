@@ -1,8 +1,8 @@
 import { Tab } from "@headlessui/react";
+import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { orderBy, where } from "firebase/firestore";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { navLinks } from "../../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../../components/Breadcrumbs";
 import { Button } from "../../../components/Button";
@@ -77,7 +77,7 @@ export const BeansList: React.FC = () => {
             size={isSm ? "md" : "sm"}
             asChild
           >
-            <Link to="add">Add beans </Link>
+            <Link to="./add">Add beans </Link>
           </Button>
         }
       >

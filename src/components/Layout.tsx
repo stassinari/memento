@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { Suspense } from "react";
-import { Outlet } from "react-router-dom";
+import { ReactNode, Suspense } from "react";
 import { BottomNav } from "./BottomNav";
 import { ReloadPrompt } from "./ReloadPrompt";
 import { SidebarNav } from "./SidebarNav";
@@ -15,9 +14,10 @@ export const layoutContainerCssStyles = {
 
 interface LayoutProps {
   fullWidth?: boolean;
+  children: ReactNode;
 }
 
-export const Layout = ({ fullWidth = false }: LayoutProps) => {
+export const Layout = ({ fullWidth = false, children }: LayoutProps) => {
   return (
     <div
       className={clsx(layoutContainerTailwindStyles)}
@@ -37,9 +37,7 @@ export const Layout = ({ fullWidth = false }: LayoutProps) => {
                   : "px-4 max-w-7xl sm:px-6 lg:px-16 2xl:px-32",
               ])}
             >
-              <Suspense>
-                <Outlet />
-              </Suspense>
+              <Suspense>{children}</Suspense>
               <ReloadPrompt />
             </div>
           </div>
