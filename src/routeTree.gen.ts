@@ -201,9 +201,9 @@ const AuthLayoutDrinksEspressoEspressoIdIndexLazyRoute =
     path: '/drinks/espresso/$espressoId/',
     getParentRoute: () => AuthLayoutRoute,
   } as any).lazy(() =>
-    import(
-      './routes/_auth/_layout/drinks/espresso/$espressoId/index.lazy'
-    ).then((d) => d.Route),
+    import('./routes/_auth/_layout/drinks/espresso/$espressoId/index.lazy').then(
+      (d) => d.Route,
+    ),
   )
 const AuthLayoutDrinksBrewsBrewIdIndexLazyRoute =
   AuthLayoutDrinksBrewsBrewIdIndexLazyRouteImport.update({

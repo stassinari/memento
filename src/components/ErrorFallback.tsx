@@ -6,7 +6,7 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => (
     title="Something went wrong."
     description="Sorry, an unknown error has occurred. For more information, look
 at the message below:"
-    errorMessage={error.message}
+    errorMessage={error instanceof Error ? error.message : String(error)}
     retry={resetErrorBoundary}
   />
 );
