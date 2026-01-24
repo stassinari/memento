@@ -1,8 +1,56 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BrewEditOutcome } from "../../../../../../pages/brews/BrewEditOutcome";
+import { useParams } from "@tanstack/react-router";
+import React from "react";
+import { doc } from "firebase/firestore";
+import { db } from "../../../../../../firebaseConfig";
+import { navLinks } from "../../../../../../components/BottomNav";
+import { BreadcrumbsWithHome } from "../../../../../../components/Breadcrumbs";
+import { Heading } from "../../../../../../components/Heading";
+import { BrewOutcomeForm } from "../../../../../../components/brews/BrewOutcomeForm";
+import { useDocRef } from "../../../../../../hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "../../../../../../hooks/firestore/useFirestoreDocOneTime";
+import { useCurrentUser } from "../../../../../../hooks/useInitUser";
+import { Brew } from "../../../../../../types/brew";
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/brews/$brewId/outcome",
 )({
   component: BrewEditOutcome,
 });
+
+function BrewEditOutcome()  {
+  console.log("BrewEditOutcome");
+
+  const user = useCurrentUser();
+  const { brewId } = useParams({ strict: false });
+
+  const docRef = useDocRef<Brew>("brews", brewId);
+  const { details: brew, isLoading } = useFirestoreDocOneTime<Brew>(docRef);
+
+  if (!user) throw new Error("User is not logged in.");
+
+  if (isLoading) return null;
+
+  if (!brewId || !brew) {
+    throw new Error("Brew does not exist.");
+  }
+
+  const brewRef = doc(db, "users", user.uid, "brews", brewId);
+
+  return (
+    <>
+      <BreadcrumbsWithHome
+        items={[
+          navLinks.drinks,
+          navLinks.brews,
+          { label: brew.method, linkTo: `/drinks/brews/${brewId}` },
+          { label: "Outcome", linkTo: "#" },
+        ]}
+      />
+
+      <Heading className="mb-4">Edit brew outcome</Heading>
+
+      <BrewOutcomeForm brew={brew} brewRef={brewRef} />
+    </>
+  );
+};

@@ -1,9 +1,9 @@
 import clsx from "clsx";
-import { Button } from "../components/Button";
+import { Button } from "./Button";
 import {
   layoutContainerCssStyles,
   layoutContainerTailwindStyles,
-} from "../components/Layout";
+} from "./Layout";
 
 interface ErrorPageProps {
   title: string;
@@ -51,4 +51,11 @@ export const ErrorPage = ({
       </div>
     </main>
   </div>
+);
+
+export const NotFound = () => (
+  <ErrorPage
+    title="404"
+    description="Sorry, we couldn’t find the page you’re looking for."
+  />
 );

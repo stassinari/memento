@@ -9,6 +9,7 @@ import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
 } from "../../components/ButtonWithDropdown";
+import { NotFound } from "../../components/ErrorPage";
 import { Heading } from "../../components/Heading";
 import { BeansDetailsInfo } from "../../components/beans/BeansDetailsInfo";
 import { BeansDrinks } from "../../components/beans/BeansDrinks";
@@ -17,7 +18,6 @@ import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { Beans } from "../../types/beans";
-import { NotFound } from "../NotFound";
 import { tabStyles } from "./BeansList/BeansList";
 
 export const BeansDetails: React.FC = () => {

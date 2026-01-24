@@ -1,10 +1,7 @@
 import { FallbackProps } from "react-error-boundary";
-import { ErrorPage } from "../pages/ErrorPage";
+import { ErrorPage } from "./ErrorPage";
 
-export const ErrorFallback = ({
-  error,
-  resetErrorBoundary,
-}: FallbackProps) => (
+export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => (
   <ErrorPage
     title="Something went wrong."
     description="Sorry, an unknown error has occurred. For more information, look

@@ -12,13 +12,13 @@ import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
 } from "../../components/ButtonWithDropdown";
+import { NotFound } from "../../components/ErrorPage";
 import { Heading } from "../../components/Heading";
 import { DecentCharts } from "../../components/espresso/charts/DecentCharts";
 import { useDocRef } from "../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
 import { Espresso } from "../../types/espresso";
-import { NotFound } from "../NotFound";
 import { tabStyles } from "../beans/BeansList/BeansList";
 import { EspressoDetailsInfo } from "./EspressoDetailsInfo";
 import { EspressoDetailsOutcome } from "./EspressoDetailsOutcome";
