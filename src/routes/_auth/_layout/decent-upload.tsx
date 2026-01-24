@@ -131,7 +131,7 @@ function DecentUpload() {
             reasons, we require you to generate a secret token (the same used
             used by auto-upload feature). Click the button below or head over to{" "}
             <Link asChild>
-              <RouterLink to="/account">your Account page</RouterLink>
+              <RouterLink to="/settings">your Account page</RouterLink>
             </Link>{" "}
             to create your token.
           </div>

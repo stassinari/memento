@@ -24,8 +24,8 @@ import { Heading } from "../../../../../components/Heading";
 import { useDocRef } from "../../../../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../../../../hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "../../../../../hooks/useScreenMediaQuery";
-import { tabStyles } from "../../../../../pages/beans/BeansList/BeansList";
 import { Beans } from "../../../../../types/beans";
+import { tabStyles } from "../index.lazy";
 
 export const Route = createLazyFileRoute("/_auth/_layout/beans/$beansId/")({
   component: BeansDetails,

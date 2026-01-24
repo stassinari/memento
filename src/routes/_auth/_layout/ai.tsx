@@ -11,8 +11,8 @@ import { Input } from "../../../components/Input";
 import { Textarea } from "../../../components/Textarea";
 import sampleText from "../../../data/beans-page-example.txt?raw";
 import { vertex } from "../../../firebaseConfig";
-import { BeansCard } from "../../../pages/beans/BeansList/BeansTab";
 import { BeansSingleOrigin, RoastStyle } from "../../../types/beans";
+import { BeansCard } from "./beans/index.lazy";
 
 export const Route = createFileRoute("/_auth/_layout/ai")({
   component: AiPlayground,

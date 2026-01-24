@@ -19,7 +19,7 @@ export const Route = createLazyFileRoute("/_auth/_layout/drinks/espresso/add")({
   component: EspressoAdd,
 });
 
-const espressoToFirestore = (espresso: EspressoFormInputs) => ({
+export const espressoToFirestore = (espresso: EspressoFormInputs) => ({
   ...espresso,
   beans: doc(db, espresso.beans ?? ""),
 });

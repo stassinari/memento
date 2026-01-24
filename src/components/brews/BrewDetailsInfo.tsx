@@ -1,7 +1,7 @@
-import { DetailsCard } from "../../components/Details";
-import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
-import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
 import { Brew } from "../../types/brew";
+import { DetailsCard } from "../Details";
+import { BeansShortInfo } from "../beans/BeansShortInfo";
+import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface BrewDetailsInfoProp {
   brew: Brew;

@@ -15,8 +15,8 @@ import { Heading } from "../../../../../../components/Heading";
 import { useDocRef } from "../../../../../../hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "../../../../../../hooks/firestore/useFirestoreDocOneTime";
 import { useNewRef } from "../../../../../../hooks/firestore/useNewBeansRef";
-import { espressoToFirestore } from "../../../../../../pages/espresso/EspressoAdd";
 import { BaseEspresso } from "../../../../../../types/espresso";
+import { espressoToFirestore } from "../add.lazy";
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/clone",

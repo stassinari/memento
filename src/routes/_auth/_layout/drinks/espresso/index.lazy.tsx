@@ -64,7 +64,7 @@ function EspressoList() {
             size={isSm ? "md" : "sm"}
             asChild
           >
-            <RouterLink to="./add">Add espresso</RouterLink>
+            <RouterLink to="/drinks/espresso/add">Add espresso</RouterLink>
           </Button>
         }
       >

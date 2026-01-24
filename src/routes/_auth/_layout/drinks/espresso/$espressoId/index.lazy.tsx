@@ -19,14 +19,14 @@ import {
 } from "../../../../../../components/ButtonWithDropdown";
 import { NotFound } from "../../../../../../components/ErrorPage";
 import { Heading } from "../../../../../../components/Heading";
+import { EspressoDetailsInfo } from "../../../../../../components/espresso/EspressoDetailsInfo";
+import { EspressoDetailsOutcome } from "../../../../../../components/espresso/EspressoDetailsOutcome";
 import { DecentCharts } from "../../../../../../components/espresso/charts/DecentCharts";
 import { useDocRef } from "../../../../../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../../../../../hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "../../../../../../hooks/useScreenMediaQuery";
-import { tabStyles } from "../../../../../../pages/beans/BeansList/BeansList";
-import { EspressoDetailsInfo } from "../../../../../../pages/espresso/EspressoDetailsInfo";
-import { EspressoDetailsOutcome } from "../../../../../../pages/espresso/EspressoDetailsOutcome";
 import { Espresso } from "../../../../../../types/espresso";
+import { tabStyles } from "../../../beans/index.lazy";
 
 export const Route = createLazyFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/",

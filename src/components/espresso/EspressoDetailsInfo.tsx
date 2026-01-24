@@ -1,15 +1,13 @@
-import { DetailsCard } from "../../components/Details";
-import { BeansShortInfo } from "../../components/beans/BeansShortInfo";
-import { useDrinkRatio } from "../../components/drinks/useDrinkRatio";
 import { Espresso } from "../../types/espresso";
+import { DetailsCard } from "../Details";
+import { BeansShortInfo } from "../beans/BeansShortInfo";
+import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface EspressoDetailsInfoProps {
   espresso: Espresso;
 }
 
-export const EspressoDetailsInfo = ({
-  espresso,
-}: EspressoDetailsInfoProps) => {
+export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
   const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
     espresso?.actualWeight ?? espresso?.targetWeight ?? 0,

@@ -10,16 +10,16 @@ import { deleteDoc } from "firebase/firestore";
 import { useState } from "react";
 import { navLinks } from "../../../../../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../../../../../components/Breadcrumbs";
+import { BrewDetailsInfo } from "../../../../../../components/brews/BrewDetailsInfo";
+import { BrewDetailsOutcome } from "../../../../../../components/brews/BrewDetailsOutcome";
 import { ButtonWithDropdown } from "../../../../../../components/ButtonWithDropdown";
 import { NotFound } from "../../../../../../components/ErrorPage";
 import { Heading } from "../../../../../../components/Heading";
 import { useDocRef } from "../../../../../../hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "../../../../../../hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "../../../../../../hooks/useScreenMediaQuery";
-import { tabStyles } from "../../../../../../pages/beans/BeansList/BeansList";
-import { BrewDetailsInfo } from "../../../../../../pages/brews/BrewDetailsInfo";
-import { BrewDetailsOutcome } from "../../../../../../pages/brews/BrewDetailsOutcome";
 import { Brew } from "../../../../../../types/brew";
+import { tabStyles } from "../../../beans/index.lazy";
 
 export const Route = createLazyFileRoute(
   "/_auth/_layout/drinks/brews/$brewId/",

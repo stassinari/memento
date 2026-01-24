@@ -1,17 +1,15 @@
 import ReactMarkdown from "react-markdown";
 
-import { Card } from "../../components/Card";
-import { DetailsCard } from "../../components/Details";
 import { Brew } from "../../types/brew";
 import { getEyFromBrew } from "../../utils";
+import { Card } from "../Card";
+import { DetailsCard } from "../Details";
 
 interface BrewDetailsOutcomeProp {
   brew: Brew;
 }
 
-export const BrewDetailsOutcome = ({
-  brew,
-}: BrewDetailsOutcomeProp) => {
+export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
   return (
     <div className="space-y-4">
       <DetailsCard

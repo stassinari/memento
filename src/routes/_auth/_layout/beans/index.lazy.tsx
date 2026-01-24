@@ -1,18 +1,21 @@
 import { Tab } from "@headlessui/react";
+import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
-import { orderBy, where } from "firebase/firestore";
-import { useState } from "react";
+import { orderBy, QueryConstraint, where } from "firebase/firestore";
+import { ReactNode, useState } from "react";
 import { navLinks } from "../../../../components/BottomNav";
 import { BreadcrumbsWithHome } from "../../../../components/Breadcrumbs";
 import { Button } from "../../../../components/Button";
 import { EmptyState } from "../../../../components/EmptyState";
 import { Heading } from "../../../../components/Heading";
+import { BeanIcon } from "../../../../components/icons/BeanIcon";
+import { ListCard } from "../../../../components/ListCard";
+import { useCollectionQuery } from "../../../../hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionRealtime } from "../../../../hooks/firestore/useFirestoreCollectionRealtime";
 import useScreenMediaQuery from "../../../../hooks/useScreenMediaQuery";
-import {
-  BeansTab,
-  BeansTabProps,
-} from "../../../../pages/beans/BeansList/BeansTab";
+import { Beans } from "../../../../types/beans";
+import { getTimeAgo, isNotFrozenOrIsThawed } from "../../../../util";
 
 export const Route = createLazyFileRoute("/_auth/_layout/beans/")({
   component: BeansList,
@@ -27,7 +30,7 @@ const tabs: BeansTabProps[] = [
       <EmptyState
         title="No open beans"
         description="Get started by adding some coffee beans"
-        buttonLabel="Add beans"
+        button={{ label: "Add beans", link: "/beans/add" }}
       />
     ),
   },
@@ -58,7 +61,7 @@ const tabs: BeansTabProps[] = [
   },
 ];
 
-const tabStyles = (isSelected: boolean) => [
+export const tabStyles = (isSelected: boolean) => [
   "w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2",
   isSelected
     ? "text-orange-600 border-orange-500"
@@ -118,4 +121,100 @@ export function BeansList() {
   );
 }
 
-BeansList;
+export interface BeansTabProps {
+  name: "Archived" | "Frozen" | "Open";
+  filters: QueryConstraint[];
+  removeFrozen?: boolean;
+  EmptyState: ReactNode;
+}
+
+export const BeansTab = ({
+  filters,
+  removeFrozen,
+  EmptyState,
+}: BeansTabProps) => {
+  console.log("BeansTab");
+
+  const query = useCollectionQuery<Beans>("beans", filters);
+  const { list: beansList, isLoading } =
+    useFirestoreCollectionRealtime<Beans>(query);
+
+  if (isLoading) return null;
+
+  const sortedAndFiltered = beansList
+    .sort((a, b) =>
+      (a.roastDate?.toDate() ?? 0) < (b.roastDate?.toDate() ?? 0) ? 1 : -1,
+    )
+    .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
+
+  if (sortedAndFiltered.length === 0) return <>{EmptyState}</>;
+
+  return (
+    <ul className="grid gap-4 sm:grid-cols-2">
+      {sortedAndFiltered.map((beans) => (
+        <li key={beans.id}>
+          <BeansCard beans={beans} />
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+type BeansCardProps = {
+  beans: Beans;
+};
+
+export const BeansCard = ({ beans }: BeansCardProps) => {
+  return (
+    <ListCard
+      linkTo={`/beans/${beans.id ?? ""}`}
+      footerSlot={
+        beans.roastDate ? (
+          <ListCard.Footer
+            text={`Roasted ${getTimeAgo(beans.roastDate.toDate())}`}
+            Icon={<BeanIcon />}
+          />
+        ) : undefined
+      }
+    >
+      <div className="flex">
+        <div className="grow">
+          <ListCard.Title>{beans.name}</ListCard.Title>
+          <ListCard.Row>
+            <ListCard.RowIcon>
+              <FireIcon />
+            </ListCard.RowIcon>
+            {beans.roaster}
+          </ListCard.Row>
+          {beans.origin === "single-origin" ? (
+            <>
+              {beans.country && (
+                <ListCard.Row>
+                  <ListCard.RowIcon>
+                    <MapPinIcon />
+                  </ListCard.RowIcon>
+                  {beans.country}
+                </ListCard.Row>
+              )}
+              {beans.process && (
+                <ListCard.Row>
+                  <ListCard.RowIcon>
+                    <BeakerIcon />
+                  </ListCard.RowIcon>
+                  {beans.process}
+                </ListCard.Row>
+              )}
+            </>
+          ) : (
+            <ListCard.Row>
+              <ListCard.RowIcon>
+                <MapPinIcon />
+              </ListCard.RowIcon>
+              Blend
+            </ListCard.Row>
+          )}
+        </div>
+      </div>
+    </ListCard>
+  );
+};
