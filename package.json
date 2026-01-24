@@ -37,6 +37,7 @@
     "@eslint/js": "^9.26.0",
     "@eslint/json": "^0.12.0",
     "@eslint/markdown": "^6.4.0",
+    "@playwright/test": "^1.58.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.5",
@@ -67,6 +68,8 @@
     "emulators:export-seed:complete": "firebase emulators:export ./seed/complete",
     "build": "vite build",
     "serve": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "type-check": "tsc --noEmit",
     "type-watch": "tsc --noEmit --watch"
   },
