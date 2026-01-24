@@ -6,6 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Memento is a coffee brewing tracker web app built with React, TypeScript, and Firebase. It tracks coffee beans, filter/brew coffee, espresso shots, and tastings. The app is designed as a PWA for native-like experience on mobile devices.
 
+## Branch Strategy
+
+- **`next`** - Active development branch with the modern stack (Vite, Tailwind, react-hook-form). This is where all new work happens.
+- **`main`** - Legacy branch with older stack (MUI, Formik). Scheduled for deprecation once `next` reaches feature parity.
+
+**Note:** There's a `srcOld/` folder (gitignored) containing the old `main` branch source for reference. Ignore it unless explicitly mentioned.
+
 ## Development Commands
 
 ```bash
