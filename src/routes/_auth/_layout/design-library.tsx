@@ -18,46 +18,42 @@ import { atom } from "jotai";
 import { HTMLAttributes, useState } from "react";
 import toast from "react-hot-toast";
 
-import {
-  Badge,
-  BadgePlusIcon,
-  BadgeTimesIcon,
-} from "../../../components/Badge";
-import { navLinks } from "../../../components/BottomNav";
+import { Badge, BadgePlusIcon, BadgeTimesIcon } from "@/components/Badge";
+import { navLinks } from "@/components/BottomNav";
 import {
   BreadcrumbsWithHome,
   BreadcrumbsWithoutHome,
-} from "../../../components/Breadcrumbs";
-import { Button } from "../../../components/Button";
-import { ButtonWithDropdown } from "../../../components/ButtonWithDropdown";
-import { Card } from "../../../components/Card";
-import { ComboboxMulti } from "../../../components/Combobox/ComboboxMulti";
-import { ComboboxSingle } from "../../../components/Combobox/ComboboxSingle";
-import { Heading } from "../../../components/Heading";
-import { IconButton } from "../../../components/IconButton";
-import { InputRadio } from "../../../components/InputRadio";
-import { InputRadioButtonGroup } from "../../../components/InputRadioButtonGroup";
+} from "@/components/Breadcrumbs";
+import { Button } from "@/components/Button";
+import { ButtonWithDropdown } from "@/components/ButtonWithDropdown";
+import { Card } from "@/components/Card";
+import { ComboboxMulti } from "@/components/Combobox/ComboboxMulti";
+import { ComboboxSingle } from "@/components/Combobox/ComboboxSingle";
+import { Heading } from "@/components/Heading";
+import { IconButton } from "@/components/IconButton";
+import { InputRadio } from "@/components/InputRadio";
+import { InputRadioButtonGroup } from "@/components/InputRadioButtonGroup";
 import {
   InputRadioCards,
   InputRadioCardsOption,
-} from "../../../components/InputRadioCards";
-import { ListCard } from "../../../components/ListCard";
+} from "@/components/InputRadioCards";
+import { ListCard } from "@/components/ListCard";
 import {
   ExampleDialogContent,
   LoremIpsum,
   Modal,
   RadixModal,
-} from "../../../components/Modal";
-import { notification } from "../../../components/Notification";
-import { Stopwatch } from "../../../components/Stopwatch";
-import { Textarea } from "../../../components/Textarea";
-import { Toggle } from "../../../components/Toggle";
-import { DrinkRatio } from "../../../components/drinks/DrinkRatio";
-import { BeanBagIcon } from "../../../components/icons/BeanBagIcon";
-import { BeanIcon } from "../../../components/icons/BeanIcon";
-import { DripperIcon } from "../../../components/icons/DripperIcon";
-import { DropIcon } from "../../../components/icons/DropIcon";
-import { PortafilterIcon } from "../../../components/icons/PortafilterIcon";
+} from "@/components/Modal";
+import { notification } from "@/components/Notification";
+import { Stopwatch } from "@/components/Stopwatch";
+import { Textarea } from "@/components/Textarea";
+import { Toggle } from "@/components/Toggle";
+import { DrinkRatio } from "@/components/drinks/DrinkRatio";
+import { BeanBagIcon } from "@/components/icons/BeanBagIcon";
+import { BeanIcon } from "@/components/icons/BeanIcon";
+import { DripperIcon } from "@/components/icons/DripperIcon";
+import { DropIcon } from "@/components/icons/DropIcon";
+import { PortafilterIcon } from "@/components/icons/PortafilterIcon";
 
 export const Route = createFileRoute("/_auth/_layout/design-library")({
   component: DesignLibrary,

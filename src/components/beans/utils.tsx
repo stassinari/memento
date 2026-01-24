@@ -1,6 +1,6 @@
+import { Beans, RoastStyle } from "@/types/beans";
 import { MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { Schema } from "firebase/vertexai";
-import { Beans, RoastStyle } from "../../types/beans";
 import { DataListItem } from "../DataList";
 import type { BeansFormInputs } from "./BeansForm";
 

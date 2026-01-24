@@ -1,3 +1,4 @@
+import { db } from "@/firebaseConfig";
 import {
   CollectionReference,
   Query,
@@ -6,12 +7,11 @@ import {
   query as fbQuery,
 } from "firebase/firestore";
 import { useMemo } from "react";
-import { db } from "../../firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
 export const useCollectionQuery = <T,>(
   type: "brews" | "beans" | "espresso",
-  filters: QueryConstraint[] = []
+  filters: QueryConstraint[] = [],
 ): Query<T> => {
   const user = useCurrentUser();
 
@@ -21,7 +21,7 @@ export const useCollectionQuery = <T,>(
       db,
       "users",
       user.uid,
-      type
+      type,
     ) as CollectionReference<T>;
 
     const query = fbQuery(collectionRef, ...filters);

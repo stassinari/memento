@@ -1,13 +1,13 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-import clsx from "clsx";
-import { Card } from "../../components/Card";
-import { Divider } from "../../components/Divider";
-import { EmailPasswordLogin } from "../../components/EmailPasswordLogin";
-import { GoogleLogin } from "../../components/GoogleLogin";
+import { Card } from "@/components/Card";
+import { Divider } from "@/components/Divider";
+import { EmailPasswordLogin } from "@/components/EmailPasswordLogin";
+import { GoogleLogin } from "@/components/GoogleLogin";
 import {
   layoutContainerCssStyles,
   layoutContainerTailwindStyles,
-} from "../../components/Layout";
+} from "@/components/Layout";
+import { createLazyFileRoute } from "@tanstack/react-router";
+import clsx from "clsx";
 
 export const Route = createLazyFileRoute("/_public/login")({
   component: LogIn,

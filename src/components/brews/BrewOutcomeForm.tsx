@@ -3,7 +3,7 @@ import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import { pick } from "lodash";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Brew, ExtractionType } from "../../types/brew";
+import { Brew, ExtractionType } from "@/types/brew";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { PoweredByMarkdown } from "../PoweredByMarkdown";
@@ -198,10 +198,7 @@ export const BrewOutcomeForm = ({ brew, brewRef }: BrewOutcomeFormProps) => {
 
         <div className="flex justify-end gap-4">
           <Button variant="white" type="button" asChild>
-            <Link
-              to="/drinks/brews/$brewId"
-              params={{ brewId: brew.id ?? "" }}
-            >
+            <Link to="/drinks/brews/$brewId" params={{ brewId: brew.id ?? "" }}>
               Back
             </Link>
           </Button>

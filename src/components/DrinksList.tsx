@@ -2,9 +2,9 @@ import { Link as RouterLink } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { chain, entries } from "lodash";
 
-import { Beans } from "../types/beans";
-import { Brew } from "../types/brew";
-import { Espresso } from "../types/espresso";
+import { Beans } from "@/types/beans";
+import { Brew } from "@/types/brew";
+import { Espresso } from "@/types/espresso";
 import { Card } from "./Card";
 import { BeanBagIcon } from "./icons/BeanBagIcon";
 import { BeanIcon } from "./icons/BeanIcon";

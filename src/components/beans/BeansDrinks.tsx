@@ -1,11 +1,11 @@
+import { db } from "@/firebaseConfig";
+import { useCollectionQuery } from "@/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionRealtime } from "@/hooks/firestore/useFirestoreCollectionRealtime";
+import { Beans } from "@/types/beans";
+import { Brew } from "@/types/brew";
+import { Espresso } from "@/types/espresso";
 import { doc, orderBy, where } from "firebase/firestore";
 import { useMemo } from "react";
-import { db } from "../../firebaseConfig";
-import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionRealtime } from "../../hooks/firestore/useFirestoreCollectionRealtime";
-import { Beans } from "../../types/beans";
-import { Brew } from "../../types/brew";
-import { Espresso } from "../../types/espresso";
 import { DrinksList, mergeBrewsAndEspressoByUniqueDate } from "../DrinksList";
 
 interface BeansDrinksProps {
@@ -20,7 +20,7 @@ export const BeansDrinks = ({ beans }: BeansDrinksProps) => {
       where("beans", "==", doc(db, "beans", beans.id ?? "")),
       orderBy("date", "desc"),
     ],
-    [beans]
+    [beans],
   );
 
   const brewQuery = useCollectionQuery<Brew>("brews", filters);
@@ -33,7 +33,7 @@ export const BeansDrinks = ({ beans }: BeansDrinksProps) => {
 
   const drinks = useMemo(
     () => mergeBrewsAndEspressoByUniqueDate(brewsList, espressoList),
-    [brewsList, espressoList]
+    [brewsList, espressoList],
   );
 
   console.log(drinks);

@@ -1,10 +1,10 @@
 import { doc, DocumentReference } from "firebase/firestore";
 import { useMemo } from "react";
 
+import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
+import { useCurrentUser } from "@/hooks/useInitUser";
+import { DecentReadings } from "@/types/espresso";
 import { db } from "../../../firebaseConfig";
-import { useFirestoreDocRealtime } from "../../../hooks/firestore/useFirestoreDocRealtime";
-import { useCurrentUser } from "../../../hooks/useInitUser";
-import { DecentReadings } from "../../../types/espresso";
 import { PressureFlowWeightChart } from "./PressureFlowWeightChart";
 import { TemperatureChart } from "./TemperatureChart";
 

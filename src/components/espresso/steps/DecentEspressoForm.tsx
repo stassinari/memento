@@ -3,10 +3,10 @@ import { orderBy } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { useCollectionQuery } from "../../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "../../../hooks/firestore/useFirestoreCollectionOneTime";
-import { Beans } from "../../../types/beans";
-import { DecentEspressoPrep, Espresso } from "../../../types/espresso";
+import { useCollectionQuery } from "@/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "@/hooks/firestore/useFirestoreCollectionOneTime";
+import { Beans } from "@/types/beans";
+import { DecentEspressoPrep, Espresso } from "@/types/espresso";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";

@@ -1,13 +1,13 @@
+import { db } from "@/firebaseConfig";
+import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
+import { useActiveRoute } from "@/hooks/useActiveRoute";
+import { useCurrentUser } from "@/hooks/useInitUser";
+import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
+import { User } from "@/types/user";
 import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import { ReactNode, useMemo } from "react";
-import { db } from "../firebaseConfig";
-import { useFirestoreDocRealtime } from "../hooks/firestore/useFirestoreDocRealtime";
-import { useActiveRoute } from "../hooks/useActiveRoute";
-import { useCurrentUser } from "../hooks/useInitUser";
-import useScreenMediaQuery from "../hooks/useScreenMediaQuery";
-import { User } from "../types/user";
 import { navLinks } from "./BottomNav";
 
 const SidebarNavItem = ({

@@ -1,21 +1,21 @@
+import { navLinks } from "@/components/BottomNav";
+import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import {
+  BrewForm,
+  BrewFormInputs,
+  brewFormEmptyValues,
+} from "@/components/brews/BrewForm";
+import { Heading } from "@/components/Heading";
+import { useDocRef } from "@/hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "@/hooks/firestore/useFirestoreDocOneTime";
+import { useNewRef } from "@/hooks/firestore/useNewBeansRef";
+import { Brew } from "@/types/brew";
 import {
   createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
 import { setDoc } from "firebase/firestore";
-import { navLinks } from "../../../../../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../../../../../components/Breadcrumbs";
-import {
-  BrewForm,
-  BrewFormInputs,
-  brewFormEmptyValues,
-} from "../../../../../../components/brews/BrewForm";
-import { Heading } from "../../../../../../components/Heading";
-import { useDocRef } from "../../../../../../hooks/firestore/useDocRef";
-import { useFirestoreDocOneTime } from "../../../../../../hooks/firestore/useFirestoreDocOneTime";
-import { useNewRef } from "../../../../../../hooks/firestore/useNewBeansRef";
-import { Brew } from "../../../../../../types/brew";
 import { brewToFirestore } from "../add.lazy";
 
 export const Route = createFileRoute(

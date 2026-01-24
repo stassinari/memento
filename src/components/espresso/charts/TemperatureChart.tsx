@@ -1,3 +1,4 @@
+import { DecentReadings } from "@/types/espresso";
 import {
   CartesianGrid,
   Legend,
@@ -8,7 +9,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { DecentReadings } from "../../../types/espresso";
 import { ChartLegend } from "./ChartLegend";
 import { ChartTooltip } from "./ChartTooltip";
 
@@ -16,9 +16,7 @@ interface TemperatureChartProps {
   decentReadings: DecentReadings;
 }
 
-export const TemperatureChart = ({
-  decentReadings,
-}: TemperatureChartProps) => {
+export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
   const data = decentReadings.time.map((t, i) => ({
     time: t,
     mix: decentReadings.temperatureMix[i],

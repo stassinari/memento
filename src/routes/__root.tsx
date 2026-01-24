@@ -1,8 +1,8 @@
+import { NotFound } from "@/components/ErrorPage";
+import { NotificationContainer } from "@/components/NotificationContainer";
+import { useInitUser } from "@/hooks/useInitUser";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { NotFound } from "../components/ErrorPage";
-import { NotificationContainer } from "../components/NotificationContainer";
-import { useInitUser } from "../hooks/useInitUser";
 
 const RootComponent = () => {
   const isUserLoading = useInitUser();

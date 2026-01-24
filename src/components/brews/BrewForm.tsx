@@ -1,11 +1,11 @@
 import { orderBy } from "firebase/firestore";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
-import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
-import { Beans } from "../../types/beans";
-import { Brew } from "../../types/brew";
+import { useCollectionQuery } from "@/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "@/hooks/firestore/useFirestoreCollectionOneTime";
+import { Beans } from "@/types/beans";
+import { Brew } from "@/types/brew";
 import {
   BeansMethodEquipment,
   BeansMethodEquipmentInputs,

@@ -2,8 +2,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { auth } from "../firebaseConfig";
-import { useRedirectTo } from "../hooks/useRedirectTo";
+import { auth } from "@/firebaseConfig";
+import { useRedirectTo } from "@/hooks/useRedirectTo";
 import { Button } from "./Button";
 import { FormInput } from "./form/FormInput";
 

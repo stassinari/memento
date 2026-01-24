@@ -1,21 +1,21 @@
 import {
+  BeansForm,
+  BeansFormInputs,
+  beansFormEmptyValues,
+} from "@/components/beans/BeansForm";
+import { navLinks } from "@/components/BottomNav";
+import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import { Heading } from "@/components/Heading";
+import { useDocRef } from "@/hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "@/hooks/firestore/useFirestoreDocOneTime";
+import { useNewRef } from "@/hooks/firestore/useNewBeansRef";
+import { Beans } from "@/types/beans";
+import {
   createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
 import { setDoc } from "firebase/firestore";
-import {
-  BeansForm,
-  BeansFormInputs,
-  beansFormEmptyValues,
-} from "../../../../../components/beans/BeansForm";
-import { navLinks } from "../../../../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../../../../components/Breadcrumbs";
-import { Heading } from "../../../../../components/Heading";
-import { useDocRef } from "../../../../../hooks/firestore/useDocRef";
-import { useFirestoreDocOneTime } from "../../../../../hooks/firestore/useFirestoreDocOneTime";
-import { useNewRef } from "../../../../../hooks/firestore/useNewBeansRef";
-import { Beans } from "../../../../../types/beans";
 
 export const Route = createFileRoute("/_auth/_layout/beans/$beansId/clone")({
   component: BeansClone,

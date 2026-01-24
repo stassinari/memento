@@ -1,4 +1,4 @@
-import { Espresso } from "../../types/espresso";
+import { Espresso } from "@/types/espresso";
 import { DetailsCard } from "../Details";
 import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";

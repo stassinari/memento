@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
+import { Beans } from "@/types/beans";
+import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "@/util";
 import clsx from "clsx";
-import { Beans } from "../../types/beans";
-import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "../../util";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
 import { RadixModal } from "../Modal";
@@ -32,9 +32,7 @@ interface BeansCardsSelectProps {
   beansList: Beans[];
 }
 
-export const BeansCardsSelect = ({
-  beansList,
-}: BeansCardsSelectProps) => {
+export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
   const { watch, formState } = useFormContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);

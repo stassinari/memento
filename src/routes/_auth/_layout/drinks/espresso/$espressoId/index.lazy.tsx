@@ -1,3 +1,19 @@
+import { navLinks } from "@/components/BottomNav";
+import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import { Button } from "@/components/Button";
+import {
+  ButtonWithDropdown,
+  ButtonWithDropdownProps,
+} from "@/components/ButtonWithDropdown";
+import { NotFound } from "@/components/ErrorPage";
+import { Heading } from "@/components/Heading";
+import { EspressoDetailsInfo } from "@/components/espresso/EspressoDetailsInfo";
+import { EspressoDetailsOutcome } from "@/components/espresso/EspressoDetailsOutcome";
+import { DecentCharts } from "@/components/espresso/charts/DecentCharts";
+import { useDocRef } from "@/hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
+import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
+import { Espresso } from "@/types/espresso";
 import { Tab } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
 import {
@@ -10,22 +26,6 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { useCallback, useMemo, useState } from "react";
-import { navLinks } from "../../../../../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../../../../../components/Breadcrumbs";
-import { Button } from "../../../../../../components/Button";
-import {
-  ButtonWithDropdown,
-  ButtonWithDropdownProps,
-} from "../../../../../../components/ButtonWithDropdown";
-import { NotFound } from "../../../../../../components/ErrorPage";
-import { Heading } from "../../../../../../components/Heading";
-import { EspressoDetailsInfo } from "../../../../../../components/espresso/EspressoDetailsInfo";
-import { EspressoDetailsOutcome } from "../../../../../../components/espresso/EspressoDetailsOutcome";
-import { DecentCharts } from "../../../../../../components/espresso/charts/DecentCharts";
-import { useDocRef } from "../../../../../../hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "../../../../../../hooks/firestore/useFirestoreDocRealtime";
-import useScreenMediaQuery from "../../../../../../hooks/useScreenMediaQuery";
-import { Espresso } from "../../../../../../types/espresso";
 import { tabStyles } from "../../../beans/index.lazy";
 
 export const Route = createLazyFileRoute(

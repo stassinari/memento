@@ -2,10 +2,10 @@ import { TrashIcon } from "@heroicons/react/20/solid";
 import { PuzzlePieceIcon } from "@heroicons/react/24/outline";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
-import countries from "../../data/countries";
-import { processes } from "../../data/processes";
-import { varietals } from "../../data/varietals";
-import { BeansBlendPart } from "../../types/beans";
+import countries from "@/data/countries";
+import { processes } from "@/data/processes";
+import { varietals } from "@/data/varietals";
+import { BeansBlendPart } from "@/types/beans";
 import { Button } from "../Button";
 import { IconButton } from "../IconButton";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";

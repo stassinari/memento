@@ -1,19 +1,19 @@
-import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
-import { limit, orderBy } from "firebase/firestore";
-import { useMemo, useState } from "react";
-import { navLinks } from "../../../../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../../../../components/Breadcrumbs";
-import { Button } from "../../../../../components/Button";
+import { navLinks } from "@/components/BottomNav";
+import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import { Button } from "@/components/Button";
 import {
   DrinksList,
   mergeBrewsAndEspressoByUniqueDate,
-} from "../../../../../components/DrinksList";
-import { Heading } from "../../../../../components/Heading";
-import { useCollectionQuery } from "../../../../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionRealtime } from "../../../../../hooks/firestore/useFirestoreCollectionRealtime";
-import useScreenMediaQuery from "../../../../../hooks/useScreenMediaQuery";
-import { Beans } from "../../../../../types/beans";
-import { type Brew } from "../../../../../types/brew";
+} from "@/components/DrinksList";
+import { Heading } from "@/components/Heading";
+import { useCollectionQuery } from "@/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionRealtime } from "@/hooks/firestore/useFirestoreCollectionRealtime";
+import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
+import { Beans } from "@/types/beans";
+import { type Brew } from "@/types/brew";
+import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
+import { limit, orderBy } from "firebase/firestore";
+import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
   component: BrewsList,

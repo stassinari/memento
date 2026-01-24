@@ -1,20 +1,20 @@
+import { navLinks } from "@/components/BottomNav";
+import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import {
+  DrinksList,
+  mergeBrewsAndEspressoByUniqueDate,
+} from "@/components/DrinksList";
+import { Heading } from "@/components/Heading";
+import { Link } from "@/components/Link";
+import { useCollectionQuery } from "@/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionRealtime } from "@/hooks/firestore/useFirestoreCollectionRealtime";
+import { Beans } from "@/types/beans";
+import { Brew } from "@/types/brew";
+import { Espresso } from "@/types/espresso";
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { orderBy, where } from "firebase/firestore";
 import { useCallback, useMemo } from "react";
-import { navLinks } from "../../../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../../../components/Breadcrumbs";
-import {
-  DrinksList,
-  mergeBrewsAndEspressoByUniqueDate,
-} from "../../../../components/DrinksList";
-import { Heading } from "../../../../components/Heading";
-import { Link } from "../../../../components/Link";
-import { useCollectionQuery } from "../../../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionRealtime } from "../../../../hooks/firestore/useFirestoreCollectionRealtime";
-import { Beans } from "../../../../types/beans";
-import { Brew } from "../../../../types/brew";
-import { Espresso } from "../../../../types/espresso";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/")({
   component: DrinksPage,

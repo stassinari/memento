@@ -1,5 +1,5 @@
+import { auth } from "@/firebaseConfig";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { auth } from "../firebaseConfig";
 
 export const Route = createFileRoute("/_public")({
   beforeLoad: () => {

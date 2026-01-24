@@ -1,7 +1,7 @@
+import { navLinks } from "@/components/BottomNav";
+import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import { Heading } from "@/components/Heading";
 import { createFileRoute } from "@tanstack/react-router";
-import { navLinks } from "../../../../components/BottomNav";
-import { BreadcrumbsWithHome } from "../../../../components/Breadcrumbs";
-import { Heading } from "../../../../components/Heading";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/tastings")({
   component: TastingsPage,

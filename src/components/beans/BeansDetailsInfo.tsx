@@ -1,15 +1,13 @@
 import dayjs from "dayjs";
 
-import { Beans } from "../../types/beans";
+import { Beans } from "@/types/beans";
 import { DetailsCard } from "../Details";
 
 interface BeansDetailsInfoProps {
   beans: Beans;
 }
 
-export const BeansDetailsInfo = ({
-  beans,
-}: BeansDetailsInfoProps) => (
+export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
   <div className="space-y-4">
     <DetailsCard
       title="Roast information"
