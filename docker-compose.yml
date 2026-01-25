@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: memento-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: memento
+      POSTGRES_USER: memento
+      POSTGRES_PASSWORD: memento
+    volumes:
+      - memento_pg_data:/var/lib/postgresql
+
+volumes:
+  memento_pg_data:
