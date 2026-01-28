@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   check,
+  date,
   index,
   integer,
   jsonb,
@@ -48,7 +49,7 @@ export const beans = pgTable(
 
     name: text("name").notNull(),
     roaster: text("roaster").notNull(),
-    roastDate: timestamp("roast_date", { withTimezone: true, mode: "date" }),
+    roastDate: date("roast_date"),
     roastStyle: roastStyleEnum("roast_style"),
     roastLevel: integer("roast_level"),
     roastingNotes: text("roasting_notes")
@@ -56,8 +57,8 @@ export const beans = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
 
-    freezeDate: timestamp("freeze_date", { withTimezone: true, mode: "date" }),
-    thawDate: timestamp("thaw_date", { withTimezone: true, mode: "date" }),
+    freezeDate: date("freeze_date"),
+    thawDate: date("thaw_date"),
     isFinished: boolean("is_finished").notNull().default(false),
 
     origin: beanOriginEnum("origin").notNull(),
@@ -71,10 +72,7 @@ export const beans = pgTable(
     altitude: integer("altitude"),
     process: text("process"),
     farmer: text("farmer"),
-    harvestDate: timestamp("harvest_date", {
-      withTimezone: true,
-      mode: "date",
-    }),
+    harvestDate: date("harvest_date"),
 
     blendParts: jsonb("blend_parts"),
   },
@@ -129,11 +127,11 @@ export const brews = pgTable(
     finalBrewWeight: numeric("final_brew_weight"),
     extractionType: extractionTypeEnum("extraction_type"),
 
-    aroma: integer("aroma"),
-    acidity: integer("acidity"),
-    sweetness: integer("sweetness"),
-    body: integer("body"),
-    finish: integer("finish"),
+    aroma: numeric("aroma"),
+    acidity: numeric("acidity"),
+    sweetness: numeric("sweetness"),
+    body: numeric("body"),
+    finish: numeric("finish"),
   },
   (table) => ({
     fbIdUnique: uniqueIndex("brews_fb_id_unique").on(table.fbId),
@@ -180,11 +178,11 @@ export const espresso = pgTable(
     notes: text("notes"),
     tds: numeric("tds"),
 
-    aroma: integer("aroma"),
-    acidity: integer("acidity"),
-    sweetness: integer("sweetness"),
-    body: integer("body"),
-    finish: integer("finish"),
+    aroma: numeric("aroma"),
+    acidity: numeric("acidity"),
+    sweetness: numeric("sweetness"),
+    body: numeric("body"),
+    finish: numeric("finish"),
   },
   (table) => ({
     fbIdUnique: uniqueIndex("espresso_fb_id_unique").on(table.fbId),

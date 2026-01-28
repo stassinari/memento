@@ -8,6 +8,9 @@ import postgres, { Sql } from "postgres";
 type FirestoreTimestamp = admin.firestore.Timestamp;
 
 const DRY_RUN = process.argv.includes("--dry-run");
+const LOG_PATH =
+  process.argv.find((arg) => arg.startsWith("--log="))?.split("=", 2)[1] ??
+  "migration-log.json";
 
 const requireEnv = (key: string): string => {
   const value = process.env[key];
@@ -48,8 +51,40 @@ const toDate = (value: unknown): Date | null => {
 const toStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item) => typeof item === "string") : [];
 
-const toNumber = (value: unknown): number | null =>
-  typeof value === "number" ? value : null;
+const toNumber = (value: unknown): number | null => {
+  if (typeof value !== "number") return null;
+  return Number.isFinite(value) ? value : null;
+};
+
+const toInt = (value: unknown): number | null => {
+  const num = toNumber(value);
+  if (num === null) return null;
+  return Number.isInteger(num) ? num : null;
+};
+
+const splitMinutesSeconds = (
+  minutesValue: unknown,
+): { minutes: number | null; seconds: number | null; normalized: boolean } => {
+  const num = toNumber(minutesValue);
+  if (num === null) {
+    return { minutes: null, seconds: null, normalized: false };
+  }
+  if (Number.isInteger(num)) {
+    return { minutes: num, seconds: null, normalized: false };
+  }
+
+  const minutes = Math.floor(num);
+  const fractional = num - minutes;
+  let seconds = Math.round(fractional * 100);
+
+  if (seconds >= 60) {
+    const carry = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    return { minutes: minutes + carry, seconds, normalized: true };
+  }
+
+  return { minutes, seconds, normalized: true };
+};
 
 const getDocIdFromRef = (value: unknown): string | null => {
   if (!value) return null;
@@ -62,6 +97,37 @@ const getDocIdFromRef = (value: unknown): string | null => {
     return typeof id === "string" ? id : null;
   }
   return null;
+};
+
+const sanitizeForLog = (value: unknown): unknown => {
+  if (value instanceof admin.firestore.Timestamp) {
+    return value.toDate().toISOString();
+  }
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  if (typeof value === "object" && value !== null) {
+    if (
+      "path" in (value as { path?: unknown }) &&
+      "id" in (value as { id?: unknown })
+    ) {
+      const maybeRef = value as { path?: unknown; id?: unknown };
+      if (
+        typeof maybeRef.path === "string" &&
+        typeof maybeRef.id === "string"
+      ) {
+        return { path: maybeRef.path, id: maybeRef.id };
+      }
+    }
+    if (Array.isArray(value)) {
+      return value.map((item) => sanitizeForLog(item));
+    }
+    const entries = Object.entries(value as Record<string, unknown>).map(
+      ([key, val]) => [key, sanitizeForLog(val)],
+    );
+    return Object.fromEntries(entries);
+  }
+  return value;
 };
 
 const startPgClient = async () => {
@@ -342,21 +408,52 @@ const main = async () => {
   let espressoCount = 0;
   let decentCount = 0;
   let tastingsCount = 0;
+  const log = {
+    startedAt: new Date().toISOString(),
+    dryRun: DRY_RUN,
+    warnings: [] as string[],
+    skipped: {
+      brews: [] as { id: string; reason: string; data: unknown }[],
+      espresso: [] as { id: string; reason: string; data: unknown }[],
+      tastings: [] as { id: string; reason: string; data: unknown }[],
+      beans: [] as { id: string; reason: string; data: unknown }[],
+    },
+    normalized: {
+      espressoFromDecent: [] as { id: string; reason: string; data: unknown }[],
+      beansBlendParts: [] as { id: string; reason: string; data: unknown }[],
+      brewTimeFields: [] as {
+        id: string;
+        reason: string;
+        data: unknown;
+      }[],
+    },
+    inserted: {
+      users: [] as string[],
+      beans: [] as string[],
+      brews: [] as string[],
+      espresso: [] as string[],
+      decentReadings: [] as string[],
+      tastings: [] as string[],
+    },
+  };
 
   const migrate = async (sql: Sql | null) => {
-    const usersSnap = await firestore.collection("users").get();
-    for (const userDoc of usersSnap.docs) {
-      const fbUserId = userDoc.id;
-      const userData = userDoc.data();
+    const usersCollection = firestore.collection("users");
+    const userDocRefs = await usersCollection.listDocuments();
+    for (const userRef of userDocRefs) {
+      const userDoc = await userRef.get();
+      const fbUserId = userRef.id;
+      const userData = userDoc.exists ? userDoc.data() : {};
 
       const userId = await upsertUser(
         sql,
         fbUserId,
-        typeof userData.secretKey === "string" ? userData.secretKey : null,
+        typeof userData?.secretKey === "string" ? userData.secretKey : null,
       );
       usersCount += 1;
+      log.inserted.users.push(fbUserId);
 
-      const beansSnap = await userDoc.ref.collection("beans").get();
+      const beansSnap = await userRef.collection("beans").get();
       for (const beanDoc of beansSnap.docs) {
         const data = beanDoc.data();
         const id = randomUUID();
@@ -369,7 +466,7 @@ const main = async () => {
             ? null
             : Array.isArray(data.blend)
               ? data.blend
-              : data.blend ?? null;
+              : (data.blend ?? null);
 
         await insertBeans(sql, {
           id,
@@ -397,28 +494,82 @@ const main = async () => {
           blendParts,
         });
         beansCount += 1;
+        log.inserted.beans.push(beanDoc.id);
       }
 
-      const brewsSnap = await userDoc.ref.collection("brews").get();
+      const brewsSnap = await userRef.collection("brews").get();
       for (const brewDoc of brewsSnap.docs) {
         const data = brewDoc.data();
         const date = toDate(data.date);
         if (!date) {
-          console.warn(`Skipping brew ${brewDoc.id}: missing date`);
+          const message = `Skipping brew ${brewDoc.id}: missing date`;
+          console.warn(message);
+          log.skipped.brews.push({
+            id: brewDoc.id,
+            reason: "missing date",
+            data: sanitizeForLog(data),
+          });
           continue;
         }
         const beansFbId = getDocIdFromRef(data.beans);
         if (!beansFbId) {
-          console.warn(`Skipping brew ${brewDoc.id}: missing beans ref`);
+          const message = `Skipping brew ${brewDoc.id}: missing beans ref`;
+          console.warn(message);
+          log.skipped.brews.push({
+            id: brewDoc.id,
+            reason: "missing beans ref",
+            data: sanitizeForLog(data),
+          });
           continue;
         }
         const beansId = beansIdMap.get(`${fbUserId}:${beansFbId}`);
         if (!beansId) {
-          console.warn(`Skipping brew ${brewDoc.id}: beans not found`);
+          const message = `Skipping brew ${brewDoc.id}: beans not found`;
+          console.warn(message);
+          log.skipped.brews.push({
+            id: brewDoc.id,
+            reason: "beans not found",
+            data: sanitizeForLog(data),
+          });
           continue;
         }
 
         const tastingScores = data.tastingScores ?? {};
+
+        const minuteSplit = splitMinutesSeconds(data.timeMinutes);
+        const timeMinutes =
+          minuteSplit.normalized && minuteSplit.minutes !== null
+            ? minuteSplit.minutes
+            : toInt(data.timeMinutes);
+        const timeSeconds = minuteSplit.normalized
+          ? minuteSplit.seconds
+          : toInt(data.timeSeconds);
+        if (
+          (data.timeMinutes !== null &&
+            data.timeMinutes !== undefined &&
+            timeMinutes === null) ||
+          (data.timeSeconds !== null &&
+            data.timeSeconds !== undefined &&
+            timeSeconds === null)
+        ) {
+          log.normalized.brewTimeFields.push({
+            id: brewDoc.id,
+            reason: "time_minutes/time_seconds not integer; set to null",
+            data: sanitizeForLog({
+              ...data,
+              _normalized: { timeMinutes, timeSeconds },
+            }),
+          });
+        } else if (minuteSplit.normalized) {
+          log.normalized.brewTimeFields.push({
+            id: brewDoc.id,
+            reason: "time_minutes decimal split into minutes/seconds",
+            data: sanitizeForLog({
+              ...data,
+              _normalized: { timeMinutes, timeSeconds },
+            }),
+          });
+        }
 
         await insertBrew(sql, {
           id: randomUUID(),
@@ -438,8 +589,8 @@ const main = async () => {
           waterTemperature: toNumber(data.waterTemperature),
           grindSetting:
             typeof data.grindSetting === "string" ? data.grindSetting : null,
-          timeMinutes: toNumber(data.timeMinutes),
-          timeSeconds: toNumber(data.timeSeconds),
+          timeMinutes,
+          timeSeconds,
           rating: toNumber(data.rating),
           notes: typeof data.notes === "string" ? data.notes : null,
           tds: toNumber(data.tds),
@@ -455,14 +606,21 @@ const main = async () => {
           finish: toNumber(tastingScores.finish),
         });
         brewsCount += 1;
+        log.inserted.brews.push(brewDoc.id);
       }
 
-      const espressoSnap = await userDoc.ref.collection("espresso").get();
+      const espressoSnap = await userRef.collection("espresso").get();
       for (const espressoDoc of espressoSnap.docs) {
         const data = espressoDoc.data();
         const date = toDate(data.date);
         if (!date) {
-          console.warn(`Skipping espresso ${espressoDoc.id}: missing date`);
+          const message = `Skipping espresso ${espressoDoc.id}: missing date`;
+          console.warn(message);
+          log.skipped.espresso.push({
+            id: espressoDoc.id,
+            reason: "missing date",
+            data: sanitizeForLog(data),
+          });
           continue;
         }
 
@@ -482,12 +640,20 @@ const main = async () => {
         const fromDecentRaw =
           typeof data.fromDecent === "boolean" ? data.fromDecent : false;
         const fromDecent =
-          fromDecentRaw && !!profileName && !!uploadedAt && actualWeight !== null;
+          fromDecentRaw &&
+          !!profileName &&
+          !!uploadedAt &&
+          actualWeight !== null;
 
         if (fromDecentRaw && !fromDecent) {
-          console.warn(
-            `Normalizing espresso ${espressoDoc.id}: fromDecent true but missing required fields`,
-          );
+          const message = `Normalizing espresso ${espressoDoc.id}: fromDecent true but missing required fields`;
+          console.warn(message);
+          log.normalized.espressoFromDecent.push({
+            id: espressoDoc.id,
+            reason:
+              "fromDecent true but missing profile_name, uploaded_at, or actual_weight",
+            data: sanitizeForLog(data),
+          });
         }
 
         await insertEspresso(sql, {
@@ -524,6 +690,7 @@ const main = async () => {
           finish: toNumber(tastingScores.finish),
         });
         espressoCount += 1;
+        log.inserted.espresso.push(espressoDoc.id);
 
         const readingsDoc = await espressoDoc.ref
           .collection("decentReadings")
@@ -557,10 +724,11 @@ const main = async () => {
             flowGoal: Array.isArray(readings.flowGoal) ? readings.flowGoal : [],
           });
           decentCount += 1;
+          log.inserted.decentReadings.push(espressoDoc.id);
         }
       }
 
-      const tastingsSnap = await userDoc.ref.collection("tastings").get();
+      const tastingsSnap = await userRef.collection("tastings").get();
       for (const tastingDoc of tastingsSnap.docs) {
         const data = tastingDoc.data();
         const beansFbId = getDocIdFromRef(data.beans);
@@ -576,6 +744,7 @@ const main = async () => {
           data,
         });
         tastingsCount += 1;
+        log.inserted.tastings.push(tastingDoc.id);
       }
     }
   };
@@ -588,14 +757,11 @@ const main = async () => {
     } else {
       await migrate(null);
     }
+  } catch (error) {
+    log.warnings.push(`Error: ${(error as Error).message}`);
+    throw error;
   } finally {
-    if (client) {
-      await client.end({ timeout: 5 });
-    }
-  }
-
-  console.log(
-    [
+    const summary = [
       `Dry run: ${DRY_RUN}`,
       `Users: ${usersCount}`,
       `Beans: ${beansCount}`,
@@ -603,8 +769,36 @@ const main = async () => {
       `Espresso: ${espressoCount}`,
       `Decent readings: ${decentCount}`,
       `Tastings: ${tastingsCount}`,
-    ].join("\n"),
-  );
+    ];
+    log.warnings.push(...summary);
+
+    await fs.writeFile(
+      LOG_PATH,
+      JSON.stringify(
+        {
+          ...log,
+          finishedAt: new Date().toISOString(),
+          counts: {
+            users: usersCount,
+            beans: beansCount,
+            brews: brewsCount,
+            espresso: espressoCount,
+            decentReadings: decentCount,
+            tastings: tastingsCount,
+          },
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+
+    console.log([...summary, `Log: ${LOG_PATH}`].join("\n"));
+
+    if (client) {
+      await client.end({ timeout: 5 });
+    }
+  }
 };
 
 main().catch((error) => {

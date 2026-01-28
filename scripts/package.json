@@ -4,7 +4,8 @@
   "type": "module",
   "packageManager": "pnpm@10.9.0",
   "scripts": {
-    "migrate:firestore": "tsx migrate-firestore-to-postgres.ts"
+    "migrate:firestore": "tsx migrate-firestore-to-postgres.ts",
+    "audit:firestore": "tsx audit-firestore.ts"
   },
   "dependencies": {
     "dotenv": "^16.6.1",
