@@ -1,12 +1,24 @@
 import * as Sentry from "@sentry/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "jotai";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import { App } from "./App";
 import { ErrorFallback } from "./components/ErrorFallback";
+import { FeatureFlagsProvider } from "./hooks/useFeatureFlag";
 import "./instrument";
 import "./styles/config.css";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
+      retry: 1,
+    },
+  },
+});
 
 const container = document.querySelector("#root");
 const root = createRoot(container as Element, {
@@ -23,9 +35,13 @@ const root = createRoot(container as Element, {
 root.render(
   <React.StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Provider>
-        <App />
-      </Provider>
+      <QueryClientProvider client={queryClient}>
+        <FeatureFlagsProvider>
+          <Provider>
+            <App />
+          </Provider>
+        </FeatureFlagsProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   </React.StrictMode>,
 );

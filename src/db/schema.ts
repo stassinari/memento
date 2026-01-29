@@ -237,3 +237,9 @@ export const tastings = pgTable(
     ),
   }),
 );
+
+export const featureFlags = pgTable("feature_flags", {
+  name: text("name").primaryKey(),
+  enabled: boolean("enabled").notNull().default(false),
+  description: text("description"),
+});

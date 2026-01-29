@@ -1,12 +1,21 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["drizzle-orm", "postgres"]
+
 [[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 [[headers]]
-for = "/manifest.webmanifest"
-[headers.values]
-Content-Type = "application/manifest+json"
-
-# [build.environment]
-# NODE_VERSION = "22"
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"

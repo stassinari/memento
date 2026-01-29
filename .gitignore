@@ -27,6 +27,7 @@ srcOld/
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
+firestore*log.json
 
 # Playwright
 /test-results/
