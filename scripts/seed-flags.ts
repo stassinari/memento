@@ -3,6 +3,7 @@ import postgres from "postgres";
 
 const sql = postgres(process.env.DATABASE_URL!);
 
+// FIXME really don't like this is raw sql, should use drizzle orm
 async function seedFlags() {
   console.log("Seeding feature flags...");
 
