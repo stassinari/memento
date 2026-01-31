@@ -12,8 +12,9 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "~/components/ErrorFallback";
 import { NotFound } from "~/components/ErrorPage";
 import { NotificationContainer } from "~/components/NotificationContainer";
-import { FeatureFlagsProvider } from "~/hooks/useFeatureFlag";
+// import { FeatureFlagsProvider } from "~/hooks/useFeatureFlag";
 import { useInitUser } from "~/hooks/useInitUser";
+import "~/styles/config.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,9 +27,8 @@ const queryClient = new QueryClient({
 });
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const isUserLoading = useInitUser();
-
-  if (isUserLoading) return null;
+  // Initialize auth state listener (client-side only, non-blocking)
+  useInitUser();
 
   return (
     <html>
@@ -48,16 +48,16 @@ const RootComponent = () => {
     <React.StrictMode>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <QueryClientProvider client={queryClient}>
-          <FeatureFlagsProvider>
-            <JotaiProvider>
-              <RootDocument>
-                <Suspense fallback={<div>Initializing...</div>}>
-                  <NotificationContainer />
-                  <Outlet />
-                </Suspense>
-              </RootDocument>
-            </JotaiProvider>
-          </FeatureFlagsProvider>
+          {/* <FeatureFlagsProvider> */}
+          <JotaiProvider>
+            <RootDocument>
+              <Suspense fallback={<div>Initializing...</div>}>
+                <NotificationContainer />
+                <Outlet />
+              </Suspense>
+            </RootDocument>
+          </JotaiProvider>
+          {/* </FeatureFlagsProvider> */}
         </QueryClientProvider>
       </ErrorBoundary>
     </React.StrictMode>
