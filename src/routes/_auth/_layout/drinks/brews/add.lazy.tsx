@@ -1,19 +1,19 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { doc, limit, orderBy, setDoc } from "firebase/firestore";
+import { useMemo } from "react";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   BrewForm,
   BrewFormInputs,
   brewFormEmptyValues,
-} from "@/components/brews/BrewForm";
-import { Heading } from "@/components/Heading";
-import { db } from "@/firebaseConfig";
-import { useCollectionQuery } from "@/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "@/hooks/firestore/useFirestoreCollectionOneTime";
-import { useNewRef } from "@/hooks/firestore/useNewBeansRef";
-import { Brew } from "@/types/brew";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { doc, limit, orderBy, setDoc } from "firebase/firestore";
-import { useMemo } from "react";
+} from "~/components/brews/BrewForm";
+import { Heading } from "~/components/Heading";
+import { db } from "~/firebaseConfig";
+import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { useNewRef } from "~/hooks/firestore/useNewBeansRef";
+import { Brew } from "~/types/brew";
 
 export const Route = createLazyFileRoute("/_auth/_layout/drinks/brews/add")({
   component: BrewsAdd,

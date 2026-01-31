@@ -1,17 +1,17 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { Button } from "@/components/Button";
-import { Heading } from "@/components/Heading";
-import { Input } from "@/components/Input";
-import { Textarea } from "@/components/Textarea";
-import sampleText from "@/data/beans-page-example.txt?raw";
-import { vertex } from "@/firebaseConfig";
-import { BeansSingleOrigin, RoastStyle } from "@/types/beans";
 import { createFileRoute } from "@tanstack/react-router";
 import { Timestamp } from "firebase/firestore";
 import { getGenerativeModel, Schema } from "firebase/vertexai";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Button } from "~/components/Button";
+import { Heading } from "~/components/Heading";
+import { Input } from "~/components/Input";
+import { Textarea } from "~/components/Textarea";
+import sampleText from "~/data/beans-page-example.txt?raw";
+import { vertex } from "~/firebaseConfig";
+import { BeansSingleOrigin, RoastStyle } from "~/types/beans";
 import { BeansCard } from "./beans/index.lazy";
 
 export const Route = createFileRoute("/_auth/_layout/ai")({

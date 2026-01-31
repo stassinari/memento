@@ -1,4 +1,3 @@
-import { useActiveRoute } from "@/hooks/useActiveRoute";
 import {
   ArrowUpOnSquareIcon,
   ChartBarIcon,
@@ -13,6 +12,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { ReactNode } from "react";
+import { useActiveRoute } from "~/hooks/useActiveRoute";
 
 export const navLinks = {
   home: {

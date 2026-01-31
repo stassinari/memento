@@ -1,10 +1,10 @@
-import { roundToDecimal } from "@/utils";
 import clsx from "clsx";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { roundToDecimal } from "~/utils";
 import { propertyToValues } from "./PressureFlowWeightChart";
 
 interface CustomTooltipProps {

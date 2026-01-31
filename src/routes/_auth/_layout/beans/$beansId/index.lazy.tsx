@@ -1,18 +1,3 @@
-import { BeansDetailsInfo } from "@/components/beans/BeansDetailsInfo";
-import { BeansDrinks } from "@/components/beans/BeansDrinks";
-import { areBeansFresh, areBeansFrozen } from "@/components/beans/utils";
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import {
-  ButtonWithDropdown,
-  ButtonWithDropdownProps,
-} from "@/components/ButtonWithDropdown";
-import { NotFound } from "@/components/ErrorPage";
-import { Heading } from "@/components/Heading";
-import { useDocRef } from "@/hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
-import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
-import { Beans } from "@/types/beans";
 import { Tab } from "@headlessui/react";
 import {
   createLazyFileRoute,
@@ -22,6 +7,21 @@ import {
 import clsx from "clsx";
 import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useCallback, useMemo, useState } from "react";
+import { BeansDetailsInfo } from "~/components/beans/BeansDetailsInfo";
+import { BeansDrinks } from "~/components/beans/BeansDrinks";
+import { areBeansFresh, areBeansFrozen } from "~/components/beans/utils";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import {
+  ButtonWithDropdown,
+  ButtonWithDropdownProps,
+} from "~/components/ButtonWithDropdown";
+import { NotFound } from "~/components/ErrorPage";
+import { Heading } from "~/components/Heading";
+import { useDocRef } from "~/hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
+import { Beans } from "~/types/beans";
 import { tabStyles } from "../index.lazy";
 
 export const Route = createLazyFileRoute("/_auth/_layout/beans/$beansId/")({

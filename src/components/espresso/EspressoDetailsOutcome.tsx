@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 
-import { Espresso } from "@/types/espresso";
-import { getEyFromEspresso } from "@/utils";
+import { Espresso } from "~/types/espresso";
+import { getEyFromEspresso } from "~/utils";
 import { DetailsCard } from "../Details";
 
 interface EspressoDetailsOutcomeProps {

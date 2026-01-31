@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 
-import { Brew } from "@/types/brew";
-import { getEyFromBrew } from "@/utils";
+import { Brew } from "~/types/brew";
+import { getEyFromBrew } from "~/utils";
 import { Card } from "../Card";
 import { DetailsCard } from "../Details";
 

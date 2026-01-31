@@ -1,6 +1,6 @@
-import { db } from "@/firebaseConfig";
 import { DocumentReference, doc } from "firebase/firestore";
 import { useMemo } from "react";
+import { db } from "~/firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
 export const useDocRef = <T,>(

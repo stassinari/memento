@@ -1,14 +1,14 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { Heading } from "@/components/Heading";
-import { EspressoOutcomeForm } from "@/components/espresso/EspressoOutcomeForm";
-import { db } from "@/firebaseConfig";
-import { useDocRef } from "@/hooks/firestore/useDocRef";
-import { useFirestoreDocOneTime } from "@/hooks/firestore/useFirestoreDocOneTime";
-import { useCurrentUser } from "@/hooks/useInitUser";
-import { Espresso } from "@/types/espresso";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { doc } from "firebase/firestore";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Heading } from "~/components/Heading";
+import { EspressoOutcomeForm } from "~/components/espresso/EspressoOutcomeForm";
+import { db } from "~/firebaseConfig";
+import { useDocRef } from "~/hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
+import { useCurrentUser } from "~/hooks/useInitUser";
+import { Espresso } from "~/types/espresso";
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/outcome",

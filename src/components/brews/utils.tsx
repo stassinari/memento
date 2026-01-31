@@ -1,5 +1,5 @@
-import { Brew } from "@/types/brew";
 import { MapPinIcon } from "@heroicons/react/20/solid";
+import { Brew } from "~/types/brew";
 import { DataListItem } from "../DataList";
 
 export const brewToDataListItem = (b: Brew): DataListItem => ({

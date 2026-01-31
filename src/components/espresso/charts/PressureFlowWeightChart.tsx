@@ -1,4 +1,3 @@
-import { DecentReadings } from "@/types/espresso";
 import {
   CartesianGrid,
   Dot,
@@ -10,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { DecentReadings } from "~/types/espresso";
 import { ChartLegend } from "./ChartLegend";
 import { ChartTooltip } from "./ChartTooltip";
 

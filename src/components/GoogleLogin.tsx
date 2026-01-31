@@ -1,8 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Auth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
-import { auth } from "@/firebaseConfig";
-import { useRedirectTo } from "@/hooks/useRedirectTo";
+import { auth } from "~/firebaseConfig";
+import { useRedirectTo } from "~/hooks/useRedirectTo";
 import { Button } from "./Button";
 import { GoogleIcon } from "./icons/GoogleIcon";
 

@@ -1,4 +1,4 @@
-import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
+import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Badge, BadgePlusIcon } from "../Badge";
 
 interface Suggestion {

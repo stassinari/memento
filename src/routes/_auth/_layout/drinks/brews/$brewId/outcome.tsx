@@ -1,14 +1,14 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { Heading } from "@/components/Heading";
-import { BrewOutcomeForm } from "@/components/brews/BrewOutcomeForm";
-import { db } from "@/firebaseConfig";
-import { useDocRef } from "@/hooks/firestore/useDocRef";
-import { useFirestoreDocOneTime } from "@/hooks/firestore/useFirestoreDocOneTime";
-import { useCurrentUser } from "@/hooks/useInitUser";
-import { Brew } from "@/types/brew";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { doc } from "firebase/firestore";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Heading } from "~/components/Heading";
+import { BrewOutcomeForm } from "~/components/brews/BrewOutcomeForm";
+import { db } from "~/firebaseConfig";
+import { useDocRef } from "~/hooks/firestore/useDocRef";
+import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
+import { useCurrentUser } from "~/hooks/useInitUser";
+import { Brew } from "~/types/brew";
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/brews/$brewId/outcome",

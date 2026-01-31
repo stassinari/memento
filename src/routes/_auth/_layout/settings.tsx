@@ -1,15 +1,3 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { Button } from "@/components/Button";
-import { FormSection } from "@/components/Form";
-import { Heading } from "@/components/Heading";
-import { Link } from "@/components/Link";
-import { Toggle } from "@/components/Toggle";
-import { auth, db } from "@/firebaseConfig";
-import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
-import { useCurrentUser } from "@/hooks/useInitUser";
-import { User } from "@/types/user";
-import { generateRandomString } from "@/utils";
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { Auth } from "firebase/auth";
 import {
@@ -20,6 +8,18 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useMemo } from "react";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Button } from "~/components/Button";
+import { FormSection } from "~/components/Form";
+import { Heading } from "~/components/Heading";
+import { Link } from "~/components/Link";
+import { Toggle } from "~/components/Toggle";
+import { auth, db } from "~/firebaseConfig";
+import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import { useCurrentUser } from "~/hooks/useInitUser";
+import { User } from "~/types/user";
+import { generateRandomString } from "~/utils";
 
 export const Route = createFileRoute("/_auth/_layout/settings")({
   component: Settings,

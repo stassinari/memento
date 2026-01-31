@@ -1,5 +1,5 @@
-import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
 import { Toaster } from "react-hot-toast";
+import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
 export const NotificationContainer = () => {
   const isMd = useScreenMediaQuery("md");

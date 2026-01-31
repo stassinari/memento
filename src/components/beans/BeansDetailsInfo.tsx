@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { Beans } from "@/types/beans";
+import { Beans } from "~/types/beans";
 import { DetailsCard } from "../Details";
 
 interface BeansDetailsInfoProps {

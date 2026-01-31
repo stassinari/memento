@@ -1,14 +1,3 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { Button } from "@/components/Button";
-import { Heading } from "@/components/Heading";
-import { Link } from "@/components/Link";
-import { notification } from "@/components/Notification";
-import { Spinner } from "@/components/Spinner";
-import { db } from "@/firebaseConfig";
-import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
-import { useCurrentUser } from "@/hooks/useInitUser";
-import { User } from "@/types/user";
 import {
   ArrowUpTrayIcon,
   ExclamationCircleIcon,
@@ -23,6 +12,17 @@ import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Button } from "~/components/Button";
+import { Heading } from "~/components/Heading";
+import { Link } from "~/components/Link";
+import { notification } from "~/components/Notification";
+import { Spinner } from "~/components/Spinner";
+import { db } from "~/firebaseConfig";
+import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import { useCurrentUser } from "~/hooks/useInitUser";
+import { User } from "~/types/user";
 
 export const Route = createFileRoute("/_auth/_layout/decent-upload")({
   component: DecentUpload,

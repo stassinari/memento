@@ -1,4 +1,4 @@
-import { Brew } from "@/types/brew";
+import { Brew } from "~/types/brew";
 import { DetailsCard } from "../Details";
 import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";

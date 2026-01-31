@@ -1,4 +1,4 @@
-import countries from "@/data/countries";
+import countries from "~/data/countries";
 
 interface CountryOptionFlagProps {
   country: string;

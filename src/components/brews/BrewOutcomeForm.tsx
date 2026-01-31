@@ -3,7 +3,7 @@ import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import { pick } from "lodash";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Brew, ExtractionType } from "@/types/brew";
+import { Brew, ExtractionType } from "~/types/brew";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { PoweredByMarkdown } from "../PoweredByMarkdown";

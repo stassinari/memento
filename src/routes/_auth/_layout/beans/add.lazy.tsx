@@ -1,14 +1,14 @@
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { setDoc } from "firebase/firestore";
 import {
   BeansForm,
   BeansFormInputs,
   beansFormEmptyValues,
-} from "@/components/beans/BeansForm";
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { Heading } from "@/components/Heading";
-import { useNewRef } from "@/hooks/firestore/useNewBeansRef";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { setDoc } from "firebase/firestore";
+} from "~/components/beans/BeansForm";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Heading } from "~/components/Heading";
+import { useNewRef } from "~/hooks/firestore/useNewBeansRef";
 
 export const Route = createLazyFileRoute("/_auth/_layout/beans/add")({
   component: BeansAdd,

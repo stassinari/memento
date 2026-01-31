@@ -1,4 +1,3 @@
-import { db } from "@/firebaseConfig";
 import {
   CollectionReference,
   Query,
@@ -7,6 +6,7 @@ import {
   query as fbQuery,
 } from "firebase/firestore";
 import { useMemo } from "react";
+import { db } from "~/firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
 export const useCollectionQuery = <T,>(

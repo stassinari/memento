@@ -1,5 +1,5 @@
-import { Heading } from "@/components/Heading";
 import { createFileRoute } from "@tanstack/react-router";
+import { Heading } from "~/components/Heading";
 
 export const Route = createFileRoute("/_auth/_layout/")({
   component: Home,

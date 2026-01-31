@@ -1,7 +1,7 @@
-import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
+import { auth } from "~/firebaseConfig";
 
 export const userAtom = atom<User | null>(null);
 

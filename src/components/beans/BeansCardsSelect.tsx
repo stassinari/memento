@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { Beans } from "@/types/beans";
-import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "@/util";
 import clsx from "clsx";
+import { Beans } from "~/types/beans";
+import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "~/util";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
 import { RadixModal } from "../Modal";

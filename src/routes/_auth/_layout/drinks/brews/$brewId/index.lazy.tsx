@@ -1,14 +1,3 @@
-import { navLinks } from "@/components/BottomNav";
-import { BreadcrumbsWithHome } from "@/components/Breadcrumbs";
-import { BrewDetailsInfo } from "@/components/brews/BrewDetailsInfo";
-import { BrewDetailsOutcome } from "@/components/brews/BrewDetailsOutcome";
-import { ButtonWithDropdown } from "@/components/ButtonWithDropdown";
-import { NotFound } from "@/components/ErrorPage";
-import { Heading } from "@/components/Heading";
-import { useDocRef } from "@/hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "@/hooks/firestore/useFirestoreDocRealtime";
-import useScreenMediaQuery from "@/hooks/useScreenMediaQuery";
-import { Brew } from "@/types/brew";
 import { Tab } from "@headlessui/react";
 import {
   createLazyFileRoute,
@@ -19,6 +8,17 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { useState } from "react";
+import { navLinks } from "~/components/BottomNav";
+import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { BrewDetailsInfo } from "~/components/brews/BrewDetailsInfo";
+import { BrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome";
+import { ButtonWithDropdown } from "~/components/ButtonWithDropdown";
+import { NotFound } from "~/components/ErrorPage";
+import { Heading } from "~/components/Heading";
+import { useDocRef } from "~/hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
+import { Brew } from "~/types/brew";
 import { tabStyles } from "../../../beans/index.lazy";
 
 export const Route = createLazyFileRoute(
