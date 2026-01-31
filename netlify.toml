@@ -2,7 +2,6 @@
 [build]
 command = "pnpm build"
 publish = "dist"
-functions = ".netlify/functions-internal"
 
 [build.environment]
 NODE_VERSION = "22"
@@ -13,8 +12,6 @@ for = "/manifest.webmanifest"
 [headers.values]
 Content-Type = "application/manifest+json"
 
-# Redirect config for Netlify Functions (required for SSR)
-[[redirects]]
-from = "/*"
-to = "/.netlify/functions/server/:splat"
-status = 200
+# Let Netlify auto-detect functions
+[functions]
+directory = ".netlify/functions-internal/server"
