@@ -1,12 +1,20 @@
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+# Build settings
+[build]
+command = "pnpm build"
+publish = "dist"
+functions = ".netlify/functions-internal"
 
+[build.environment]
+NODE_VERSION = "22"
+
+# Headers
 [[headers]]
 for = "/manifest.webmanifest"
 [headers.values]
 Content-Type = "application/manifest+json"
 
-[build.environment]
-NODE_VERSION = "22"
+# Redirect config for Netlify Functions (required for SSR)
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/server/:splat"
+status = 200
