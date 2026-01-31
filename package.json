@@ -58,6 +58,7 @@
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.1.0",
+    "nitro": "npm:nitro-nightly@latest",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
@@ -70,7 +71,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:preview": "vite preview",
+    "build:preview": "node .output/server/index.mjs",
     "start:netlify": "netlify dev",
     "start:prod": "env-cmd -f ./.env.production vite",
     "emulators:start": "firebase emulators:start  --import=./seed/auth-only",

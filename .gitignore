@@ -2,6 +2,7 @@ node_modules
 serviceAccountKey*.json
 build/
 dist/
+.output/
 .env*
 
 # Logs
