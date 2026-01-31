@@ -1,4 +1,4 @@
-import useScreenMediaQuery from "../../hooks/useScreenMediaQuery";
+import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Badge, BadgePlusIcon } from "../Badge";
 
 interface Suggestion {
@@ -15,9 +15,7 @@ export function extractSuggestions<T>(arr: T[], field: keyof T, limit = 3) {
     limit,
   ) as string[];
 }
-export const FormSuggestions = ({
-  suggestions,
-}: FormSuggestionsProps) => {
+export const FormSuggestions = ({ suggestions }: FormSuggestionsProps) => {
   const isSm = useScreenMediaQuery("sm");
   if (suggestions?.length === 0) return null;
   return (

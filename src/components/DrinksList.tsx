@@ -1,10 +1,10 @@
+import { Link as RouterLink } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { chain, entries } from "lodash";
-import { Link as RouterLink } from "react-router-dom";
 
-import { Beans } from "../types/beans";
-import { Brew } from "../types/brew";
-import { Espresso } from "../types/espresso";
+import { Beans } from "~/types/beans";
+import { Brew } from "~/types/brew";
+import { Espresso } from "~/types/espresso";
 import { Card } from "./Card";
 import { BeanBagIcon } from "./icons/BeanBagIcon";
 import { BeanIcon } from "./icons/BeanIcon";
@@ -153,8 +153,13 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
     <RouterLink
       to={
         type === "brew"
-          ? `/drinks/brews/${drink.id ?? ""}`
-          : `/drinks/espresso/${drink.id ?? ""}`
+          ? "/drinks/brews/$brewId"
+          : "/drinks/espresso/$espressoId"
+      }
+      params={
+        type === "brew"
+          ? { brewId: drink.id ?? "" }
+          : { espressoId: drink.id ?? "" }
       }
     >
       <Card.Container className="grow text-sm">

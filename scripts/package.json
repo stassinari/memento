@@ -1,0 +1,19 @@
+{
+  "name": "memento-scripts",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.9.0",
+  "scripts": {
+    "migrate:firestore": "tsx migrate-firestore-to-postgres.ts",
+    "audit:firestore": "tsx audit-firestore.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "firebase-admin": "^13.2.0",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

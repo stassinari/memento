@@ -1,8 +1,8 @@
 import { CameraIcon, LinkIcon } from "@heroicons/react/20/solid";
 import { getGenerativeModel } from "firebase/vertexai";
 import { useState } from "react";
-import { Button } from "../../components/Button";
-import { vertex } from "../../firebaseConfig";
+import { Button } from "~/components/Button";
+import { vertex } from "~/firebaseConfig";
 import { Input } from "../Input";
 import { beansVertexSchema, parseVertexBeansToBeansFormInput } from "./utils";
 

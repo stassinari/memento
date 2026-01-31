@@ -1,12 +1,6 @@
 import { initializeApp } from "firebase/app";
-import {
-  connectAuthEmulator,
-  getAuth,
-  GoogleAuthProvider,
-} from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
-import { getMessaging } from "firebase/messaging";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import { getVertexAI } from "firebase/vertexai";
 
 const {
@@ -32,46 +26,26 @@ export const firebaseConfig = {
   measurementId: VITE_FB_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase only on client-side
+// On server, these will be undefined but shouldn't be accessed
+// TODO: this is temporary until I get rid of Firebase
+const app =
+  typeof window !== "undefined" ? initializeApp(firebaseConfig) : null;
 
-const db = getFirestore(app);
-const auth = getAuth();
-export const provider = new GoogleAuthProvider();
-export const messaging = getMessaging(app);
-const functions = getFunctions(app);
-provider.setCustomParameters({ prompt: "select_account" });
+const db = app ? getFirestore(app) : (null as any);
+const auth = app ? getAuth(app) : (null as any);
+export const provider = app ? new GoogleAuthProvider() : (null as any);
 
-const vertex = getVertexAI(app);
-
-if (location.hostname === "localhost") {
-  connectFirestoreEmulator(db, "127.0.0.1", 8080);
-  connectAuthEmulator(auth, "http://127.0.0.1:9099");
-  connectFunctionsEmulator(functions, "127.0.0.1", 5001); // this is not used now, as we're targeting the endpoint manually
+if (provider) {
+  provider.setCustomParameters({ prompt: "select_account" });
 }
 
-export { auth, db, vertex };
+const vertex = app ? getVertexAI(app) : (null as any);
 
-// FIXME revisit when looking into Firebase notifications
-// export const getMessagingToken = (setTokenFound: (arg0: boolean) => void) => {
-//   return getToken(messaging, {
-//     vapidKey: VITE_VAPID_KEY,
-//   })
-//     .then((currentToken) => {
-//       if (currentToken) {
-//         console.log("current token for client: ", currentToken);
-//         setTokenFound(true);
-//         // Track the token -> client mapping, by sending to backend server
-//         // show on the UI that permission is secured
-//       } else {
-//         console.log(
-//           "No registration token available. Request permission to generate one."
-//         );
-//         setTokenFound(false);
-//         // shows on the UI that permission is required
-//       }
-//     })
-//     .catch((err) => {
-//       console.log("An error occurred while retrieving token. ", err);
-//       // catch error while creating client token
-//     });
-// };
+// if (location && location.hostname === "localhost") {
+//   connectFirestoreEmulator(db, "127.0.0.1", 8080);
+//   connectAuthEmulator(auth, "http://127.0.0.1:9099");
+//   connectFunctionsEmulator(functions, "127.0.0.1", 5001); // this is not used now, as we're targeting the endpoint manually
+// }
+
+export { auth, db, vertex };

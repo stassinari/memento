@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Beans } from "../../../types/beans";
-import { Brew } from "../../../types/brew";
+import { Beans } from "~/types/beans";
+import { Brew } from "~/types/brew";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";

@@ -4,7 +4,7 @@ import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
-import { roundToDecimal } from "../../../utils";
+import { roundToDecimal } from "~/utils";
 import { propertyToValues } from "./PressureFlowWeightChart";
 
 interface CustomTooltipProps {

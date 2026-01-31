@@ -22,9 +22,9 @@ export const getEyFromEspresso = (espresso: Espresso) => {
   )
     return 0;
 
-  const tds = espresso.tds;
-  const weight = espresso.actualWeight ?? espresso.targetWeight;
-  const dose = espresso.beansWeight;
+  const tds = espresso.tds!;
+  const weight = (espresso.actualWeight ?? espresso.targetWeight)!;
+  const dose = espresso.beansWeight!;
 
   return calculateEy({ tds, weight, dose });
 };

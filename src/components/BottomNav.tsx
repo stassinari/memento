@@ -9,10 +9,10 @@ import {
   HomeIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
+import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { useActiveRoute } from "../hooks/useActiveRoute";
+import { useActiveRoute } from "~/hooks/useActiveRoute";
 
 export const navLinks = {
   home: {

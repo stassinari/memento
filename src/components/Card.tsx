@@ -1,6 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { HTMLAttributes, type ReactNode } from "react";
-import { Link } from "react-router-dom";
 import { Action } from "./ButtonWithDropdown";
 
 const Container = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (

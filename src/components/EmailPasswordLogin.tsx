@@ -1,9 +1,9 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "@tanstack/react-router";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 
-import { auth } from "../firebaseConfig";
-import { useRedirectTo } from "../hooks/useRedirectTo";
+import { auth } from "~/firebaseConfig";
+import { useRedirectTo } from "~/hooks/useRedirectTo";
 import { Button } from "./Button";
 import { FormInput } from "./form/FormInput";
 
@@ -24,7 +24,18 @@ export const EmailPasswordLogin = () => {
   } = methods;
   const onSubmit: SubmitHandler<Inputs> = async ({ email, password }) => {
     await signInWithEmailAndPassword(auth, email, password);
-    navigate(redirectTo ? redirectTo : "/");
+
+    // Wait for auth state to update before navigating
+    await new Promise<void>((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          unsubscribe();
+          resolve();
+        }
+      });
+    });
+
+    navigate({ to: redirectTo || "/" });
   };
 
   return (

@@ -1,11 +1,11 @@
 import { DocumentReference, doc } from "firebase/firestore";
 import { useMemo } from "react";
-import { db } from "../../firebaseConfig";
+import { db } from "~/firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
 export const useDocRef = <T,>(
   type: "brews" | "beans" | "espresso",
-  id?: string
+  id?: string,
 ): DocumentReference<T> => {
   const user = useCurrentUser();
 

@@ -1,0 +1,109 @@
+[2026-01-24T20:55:12.691Z] [INFO] Found 34 route files
+[2026-01-24T20:55:12.692Z] [INFO] Processing: src/routes/__root.tsx
+[2026-01-24T20:55:12.693Z] [INFO]   ↳ Found page import: NotFound from NotFound.tsx
+[2026-01-24T20:55:12.694Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.694Z] [INFO] Processing: src/routes/_auth/_layout/ai.tsx
+[2026-01-24T20:55:12.694Z] [INFO]   ↳ Found page import: AiPlayground from AiPlayground.tsx
+[2026-01-24T20:55:12.695Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.695Z] [INFO] Processing: src/routes/_auth/_layout/beans/$beansId/clone.tsx
+[2026-01-24T20:55:12.696Z] [INFO]   ↳ Found page import: BeansClone from beans/BeansClone.tsx
+[2026-01-24T20:55:12.696Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.697Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.697Z] [INFO] Processing: src/routes/_auth/_layout/beans/$beansId/edit.tsx
+[2026-01-24T20:55:12.697Z] [INFO]   ↳ Found page import: BeansEdit from beans/BeansEdit.tsx
+[2026-01-24T20:55:12.697Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.697Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.697Z] [INFO] Processing: src/routes/_auth/_layout/beans/$beansId/index.lazy.tsx
+[2026-01-24T20:55:12.697Z] [INFO]   ↳ Found page import: BeansDetails from beans/BeansDetails.tsx
+[2026-01-24T20:55:12.698Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.698Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.698Z] [INFO] Processing: src/routes/_auth/_layout/beans/add.lazy.tsx
+[2026-01-24T20:55:12.698Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.698Z] [INFO] Processing: src/routes/_auth/_layout/beans/index.lazy.tsx
+[2026-01-24T20:55:12.698Z] [INFO]   ↳ Found page import: BeansList from beans/BeansList/BeansList.tsx
+[2026-01-24T20:55:12.699Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.699Z] [INFO] Processing: src/routes/_auth/_layout/decent-upload.tsx
+[2026-01-24T20:55:12.699Z] [INFO]   ↳ Found page import: DecentUpload from DecentUpload.tsx
+[2026-01-24T20:55:12.699Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.699Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.699Z] [INFO] Processing: src/routes/_auth/_layout/design-library.tsx
+[2026-01-24T20:55:12.700Z] [INFO]   ↳ Found page import: DesignLibrary from DesignLibrary.tsx
+[2026-01-24T20:55:12.702Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.702Z] [INFO] Processing: src/routes/_auth/_layout/drinks/brews/$brewId/clone.tsx
+[2026-01-24T20:55:12.702Z] [INFO]   ↳ Found page import: BrewClone from brews/BrewClone.tsx
+[2026-01-24T20:55:12.702Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.702Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.702Z] [INFO] Processing: src/routes/_auth/_layout/drinks/brews/$brewId/edit.tsx
+[2026-01-24T20:55:12.703Z] [INFO]   ↳ Found page import: BrewEditDetails from brews/BrewEditDetails.tsx
+[2026-01-24T20:55:12.703Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.703Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.703Z] [INFO] Processing: src/routes/_auth/_layout/drinks/brews/$brewId/index.lazy.tsx
+[2026-01-24T20:55:12.703Z] [INFO]   ↳ Found page import: BrewDetails from brews/BrewDetails.tsx
+[2026-01-24T20:55:12.703Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.704Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.704Z] [INFO] Processing: src/routes/_auth/_layout/drinks/brews/$brewId/outcome.tsx
+[2026-01-24T20:55:12.704Z] [INFO]   ↳ Found page import: BrewEditOutcome from brews/BrewEditOutcome.tsx
+[2026-01-24T20:55:12.704Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.704Z] [INFO] Processing: src/routes/_auth/_layout/drinks/brews/add.lazy.tsx
+[2026-01-24T20:55:12.705Z] [INFO]   ↳ Found page import: BrewsAdd from brews/BrewsAdd.tsx
+[2026-01-24T20:55:12.705Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.705Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.705Z] [INFO] Processing: src/routes/_auth/_layout/drinks/brews/index.tsx
+[2026-01-24T20:55:12.705Z] [INFO]   ↳ Found page import: BrewsList from brews/BrewsList.tsx
+[2026-01-24T20:55:12.705Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.706Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/$espressoId/clone.tsx
+[2026-01-24T20:55:12.706Z] [INFO]   ↳ Found page import: EspressoClone from espresso/EspressoClone.tsx
+[2026-01-24T20:55:12.706Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.706Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.706Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/$espressoId/decent/add.tsx
+[2026-01-24T20:55:12.706Z] [INFO]   ↳ Found page import: DecentEspressoAddDetails from espresso/DecentEspressoAddDetails.tsx
+[2026-01-24T20:55:12.706Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.706Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.706Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/$espressoId/decent/edit.tsx
+[2026-01-24T20:55:12.707Z] [INFO]   ↳ Found page import: DecentEspressoEditDetails from espresso/DecentEspressoEditDetails.tsx
+[2026-01-24T20:55:12.707Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.707Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.707Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/$espressoId/edit.tsx
+[2026-01-24T20:55:12.707Z] [INFO]   ↳ Found page import: EspressoEditDetails from espresso/EspressoEditDetails.tsx
+[2026-01-24T20:55:12.707Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.707Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.707Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/$espressoId/index.lazy.tsx
+[2026-01-24T20:55:12.708Z] [INFO]   ↳ Found page import: EspressoDetails from espresso/EspressoDetails.tsx
+[2026-01-24T20:55:12.708Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.708Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.708Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/$espressoId/outcome.tsx
+[2026-01-24T20:55:12.708Z] [INFO]   ↳ Found page import: EspressoEditOutcome from espresso/EspressoEditOutcome.tsx
+[2026-01-24T20:55:12.709Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.709Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/add.lazy.tsx
+[2026-01-24T20:55:12.709Z] [INFO]   ↳ Found page import: EspressoAdd from espresso/EspressoAdd.tsx
+[2026-01-24T20:55:12.709Z] [WARN] ⚠️  Contains navigate() calls - may need manual review for TanStack Router syntax
+[2026-01-24T20:55:12.709Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.709Z] [INFO] Processing: src/routes/_auth/_layout/drinks/espresso/index.lazy.tsx
+[2026-01-24T20:55:12.709Z] [INFO]   ↳ Found page import: EspressoList from espresso/EspressoList.tsx
+[2026-01-24T20:55:12.710Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.710Z] [INFO] Processing: src/routes/_auth/_layout/drinks/index.tsx
+[2026-01-24T20:55:12.710Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.710Z] [INFO] Processing: src/routes/_auth/_layout/drinks/tastings.tsx
+[2026-01-24T20:55:12.710Z] [INFO]   ↳ Found page import: TastingsPage from TastingsPage.tsx
+[2026-01-24T20:55:12.710Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.710Z] [INFO] Processing: src/routes/_auth/_layout/index.tsx
+[2026-01-24T20:55:12.711Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.711Z] [INFO] Processing: src/routes/_auth/_layout/settings.tsx
+[2026-01-24T20:55:12.711Z] [INFO]   ↳ Found page import: Settings from Settings.tsx
+[2026-01-24T20:55:12.711Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.711Z] [INFO] Processing: src/routes/_auth/_layout.tsx
+[2026-01-24T20:55:12.711Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.711Z] [INFO] Processing: src/routes/_auth/_layoutFull/drinks/brews/table.tsx
+[2026-01-24T20:55:12.711Z] [INFO]   ↳ Found page import: BrewsTableWrapper from brews/BrewsTable.tsx
+[2026-01-24T20:55:12.712Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.712Z] [INFO] Processing: src/routes/_auth/_layoutFull.tsx
+[2026-01-24T20:55:12.712Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.712Z] [INFO] Processing: src/routes/_auth.tsx
+[2026-01-24T20:55:12.712Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.712Z] [INFO] Processing: src/routes/_public/login.lazy.tsx
+[2026-01-24T20:55:12.712Z] [INFO]   ↳ Found page import: LogIn from LogIn.tsx
+[2026-01-24T20:55:12.713Z] [INFO]   ✓ Migrated successfully
+[2026-01-24T20:55:12.713Z] [INFO] Processing: src/routes/_public/login.tsx
+[2026-01-24T20:55:12.713Z] [INFO]   ↳ No page import found, skipping
+[2026-01-24T20:55:12.713Z] [INFO] Processing: src/routes/_public.tsx
+[2026-01-24T20:55:12.713Z] [INFO]   ↳ No page import found, skipping

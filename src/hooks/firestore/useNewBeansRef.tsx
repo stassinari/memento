@@ -1,5 +1,5 @@
 import { collection, doc } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+import { db } from "~/firebaseConfig";
 import { useCurrentUser } from "../useInitUser";
 
 // TODO extract this type, it's used somewhere else

@@ -2,6 +2,7 @@ node_modules
 serviceAccountKey*.json
 build/
 dist/
+.output/
 .env*
 
 # Logs
@@ -27,3 +28,11 @@ srcOld/
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
+firestore*log.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

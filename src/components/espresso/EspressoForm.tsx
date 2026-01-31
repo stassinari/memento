@@ -1,11 +1,11 @@
 import { orderBy } from "firebase/firestore";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
-import { useCollectionQuery } from "../../hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "../../hooks/firestore/useFirestoreCollectionOneTime";
-import { Beans } from "../../types/beans";
-import { Espresso } from "../../types/espresso";
+import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
+import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { Beans } from "~/types/beans";
+import { Espresso } from "~/types/espresso";
 import {
   BeansEquipment,
   BeansEquipmentInputs,
@@ -24,9 +24,7 @@ import {
 
 // FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface EspressoFormInputs
-  extends BeansEquipmentInputs,
-    EspressoRecipeInputs,
-    EspressoTimeInputs {}
+  extends BeansEquipmentInputs, EspressoRecipeInputs, EspressoTimeInputs {}
 
 export const espressoFormEmptyValues: (
   copyFrom?: Espresso,

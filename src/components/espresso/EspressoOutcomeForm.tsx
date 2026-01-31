@@ -1,9 +1,9 @@
+import { Link, useNavigate } from "@tanstack/react-router";
 import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
 import { pick } from "lodash";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
 
-import { Espresso } from "../../types/espresso";
+import { Espresso } from "~/types/espresso";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { PoweredByMarkdown } from "../PoweredByMarkdown";
@@ -67,7 +67,10 @@ export const EspressoOutcomeForm = ({
   const onSubmit: SubmitHandler<EspressoOutcomeInputs> = async (data) => {
     if (espresso.id) {
       await updateDoc(espressoRef, { ...data });
-      navigate(`/drinks/espresso/${espresso.id}`);
+      navigate({
+        to: "/drinks/espresso/$espressoId",
+        params: { espressoId: espresso.id },
+      });
     }
   };
 
@@ -161,7 +164,12 @@ export const EspressoOutcomeForm = ({
 
         <div className="flex justify-end gap-4">
           <Button variant="white" type="button" asChild>
-            <Link to={`/drinks/espressos/${espresso.id ?? ""}`}>Back</Link>
+            <Link
+              to="/drinks/espresso/$espressoId"
+              params={{ espressoId: espresso.id ?? "" }}
+            >
+              Back
+            </Link>
           </Button>
           <Button
             variant="primary"

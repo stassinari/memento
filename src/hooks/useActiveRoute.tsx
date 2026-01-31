@@ -1,7 +1,7 @@
-import { useLocation } from "react-router-dom";
+import { useRouterState } from "@tanstack/react-router";
 
 export const useActiveRoute = (linkTo: string) => {
-  const { pathname } = useLocation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   if (linkTo !== "/") {
     return pathname.startsWith(linkTo);

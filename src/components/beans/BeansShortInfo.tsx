@@ -1,6 +1,6 @@
-import { useDocRef } from "../../hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "../../hooks/firestore/useFirestoreDocRealtime";
-import { Beans } from "../../types/beans";
+import { useDocRef } from "~/hooks/firestore/useDocRef";
+import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import { Beans } from "~/types/beans";
 import { DetailsCard } from "../Details";
 
 interface BeansShortInfoProps {
@@ -8,10 +8,7 @@ interface BeansShortInfoProps {
   brewDate: Date;
 }
 
-export const BeansShortInfo = ({
-  beansId,
-  brewDate,
-}: BeansShortInfoProps) => {
+export const BeansShortInfo = ({ beansId, brewDate }: BeansShortInfoProps) => {
   console.log("BeansShortInfo");
 
   const docRef = useDocRef<Beans>("beans", beansId);

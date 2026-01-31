@@ -1,5 +1,5 @@
 import { MapPinIcon } from "@heroicons/react/20/solid";
-import { Espresso } from "../../types/espresso";
+import { Espresso } from "~/types/espresso";
 import { DataListItem } from "../DataList";
 
 export const espressoToDataListItem = (e: Espresso): DataListItem =>
