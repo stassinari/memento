@@ -1,30 +1,21 @@
 /// <reference types="vite/client" />
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   HeadContent,
   Outlet,
   Scripts,
-  createRootRoute,
+  createRootRouteWithContext,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Provider as JotaiProvider } from "jotai";
 import React, { ReactNode, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "~/components/ErrorFallback";
 import { NotFound } from "~/components/ErrorPage";
 import { NotificationContainer } from "~/components/NotificationContainer";
-// import { FeatureFlagsProvider } from "~/hooks/useFeatureFlag";
 import { useInitUser } from "~/hooks/useInitUser";
+import { RouterContext } from "~/router";
 import "~/styles/config.css";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-      gcTime: 1000 * 60 * 10,
-      retry: 1,
-    },
-  },
-});
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   // Initialize auth state listener (client-side only, non-blocking)
@@ -38,6 +29,12 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <body>
         {children}
         <Scripts />
+        {process.env.NODE_ENV === "development" && (
+          <>
+            <TanStackRouterDevtools position="top-right" />
+            <ReactQueryDevtools buttonPosition="bottom-right" />
+          </>
+        )}
       </body>
     </html>
   );
@@ -47,25 +44,21 @@ const RootComponent = () => {
   return (
     <React.StrictMode>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <QueryClientProvider client={queryClient}>
-          {/* <FeatureFlagsProvider> */}
-          <JotaiProvider>
-            <RootDocument>
-              <Suspense fallback={<div>Initializing...</div>}>
-                <NotificationContainer />
-                <Outlet />
-              </Suspense>
-            </RootDocument>
-          </JotaiProvider>
-          {/* </FeatureFlagsProvider> */}
-        </QueryClientProvider>
+        <JotaiProvider>
+          <RootDocument>
+            <Suspense fallback={<div>Initializing...</div>}>
+              <NotificationContainer />
+              <Outlet />
+            </Suspense>
+          </RootDocument>
+        </JotaiProvider>
       </ErrorBoundary>
     </React.StrictMode>
   );
 };
 
 // This must come AFTER the components it references
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     title: "Memento Coffee",
     meta: [
