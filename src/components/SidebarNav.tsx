@@ -70,7 +70,7 @@ export const SidebarNav = () => {
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
       ...(process.env.NODE_ENV === "development"
-        ? [navLinks.aiPlayground, navLinks.designLibrary]
+        ? [navLinks.aiPlayground, navLinks.featureFlags, navLinks.designLibrary]
         : []),
     ],
     [secretKey],

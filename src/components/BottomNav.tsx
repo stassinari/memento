@@ -5,6 +5,7 @@ import {
   CurrencyEuroIcon,
   CurrencyPoundIcon,
   CurrencyYenIcon,
+  FlagIcon,
   FolderIcon,
   HomeIcon,
   PhotoIcon,
@@ -54,6 +55,11 @@ export const navLinks = {
     label: "AI playground",
     linkTo: "/ai",
     Icon: <CurrencyYenIcon />,
+  },
+  featureFlags: {
+    label: "Feature Flags",
+    linkTo: "/featureFlags",
+    Icon: <FlagIcon />,
   },
   settings: {
     label: "Settings",

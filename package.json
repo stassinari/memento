@@ -24,7 +24,7 @@
     "firebase": "^11.7.1",
     "jotai": "^2.16.2",
     "lodash": "^4.17.23",
-    "postgres": "^3.4.8",
+    "pg": "^8.18.0",
     "react": "^19.2.3",
     "react-datepicker": "^9.1.0",
     "react-dom": "^19.2.3",
