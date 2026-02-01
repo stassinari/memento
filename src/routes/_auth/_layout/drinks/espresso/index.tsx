@@ -1,7 +1,4 @@
-import {
-  Link as RouterLink,
-  createFileRoute,
-} from "@tanstack/react-router";
+import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { limit, orderBy } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
@@ -10,7 +7,7 @@ import { Button } from "~/components/Button";
 import {
   DrinksList,
   mergeBrewsAndEspressoByUniqueDate,
-} from "~/components/DrinksList";
+} from "~/components/drinks/DrinksList.Firebase";
 import { Heading } from "~/components/Heading";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";

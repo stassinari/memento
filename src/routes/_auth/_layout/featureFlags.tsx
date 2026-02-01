@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "~/components/Card";
 import { Heading } from "~/components/Heading";
@@ -6,37 +11,33 @@ import { Toggle } from "~/components/Toggle";
 import { changeFeatureFlag } from "~/db/mutations";
 import { getFeatureFlags } from "~/db/queries";
 
-export const Route = createFileRoute("/_auth/_layout/featureFlags")({
-  component: RouteComponent,
-  loader: async ({ context }) => {
-    return context.queryClient.prefetchQuery({
-      queryKey: ["featureFlags"],
-      queryFn: getFeatureFlags,
-    });
-  },
-});
-
-function RouteComponent() {
-  const queryClient = useQueryClient();
-  const { data: flags, isLoading } = useQuery({
+export const flagsQueryOptions = () =>
+  queryOptions({
     queryKey: ["featureFlags"],
     queryFn: getFeatureFlags,
   });
 
+export const Route = createFileRoute("/_auth/_layout/featureFlags")({
+  component: RouteComponent,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(flagsQueryOptions());
+  },
+});
+
+function RouteComponent() {
+  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: changeFeatureFlag,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["featureFlags"] });
+      queryClient.invalidateQueries(flagsQueryOptions());
     },
   });
 
   const handleFlagChange = (name: string, enabled: boolean) => {
     mutation.mutate({ data: { name, enabled } });
   };
-
-  if (isLoading) {
-    return <div>Loading feature flags...</div>;
-  }
 
   return (
     <div className="space-y-4">

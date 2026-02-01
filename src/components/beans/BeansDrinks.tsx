@@ -6,7 +6,10 @@ import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCo
 import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import { Espresso } from "~/types/espresso";
-import { DrinksList, mergeBrewsAndEspressoByUniqueDate } from "../DrinksList";
+import {
+  DrinksList,
+  mergeBrewsAndEspressoByUniqueDate,
+} from "../drinks/DrinksList.Firebase";
 
 interface BeansDrinksProps {
   beans: Beans;

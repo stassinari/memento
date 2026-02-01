@@ -1,25 +1,52 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
 import { limit, orderBy } from "firebase/firestore";
+import { queryOptions } from "node_modules/@tanstack/react-query/build/modern/queryOptions";
 import { useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import {
-  DrinksList,
-  mergeBrewsAndEspressoByUniqueDate,
-} from "~/components/DrinksList";
+  DrinksList as FirebaseDrinksList,
+  mergeBrewsAndEspressoByUniqueDate as firebaseMergeBrewsAndEspressoByUniqueDate,
+} from "~/components/drinks/DrinksList.Firebase";
+import {
+  DrinksList as PostgresDrinksList,
+  mergeBrewsAndEspressoByUniqueDate as postgresMergeBrewsAndEspressoByUniqueDate,
+} from "~/components/drinks/DrinksList.Postgres";
 import { Heading } from "~/components/Heading";
+import { getBrews } from "~/db/queries";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { type Brew } from "~/types/brew";
+import { flagsQueryOptions } from "../../featureFlags";
+
+const brewsQueryOptions = () =>
+  queryOptions({
+    queryKey: ["brews"],
+    queryFn: getBrews,
+  });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
   component: BrewsList,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(flagsQueryOptions());
+    await context.queryClient.ensureQueryData(brewsQueryOptions());
+  },
 });
 
 function BrewsList() {
+  const brewsQuery = useSuspenseQuery(brewsQueryOptions());
+  const sqlBrewsWithBeans = brewsQuery.data;
+
+  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+
+  const shouldReadFromPostgres = flags?.find(
+    (flag) => flag.name === "read_from_postgres",
+  )?.enabled;
+
   const [brewLimit, setBrewLimit] = useState(50);
 
   const filters = useMemo(
@@ -36,9 +63,14 @@ function BrewsList() {
   const { list: beansList, isLoading: beansLoading } =
     useFirestoreCollectionRealtime<Beans>(beansQuery);
 
-  const drinks = useMemo(
-    () => mergeBrewsAndEspressoByUniqueDate(brewsList, []),
+  const firebaseDrinks = useMemo(
+    () => firebaseMergeBrewsAndEspressoByUniqueDate(brewsList, []),
     [brewsList],
+  );
+
+  const postgresDrinks = useMemo(
+    () => postgresMergeBrewsAndEspressoByUniqueDate(sqlBrewsWithBeans, []),
+    [sqlBrewsWithBeans],
   );
 
   const isSm = useScreenMediaQuery("sm");
@@ -68,7 +100,11 @@ function BrewsList() {
       </Heading>
 
       <div className="mt-4">
-        <DrinksList drinks={drinks} beansList={beansList} />
+        {shouldReadFromPostgres ? (
+          <PostgresDrinksList drinks={postgresDrinks} />
+        ) : (
+          <FirebaseDrinksList drinks={firebaseDrinks} beansList={beansList} />
+        )}
       </div>
       <div className="flex justify-center gap-4 mt-4">
         {brewsList.length >= brewLimit && (

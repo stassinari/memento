@@ -7,7 +7,7 @@ import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   DrinksList,
   mergeBrewsAndEspressoByUniqueDate,
-} from "~/components/DrinksList";
+} from "~/components/drinks/DrinksList.Firebase";
 import { Heading } from "~/components/Heading";
 import { Link } from "~/components/Link";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
