@@ -16,7 +16,7 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { useNewRef } from "~/hooks/firestore/useNewBeansRef";
 import { Brew } from "~/types/brew";
-import { brewToFirestore } from "../add.lazy";
+import { brewToFirestore } from "../add";
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/brews/$brewId/clone",

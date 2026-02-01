@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import {
-  createLazyFileRoute,
+  createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
@@ -19,11 +19,9 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Brew } from "~/types/brew";
-import { tabStyles } from "../../../beans/index.lazy";
+import { tabStyles } from "../../../beans";
 
-export const Route = createLazyFileRoute(
-  "/_auth/_layout/drinks/brews/$brewId/",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/")({
   component: BrewDetails,
 });
 
@@ -124,5 +122,3 @@ function BrewDetails() {
     </>
   );
 }
-
-BrewDetails;

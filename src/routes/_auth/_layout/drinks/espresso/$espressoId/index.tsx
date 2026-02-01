@@ -1,7 +1,7 @@
 import { Tab } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
 import {
-  createLazyFileRoute,
+  createFileRoute,
   Link,
   useNavigate,
   useParams,
@@ -26,9 +26,9 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Espresso } from "~/types/espresso";
-import { tabStyles } from "../../../beans/index.lazy";
+import { tabStyles } from "../../../beans";
 
-export const Route = createLazyFileRoute(
+export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/",
 )({
   component: EspressoDetails,
@@ -164,5 +164,3 @@ function EspressoDetails() {
     </>
   );
 }
-
-EspressoDetails;

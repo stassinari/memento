@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
 import { orderBy, QueryConstraint, where } from "firebase/firestore";
 import { ReactNode, useState } from "react";
@@ -17,7 +17,7 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "~/util";
 
-export const Route = createLazyFileRoute("/_auth/_layout/beans/")({
+export const Route = createFileRoute("/_auth/_layout/beans/")({
   component: BeansList,
 });
 

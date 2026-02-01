@@ -1,4 +1,4 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, createFileRoute } from "@tanstack/react-router";
 import { doc, limit, orderBy, setDoc } from "firebase/firestore";
 import { useMemo } from "react";
 import { navLinks } from "~/components/BottomNav";
@@ -15,7 +15,7 @@ import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCol
 import { useNewRef } from "~/hooks/firestore/useNewBeansRef";
 import { Brew } from "~/types/brew";
 
-export const Route = createLazyFileRoute("/_auth/_layout/drinks/brews/add")({
+export const Route = createFileRoute("/_auth/_layout/drinks/brews/add")({
   component: BrewsAdd,
 });
 

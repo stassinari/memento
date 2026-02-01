@@ -16,7 +16,7 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { useNewRef } from "~/hooks/firestore/useNewBeansRef";
 import { BaseEspresso } from "~/types/espresso";
-import { espressoToFirestore } from "../add.lazy";
+import { espressoToFirestore } from "../add";
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/clone",

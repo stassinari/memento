@@ -12,7 +12,7 @@ import { Textarea } from "~/components/Textarea";
 import sampleText from "~/data/beans-page-example.txt?raw";
 import { vertex } from "~/firebaseConfig";
 import { BeansSingleOrigin, RoastStyle } from "~/types/beans";
-import { BeansCard } from "./beans/index.lazy";
+import { BeansCard } from "./beans";
 
 export const Route = createFileRoute("/_auth/_layout/ai")({
   component: AiPlayground,

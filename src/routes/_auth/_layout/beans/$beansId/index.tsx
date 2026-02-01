@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import {
-  createLazyFileRoute,
+  createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
@@ -22,9 +22,9 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
-import { tabStyles } from "../index.lazy";
+import { tabStyles } from "..";
 
-export const Route = createLazyFileRoute("/_auth/_layout/beans/$beansId/")({
+export const Route = createFileRoute("/_auth/_layout/beans/$beansId/")({
   component: BeansDetails,
 });
 
@@ -171,5 +171,3 @@ function BeansDetails() {
     </>
   );
 }
-
-BeansDetails;

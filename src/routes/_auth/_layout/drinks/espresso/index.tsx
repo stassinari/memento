@@ -1,6 +1,6 @@
 import {
-  createLazyFileRoute,
   Link as RouterLink,
+  createFileRoute,
 } from "@tanstack/react-router";
 import { limit, orderBy } from "firebase/firestore";
 import { useMemo, useState } from "react";
@@ -18,7 +18,7 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { Espresso } from "~/types/espresso";
 
-export const Route = createLazyFileRoute("/_auth/_layout/drinks/espresso/")({
+export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
   component: EspressoList,
 });
 
