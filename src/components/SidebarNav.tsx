@@ -50,6 +50,7 @@ export interface SidebarNavItemProps {
 
 export const SidebarNav = () => {
   const user = useCurrentUser();
+
   const userRef = useMemo(
     () => doc(db, "users", user.uid) as DocumentReference<User>,
     [user?.uid],
@@ -69,11 +70,11 @@ export const SidebarNav = () => {
       { ...navLinks.espresso, nested: true },
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
-      ...(process.env.NODE_ENV === "development"
+      ...(user.role === "admin" || process.env.NODE_ENV === "development"
         ? [navLinks.aiPlayground, navLinks.featureFlags, navLinks.designLibrary]
         : []),
     ],
-    [secretKey],
+    [secretKey, user.role],
   );
 
   return (
