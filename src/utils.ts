@@ -1,17 +1,22 @@
-import { Brew } from "./types/brew";
 import { Espresso } from "./types/espresso";
 
-export const getEyFromBrew = (brew: Brew) => {
-  if (!brew.tds || !brew.finalBrewWeight || !brew.beansWeight) return 0;
+interface BrewEyData {
+  tds: number;
+  finalBrewWeight: number;
+  beansWeight: number;
+  extractionType: string | null;
+  waterWeight: number;
+}
 
-  const tds = brew.tds;
+export const getEyFromBrew = (data: BrewEyData) => {
+  const tds = data.tds;
   const weight =
-    brew.extractionType === "immersion"
-      ? brew.waterWeight
-      : brew.finalBrewWeight;
-  const dose = brew.beansWeight;
+    data.extractionType === "immersion"
+      ? data.waterWeight
+      : data.finalBrewWeight;
+  const dose = data.beansWeight;
 
-  return calculateEy({ tds, weight, dose });
+  return calculateEy({ tds, weight: weight || 0, dose });
 };
 
 export const getEyFromEspresso = (espresso: Espresso) => {

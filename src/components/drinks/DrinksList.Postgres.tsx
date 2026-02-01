@@ -2,7 +2,7 @@ import { Link as RouterLink } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { chain, entries } from "lodash";
 
-import { beans, brews, espresso } from "~/db/schema";
+import type { Beans, Brew, Espresso } from "~/db/types";
 import { Card } from "../Card";
 import { BeanBagIcon } from "../icons/BeanBagIcon";
 import { BeanIcon } from "../icons/BeanIcon";
@@ -11,10 +11,6 @@ import { DropIcon } from "../icons/DropIcon";
 import { PortafilterIcon } from "../icons/PortafilterIcon";
 
 const dateFormat = "ddd DD MMM YYYY";
-
-type Brew = typeof brews.$inferSelect;
-type Espresso = typeof espresso.$inferSelect;
-type Beans = typeof beans.$inferSelect;
 
 export const mergeBrewsAndEspressoByUniqueDate = (
   brewsList: { brews: Brew; beans: Beans | null }[],

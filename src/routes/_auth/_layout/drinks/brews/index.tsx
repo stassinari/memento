@@ -2,7 +2,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
 import { limit, orderBy } from "firebase/firestore";
 import { queryOptions } from "node_modules/@tanstack/react-query/build/modern/queryOptions";
+import { useAtomValue } from "jotai";
 import { useMemo, useState } from "react";
+import { userAtom } from "~/hooks/useInitUser";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
@@ -23,25 +25,25 @@ import { Beans } from "~/types/beans";
 import { type Brew } from "~/types/brew";
 import { flagsQueryOptions } from "../../featureFlags";
 
-const brewsQueryOptions = () =>
+const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions({
-    queryKey: ["brews"],
-    queryFn: getBrews,
+    queryKey: ["brews", firebaseUid],
+    queryFn: () => getBrews({ data: firebaseUid }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
   component: BrewsList,
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(flagsQueryOptions());
-    await context.queryClient.ensureQueryData(brewsQueryOptions());
+    // User data will be loaded in component since it's client-side only
   },
 });
 
 function BrewsList() {
-  const brewsQuery = useSuspenseQuery(brewsQueryOptions());
-  const sqlBrewsWithBeans = brewsQuery.data;
-
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+  const user = useAtomValue(userAtom);
+  const brewsQuery = useSuspenseQuery(brewsQueryOptions(user?.uid ?? ""));
+  const sqlBrewsWithBeans = brewsQuery.data;
 
   const shouldReadFromPostgres = flags?.find(
     (flag) => flag.name === "read_from_postgres",

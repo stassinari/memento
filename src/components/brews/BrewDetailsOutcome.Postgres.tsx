@@ -1,6 +1,6 @@
 import ReactMarkdown from "react-markdown";
 
-import { Brew } from "~/types/brew";
+import type { Brew } from "~/db/types";
 import { getEyFromBrew } from "~/utils";
 import { Card } from "../Card";
 import { DetailsCard } from "../Details";
@@ -53,33 +53,23 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
         rows={[
           {
             label: "Aroma",
-            value: brew.tastingScores?.aroma
-              ? `${brew.tastingScores.aroma}/10`
-              : "",
+            value: brew.aroma ? `${brew.aroma}/10` : "",
           },
           {
             label: "Acidity",
-            value: brew.tastingScores?.acidity
-              ? `${brew.tastingScores.acidity}/10`
-              : "",
+            value: brew.acidity ? `${brew.acidity}/10` : "",
           },
           {
             label: "Sweetness",
-            value: brew.tastingScores?.sweetness
-              ? `${brew.tastingScores.sweetness}/10`
-              : "",
+            value: brew.sweetness ? `${brew.sweetness}/10` : "",
           },
           {
             label: "Body",
-            value: brew.tastingScores?.body
-              ? `${brew.tastingScores.body}/10`
-              : "",
+            value: brew.body ? `${brew.body}/10` : "",
           },
           {
             label: "Finish",
-            value: brew.tastingScores?.finish
-              ? `${brew.tastingScores.finish}/10`
-              : "",
+            value: brew.finish ? `${brew.finish}/10` : "",
           },
         ]}
       />
@@ -94,7 +84,13 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
           },
           {
             label: "Extraction yield",
-            value: `${getEyFromBrew(brew)}%`,
+            value: `${getEyFromBrew({
+              tds: brew.tds ?? 0,
+              finalBrewWeight: brew.finalBrewWeight ?? 0,
+              beansWeight: brew.beansWeight ?? 0,
+              extractionType: brew.extractionType,
+              waterWeight: brew.waterWeight ?? 0,
+            })}%`,
           },
           {
             label: "Final brew weight",
