@@ -18,6 +18,7 @@ import { ButtonWithDropdown } from "~/components/ButtonWithDropdown";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { getBrew } from "~/db/queries";
+import type { BrewWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -26,9 +27,9 @@ import { tabStyles } from "../../../beans";
 import { flagsQueryOptions } from "../../../featureFlags";
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
-  queryOptions({
+  queryOptions<BrewWithBeans>({
     queryKey: ["brews", brewId, firebaseUid],
-    queryFn: () => getBrew({ data: { brewFbId: brewId, firebaseUid } }),
+    queryFn: () => getBrew({ data: { brewFbId: brewId, firebaseUid } }) as Promise<BrewWithBeans>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/")({
@@ -47,7 +48,7 @@ function BrewDetails() {
   const user = useAtomValue(userAtom);
 
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlBrew } = useSuspenseQuery(
+  const { data: sqlBrew } = useSuspenseQuery<BrewWithBeans>(
     brewQueryOptions(brewId, user?.uid ?? ""),
   );
 

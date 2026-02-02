@@ -27,6 +27,7 @@ import { EspressoDetailsInfo as PostgresEspressoDetailsInfo } from "~/components
 import { EspressoDetailsOutcome as PostgresEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Postgres";
 import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
 import { getEspresso } from "~/db/queries";
+import type { EspressoWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -35,10 +36,10 @@ import { tabStyles } from "../../../beans";
 import { flagsQueryOptions } from "../../../featureFlags";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
-  queryOptions({
+  queryOptions<EspressoWithBeans>({
     queryKey: ["espresso", espressoId, firebaseUid],
     queryFn: () =>
-      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }),
+      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans>,
   });
 
 export const Route = createFileRoute(
@@ -58,7 +59,7 @@ function EspressoDetails() {
   const user = useAtomValue(userAtom);
 
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlEspresso } = useSuspenseQuery(
+  const { data: sqlEspresso } = useSuspenseQuery<EspressoWithBeans>(
     espressoQueryOptions(espressoId, user?.uid ?? ""),
   );
 
@@ -80,8 +81,8 @@ function EspressoDetails() {
     ? sqlEspresso.espresso.fromDecent
     : fbEspresso?.fromDecent;
   const partial = shouldReadFromPostgres
-    ? sqlEspresso.espresso.partial
-    : fbEspresso?.partial;
+    ? sqlEspresso.espresso.partial ?? false
+    : (fbEspresso as any)?.partial;
 
   const handleDelete = useCallback(async () => {
     await deleteDoc(docRef);

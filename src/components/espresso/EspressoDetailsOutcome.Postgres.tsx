@@ -1,7 +1,6 @@
 import ReactMarkdown from "react-markdown";
 
 import type { Espresso } from "~/db/types";
-import { getEyFromEspresso } from "~/utils";
 import { DetailsCard } from "../Details";
 
 interface EspressoDetailsOutcomeProps {
@@ -58,10 +57,6 @@ export const EspressoDetailsOutcome = ({
       <DetailsCard
         title="Extraction"
         rows={[
-          {
-            label: "Extraction yield",
-            value: `${getEyFromEspresso(espresso)}%`,
-          },
           {
             label: "TDS",
             value: espresso.tds ? `${espresso.tds}%` : "",

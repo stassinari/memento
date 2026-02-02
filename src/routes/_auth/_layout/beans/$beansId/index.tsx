@@ -24,6 +24,7 @@ import {
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { getBean } from "~/db/queries";
+import type { BeanWithRelations } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -32,9 +33,9 @@ import { tabStyles } from "..";
 import { flagsQueryOptions } from "../../featureFlags";
 
 const beanQueryOptions = (beanId: string, firebaseUid: string) =>
-  queryOptions({
+  queryOptions<BeanWithRelations | null>({
     queryKey: ["bean", beanId, firebaseUid],
-    queryFn: () => getBean({ data: { beanFbId: beanId, firebaseUid } }),
+    queryFn: () => getBean({ data: { beanFbId: beanId, firebaseUid } }) as Promise<BeanWithRelations | null>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/beans/$beansId/")({
@@ -50,7 +51,7 @@ function BeansDetails() {
   const user = useAtomValue(userAtom);
 
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlBean } = useSuspenseQuery(
+  const { data: sqlBean } = useSuspenseQuery<BeanWithRelations | null>(
     beanQueryOptions(beansId, user?.uid ?? ""),
   );
 
@@ -65,6 +66,11 @@ function BeansDetails() {
   const { details: fbBeans, isLoading } = useFirestoreDocRealtime<Beans>(docRef);
 
   const beans = shouldReadFromPostgres ? sqlBean?.beans : fbBeans;
+  const beanForDropdown = shouldReadFromPostgres ? sqlBean?.beans as any : fbBeans;
+
+  if (!beans && !isLoading) {
+    return <NotFound />;
+  }
 
   // For Postgres, merge brews and espressos into drinks format
   const sqlDrinks = useMemo(() => {
@@ -116,7 +122,7 @@ function BeansDetails() {
       mainButton: { type: "link", label: "Clone", href: "clone" },
       dropdownItems: [
         { type: "link", label: "Edit details", href: "edit" },
-        ...(beans?.isFinished
+        ...(beanForDropdown?.isFinished
           ? [
               {
                 type: "button" as const,
@@ -131,7 +137,7 @@ function BeansDetails() {
                 onClick: handleArchive,
               },
             ]),
-        ...(areBeansFresh(beans)
+        ...(areBeansFresh(beanForDropdown)
           ? [
               {
                 type: "button" as const,
@@ -139,7 +145,7 @@ function BeansDetails() {
                 onClick: handleFreeze,
               },
             ]
-          : areBeansFrozen(beans)
+          : areBeansFrozen(beanForDropdown)
             ? [{ type: "button" as const, label: "Thaw", onClick: handleThaw }]
             : []),
 
@@ -180,9 +186,9 @@ function BeansDetails() {
             </h2>
 
             {shouldReadFromPostgres ? (
-              <PostgresBeansDetailsInfo beans={sqlBean.beans} />
+              <PostgresBeansDetailsInfo beans={sqlBean?.beans!} />
             ) : (
-              <FirebaseBeansDetailsInfo beans={fbBeans} />
+              <FirebaseBeansDetailsInfo beans={fbBeans!} />
             )}
           </div>
 
@@ -194,7 +200,7 @@ function BeansDetails() {
             {shouldReadFromPostgres ? (
               <PostgresBeansDrinks drinks={sqlDrinks} />
             ) : (
-              <FirebaseBeansDrinks beans={fbBeans} />
+              <FirebaseBeansDrinks beans={fbBeans!} />
             )}
           </div>
         </div>
@@ -211,16 +217,16 @@ function BeansDetails() {
           <Tab.Panels className="mt-4">
             <Tab.Panel>
               {shouldReadFromPostgres ? (
-                <PostgresBeansDetailsInfo beans={sqlBean.beans} />
+                <PostgresBeansDetailsInfo beans={sqlBean?.beans!} />
               ) : (
-                <FirebaseBeansDetailsInfo beans={fbBeans} />
+                <FirebaseBeansDetailsInfo beans={fbBeans!} />
               )}
             </Tab.Panel>
             <Tab.Panel>
               {shouldReadFromPostgres ? (
                 <PostgresBeansDrinks drinks={sqlDrinks} />
               ) : (
-                <FirebaseBeansDrinks beans={fbBeans} />
+                <FirebaseBeansDrinks beans={fbBeans!} />
               )}
             </Tab.Panel>
           </Tab.Panels>

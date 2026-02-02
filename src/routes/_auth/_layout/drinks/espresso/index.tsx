@@ -16,6 +16,7 @@ import {
 } from "~/components/drinks/DrinksList.Postgres";
 import { Heading } from "~/components/Heading";
 import { getEspressos } from "~/db/queries";
+import type { EspressoWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import { userAtom } from "~/hooks/useInitUser";
@@ -25,9 +26,9 @@ import { Espresso } from "~/types/espresso";
 import { flagsQueryOptions } from "../../featureFlags";
 
 const espressosQueryOptions = (firebaseUid: string) =>
-  queryOptions({
+  queryOptions<EspressoWithBeans[]>({
     queryKey: ["espressos", firebaseUid],
-    queryFn: () => getEspressos({ data: firebaseUid }),
+    queryFn: () => getEspressos({ data: firebaseUid }) as Promise<EspressoWithBeans[]>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
@@ -40,8 +41,9 @@ export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
 function EspressoList() {
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
   const user = useAtomValue(userAtom);
-  const espressosQuery = useSuspenseQuery(espressosQueryOptions(user?.uid ?? ""));
-  const sqlEspressosWithBeans = espressosQuery.data;
+  const { data: sqlEspressosWithBeans } = useSuspenseQuery<EspressoWithBeans[]>(
+    espressosQueryOptions(user?.uid ?? ""),
+  );
 
   const shouldReadFromPostgres = flags?.find(
     (flag) => flag.name === "read_from_postgres",

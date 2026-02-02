@@ -14,6 +14,7 @@ import { Heading } from "~/components/Heading";
 import { BeanIcon } from "~/components/icons/BeanIcon";
 import { ListCard } from "~/components/ListCard";
 import { getBeansArchived, getBeansFrozen, getBeansOpen } from "~/db/queries";
+import type { BeansWithUser } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import { userAtom } from "~/hooks/useInitUser";
@@ -23,21 +24,21 @@ import { getTimeAgo, isNotFrozenOrIsThawed } from "~/util";
 import { flagsQueryOptions } from "../featureFlags";
 
 const beansOpenQueryOptions = (firebaseUid: string) =>
-  queryOptions({
+  queryOptions<BeansWithUser[]>({
     queryKey: ["beans", "open", firebaseUid],
-    queryFn: () => getBeansOpen({ data: firebaseUid }),
+    queryFn: () => getBeansOpen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
   });
 
 const beansFrozenQueryOptions = (firebaseUid: string) =>
-  queryOptions({
+  queryOptions<BeansWithUser[]>({
     queryKey: ["beans", "frozen", firebaseUid],
-    queryFn: () => getBeansFrozen({ data: firebaseUid }),
+    queryFn: () => getBeansFrozen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
   });
 
 const beansArchivedQueryOptions = (firebaseUid: string) =>
-  queryOptions({
+  queryOptions<BeansWithUser[]>({
     queryKey: ["beans", "archived", firebaseUid],
-    queryFn: () => getBeansArchived({ data: firebaseUid }),
+    queryFn: () => getBeansArchived({ data: firebaseUid }) as Promise<BeansWithUser[]>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({
@@ -193,7 +194,7 @@ export const BeansTab = ({
     )
     .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
 
-  const sqlBeansList =
+  const sqlBeansList: BeansWithUser[] =
     name === "Open"
       ? sqlBeansOpen
       : name === "Frozen"
@@ -221,7 +222,7 @@ export const BeansTab = ({
 };
 
 type BeansCardProps = {
-  beans: Beans | any; // TODO: proper typing for SQL beans
+  beans: Beans;
   shouldReadFromPostgres?: boolean;
 };
 
@@ -231,8 +232,8 @@ export const BeansCard = ({
 }: BeansCardProps) => {
   const roastDate = shouldReadFromPostgres
     ? beans.roastDate
-    : beans.roastDate?.toDate();
-  const beansId = shouldReadFromPostgres ? beans.fbId : beans.id;
+    : (beans.roastDate as any)?.toDate();
+  const beansId = shouldReadFromPostgres ? (beans as any).fbId : beans.id;
 
   return (
     <ListCard

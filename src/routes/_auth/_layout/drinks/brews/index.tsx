@@ -18,6 +18,7 @@ import {
 } from "~/components/drinks/DrinksList.Postgres";
 import { Heading } from "~/components/Heading";
 import { getBrews } from "~/db/queries";
+import type { BrewWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -26,9 +27,9 @@ import { type Brew } from "~/types/brew";
 import { flagsQueryOptions } from "../../featureFlags";
 
 const brewsQueryOptions = (firebaseUid: string) =>
-  queryOptions({
+  queryOptions<BrewWithBeans[]>({
     queryKey: ["brews", firebaseUid],
-    queryFn: () => getBrews({ data: firebaseUid }),
+    queryFn: () => getBrews({ data: firebaseUid }) as Promise<BrewWithBeans[]>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
@@ -42,8 +43,9 @@ export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
 function BrewsList() {
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
   const user = useAtomValue(userAtom);
-  const brewsQuery = useSuspenseQuery(brewsQueryOptions(user?.uid ?? ""));
-  const sqlBrewsWithBeans = brewsQuery.data;
+  const { data: sqlBrewsWithBeans } = useSuspenseQuery<BrewWithBeans[]>(
+    brewsQueryOptions(user?.uid ?? ""),
+  );
 
   const shouldReadFromPostgres = flags?.find(
     (flag) => flag.name === "read_from_postgres",
