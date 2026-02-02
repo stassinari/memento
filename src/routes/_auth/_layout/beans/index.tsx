@@ -1,8 +1,10 @@
 import { Tab } from "@headlessui/react";
 import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { orderBy, QueryConstraint, where } from "firebase/firestore";
+import { useAtomValue } from "jotai";
 import { ReactNode, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -11,14 +13,38 @@ import { EmptyState } from "~/components/EmptyState";
 import { Heading } from "~/components/Heading";
 import { BeanIcon } from "~/components/icons/BeanIcon";
 import { ListCard } from "~/components/ListCard";
+import { getBeansArchived, getBeansFrozen, getBeansOpen } from "~/db/queries";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
+import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { getTimeAgo, isNotFrozenOrIsThawed } from "~/util";
+import { flagsQueryOptions } from "../featureFlags";
+
+const beansOpenQueryOptions = (firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["beans", "open", firebaseUid],
+    queryFn: () => getBeansOpen({ data: firebaseUid }),
+  });
+
+const beansFrozenQueryOptions = (firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["beans", "frozen", firebaseUid],
+    queryFn: () => getBeansFrozen({ data: firebaseUid }),
+  });
+
+const beansArchivedQueryOptions = (firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["beans", "archived", firebaseUid],
+    queryFn: () => getBeansArchived({ data: firebaseUid }),
+  });
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({
   component: BeansList,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(flagsQueryOptions());
+  },
 });
 
 const tabs: BeansTabProps[] = [
@@ -129,31 +155,65 @@ export interface BeansTabProps {
 }
 
 export const BeansTab = ({
+  name,
   filters,
   removeFrozen,
   EmptyState,
 }: BeansTabProps) => {
   console.log("BeansTab");
 
+  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+  const user = useAtomValue(userAtom);
+
+  const shouldReadFromPostgres = flags?.find(
+    (flag) => flag.name === "read_from_postgres",
+  )?.enabled;
+
+  // SQL queries
+  const { data: sqlBeansOpen } = useSuspenseQuery(
+    beansOpenQueryOptions(user?.uid ?? ""),
+  );
+  const { data: sqlBeansFrozen } = useSuspenseQuery(
+    beansFrozenQueryOptions(user?.uid ?? ""),
+  );
+  const { data: sqlBeansArchived } = useSuspenseQuery(
+    beansArchivedQueryOptions(user?.uid ?? ""),
+  );
+
+  // Firebase queries
   const query = useCollectionQuery<Beans>("beans", filters);
-  const { list: beansList, isLoading } =
+  const { list: fbBeansList, isLoading } =
     useFirestoreCollectionRealtime<Beans>(query);
 
   if (isLoading) return null;
 
-  const sortedAndFiltered = beansList
+  const fbSortedAndFiltered = fbBeansList
     .sort((a, b) =>
       (a.roastDate?.toDate() ?? 0) < (b.roastDate?.toDate() ?? 0) ? 1 : -1,
     )
     .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
 
-  if (sortedAndFiltered.length === 0) return <>{EmptyState}</>;
+  const sqlBeansList =
+    name === "Open"
+      ? sqlBeansOpen
+      : name === "Frozen"
+        ? sqlBeansFrozen
+        : sqlBeansArchived;
+
+  const displayBeans = shouldReadFromPostgres
+    ? sqlBeansList.map((b) => b.beans)
+    : fbSortedAndFiltered;
+
+  if (displayBeans.length === 0) return <>{EmptyState}</>;
 
   return (
     <ul className="grid gap-4 sm:grid-cols-2">
-      {sortedAndFiltered.map((beans) => (
+      {displayBeans.map((beans) => (
         <li key={beans.id}>
-          <BeansCard beans={beans} />
+          <BeansCard
+            beans={beans}
+            shouldReadFromPostgres={shouldReadFromPostgres}
+          />
         </li>
       ))}
     </ul>
@@ -161,17 +221,26 @@ export const BeansTab = ({
 };
 
 type BeansCardProps = {
-  beans: Beans;
+  beans: Beans | any; // TODO: proper typing for SQL beans
+  shouldReadFromPostgres?: boolean;
 };
 
-export const BeansCard = ({ beans }: BeansCardProps) => {
+export const BeansCard = ({
+  beans,
+  shouldReadFromPostgres,
+}: BeansCardProps) => {
+  const roastDate = shouldReadFromPostgres
+    ? beans.roastDate
+    : beans.roastDate?.toDate();
+  const beansId = shouldReadFromPostgres ? beans.fbId : beans.id;
+
   return (
     <ListCard
-      linkTo={`/beans/${beans.id ?? ""}`}
+      linkTo={`/beans/${beansId ?? ""}`}
       footerSlot={
-        beans.roastDate ? (
+        roastDate ? (
           <ListCard.Footer
-            text={`Roasted ${getTimeAgo(beans.roastDate.toDate())}`}
+            text={`Roasted ${getTimeAgo(roastDate)}`}
             Icon={<BeanIcon />}
           />
         ) : undefined
