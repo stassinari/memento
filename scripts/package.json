@@ -6,7 +6,8 @@
   "scripts": {
     "migrate:firestore": "tsx migrate-firestore-to-postgres.ts",
     "audit:firestore": "tsx audit-firestore.ts",
-    "set-admin-claims": "tsx set-admin-claims.ts"
+    "set-admin-claims": "tsx set-admin-claims.ts",
+    "seed:flags": "tsx seed-flags.ts"
   },
   "dependencies": {
     "dotenv": "^16.6.1",

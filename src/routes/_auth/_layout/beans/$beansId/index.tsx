@@ -1,11 +1,15 @@
 import { Tab } from "@headlessui/react";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useSuspenseQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   createFileRoute,
   useNavigate,
 } from "@tanstack/react-router";
 import clsx from "clsx";
-import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { deleteDoc, serverTimestamp, updateDoc, Timestamp } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
 import { userAtom } from "~/hooks/useInitUser";
@@ -23,9 +27,17 @@ import {
 } from "~/components/ButtonWithDropdown";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
+import {
+  archiveBeans,
+  unarchiveBeans,
+  freezeBeans,
+  thawBeans,
+  deleteBeans,
+} from "~/db/mutations";
 import { getBean } from "~/db/queries";
 import type { BeanWithRelations } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
@@ -49,6 +61,8 @@ function BeansDetails() {
   const { beansId } = Route.useParams();
   const navigate = useNavigate();
   const user = useAtomValue(userAtom);
+  const queryClient = useQueryClient();
+  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
   const { data: sqlBean } = useSuspenseQuery<BeanWithRelations | null>(
@@ -87,35 +101,85 @@ function BeansDetails() {
   }, [shouldReadFromPostgres, sqlBean]);
 
   const handleArchive = useCallback(async () => {
-    await updateDoc(docRef, {
-      isFinished: true,
+    // 1. Call server function (PostgreSQL write)
+    await archiveBeans({
+      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
     });
+
+    // 2. Conditionally write to Firestore
+    if (writeToFirestore) {
+      await updateDoc(docRef, { isFinished: true });
+    }
+
+    // 3. Invalidate and navigate
+    queryClient.invalidateQueries({ queryKey: ["beans"] });
+    queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
     navigate({ to: "/beans" });
-  }, [docRef, navigate]);
+  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
 
   const handleUnarchive = useCallback(async () => {
-    await updateDoc(docRef, {
-      isFinished: false,
+    // 1. Call server function (PostgreSQL write)
+    await unarchiveBeans({
+      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
     });
-  }, [docRef]);
+
+    // 2. Conditionally write to Firestore
+    if (writeToFirestore) {
+      await updateDoc(docRef, { isFinished: false });
+    }
+
+    // 3. Invalidate queries
+    queryClient.invalidateQueries({ queryKey: ["beans"] });
+    queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
+  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient]);
 
   const handleFreeze = useCallback(async () => {
-    await updateDoc(docRef, {
-      freezeDate: serverTimestamp(),
+    // 1. Call server function (PostgreSQL write)
+    await freezeBeans({
+      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
     });
-  }, [docRef]);
+
+    // 2. Conditionally write to Firestore
+    if (writeToFirestore) {
+      await updateDoc(docRef, { freezeDate: serverTimestamp() });
+    }
+
+    // 3. Invalidate queries
+    queryClient.invalidateQueries({ queryKey: ["beans"] });
+    queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
+  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient]);
 
   const handleThaw = useCallback(async () => {
-    await updateDoc(docRef, {
-      thawDate: serverTimestamp(),
+    // 1. Call server function (PostgreSQL write)
+    await thawBeans({
+      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
     });
-  }, [docRef]);
+
+    // 2. Conditionally write to Firestore
+    if (writeToFirestore) {
+      await updateDoc(docRef, { thawDate: serverTimestamp() });
+    }
+
+    // 3. Invalidate queries
+    queryClient.invalidateQueries({ queryKey: ["beans"] });
+    queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
+  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient]);
 
   const handleDelete = useCallback(async () => {
-    // TODO check if beans have brews/espressos/tastings
-    await deleteDoc(docRef);
+    // 1. Call server function (PostgreSQL delete)
+    await deleteBeans({
+      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
+    });
+
+    // 2. Conditionally delete from Firestore
+    if (writeToFirestore) {
+      await deleteDoc(docRef);
+    }
+
+    // 3. Invalidate and navigate
+    queryClient.invalidateQueries({ queryKey: ["beans"] });
     navigate({ to: "/beans" });
-  }, [docRef, navigate]);
+  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
 
   const dropdownButtons: ButtonWithDropdownProps = useMemo(
     () => ({

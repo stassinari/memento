@@ -1,10 +1,12 @@
 /// <reference types="vite/client" />
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Provider as JotaiProvider } from "jotai";
@@ -13,6 +15,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "~/components/ErrorFallback";
 import { NotFound } from "~/components/ErrorPage";
 import { NotificationContainer } from "~/components/NotificationContainer";
+import { FeatureFlagsProvider } from "~/hooks/useFeatureFlag";
 import { useInitUser } from "~/hooks/useInitUser";
 import { RouterContext } from "~/router";
 import "~/styles/config.css";
@@ -41,17 +44,28 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 const RootComponent = () => {
+  const routerState = useRouterState();
+  const queryClient = routerState.matches[0]?.context.queryClient;
+
+  if (!queryClient) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <React.StrictMode>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <JotaiProvider>
-          <RootDocument>
-            <Suspense fallback={<div>Initializing...</div>}>
-              <NotificationContainer />
-              <Outlet />
-            </Suspense>
-          </RootDocument>
-        </JotaiProvider>
+        <QueryClientProvider client={queryClient}>
+          <JotaiProvider>
+            <FeatureFlagsProvider>
+              <RootDocument>
+                <Suspense fallback={<div>Initializing...</div>}>
+                  <NotificationContainer />
+                  <Outlet />
+                </Suspense>
+              </RootDocument>
+            </FeatureFlagsProvider>
+          </JotaiProvider>
+        </QueryClientProvider>
       </ErrorBoundary>
     </React.StrictMode>
   );

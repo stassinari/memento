@@ -31,7 +31,9 @@ function RouteComponent() {
   const mutation = useMutation({
     mutationFn: changeFeatureFlag,
     onSuccess: () => {
+      // Invalidate both flag queries so the provider picks up changes
       queryClient.invalidateQueries(flagsQueryOptions());
+      queryClient.invalidateQueries({ queryKey: ["featureFlagsContext"] });
     },
   });
 
