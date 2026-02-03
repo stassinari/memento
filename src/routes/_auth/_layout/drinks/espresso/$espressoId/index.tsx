@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
   Link,
@@ -26,20 +26,22 @@ import { EspressoDetailsOutcome as FirebaseEspressoDetailsOutcome } from "~/comp
 import { EspressoDetailsInfo as PostgresEspressoDetailsInfo } from "~/components/espresso/EspressoDetailsInfo.Postgres";
 import { EspressoDetailsOutcome as PostgresEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Postgres";
 import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
+import { deleteEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import type { EspressoWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Espresso } from "~/types/espresso";
 import { tabStyles } from "../../../beans";
 import { flagsQueryOptions } from "../../../featureFlags";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
-  queryOptions<EspressoWithBeans>({
+  queryOptions<EspressoWithBeans | null>({
     queryKey: ["espresso", espressoId, firebaseUid],
     queryFn: () =>
-      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans>,
+      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans | null>,
   });
 
 export const Route = createFileRoute(
@@ -56,10 +58,12 @@ function EspressoDetails() {
 
   const { espressoId } = Route.useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
+  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
   const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlEspresso } = useSuspenseQuery<EspressoWithBeans>(
+  const { data: sqlEspresso } = useSuspenseQuery<EspressoWithBeans | null>(
     espressoQueryOptions(espressoId, user?.uid ?? ""),
   );
 
@@ -74,20 +78,42 @@ function EspressoDetails() {
   const { details: fbEspresso, isLoading } =
     useFirestoreDocRealtime<Espresso>(docRef);
 
+  const espresso = shouldReadFromPostgres ? sqlEspresso?.espresso : fbEspresso;
+
   const espressoDate = shouldReadFromPostgres
-    ? sqlEspresso.espresso.date
+    ? sqlEspresso?.espresso.date
     : fbEspresso?.date.toDate();
   const fromDecent = shouldReadFromPostgres
-    ? sqlEspresso.espresso.fromDecent
+    ? sqlEspresso?.espresso.fromDecent
     : fbEspresso?.fromDecent;
   const partial = shouldReadFromPostgres
-    ? sqlEspresso.espresso.partial ?? false
+    ? sqlEspresso?.espresso.partial ?? false
     : (fbEspresso as any)?.partial;
 
   const handleDelete = useCallback(async () => {
-    await deleteDoc(docRef);
+    // 1. Call server function (PostgreSQL delete)
+    await deleteEspresso({
+      data: { espressoFbId: espressoId, firebaseUid: user?.uid ?? "" },
+    });
+
+    // 2. Conditionally delete from Firestore
+    if (writeToFirestore) {
+      try {
+        await deleteDoc(docRef);
+      } catch (error: any) {
+        // If document doesn't exist in Firestore, that's okay
+        if (error?.code === 'not-found') {
+          console.warn("Delete espresso - Espresso not found in Firestore");
+        } else {
+          console.error("Delete espresso - Firestore delete error:", error);
+        }
+      }
+    }
+
+    // 3. Invalidate and navigate
+    queryClient.invalidateQueries({ queryKey: ["espresso"] });
     navigate({ to: "/drinks/espresso" });
-  }, [docRef, navigate]);
+  }, [espressoId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({
@@ -114,7 +140,7 @@ function EspressoDetails() {
 
   if (isLoading) return null;
 
-  if (!fbEspresso) {
+  if (!espresso) {
     return <NotFound />;
   }
 
@@ -167,11 +193,11 @@ function EspressoDetails() {
 
             {shouldReadFromPostgres ? (
               <PostgresEspressoDetailsInfo
-                espresso={sqlEspresso.espresso}
-                beansId={sqlEspresso.beans?.id}
+                espresso={sqlEspresso!.espresso}
+                beansId={sqlEspresso!.beans?.id}
               />
             ) : (
-              <FirebaseEspressoDetailsInfo espresso={fbEspresso} />
+              <FirebaseEspressoDetailsInfo espresso={fbEspresso!} />
             )}
           </div>
 
@@ -181,9 +207,9 @@ function EspressoDetails() {
             </h2>
 
             {shouldReadFromPostgres ? (
-              <PostgresEspressoDetailsOutcome espresso={sqlEspresso.espresso} />
+              <PostgresEspressoDetailsOutcome espresso={sqlEspresso!.espresso} />
             ) : (
-              <FirebaseEspressoDetailsOutcome espresso={fbEspresso} />
+              <FirebaseEspressoDetailsOutcome espresso={fbEspresso!} />
             )}
           </div>
         </div>
@@ -201,20 +227,20 @@ function EspressoDetails() {
             <Tab.Panel>
               {shouldReadFromPostgres ? (
                 <PostgresEspressoDetailsInfo
-                  espresso={sqlEspresso.espresso}
-                  beansId={sqlEspresso.beans?.id}
+                  espresso={sqlEspresso!.espresso}
+                  beansId={sqlEspresso!.beans?.id}
                 />
               ) : (
-                <FirebaseEspressoDetailsInfo espresso={fbEspresso} />
+                <FirebaseEspressoDetailsInfo espresso={fbEspresso!} />
               )}
             </Tab.Panel>
             <Tab.Panel>
               {shouldReadFromPostgres ? (
                 <PostgresEspressoDetailsOutcome
-                  espresso={sqlEspresso.espresso}
+                  espresso={sqlEspresso!.espresso}
                 />
               ) : (
-                <FirebaseEspressoDetailsOutcome espresso={fbEspresso} />
+                <FirebaseEspressoDetailsOutcome espresso={fbEspresso!} />
               )}
             </Tab.Panel>
           </Tab.Panels>

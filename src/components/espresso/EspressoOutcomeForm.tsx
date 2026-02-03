@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { DocumentData, DocumentReference, updateDoc } from "firebase/firestore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { doc, updateDoc } from "firebase/firestore";
+import { useAtomValue } from "jotai";
 import { pick } from "lodash";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
@@ -10,6 +12,10 @@ import { PoweredByMarkdown } from "../PoweredByMarkdown";
 import { FormInput } from "../form/FormInput";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { FormTextarea } from "../form/FormTextarea";
+import { updateEspressoOutcome } from "~/db/mutations";
+import { db } from "~/firebaseConfig";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 
 // TODO refactor this and merge with brew
 interface TastingScoresInputs {
@@ -42,14 +48,17 @@ const espressoOutcomeFormEmptyValues: EspressoOutcomeInputs = {
 
 interface EspressoOutcomeFormProps {
   espresso: Espresso;
-  espressoRef: DocumentReference<DocumentData>;
+  espressoId: string;
 }
 
 export const EspressoOutcomeForm = ({
   espresso,
-  espressoRef,
+  espressoId,
 }: EspressoOutcomeFormProps) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const user = useAtomValue(userAtom);
+  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
   const methods = useForm<EspressoOutcomeInputs>({
     defaultValues: {
@@ -64,14 +73,48 @@ export const EspressoOutcomeForm = ({
     formState: { errors },
   } = methods;
 
-  const onSubmit: SubmitHandler<EspressoOutcomeInputs> = async (data) => {
-    if (espresso.id) {
-      await updateDoc(espressoRef, { ...data });
+  const mutation = useMutation({
+    mutationFn: async (data: EspressoOutcomeInputs) => {
+      // 1. Call server function (PostgreSQL write)
+      await updateEspressoOutcome({
+        data: {
+          data,
+          espressoFbId: espressoId,
+          firebaseUid: user?.uid ?? "",
+        },
+      });
+
+      // 2. Conditionally write to Firestore (client-side)
+      if (writeToFirestore) {
+        try {
+          await updateDoc(doc(db, `users/${user?.uid}/espresso/${espressoId}`), {
+            ...data,
+          });
+        } catch (error: any) {
+          // If document doesn't exist in Firestore, that's okay - data is in PostgreSQL
+          if (error?.code === 'not-found') {
+            console.warn("EspressoOutcomeForm - Espresso not found in Firestore, skipping Firestore write");
+          } else {
+            console.error("EspressoOutcomeForm - Firestore write error:", error);
+            throw error; // Re-throw if it's not a "not found" error
+          }
+        }
+      }
+    },
+    onSuccess: () => {
+      // Invalidate all espresso queries
+      queryClient.invalidateQueries({ queryKey: ["espresso"] });
+
+      // Navigate to detail view
       navigate({
         to: "/drinks/espresso/$espressoId",
-        params: { espressoId: espresso.id },
+        params: { espressoId },
       });
-    }
+    },
+  });
+
+  const onSubmit: SubmitHandler<EspressoOutcomeInputs> = async (data) => {
+    mutation.mutate(data);
   };
 
   return (

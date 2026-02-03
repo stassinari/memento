@@ -2,8 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, eq } from "drizzle-orm";
 import { BeansFormInputs } from "~/components/beans/BeansForm";
 import { BrewFormInputs } from "~/components/brews/BrewForm";
+import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { db } from "./db";
-import { beans, brews, featureFlags, users } from "./schema";
+import { beans, brews, espresso, featureFlags, users } from "./schema";
 import { randomBytes } from "crypto";
 
 /**
@@ -747,6 +748,297 @@ export const deleteBrew = createServerFn({ method: "POST" })
           await db
             .delete(brews)
             .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
+        }
+      } catch (error) {
+        console.error("PostgreSQL delete failed:", error);
+      }
+    }
+  });
+
+// ============================================================================
+// ESPRESSO MUTATIONS
+// ============================================================================
+
+/**
+ * Validate espresso input data
+ */
+function validateEspressoInput(data: EspressoFormInputs): void {
+  // Required fields
+  if (!data.beans?.trim()) {
+    throw new Error("Beans selection is required");
+  }
+  if (!data.date) {
+    throw new Error("Espresso date is required");
+  }
+  // Note: targetWeight, beansWeight, and actualTime can be null
+  // They're only required for manual espressos (not Decent uploads)
+}
+
+/**
+ * Add new espresso with conditional dual-write to PostgreSQL and/or Firestore
+ */
+export const addEspresso = createServerFn({ method: "POST" })
+  .inputValidator((input: { data: EspressoFormInputs; firebaseUid: string }) => {
+    if (!input.firebaseUid) {
+      throw new Error("Firebase UID is required");
+    }
+    validateEspressoInput(input.data);
+    return input;
+  })
+  .handler(
+    async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
+      // 1. Get feature flags
+      const flags = await getFlags();
+
+      // 2. Generate Firestore-compatible doc ID
+      const fbId = generateFirestoreId();
+
+      // 3. CONDITIONAL WRITE TO POSTGRESQL
+      if (flags.write_to_postgres) {
+        try {
+          const userId = await getUserByFirebaseUid(firebaseUid);
+          if (!userId) {
+            console.error(
+              "User not found in PostgreSQL, skipping Postgres write",
+            );
+          } else {
+            // Extract beansFbId and resolve to UUID
+            const beansFbId = extractBeansFbId(data.beans);
+            const beansId = await getBeansIdByFbId(beansFbId, userId);
+
+            if (!beansId) {
+              console.error(
+                `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres write`,
+              );
+            } else {
+              // Convert form data for PostgreSQL
+              const pgData = {
+                fbId,
+                userId,
+                beansId,
+                date: data.date!,
+                grindSetting: data.grindSetting,
+                machine: data.machine,
+                grinder: data.grinder,
+                grinderBurrs: data.grinderBurrs,
+                portafilter: data.portafilter,
+                basket: data.basket,
+                actualTime: data.actualTime ?? 0, // Default to 0 if not provided
+                targetWeight: data.targetWeight ?? 0, // Default to 0 if not provided
+                beansWeight: data.beansWeight ?? 0, // Default to 0 if not provided
+                waterTemperature: data.waterTemperature,
+                actualWeight: data.actualWeight,
+                fromDecent: false,
+                // Outcome fields (initially null)
+                rating: null,
+                notes: null,
+                tds: null,
+                // Tasting scores flattened
+                aroma: null,
+                acidity: null,
+                sweetness: null,
+                body: null,
+                finish: null,
+              };
+
+              await db.insert(espresso).values(pgData);
+            }
+          }
+        } catch (error) {
+          console.error("PostgreSQL insert failed:", error);
+          // Log but continue (eventual consistency)
+        }
+      }
+
+      // 4. Return ID for client-side Firestore write
+      return { id: fbId };
+    },
+  );
+
+/**
+ * Update existing espresso with conditional dual-write to PostgreSQL and/or Firestore
+ */
+export const updateEspresso = createServerFn({ method: "POST" })
+  .inputValidator(
+    (input: {
+      data: EspressoFormInputs;
+      espressoFbId: string;
+      firebaseUid: string;
+    }) => {
+      if (!input.firebaseUid) {
+        throw new Error("Firebase UID is required");
+      }
+      if (!input.espressoFbId) {
+        throw new Error("Espresso ID is required");
+      }
+      validateEspressoInput(input.data);
+      return input;
+    },
+  )
+  .handler(
+    async ({
+      data: { data, espressoFbId, firebaseUid },
+    }): Promise<void> => {
+      // 1. Get feature flags
+      const flags = await getFlags();
+
+      // 2. CONDITIONAL UPDATE TO POSTGRESQL
+      if (flags.write_to_postgres) {
+        try {
+          const userId = await getUserByFirebaseUid(firebaseUid);
+          if (!userId) {
+            console.error(
+              "User not found in PostgreSQL, skipping Postgres update",
+            );
+          } else {
+            // Extract beansFbId and resolve to UUID
+            const beansFbId = extractBeansFbId(data.beans);
+            const beansId = await getBeansIdByFbId(beansFbId, userId);
+
+            if (!beansId) {
+              console.error(
+                `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres update`,
+              );
+            } else {
+              // Convert form data for PostgreSQL
+              const pgData = {
+                beansId,
+                date: data.date!,
+                grindSetting: data.grindSetting,
+                machine: data.machine,
+                grinder: data.grinder,
+                grinderBurrs: data.grinderBurrs,
+                portafilter: data.portafilter,
+                basket: data.basket,
+                actualTime: data.actualTime!,
+                targetWeight: data.targetWeight!,
+                beansWeight: data.beansWeight!,
+                waterTemperature: data.waterTemperature,
+                actualWeight: data.actualWeight,
+                // Note: outcome fields are NOT updated here (use updateEspressoOutcome)
+              };
+
+              await db
+                .update(espresso)
+                .set(pgData)
+                .where(
+                  and(
+                    eq(espresso.fbId, espressoFbId),
+                    eq(espresso.userId, userId),
+                  ),
+                );
+            }
+          }
+        } catch (error) {
+          console.error("PostgreSQL update failed:", error);
+          // Log but continue (eventual consistency)
+        }
+      }
+    },
+  );
+
+/**
+ * Update espresso outcome fields (partial update)
+ */
+export const updateEspressoOutcome = createServerFn({ method: "POST" })
+  .inputValidator(
+    (input: {
+      data: {
+        rating: number | null;
+        notes: string | null;
+        tds: number | null;
+        tastingScores: {
+          aroma: number | null;
+          acidity: number | null;
+          sweetness: number | null;
+          body: number | null;
+          finish: number | null;
+        } | null;
+      };
+      espressoFbId: string;
+      firebaseUid: string;
+    }) => {
+      if (!input.firebaseUid) {
+        throw new Error("Firebase UID is required");
+      }
+      if (!input.espressoFbId) {
+        throw new Error("Espresso ID is required");
+      }
+      return input;
+    },
+  )
+  .handler(
+    async ({
+      data: { data, espressoFbId, firebaseUid },
+    }): Promise<void> => {
+      // 1. Get feature flags
+      const flags = await getFlags();
+
+      // 2. CONDITIONAL UPDATE TO POSTGRESQL
+      if (flags.write_to_postgres) {
+        try {
+          const userId = await getUserByFirebaseUid(firebaseUid);
+          if (!userId) {
+            console.error(
+              "User not found in PostgreSQL, skipping Postgres update",
+            );
+          } else {
+            // Flatten tasting scores for PostgreSQL
+            const pgData = {
+              rating: data.rating,
+              notes: data.notes,
+              tds: data.tds,
+              // Flatten tasting scores
+              aroma: data.tastingScores?.aroma ?? null,
+              acidity: data.tastingScores?.acidity ?? null,
+              sweetness: data.tastingScores?.sweetness ?? null,
+              body: data.tastingScores?.body ?? null,
+              finish: data.tastingScores?.finish ?? null,
+            };
+
+            await db
+              .update(espresso)
+              .set(pgData)
+              .where(
+                and(
+                  eq(espresso.fbId, espressoFbId),
+                  eq(espresso.userId, userId),
+                ),
+              );
+          }
+        } catch (error) {
+          console.error("PostgreSQL outcome update failed:", error);
+          // Log but continue (eventual consistency)
+        }
+      }
+    },
+  );
+
+/**
+ * Delete espresso
+ */
+export const deleteEspresso = createServerFn({ method: "POST" })
+  .inputValidator((input: { espressoFbId: string; firebaseUid: string }) => {
+    if (!input.firebaseUid || !input.espressoFbId) {
+      throw new Error("Firebase UID and Espresso ID are required");
+    }
+    return input;
+  })
+  .handler(async ({ data: { espressoFbId, firebaseUid } }): Promise<void> => {
+    const flags = await getFlags();
+
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (userId) {
+          await db
+            .delete(espresso)
+            .where(
+              and(
+                eq(espresso.fbId, espressoFbId),
+                eq(espresso.userId, userId),
+              ),
+            );
         }
       } catch (error) {
         console.error("PostgreSQL delete failed:", error);

@@ -1,9 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { orderBy } from "firebase/firestore";
+import { useAtomValue } from "jotai";
 import { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
+import { BeansCardsSelect as FirebaseBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Firebase";
+import { BeansCardsSelect as PostgresBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Postgres";
+import { getBeans } from "~/db/queries";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import { Beans } from "~/types/beans";
 import { Espresso } from "~/types/espresso";
 import {
@@ -41,7 +48,7 @@ type EspressoFormStep = "beansEquipment" | "recipe" | "time";
 interface EspressoFormProps {
   defaultValues: EspressoFormInputs;
   buttonLabel: string;
-  mutation: (data: EspressoFormInputs) => Promise<void>;
+  mutation: (data: EspressoFormInputs) => void;
 }
 
 export const EspressoForm = ({
@@ -51,15 +58,23 @@ export const EspressoForm = ({
 }: EspressoFormProps) => {
   console.log("EspressoForm");
 
+  const user = useAtomValue(userAtom);
+  const readFromPostgres = useFeatureFlag("read_from_postgres");
+
   const [espressoFormInputs, setEspressoFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] =
     useState<EspressoFormStep>("beansEquipment");
 
-  // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
-  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
+  // Load beans from PostgreSQL or Firestore based on flag
+  const { data: pgBeansList, isLoading: isPgBeansLoading } = useQuery({
+    queryKey: ["beans", user?.uid],
+    queryFn: () => getBeans({ data: user?.uid ?? "" }),
+    enabled: readFromPostgres && !!user?.uid,
+  });
 
+  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
   const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: beansList, isLoading: areBeansLoading } =
+  const { list: fsBeansList, isLoading: isFsBeansLoading } =
     useFirestoreCollectionOneTime<Beans>(beansQuery);
 
   const espressoFilters = useMemo(() => [orderBy("date", "desc")], []);
@@ -71,18 +86,31 @@ export const EspressoForm = ({
   const { list: espressoList, isLoading: areEspressosLoading } =
     useFirestoreCollectionOneTime<Espresso>(espressoQuery);
 
-  const onSubmit: SubmitHandler<EspressoFormInputs> = async (data) => {
-    await mutation(data);
+  const onSubmit: SubmitHandler<EspressoFormInputs> = (data) => {
+    mutation(data);
   };
 
+  const areBeansLoading = readFromPostgres
+    ? isPgBeansLoading
+    : isFsBeansLoading;
+
   if (areBeansLoading || areEspressosLoading) return null;
+
+  // Conditionally render the appropriate BeansCardsSelect component
+  const beansCardsSelectComponent = readFromPostgres ? (
+    <PostgresBeansCardsSelect
+      beansList={((pgBeansList as any) || []).map((b: any) => b.beans)}
+    />
+  ) : (
+    <FirebaseBeansCardsSelect beansList={fsBeansList} />
+  );
 
   return (
     <>
       {activeStep === "beansEquipment" ? (
         <BeansEquipment
           espressoList={espressoList}
-          beansList={beansList}
+          beansCardsSelectComponent={beansCardsSelectComponent}
           defaultValues={espressoFormInputs}
           handleNestedSubmit={(data) => {
             setEspressoFormInputs({ ...espressoFormInputs, ...data });

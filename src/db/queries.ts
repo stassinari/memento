@@ -114,7 +114,7 @@ export const getEspresso = createServerFn({
     return input;
   })
   // @ts-expect-error - TanStack Start server function typing issue
-  .handler(async ({ data: { espressoFbId, firebaseUid } }): Promise<EspressoWithBeans> => {
+  .handler(async ({ data: { espressoFbId, firebaseUid } }): Promise<EspressoWithBeans | null> => {
       try {
         const [shot] = await db
           .select()
@@ -125,6 +125,11 @@ export const getEspresso = createServerFn({
             and(eq(espresso.fbId, espressoFbId), eq(users.fbId, firebaseUid)),
           )
           .limit(1);
+
+        if (!shot) {
+          return null;
+        }
+
         return shot as EspressoWithBeans;
       } catch (error) {
         console.error("Database error:", error);

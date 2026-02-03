@@ -1,5 +1,5 @@
-import { createFileRoute, useParams } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -16,7 +16,10 @@ import { flagsQueryOptions } from "../../../featureFlags";
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions<BrewWithBeans | null>({
     queryKey: ["brews", brewId, firebaseUid],
-    queryFn: () => getBrew({ data: { brewFbId: brewId, firebaseUid } }) as Promise<BrewWithBeans | null>,
+    queryFn: () =>
+      getBrew({
+        data: { brewFbId: brewId, firebaseUid },
+      }) as Promise<BrewWithBeans | null>,
   });
 
 export const Route = createFileRoute(
@@ -68,7 +71,7 @@ function BrewEditOutcome() {
 
       <Heading className="mb-4">Edit brew outcome</Heading>
 
-      <BrewOutcomeForm brew={brew} brewId={brewId} />
+      <BrewOutcomeForm brew={brew as any} brewId={brewId} />
     </>
   );
 }
