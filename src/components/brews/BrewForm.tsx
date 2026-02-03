@@ -1,9 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { orderBy } from "firebase/firestore";
+import { useAtomValue } from "jotai";
 import { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
+import { BeansCardsSelect as FirebaseBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Firebase";
+import { BeansCardsSelect as PostgresBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Postgres";
+import { getBeans } from "~/db/queries";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import {
@@ -37,7 +44,7 @@ type BrewFormStep = "beansMethodEquipment" | "recipe" | "time";
 interface BrewFormProps {
   defaultValues: BrewFormInputs;
   buttonLabel: string;
-  mutation: (data: BrewFormInputs) => Promise<void>;
+  mutation: (data: BrewFormInputs) => void;
 }
 
 export const BrewForm = ({
@@ -47,15 +54,24 @@ export const BrewForm = ({
 }: BrewFormProps) => {
   console.log("BrewForm");
 
+  const user = useAtomValue(userAtom);
+  const readFromPostgres = useFeatureFlag("read_from_postgres");
+
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] = useState<BrewFormStep>(
     "beansMethodEquipment",
   );
 
-  // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
+  // Load beans from PostgreSQL or Firestore based on flag
+  const { data: pgBeansList, isLoading: isPgBeansLoading } = useQuery({
+    queryKey: ["beans", user?.uid],
+    queryFn: () => getBeans({ data: user?.uid ?? "" }),
+    enabled: readFromPostgres && !!user?.uid,
+  });
+
   const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
   const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: beansList, isLoading: areBeansLoading } =
+  const { list: fsBeansList, isLoading: isFsBeansLoading } =
     useFirestoreCollectionOneTime<Beans>(beansQuery);
 
   const brewFilters = useMemo(() => [orderBy("date", "desc")], []);
@@ -63,18 +79,32 @@ export const BrewForm = ({
   const { list: brewsList, isLoading: areBrewsLoading } =
     useFirestoreCollectionOneTime<Brew>(brewQuery);
 
-  const onSubmit: SubmitHandler<BrewFormInputs> = async (data) => {
-    await mutation(data);
+  const onSubmit: SubmitHandler<BrewFormInputs> = (data) => {
+    mutation(data);
   };
 
+  const areBeansLoading = readFromPostgres
+    ? isPgBeansLoading
+    : isFsBeansLoading;
+
   if (areBeansLoading || areBrewsLoading) return null;
+
+  // Conditionally render the appropriate BeansCardsSelect component
+
+  const beansCardsSelectComponent = readFromPostgres ? (
+    <PostgresBeansCardsSelect
+      beansList={((pgBeansList as any) || []).map((b: any) => b.beans)}
+    />
+  ) : (
+    <FirebaseBeansCardsSelect beansList={fsBeansList} />
+  );
 
   return (
     <>
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewsList={brewsList}
-          beansList={beansList}
+          beansCardsSelectComponent={beansCardsSelectComponent}
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {
             setBrewFormInputs({ ...brewFormInputs, ...data });

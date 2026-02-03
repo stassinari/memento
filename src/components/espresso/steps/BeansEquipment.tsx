@@ -7,7 +7,7 @@ import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
+import { BeansCardsSelect } from "../../beans/BeansCardsSelect.Firebase";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadioButtonGroup } from "../../form/FormInputRadioButtonGroup";

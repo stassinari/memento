@@ -1,26 +1,35 @@
 import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useAtomValue } from "jotai";
 
 import clsx from "clsx";
-import { Beans } from "~/types/beans";
-import { getTimeAgo, isNotArchived, isNotFrozenOrIsThawed } from "~/util";
+import type { Beans } from "~/db/types";
+import { userAtom } from "~/hooks/useInitUser";
+import { getTimeAgo } from "~/util";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
 import { RadixModal } from "../Modal";
 import { Toggle } from "../Toggle";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
 
-const toBeansFormValue = (beans: Beans) => `beans/${beans.id ?? ""}`;
+const toBeansFormValue = (beans: Beans, uid: string) =>
+  `users/${uid}/beans/${beans.fbId ?? ""}`;
 
-const beansRadioOption = (beans: Beans): InputRadioCardsOption => ({
-  value: toBeansFormValue(beans),
+// PostgreSQL-specific filter functions
+const isNotArchived = (beans: Beans) => !beans.isFinished;
+
+const isNotFrozenOrIsThawed = (beans: Beans) =>
+  !beans.freezeDate || !!beans.thawDate;
+
+const beansRadioOption = (beans: Beans, uid: string): InputRadioCardsOption => ({
+  value: toBeansFormValue(beans, uid),
   left: { top: beans.name, bottom: beans.roaster },
   right: {
     top: beans.roastDate && (
       <>
         Roasted{" "}
-        <time dateTime={beans.roastDate?.toDate().toLocaleDateString()}>
-          {getTimeAgo(beans.roastDate.toDate())}
+        <time dateTime={new Date(beans.roastDate).toLocaleDateString()}>
+          {getTimeAgo(new Date(beans.roastDate))}
         </time>
       </>
     ),
@@ -34,6 +43,7 @@ interface BeansCardsSelectProps {
 
 export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
   const { watch, formState } = useFormContext();
+  const user = useAtomValue(userAtom);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showFrozenBeans, setShowFrozenBeans] = useState(false);
@@ -42,15 +52,17 @@ export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
   const selectedBeans = watch("beans");
 
   const mainBeans = useMemo(() => {
-    if (selectedBeans) {
+    if (selectedBeans && user?.uid) {
       // return the only beans to display
-      return beansList.filter((b) => selectedBeans === toBeansFormValue(b));
+      return beansList.filter(
+        (b) => selectedBeans === toBeansFormValue(b, user.uid),
+      );
     }
     return beansList
       .filter(isNotFrozenOrIsThawed)
       .filter(isNotArchived)
       .slice(0, !selectedBeans ? 3 : 1);
-  }, [beansList, selectedBeans]);
+  }, [beansList, selectedBeans, user?.uid]);
 
   const modalBeans = useMemo(() => {
     return beansList
@@ -74,12 +86,14 @@ export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
     return (!!selectedBeans && shownLength > 1) || shownLength >= 3;
   }, [beansList, selectedBeans]);
 
+  if (!user?.uid) return null;
+
   return (
     <div>
       <FormInputRadioCards
         name="beans"
         label="Select beans *"
-        options={mainBeans.map(beansRadioOption)}
+        options={mainBeans.map((b) => beansRadioOption(b, user.uid))}
         requiredMsg="Please select the beans you're using"
         error={formState.errors.beans?.message?.toString()}
       />
@@ -122,7 +136,7 @@ export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
           <FormInputRadioCards
             name="beans"
             label="Select beans *"
-            options={modalBeans.map(beansRadioOption)}
+            options={modalBeans.map((b) => beansRadioOption(b, user.uid))}
             onChange={() => {
               setIsModalOpen(false);
             }}

@@ -1,6 +1,6 @@
 import type { Espresso } from "~/db/types";
 import { DetailsCard } from "../Details";
-import { BeansShortInfo } from "../beans/BeansShortInfo";
+import { BeansShortInfo } from "../beans/BeansShortInfo.Firebase";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface EspressoDetailsInfoProps {

@@ -58,7 +58,7 @@ export const getBrew = createServerFn({
     return input;
   })
   // @ts-expect-error - TanStack Start server function typing issue
-  .handler(async ({ data: { brewFbId, firebaseUid } }): Promise<BrewWithBeans> => {
+  .handler(async ({ data: { brewFbId, firebaseUid } }): Promise<BrewWithBeans | null> => {
       try {
         const [brew] = await db
           .select()
@@ -67,6 +67,11 @@ export const getBrew = createServerFn({
           .innerJoin(users, eq(brews.userId, users.id))
           .where(and(eq(brews.fbId, brewFbId), eq(users.fbId, firebaseUid)))
           .limit(1);
+
+        if (!brew) {
+          return null;
+        }
+
         return brew as BrewWithBeans;
       } catch (error) {
         console.error("Database error:", error);

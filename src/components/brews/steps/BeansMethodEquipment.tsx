@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { extractSuggestions } from "../../form/FormSuggestions";
@@ -38,14 +36,14 @@ export const beansMethodEquipmentEmptyValues: (
 
 interface BeansMethodEquipmentProps {
   brewsList: Brew[];
-  beansList: Beans[];
+  beansCardsSelectComponent: ReactNode;
   defaultValues: BeansMethodEquipmentInputs;
   handleNestedSubmit: (data: BeansMethodEquipmentInputs) => void;
 }
 
 export const BeansMethodEquipment = ({
   brewsList,
-  beansList,
+  beansCardsSelectComponent,
   defaultValues,
   handleNestedSubmit,
 }: BeansMethodEquipmentProps) => {
@@ -95,7 +93,7 @@ export const BeansMethodEquipment = ({
             suggestions={extractSuggestions(brewsList, "method")}
           />
 
-          <BeansCardsSelect beansList={beansList} />
+          {beansCardsSelectComponent}
         </FormSection>
 
         <Divider className="hidden sm:block" />
