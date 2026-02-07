@@ -4,6 +4,7 @@ import {
   ChevronUpIcon,
   ViewColumnsIcon,
 } from "@heroicons/react/20/solid";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   SortingState,
@@ -22,14 +23,33 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { IconButton } from "~/components/IconButton";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
+import { getBeans, getBrews } from "~/db/queries";
+import type { BeansWithUser, BrewWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { useCurrentUser } from "~/hooks/useInitUser";
+import { flagsQueryOptions } from "~/routes/_auth/_layout/featureFlags";
 import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import { roundToDecimal } from "~/utils";
 
+const brewsQueryOptions = (firebaseUid: string) =>
+  queryOptions<BrewWithBeans[]>({
+    queryKey: ["brews", firebaseUid],
+    queryFn: () => getBrews({ data: firebaseUid }) as Promise<BrewWithBeans[]>,
+  });
+
+const beansQueryOptions = (firebaseUid: string) =>
+  queryOptions<BeansWithUser[]>({
+    queryKey: ["beans", firebaseUid],
+    queryFn: () => getBeans({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+  });
+
 export const Route = createFileRoute("/_auth/_layoutFull/drinks/brews/table")({
   component: BrewsTableWrapper,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(flagsQueryOptions());
+  },
 });
 
 type BrewFlatForTable = Omit<Brew, "beans"> & { beans?: Beans };
@@ -50,7 +70,14 @@ const columns = [
   }),
   columnHelper.accessor((row) => row.date, {
     id: "date",
-    cell: (info) => dayjs(info.getValue().toDate()).format("DD MMM YYYY | H:m"),
+    cell: (info) => {
+      const dateValue = info.getValue();
+      // Handle both Firestore Timestamp (has toDate()) and Date objects
+      const date = typeof dateValue === 'object' && dateValue !== null && 'toDate' in dateValue
+        ? (dateValue as any).toDate()
+        : dateValue;
+      return dayjs(date).format("DD MMM YYYY | H:m");
+    },
     header: () => "Date",
   }),
   columnHelper.accessor("grinder", {
@@ -94,20 +121,55 @@ const columns = [
 
 function BrewsTableWrapper() {
   console.log("BrewTableWrapper");
+  const user = useCurrentUser();
 
+  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+  const readFromPostgres = flags?.find(
+    (flag) => flag.name === "read_from_postgres",
+  )?.enabled;
+
+  // PostgreSQL data
+  const { data: sqlBrewsList } = useSuspenseQuery(
+    brewsQueryOptions(user?.uid ?? ""),
+  );
+  const { data: sqlBeansList } = useSuspenseQuery(
+    beansQueryOptions(user?.uid ?? ""),
+  );
+
+  // Firestore data
   const filters = useMemo(() => [orderBy("date", "desc")], []);
   const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: brewsList, isLoading } =
+  const { list: fbBrewsList, isLoading } =
     useFirestoreCollectionOneTime<Brew>(query);
 
   const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
   const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: beansList, isLoading: areBeansLoading } =
+  const { list: fbBeansList, isLoading: areBeansLoading } =
     useFirestoreCollectionOneTime<Beans>(beansQuery);
 
-  if (isLoading || areBeansLoading || brewsList.length === 0) return null;
+  if (isLoading || areBeansLoading) return null;
 
-  return <BrewsTable brewsList={brewsList} beansList={beansList} />;
+  if (readFromPostgres) {
+    // Transform PostgreSQL data to match expected structure
+    // Add a fake path to brews so the table can match them with beans
+    const brewsList = sqlBrewsList?.map((b) => ({
+      ...b.brews,
+      date: b.brews.date as any,
+      beans: {
+        path: `beans/${b.beans.fbId}`,
+      } as any,
+    })) ?? [];
+    const beansList = sqlBeansList?.map((b) => ({
+      ...b.beans,
+      id: b.beans.fbId,
+    })) ?? [];
+
+    if (brewsList.length === 0) return null;
+    return <BrewsTable brewsList={brewsList} beansList={beansList} />;
+  }
+
+  if (fbBrewsList.length === 0) return null;
+  return <BrewsTable brewsList={fbBrewsList} beansList={fbBeansList} />;
 }
 
 interface BrewsTableProps {
