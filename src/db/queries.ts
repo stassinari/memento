@@ -147,6 +147,30 @@ export const getEspresso = createServerFn({
     },
   );
 
+export const getPartialEspressos = createServerFn({
+  method: "GET",
+})
+  .inputValidator((firebaseUid: string) => {
+    if (!firebaseUid) throw new Error("User ID is required");
+    return firebaseUid;
+  })
+  .handler(async ({ data: firebaseUid }): Promise<EspressoWithBeans[]> => {
+    try {
+      const espressoList = await db
+        .select()
+        .from(espresso)
+        .leftJoin(beans, eq(espresso.beansId, beans.id))
+        .innerJoin(users, eq(espresso.userId, users.id))
+        .where(and(eq(users.fbId, firebaseUid), eq(espresso.partial, true)))
+        .orderBy(desc(espresso.date))
+        .limit(5);
+      return espressoList as EspressoWithBeans[];
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
 export const getDecentReadings = createServerFn({
   method: "GET",
 })

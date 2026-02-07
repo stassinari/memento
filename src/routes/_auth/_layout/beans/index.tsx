@@ -1,18 +1,16 @@
 import { Tab } from "@headlessui/react";
-import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/16/solid";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { orderBy, QueryConstraint, where } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { ReactNode, useState } from "react";
+import { BeansCard } from "~/components/beans/BeansCard";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { EmptyState } from "~/components/EmptyState";
 import { Heading } from "~/components/Heading";
-import { BeanIcon } from "~/components/icons/BeanIcon";
-import { ListCard } from "~/components/ListCard";
 import { getBeansArchived, getBeansFrozen, getBeansOpen } from "~/db/queries";
 import type { BeansWithUser } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
@@ -20,7 +18,7 @@ import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCo
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
-import { getTimeAgo, isNotFrozenOrIsThawed } from "~/util";
+import { isNotFrozenOrIsThawed } from "~/util";
 import { flagsQueryOptions } from "../featureFlags";
 
 const beansOpenQueryOptions = (firebaseUid: string) =>
@@ -221,73 +219,5 @@ export const BeansTab = ({
         </li>
       ))}
     </ul>
-  );
-};
-
-type BeansCardProps = {
-  beans: Beans;
-  shouldReadFromPostgres?: boolean;
-};
-
-export const BeansCard = ({
-  beans,
-  shouldReadFromPostgres,
-}: BeansCardProps) => {
-  const roastDate = shouldReadFromPostgres
-    ? beans.roastDate
-    : (beans.roastDate as any)?.toDate();
-  const beansId = shouldReadFromPostgres ? (beans as any).fbId : beans.id;
-
-  return (
-    <ListCard
-      linkTo={`/beans/${beansId ?? ""}`}
-      footerSlot={
-        roastDate ? (
-          <ListCard.Footer
-            text={`Roasted ${getTimeAgo(roastDate)}`}
-            Icon={<BeanIcon />}
-          />
-        ) : undefined
-      }
-    >
-      <div className="flex">
-        <div className="grow">
-          <ListCard.Title>{beans.name}</ListCard.Title>
-          <ListCard.Row>
-            <ListCard.RowIcon>
-              <FireIcon />
-            </ListCard.RowIcon>
-            {beans.roaster}
-          </ListCard.Row>
-          {beans.origin === "single-origin" ? (
-            <>
-              {beans.country && (
-                <ListCard.Row>
-                  <ListCard.RowIcon>
-                    <MapPinIcon />
-                  </ListCard.RowIcon>
-                  {beans.country}
-                </ListCard.Row>
-              )}
-              {beans.process && (
-                <ListCard.Row>
-                  <ListCard.RowIcon>
-                    <BeakerIcon />
-                  </ListCard.RowIcon>
-                  {beans.process}
-                </ListCard.Row>
-              )}
-            </>
-          ) : (
-            <ListCard.Row>
-              <ListCard.RowIcon>
-                <MapPinIcon />
-              </ListCard.RowIcon>
-              Blend
-            </ListCard.Row>
-          )}
-        </div>
-      </div>
-    </ListCard>
   );
 };

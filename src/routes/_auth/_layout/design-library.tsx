@@ -50,7 +50,7 @@ import { Textarea } from "~/components/Textarea";
 import { Toggle } from "~/components/Toggle";
 import { DrinkRatio } from "~/components/drinks/DrinkRatio";
 import { BeanBagIcon } from "~/components/icons/BeanBagIcon";
-import { BeanIcon } from "~/components/icons/BeanIcon";
+import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
 import { DripperIcon } from "~/components/icons/DripperIcon";
 import { DropIcon } from "~/components/icons/DropIcon";
 import { PortafilterIcon } from "~/components/icons/PortafilterIcon";
@@ -221,7 +221,7 @@ function DesignLibrary() {
                   </ListCard.Row>
                   <ListCard.Row>
                     <ListCard.RowIcon>
-                      <BeanIcon />
+                      <BeanIconSolid />
                     </ListCard.RowIcon>
                     30g : 501ml
                     <ListCard.RowIcon>
@@ -256,7 +256,7 @@ function DesignLibrary() {
                   </ListCard.Row>
                   <ListCard.Row>
                     <ListCard.RowIcon>
-                      <BeanIcon />
+                      <BeanIconSolid />
                     </ListCard.RowIcon>
                     18g : 48g
                     <ListCard.RowIcon>
@@ -276,7 +276,7 @@ function DesignLibrary() {
               footerSlot={
                 <ListCard.Footer
                   text="Roasted 18 days ago"
-                  Icon={<BeanIcon />}
+                  Icon={<BeanIconSolid />}
                 />
               }
             >

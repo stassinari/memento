@@ -9,6 +9,7 @@ import { useCurrentUser } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { User } from "~/types/user";
 import { navLinks } from "./BottomNav";
+import { MementoLogo } from "./icons/MementoLogo";
 
 const SidebarNavItem = ({
   Icon,
@@ -89,7 +90,9 @@ export const SidebarNav = () => {
           })`,
         }}
       >
-        <div className="flex items-center h-16 shrink-0">Memento logo here</div>
+        <div className="flex items-center h-16 shrink-0">
+          <MementoLogo />
+        </div>
         <nav className="flex flex-col flex-1">
           <ul role="list" className="flex flex-col flex-1 gap-y-7">
             <li>

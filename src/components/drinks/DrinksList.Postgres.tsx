@@ -5,7 +5,7 @@ import { chain, entries } from "lodash";
 import type { Beans, Brew, Espresso } from "~/db/types";
 import { Card } from "../Card";
 import { BeanBagIcon } from "../icons/BeanBagIcon";
-import { BeanIcon } from "../icons/BeanIcon";
+import { BeanIconSolid } from "../icons/BeanIconSolid";
 import { DripperIcon } from "../icons/DripperIcon";
 import { DropIcon } from "../icons/DropIcon";
 import { PortafilterIcon } from "../icons/PortafilterIcon";
@@ -198,7 +198,7 @@ const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
         {beans?.name}
       </p>
       <p className="flex items-center gap-1 text-gray-600">
-        <BeanIcon className="w-3 h-3 text-gray-400" />
+        <BeanIconSolid className="w-3 h-3 text-gray-400" />
         {brew.beansWeight}g : {brew.waterWeight}ml
         <DropIcon className="w-3 h-3 text-gray-400" />
       </p>
@@ -229,7 +229,7 @@ const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
         {beans?.name}
       </p>
       <p className="flex items-center gap-1 text-gray-600">
-        <BeanIcon className="w-3 h-3 text-gray-400" />
+        <BeanIconSolid className="w-3 h-3 text-gray-400" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
         <DropIcon className="w-3 h-3 text-gray-400" />
       </p>

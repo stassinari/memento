@@ -1,19 +1,20 @@
 import {
   ArrowUpOnSquareIcon,
-  ChartBarIcon,
   Cog6ToothIcon,
-  CurrencyEuroIcon,
-  CurrencyPoundIcon,
-  CurrencyYenIcon,
   FlagIcon,
-  FolderIcon,
   HomeIcon,
   PhotoIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { ReactNode } from "react";
 import { useActiveRoute } from "~/hooks/useActiveRoute";
+import { BeansIconOutline } from "./icons/BeansIconOutline";
+import { DrinkIcon } from "./icons/DrinkIcon";
+import { EspressoIcon } from "./icons/EspressoIcon";
+import { FrenchPressIcon } from "./icons/FrenchPressIcon";
+import { SpoonIcon } from "./icons/SpoonIcon";
 
 export const navLinks = {
   home: {
@@ -24,27 +25,27 @@ export const navLinks = {
   beans: {
     label: "Beans",
     linkTo: "/beans",
-    Icon: <FolderIcon />,
+    Icon: <BeansIconOutline />,
   },
   drinks: {
     label: "Drinks",
     linkTo: "/drinks",
-    Icon: <ChartBarIcon />,
+    Icon: <DrinkIcon />,
   },
   brews: {
     label: "Brews",
     linkTo: "/drinks/brews",
-    Icon: <CurrencyEuroIcon />,
+    Icon: <FrenchPressIcon />,
   },
   espresso: {
     label: "Espresso",
     linkTo: "/drinks/espresso",
-    Icon: <CurrencyPoundIcon />,
+    Icon: <EspressoIcon />,
   },
   tastings: {
     label: "Tastings",
     linkTo: "/drinks/tastings",
-    Icon: <CurrencyYenIcon />,
+    Icon: <SpoonIcon />,
   },
   decentUpload: {
     label: "Decent upload",
@@ -54,7 +55,7 @@ export const navLinks = {
   aiPlayground: {
     label: "AI playground",
     linkTo: "/ai",
-    Icon: <CurrencyYenIcon />,
+    Icon: <SparklesIcon />,
   },
   featureFlags: {
     label: "Feature Flags",
