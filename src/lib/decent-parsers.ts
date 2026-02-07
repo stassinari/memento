@@ -1,5 +1,104 @@
-import { Timestamp } from "firebase-admin/firestore";
-import { DecentReadings, Espresso } from ".";
+/**
+ * Decent Espresso shot parsers
+ * Copied from Firebase Functions to support TanStack Start migration
+ */
+
+export interface DecentEspresso {
+  partial: boolean;
+  fromDecent: boolean;
+  profileName: string;
+  date: Date;
+  targetWeight: number;
+  actualTime: number;
+  actualWeight: number;
+  uploadedAt: Date;
+}
+
+export interface DecentReadings {
+  time: number[];
+  pressure: number[];
+  weightTotal: number[];
+  flow: number[];
+  weightFlow: number[];
+  temperatureBasket: number[];
+  temperatureMix: number[];
+  pressureGoal: number[];
+  temperatureGoal: number[];
+  flowGoal: number[];
+}
+
+export interface ParsedShot {
+  espresso: DecentEspresso;
+  timeSeries: DecentReadings;
+}
+
+export interface AlreadyExistsError {
+  code: "ALREADY_EXISTS";
+  message: string;
+}
+
+/**
+ * Parse JSON shot file from Decent Espresso machine
+ */
+export const parseJsonShot = (data: string): ParsedShot => {
+  const jsonShot = JSON.parse(data);
+
+  const date = new Date(parseInt(`${jsonShot.timestamp}000`));
+
+  console.log("[JSON] shot parsed, date:", date);
+
+  const profileName = jsonShot.profile.title;
+  const targetWeight = parseFloat(jsonShot.profile["target_weight"]);
+  const actualTime = parseFloat(jsonShot.meta.time);
+  const actualWeight = parseFloat(jsonShot.meta.out);
+
+  const espresso: DecentEspresso = {
+    partial: true,
+    fromDecent: true,
+    profileName,
+    date,
+    targetWeight,
+    actualTime,
+    actualWeight,
+    uploadedAt: new Date(),
+  };
+
+  const flow = jsonShot.flow.flow.map(parseFloat);
+  const flowGoal = jsonShot.flow.goal.map(parseFloat);
+  const weightFlow = jsonShot.flow["by_weight"].map(parseFloat);
+
+  const pressure = jsonShot.pressure.pressure.map(parseFloat);
+  const pressureGoal = jsonShot.pressure.goal.map(parseFloat);
+
+  const temperatureBasket = jsonShot.temperature.basket.map(parseFloat);
+  const temperatureGoal = jsonShot.temperature.goal.map(parseFloat);
+  const temperatureMix = jsonShot.temperature.mix.map(parseFloat);
+
+  const weightTotal = jsonShot.totals.weight.map(parseFloat);
+
+  const time = jsonShot.elapsed.map(parseFloat);
+
+  const timeSeries: DecentReadings = {
+    time,
+    pressure,
+    weightTotal,
+    flow,
+    weightFlow,
+    temperatureBasket,
+    temperatureMix,
+    pressureGoal,
+    temperatureGoal,
+    flowGoal,
+  };
+
+  console.log("[JSON] parsed shot successfully");
+
+  return { espresso, timeSeries };
+};
+
+/**
+ * Parse .shot (TCL) file from Decent Espresso machine
+ */
 
 interface TclJsConversion {
   tcl: string;
@@ -26,9 +125,11 @@ const properties: TclJsConversion[] = [
 const bracesRegex = /\{(.*?)\}/g;
 
 const parseShotFile = (data: string): string[] =>
-  data.split("\n").filter((line) => {
-    return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
-  });
+  data
+    .split("\n")
+    .filter((line) => {
+      return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
+    });
 
 const extractDate = (lines: string[]): Date => {
   const stringTs =
@@ -39,7 +140,7 @@ const extractDate = (lines: string[]): Date => {
   return new Date(parseInt(stringTs));
 };
 
-export const extractProfileName = (lines: string[]): string => {
+const extractProfileName = (lines: string[]): string => {
   const raw = lines.find((line) => line.includes("title"))?.slice(0, -1);
   try {
     const json = JSON.parse("{" + raw! + "}");
@@ -55,7 +156,7 @@ const extractTargetWeight = (lines: string[]): number => {
     ?.slice(0, -1);
   try {
     const json = JSON.parse("{" + raw! + "}");
-    return json["target_weight"];
+    return parseFloat(json["target_weight"]);
   } catch (error) {
     throw new Error("parsing error - target_weight");
   }
@@ -87,33 +188,11 @@ const extractTimeSeries = (lines: string[]): DecentReadings =>
 const extractTotalTime = (readings: DecentReadings): number =>
   Math.round(readings["time"][readings["time"].length - 1] * 10) / 10;
 
-export const extractTclShot = async (data: string, admin: any, uid: string) => {
+export const parseTclShot = (data: string): ParsedShot => {
   const lines = parseShotFile(data);
   const date = extractDate(lines);
 
-  console.log("[TCL] shot parsed, checking if it already exists");
-  console.log({ date });
-
-  // check if shot was uploaded before by matching dates
-  // Convert to Timestamp for Firestore query
-  const firestoreDate = Timestamp.fromDate(date);
-  const alreadyExists = await admin
-    .firestore()
-    .collection("users")
-    .doc(uid)
-    .collection("espresso")
-    .where("date", "==", firestoreDate)
-    .where("fromDecent", "==", true)
-    .get()
-    .then((espressoList: any) => espressoList.size > 0);
-  if (alreadyExists) {
-    throw {
-      code: "ALREADY_EXISTS",
-      message: "the uploaded shot already exists",
-    };
-  }
-
-  console.log("[TCL] shot is new, parsing all the things");
+  console.log("[TCL] shot parsed, date:", date);
 
   // extract all the things
   const profileName = extractProfileName(lines);
@@ -122,7 +201,7 @@ export const extractTclShot = async (data: string, admin: any, uid: string) => {
   const actualTime = extractTotalTime(timeSeries);
   const actualWeight = extractTotalWeight(lines);
 
-  const espresso: Espresso = {
+  const espresso: DecentEspresso = {
     partial: true,
     fromDecent: true,
     profileName,
@@ -133,7 +212,7 @@ export const extractTclShot = async (data: string, admin: any, uid: string) => {
     uploadedAt: new Date(),
   };
 
-  console.log("[TCL] parsed all the things, skipping timeSeries log");
+  console.log("[TCL] parsed shot successfully");
 
   return { espresso, timeSeries };
 };

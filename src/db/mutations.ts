@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
+import { randomBytes } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { BeansFormInputs } from "~/components/beans/BeansForm";
 import { BrewFormInputs } from "~/components/brews/BrewForm";
 import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { db } from "./db";
 import { beans, brews, espresso, featureFlags, users } from "./schema";
-import { randomBytes } from "crypto";
 
 /**
  * Generate a Firestore-compatible document ID (20 character alphanumeric)
@@ -138,6 +138,62 @@ export const changeFeatureFlag = createServerFn({
   });
 
 /**
+ * Generate a new secretKey for a user
+ * Used for Decent Espresso integration
+ */
+export const generateSecretKey = createServerFn({ method: "POST" })
+  .inputValidator((input: { firebaseUid: string; secretKey: string }) => {
+    if (!input.firebaseUid) {
+      throw new Error("Firebase UID is required");
+    }
+    return input;
+  })
+  .handler(async ({ data }): Promise<{ secretKey: string }> => {
+    const { firebaseUid, secretKey } = data;
+
+    // Update user in PostgreSQL
+    const userId = await getUserByFirebaseUid(firebaseUid);
+    if (userId) {
+      try {
+        await db.update(users).set({ secretKey }).where(eq(users.id, userId));
+        console.log(`Secret key generated for user ${userId}`);
+      } catch (error) {
+        console.error("Failed to update secret key in PostgreSQL:", error);
+      }
+    }
+
+    return { secretKey };
+  });
+
+/**
+ * Delete the secretKey for a user
+ */
+export const deleteSecretKey = createServerFn({ method: "POST" })
+  .inputValidator((input: { firebaseUid: string }) => {
+    if (!input.firebaseUid) {
+      throw new Error("Firebase UID is required");
+    }
+    return input;
+  })
+  .handler(async ({ data }): Promise<void> => {
+    const { firebaseUid } = data;
+
+    // Update user in PostgreSQL
+    const userId = await getUserByFirebaseUid(firebaseUid);
+    if (userId) {
+      try {
+        await db
+          .update(users)
+          .set({ secretKey: null })
+          .where(eq(users.id, userId));
+        console.log(`Secret key deleted for user ${userId}`);
+      } catch (error) {
+        console.error("Failed to delete secret key in PostgreSQL:", error);
+      }
+    }
+  });
+
+/**
  * Add new beans with conditional dual-write to PostgreSQL and/or Firestore
  */
 export const addBeans = createServerFn({ method: "POST" })
@@ -148,65 +204,62 @@ export const addBeans = createServerFn({ method: "POST" })
     validateBeansInput(input.data);
     return input;
   })
-  .handler(
-    async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-      // 1. Get feature flags
-      const flags = await getFlags();
+  .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
+    // 1. Get feature flags
+    const flags = await getFlags();
 
-      // 2. Generate Firestore-compatible doc ID
-      const fbId = generateFirestoreId();
+    // 2. Generate Firestore-compatible doc ID
+    const fbId = generateFirestoreId();
 
-      // 3. CONDITIONAL WRITE TO POSTGRESQL
-      if (flags.write_to_postgres) {
-        try {
-          const userId = await getUserByFirebaseUid(firebaseUid);
-          if (!userId) {
-            console.error(
-              "User not found in PostgreSQL, skipping Postgres write",
-            );
-          } else {
-            // Convert form data for PostgreSQL
-            const pgData = {
-              fbId,
-              userId,
-              name: data.name!,
-              roaster: data.roaster!,
-              roastDate: dateToSqlDate(data.roastDate),
-              roastStyle: data.roastStyle,
-              roastLevel: data.roastLevel,
-              roastingNotes: data.roastingNotes,
-              freezeDate: dateToSqlDate(data.freezeDate),
-              thawDate: dateToSqlDate(data.thawDate),
-              isFinished: data.isFinished ?? false,
-              origin: data.origin,
-              // Single-origin fields (null if blend)
-              country: data.origin === "single-origin" ? data.country : null,
-              region: data.origin === "single-origin" ? data.region : null,
-              varietals:
-                data.origin === "single-origin" ? data.varietals : [],
-              altitude: data.origin === "single-origin" ? data.altitude : null,
-              process: data.origin === "single-origin" ? data.process : null,
-              farmer: data.origin === "single-origin" ? data.farmer : null,
-              harvestDate:
-                data.origin === "single-origin"
-                  ? dateToSqlDate(data.harvestDate)
-                  : null,
-              // Blend parts (null if single-origin)
-              blendParts: data.origin === "blend" ? data.blend : null,
-            };
+    // 3. CONDITIONAL WRITE TO POSTGRESQL
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (!userId) {
+          console.error(
+            "User not found in PostgreSQL, skipping Postgres write",
+          );
+        } else {
+          // Convert form data for PostgreSQL
+          const pgData = {
+            fbId,
+            userId,
+            name: data.name!,
+            roaster: data.roaster!,
+            roastDate: dateToSqlDate(data.roastDate),
+            roastStyle: data.roastStyle,
+            roastLevel: data.roastLevel,
+            roastingNotes: data.roastingNotes,
+            freezeDate: dateToSqlDate(data.freezeDate),
+            thawDate: dateToSqlDate(data.thawDate),
+            isFinished: data.isFinished ?? false,
+            origin: data.origin,
+            // Single-origin fields (null if blend)
+            country: data.origin === "single-origin" ? data.country : null,
+            region: data.origin === "single-origin" ? data.region : null,
+            varietals: data.origin === "single-origin" ? data.varietals : [],
+            altitude: data.origin === "single-origin" ? data.altitude : null,
+            process: data.origin === "single-origin" ? data.process : null,
+            farmer: data.origin === "single-origin" ? data.farmer : null,
+            harvestDate:
+              data.origin === "single-origin"
+                ? dateToSqlDate(data.harvestDate)
+                : null,
+            // Blend parts (null if single-origin)
+            blendParts: data.origin === "blend" ? data.blend : null,
+          };
 
-            await db.insert(beans).values(pgData);
-          }
-        } catch (error) {
-          console.error("PostgreSQL insert failed:", error);
-          // Log but continue (eventual consistency)
+          await db.insert(beans).values(pgData);
         }
+      } catch (error) {
+        console.error("PostgreSQL insert failed:", error);
+        // Log but continue (eventual consistency)
       }
+    }
 
-      // 4. Return ID for client-side Firestore write
-      return { id: fbId };
-    },
-  );
+    // 4. Return ID for client-side Firestore write
+    return { id: fbId };
+  });
 
 /**
  * Archive beans (set isFinished = true)
@@ -370,9 +423,7 @@ export const updateBeans = createServerFn({ method: "POST" })
     },
   )
   .handler(
-    async ({
-      data: { data, beansFbId, firebaseUid },
-    }): Promise<void> => {
+    async ({ data: { data, beansFbId, firebaseUid } }): Promise<void> => {
       // 1. Get feature flags
       const flags = await getFlags();
 
@@ -400,8 +451,7 @@ export const updateBeans = createServerFn({ method: "POST" })
               // Single-origin fields (null if blend)
               country: data.origin === "single-origin" ? data.country : null,
               region: data.origin === "single-origin" ? data.region : null,
-              varietals:
-                data.origin === "single-origin" ? data.varietals : [],
+              varietals: data.origin === "single-origin" ? data.varietals : [],
               altitude: data.origin === "single-origin" ? data.altitude : null,
               process: data.origin === "single-origin" ? data.process : null,
               farmer: data.origin === "single-origin" ? data.farmer : null,
@@ -504,76 +554,74 @@ export const addBrew = createServerFn({ method: "POST" })
     validateBrewInput(input.data);
     return input;
   })
-  .handler(
-    async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-      // 1. Get feature flags
-      const flags = await getFlags();
+  .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
+    // 1. Get feature flags
+    const flags = await getFlags();
 
-      // 2. Generate Firestore-compatible doc ID
-      const fbId = generateFirestoreId();
+    // 2. Generate Firestore-compatible doc ID
+    const fbId = generateFirestoreId();
 
-      // 3. CONDITIONAL WRITE TO POSTGRESQL
-      if (flags.write_to_postgres) {
-        try {
-          const userId = await getUserByFirebaseUid(firebaseUid);
-          if (!userId) {
+    // 3. CONDITIONAL WRITE TO POSTGRESQL
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (!userId) {
+          console.error(
+            "User not found in PostgreSQL, skipping Postgres write",
+          );
+        } else {
+          // Extract beansFbId and resolve to UUID
+          const beansFbId = extractBeansFbId(data.beans);
+          const beansId = await getBeansIdByFbId(beansFbId, userId);
+
+          if (!beansId) {
             console.error(
-              "User not found in PostgreSQL, skipping Postgres write",
+              `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres write`,
             );
           } else {
-            // Extract beansFbId and resolve to UUID
-            const beansFbId = extractBeansFbId(data.beans);
-            const beansId = await getBeansIdByFbId(beansFbId, userId);
+            // Convert form data for PostgreSQL
+            const pgData = {
+              fbId,
+              userId,
+              beansId,
+              date: data.date!,
+              method: data.method!,
+              grinder: data.grinder,
+              grinderBurrs: data.grinderBurrs,
+              waterType: data.waterType,
+              filterType: data.filterType,
+              waterWeight: data.waterWeight!,
+              beansWeight: data.beansWeight!,
+              waterTemperature: data.waterTemperature,
+              grindSetting: data.grindSetting,
+              timeMinutes: data.timeMinutes,
+              timeSeconds: data.timeSeconds,
+              // Outcome fields (initially null)
+              rating: null,
+              notes: null,
+              tds: null,
+              finalBrewWeight: null,
+              extractionType: null,
+              // Tasting scores flattened
+              aroma: null,
+              acidity: null,
+              sweetness: null,
+              body: null,
+              finish: null,
+            };
 
-            if (!beansId) {
-              console.error(
-                `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres write`,
-              );
-            } else {
-              // Convert form data for PostgreSQL
-              const pgData = {
-                fbId,
-                userId,
-                beansId,
-                date: data.date!,
-                method: data.method!,
-                grinder: data.grinder,
-                grinderBurrs: data.grinderBurrs,
-                waterType: data.waterType,
-                filterType: data.filterType,
-                waterWeight: data.waterWeight!,
-                beansWeight: data.beansWeight!,
-                waterTemperature: data.waterTemperature,
-                grindSetting: data.grindSetting,
-                timeMinutes: data.timeMinutes,
-                timeSeconds: data.timeSeconds,
-                // Outcome fields (initially null)
-                rating: null,
-                notes: null,
-                tds: null,
-                finalBrewWeight: null,
-                extractionType: null,
-                // Tasting scores flattened
-                aroma: null,
-                acidity: null,
-                sweetness: null,
-                body: null,
-                finish: null,
-              };
-
-              await db.insert(brews).values(pgData);
-            }
+            await db.insert(brews).values(pgData);
           }
-        } catch (error) {
-          console.error("PostgreSQL insert failed:", error);
-          // Log but continue (eventual consistency)
         }
+      } catch (error) {
+        console.error("PostgreSQL insert failed:", error);
+        // Log but continue (eventual consistency)
       }
+    }
 
-      // 4. Return ID for client-side Firestore write
-      return { id: fbId };
-    },
-  );
+    // 4. Return ID for client-side Firestore write
+    return { id: fbId };
+  });
 
 /**
  * Update existing brew with conditional dual-write to PostgreSQL and/or Firestore
@@ -595,62 +643,58 @@ export const updateBrew = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(
-    async ({
-      data: { data, brewFbId, firebaseUid },
-    }): Promise<void> => {
-      // 1. Get feature flags
-      const flags = await getFlags();
+  .handler(async ({ data: { data, brewFbId, firebaseUid } }): Promise<void> => {
+    // 1. Get feature flags
+    const flags = await getFlags();
 
-      // 2. CONDITIONAL UPDATE TO POSTGRESQL
-      if (flags.write_to_postgres) {
-        try {
-          const userId = await getUserByFirebaseUid(firebaseUid);
-          if (!userId) {
+    // 2. CONDITIONAL UPDATE TO POSTGRESQL
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (!userId) {
+          console.error(
+            "User not found in PostgreSQL, skipping Postgres update",
+          );
+        } else {
+          // Extract beansFbId and resolve to UUID
+          const beansFbId = extractBeansFbId(data.beans);
+          const beansId = await getBeansIdByFbId(beansFbId, userId);
+
+          if (!beansId) {
             console.error(
-              "User not found in PostgreSQL, skipping Postgres update",
+              `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres update`,
             );
           } else {
-            // Extract beansFbId and resolve to UUID
-            const beansFbId = extractBeansFbId(data.beans);
-            const beansId = await getBeansIdByFbId(beansFbId, userId);
+            // Convert form data for PostgreSQL
+            const pgData = {
+              beansId,
+              date: data.date!,
+              method: data.method!,
+              grinder: data.grinder,
+              grinderBurrs: data.grinderBurrs,
+              waterType: data.waterType,
+              filterType: data.filterType,
+              waterWeight: data.waterWeight!,
+              beansWeight: data.beansWeight!,
+              waterTemperature: data.waterTemperature,
+              grindSetting: data.grindSetting,
+              timeMinutes: data.timeMinutes,
+              timeSeconds: data.timeSeconds,
+              // Note: outcome fields are NOT updated here (use updateBrewOutcome)
+            };
 
-            if (!beansId) {
-              console.error(
-                `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres update`,
-              );
-            } else {
-              // Convert form data for PostgreSQL
-              const pgData = {
-                beansId,
-                date: data.date!,
-                method: data.method!,
-                grinder: data.grinder,
-                grinderBurrs: data.grinderBurrs,
-                waterType: data.waterType,
-                filterType: data.filterType,
-                waterWeight: data.waterWeight!,
-                beansWeight: data.beansWeight!,
-                waterTemperature: data.waterTemperature,
-                grindSetting: data.grindSetting,
-                timeMinutes: data.timeMinutes,
-                timeSeconds: data.timeSeconds,
-                // Note: outcome fields are NOT updated here (use updateBrewOutcome)
-              };
-
-              await db
-                .update(brews)
-                .set(pgData)
-                .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
-            }
+            await db
+              .update(brews)
+              .set(pgData)
+              .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
           }
-        } catch (error) {
-          console.error("PostgreSQL update failed:", error);
-          // Log but continue (eventual consistency)
         }
+      } catch (error) {
+        console.error("PostgreSQL update failed:", error);
+        // Log but continue (eventual consistency)
       }
-    },
-  );
+    }
+  });
 
 /**
  * Update brew outcome fields (partial update)
@@ -684,49 +728,45 @@ export const updateBrewOutcome = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(
-    async ({
-      data: { data, brewFbId, firebaseUid },
-    }): Promise<void> => {
-      // 1. Get feature flags
-      const flags = await getFlags();
+  .handler(async ({ data: { data, brewFbId, firebaseUid } }): Promise<void> => {
+    // 1. Get feature flags
+    const flags = await getFlags();
 
-      // 2. CONDITIONAL UPDATE TO POSTGRESQL
-      if (flags.write_to_postgres) {
-        try {
-          const userId = await getUserByFirebaseUid(firebaseUid);
-          if (!userId) {
-            console.error(
-              "User not found in PostgreSQL, skipping Postgres update",
-            );
-          } else {
-            // Flatten tasting scores for PostgreSQL
-            const pgData = {
-              rating: data.rating,
-              notes: data.notes,
-              tds: data.tds,
-              finalBrewWeight: data.finalBrewWeight,
-              extractionType: data.extractionType,
-              // Flatten tasting scores
-              aroma: data.tastingScores?.aroma ?? null,
-              acidity: data.tastingScores?.acidity ?? null,
-              sweetness: data.tastingScores?.sweetness ?? null,
-              body: data.tastingScores?.body ?? null,
-              finish: data.tastingScores?.finish ?? null,
-            };
+    // 2. CONDITIONAL UPDATE TO POSTGRESQL
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (!userId) {
+          console.error(
+            "User not found in PostgreSQL, skipping Postgres update",
+          );
+        } else {
+          // Flatten tasting scores for PostgreSQL
+          const pgData = {
+            rating: data.rating,
+            notes: data.notes,
+            tds: data.tds,
+            finalBrewWeight: data.finalBrewWeight,
+            extractionType: data.extractionType,
+            // Flatten tasting scores
+            aroma: data.tastingScores?.aroma ?? null,
+            acidity: data.tastingScores?.acidity ?? null,
+            sweetness: data.tastingScores?.sweetness ?? null,
+            body: data.tastingScores?.body ?? null,
+            finish: data.tastingScores?.finish ?? null,
+          };
 
-            await db
-              .update(brews)
-              .set(pgData)
-              .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
-          }
-        } catch (error) {
-          console.error("PostgreSQL outcome update failed:", error);
-          // Log but continue (eventual consistency)
+          await db
+            .update(brews)
+            .set(pgData)
+            .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
         }
+      } catch (error) {
+        console.error("PostgreSQL outcome update failed:", error);
+        // Log but continue (eventual consistency)
       }
-    },
-  );
+    }
+  });
 
 /**
  * Delete brew
@@ -778,82 +818,82 @@ function validateEspressoInput(data: EspressoFormInputs): void {
  * Add new espresso with conditional dual-write to PostgreSQL and/or Firestore
  */
 export const addEspresso = createServerFn({ method: "POST" })
-  .inputValidator((input: { data: EspressoFormInputs; firebaseUid: string }) => {
-    if (!input.firebaseUid) {
-      throw new Error("Firebase UID is required");
-    }
-    validateEspressoInput(input.data);
-    return input;
-  })
-  .handler(
-    async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-      // 1. Get feature flags
-      const flags = await getFlags();
+  .inputValidator(
+    (input: { data: EspressoFormInputs; firebaseUid: string }) => {
+      if (!input.firebaseUid) {
+        throw new Error("Firebase UID is required");
+      }
+      validateEspressoInput(input.data);
+      return input;
+    },
+  )
+  .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
+    // 1. Get feature flags
+    const flags = await getFlags();
 
-      // 2. Generate Firestore-compatible doc ID
-      const fbId = generateFirestoreId();
+    // 2. Generate Firestore-compatible doc ID
+    const fbId = generateFirestoreId();
 
-      // 3. CONDITIONAL WRITE TO POSTGRESQL
-      if (flags.write_to_postgres) {
-        try {
-          const userId = await getUserByFirebaseUid(firebaseUid);
-          if (!userId) {
+    // 3. CONDITIONAL WRITE TO POSTGRESQL
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (!userId) {
+          console.error(
+            "User not found in PostgreSQL, skipping Postgres write",
+          );
+        } else {
+          // Extract beansFbId and resolve to UUID
+          const beansFbId = extractBeansFbId(data.beans);
+          const beansId = await getBeansIdByFbId(beansFbId, userId);
+
+          if (!beansId) {
             console.error(
-              "User not found in PostgreSQL, skipping Postgres write",
+              `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres write`,
             );
           } else {
-            // Extract beansFbId and resolve to UUID
-            const beansFbId = extractBeansFbId(data.beans);
-            const beansId = await getBeansIdByFbId(beansFbId, userId);
+            // Convert form data for PostgreSQL
+            const pgData = {
+              fbId,
+              userId,
+              beansId,
+              date: data.date!,
+              grindSetting: data.grindSetting,
+              machine: data.machine,
+              grinder: data.grinder,
+              grinderBurrs: data.grinderBurrs,
+              portafilter: data.portafilter,
+              basket: data.basket,
+              actualTime: data.actualTime ?? 0, // Default to 0 if not provided
+              targetWeight: data.targetWeight ?? 0, // Default to 0 if not provided
+              beansWeight: data.beansWeight ?? 0, // Default to 0 if not provided
+              waterTemperature: data.waterTemperature,
+              actualWeight: data.actualWeight,
+              fromDecent: false,
+              // Outcome fields (initially null)
+              rating: null,
+              notes: null,
+              tds: null,
+              // Tasting scores flattened
+              aroma: null,
+              acidity: null,
+              sweetness: null,
+              body: null,
+              finish: null,
+            };
 
-            if (!beansId) {
-              console.error(
-                `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres write`,
-              );
-            } else {
-              // Convert form data for PostgreSQL
-              const pgData = {
-                fbId,
-                userId,
-                beansId,
-                date: data.date!,
-                grindSetting: data.grindSetting,
-                machine: data.machine,
-                grinder: data.grinder,
-                grinderBurrs: data.grinderBurrs,
-                portafilter: data.portafilter,
-                basket: data.basket,
-                actualTime: data.actualTime ?? 0, // Default to 0 if not provided
-                targetWeight: data.targetWeight ?? 0, // Default to 0 if not provided
-                beansWeight: data.beansWeight ?? 0, // Default to 0 if not provided
-                waterTemperature: data.waterTemperature,
-                actualWeight: data.actualWeight,
-                fromDecent: false,
-                // Outcome fields (initially null)
-                rating: null,
-                notes: null,
-                tds: null,
-                // Tasting scores flattened
-                aroma: null,
-                acidity: null,
-                sweetness: null,
-                body: null,
-                finish: null,
-              };
-
-              await db.insert(espresso).values(pgData);
-            }
+            await db.insert(espresso).values(pgData);
           }
-        } catch (error) {
-          console.error("PostgreSQL insert failed:", error);
-          // Log but continue (eventual consistency)
         }
+      } catch (error) {
+        console.error("PostgreSQL insert failed:", error);
+        // Log but continue (eventual consistency)
       }
+    }
 
-      // 4. Return ID for client-side Firestore write
-      return { id: fbId };
-    },
-  );
+    // 4. Return ID for client-side Firestore write
+    return { id: fbId };
+  });
 
 /**
  * Update existing espresso with conditional dual-write to PostgreSQL and/or Firestore
@@ -876,9 +916,7 @@ export const updateEspresso = createServerFn({ method: "POST" })
     },
   )
   .handler(
-    async ({
-      data: { data, espressoFbId, firebaseUid },
-    }): Promise<void> => {
+    async ({ data: { data, espressoFbId, firebaseUid } }): Promise<void> => {
       // 1. Get feature flags
       const flags = await getFlags();
 
@@ -968,9 +1006,7 @@ export const updateEspressoOutcome = createServerFn({ method: "POST" })
     },
   )
   .handler(
-    async ({
-      data: { data, espressoFbId, firebaseUid },
-    }): Promise<void> => {
+    async ({ data: { data, espressoFbId, firebaseUid } }): Promise<void> => {
       // 1. Get feature flags
       const flags = await getFlags();
 
@@ -1034,10 +1070,7 @@ export const deleteEspresso = createServerFn({ method: "POST" })
           await db
             .delete(espresso)
             .where(
-              and(
-                eq(espresso.fbId, espressoFbId),
-                eq(espresso.userId, userId),
-              ),
+              and(eq(espresso.fbId, espressoFbId), eq(espresso.userId, userId)),
             );
         }
       } catch (error) {
@@ -1045,3 +1078,87 @@ export const deleteEspresso = createServerFn({ method: "POST" })
       }
     }
   });
+
+/**
+ * Update Decent espresso partial details (add shot info)
+ * Sets partial=false and adds beans + equipment details
+ */
+export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
+  .inputValidator(
+    (input: {
+      data: {
+        beans: string | null;
+        grindSetting: string | null;
+        machine: string | null;
+        grinder: string | null;
+        grinderBurrs: string | null;
+        portafilter: string | null;
+        basket: string | null;
+        actualWeight: number;
+        targetWeight: number | null;
+        beansWeight: number | null;
+      };
+      espressoFbId: string;
+      firebaseUid: string;
+    }) => {
+      if (!input.firebaseUid) {
+        throw new Error("Firebase UID is required");
+      }
+      if (!input.espressoFbId) {
+        throw new Error("Espresso ID is required");
+      }
+      return input;
+    },
+  )
+  .handler(
+    async ({ data: { data, espressoFbId, firebaseUid } }): Promise<void> => {
+      const flags = await getFlags();
+
+      // CONDITIONAL UPDATE TO POSTGRESQL
+      if (flags.write_to_postgres) {
+        try {
+          const userId = await getUserByFirebaseUid(firebaseUid);
+          if (!userId) {
+            console.error(
+              "User not found in PostgreSQL, skipping Postgres update",
+            );
+          } else {
+            // Extract beansFbId and resolve to UUID
+            const beansFbId = extractBeansFbId(data.beans);
+            const beansId = await getBeansIdByFbId(beansFbId, userId);
+
+            if (!beansId) {
+              console.error(
+                `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres update`,
+              );
+            } else {
+              // Update espresso with decent details
+              await db
+                .update(espresso)
+                .set({
+                  partial: false,
+                  beansId,
+                  grindSetting: data.grindSetting,
+                  machine: data.machine,
+                  grinder: data.grinder,
+                  grinderBurrs: data.grinderBurrs,
+                  portafilter: data.portafilter,
+                  basket: data.basket,
+                  actualWeight: data.actualWeight,
+                  targetWeight: data.targetWeight,
+                  beansWeight: data.beansWeight,
+                })
+                .where(
+                  and(
+                    eq(espresso.fbId, espressoFbId),
+                    eq(espresso.userId, userId),
+                  ),
+                );
+            }
+          }
+        } catch (error) {
+          console.error("PostgreSQL update failed:", error);
+        }
+      }
+    },
+  );

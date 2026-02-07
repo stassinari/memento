@@ -13,27 +13,28 @@
     "deploy:prod": "firebase deploy --project=prod --only functions",
     "logs": "firebase functions:log"
   },
-  "engines": {
-    "node": "12"
-  },
   "main": "lib/index.js",
+  "engines": {
+    "node": "20"
+  },
   "dependencies": {
-    "busboy": "^0.3.1",
+    "firebase-functions": "^4.5.0",
+    "firebase-admin": "^12.0.0",
+    "axios": "^1.13.4",
+    "busboy": "^1.0.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "firebase-admin": "^10.0.1",
-    "firebase-functions": "^3.16.0"
+    "express": "^4.18.0"
   },
   "devDependencies": {
-    "@types/busboy": "^0.3.1",
+    "@types/busboy": "^1.5.0",
     "@types/cors": "^2.8.12",
-    "@typescript-eslint/eslint-plugin": "^5.7.0",
-    "@typescript-eslint/parser": "^5.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.4.1",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.25.3",
-    "firebase-functions-test": "^0.3.3",
-    "typescript": "^4.5.4"
+    "firebase-functions-test": "^3.1.0",
+    "typescript": "^5.0.0"
   },
   "private": true
 }

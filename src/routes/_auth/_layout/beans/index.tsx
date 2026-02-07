@@ -26,19 +26,22 @@ import { flagsQueryOptions } from "../featureFlags";
 const beansOpenQueryOptions = (firebaseUid: string) =>
   queryOptions<BeansWithUser[]>({
     queryKey: ["beans", "open", firebaseUid],
-    queryFn: () => getBeansOpen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+    queryFn: () =>
+      getBeansOpen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
   });
 
 const beansFrozenQueryOptions = (firebaseUid: string) =>
   queryOptions<BeansWithUser[]>({
     queryKey: ["beans", "frozen", firebaseUid],
-    queryFn: () => getBeansFrozen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+    queryFn: () =>
+      getBeansFrozen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
   });
 
 const beansArchivedQueryOptions = (firebaseUid: string) =>
   queryOptions<BeansWithUser[]>({
     queryKey: ["beans", "archived", firebaseUid],
-    queryFn: () => getBeansArchived({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+    queryFn: () =>
+      getBeansArchived({ data: firebaseUid }) as Promise<BeansWithUser[]>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({

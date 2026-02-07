@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as ApiFeatureFlagsRouteImport } from './routes/api/feature-flags'
+import { Route as ApiDecentShotsRouteImport } from './routes/api/decent-shots'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as AuthLayoutFullRouteImport } from './routes/_auth/_layoutFull'
 import { Route as AuthLayoutRouteImport } from './routes/_auth/_layout'
@@ -49,6 +51,16 @@ const PublicRoute = PublicRouteImport.update({
 } as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFeatureFlagsRoute = ApiFeatureFlagsRouteImport.update({
+  id: '/api/feature-flags',
+  path: '/api/feature-flags',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDecentShotsRoute = ApiDecentShotsRouteImport.update({
+  id: '/api/decent-shots',
+  path: '/api/decent-shots',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicLoginRoute = PublicLoginRouteImport.update({
@@ -227,6 +239,8 @@ const AuthLayoutDrinksEspressoEspressoIdDecentAddRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AuthLayoutIndexRoute
   '/login': typeof PublicLoginRoute
+  '/api/decent-shots': typeof ApiDecentShotsRoute
+  '/api/feature-flags': typeof ApiFeatureFlagsRoute
   '/ai': typeof AuthLayoutAiRoute
   '/decent-upload': typeof AuthLayoutDecentUploadRoute
   '/design-library': typeof AuthLayoutDesignLibraryRoute
@@ -258,6 +272,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof AuthLayoutIndexRoute
   '/login': typeof PublicLoginRoute
+  '/api/decent-shots': typeof ApiDecentShotsRoute
+  '/api/feature-flags': typeof ApiFeatureFlagsRoute
   '/ai': typeof AuthLayoutAiRoute
   '/decent-upload': typeof AuthLayoutDecentUploadRoute
   '/design-library': typeof AuthLayoutDesignLibraryRoute
@@ -293,6 +309,8 @@ export interface FileRoutesById {
   '/_auth/_layout': typeof AuthLayoutRouteWithChildren
   '/_auth/_layoutFull': typeof AuthLayoutFullRouteWithChildren
   '/_public/login': typeof PublicLoginRoute
+  '/api/decent-shots': typeof ApiDecentShotsRoute
+  '/api/feature-flags': typeof ApiFeatureFlagsRoute
   '/_auth/_layout/ai': typeof AuthLayoutAiRoute
   '/_auth/_layout/decent-upload': typeof AuthLayoutDecentUploadRoute
   '/_auth/_layout/design-library': typeof AuthLayoutDesignLibraryRoute
@@ -327,6 +345,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/api/decent-shots'
+    | '/api/feature-flags'
     | '/ai'
     | '/decent-upload'
     | '/design-library'
@@ -358,6 +378,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/api/decent-shots'
+    | '/api/feature-flags'
     | '/ai'
     | '/decent-upload'
     | '/design-library'
@@ -392,6 +414,8 @@ export interface FileRouteTypes {
     | '/_auth/_layout'
     | '/_auth/_layoutFull'
     | '/_public/login'
+    | '/api/decent-shots'
+    | '/api/feature-flags'
     | '/_auth/_layout/ai'
     | '/_auth/_layout/decent-upload'
     | '/_auth/_layout/design-library'
@@ -425,6 +449,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
+  ApiDecentShotsRoute: typeof ApiDecentShotsRoute
+  ApiFeatureFlagsRoute: typeof ApiFeatureFlagsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -441,6 +467,20 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/feature-flags': {
+      id: '/api/feature-flags'
+      path: '/api/feature-flags'
+      fullPath: '/api/feature-flags'
+      preLoaderRoute: typeof ApiFeatureFlagsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/decent-shots': {
+      id: '/api/decent-shots'
+      path: '/api/decent-shots'
+      fullPath: '/api/decent-shots'
+      preLoaderRoute: typeof ApiDecentShotsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public/login': {
@@ -772,6 +812,8 @@ const PublicRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
+  ApiDecentShotsRoute: ApiDecentShotsRoute,
+  ApiFeatureFlagsRoute: ApiFeatureFlagsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

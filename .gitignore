@@ -24,6 +24,7 @@ tmp/
 
 # temporary while rebuilding the whole app
 srcOld/
+VIBE_*.md
 
 # firebase
 firebase-debug.log*

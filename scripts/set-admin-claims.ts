@@ -2,6 +2,7 @@
  * set-admin-claims.js
  *
  * Sets the "admin" custom claim on a list of Firebase user IDs.
+ * This is used to see "admin-only" pages in the app, e.g. the feature flags page.
  *
  * Setup:
  *   1. Go to Firebase Console → Project Settings → Service Accounts

@@ -1,7 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, isNotNull, isNull, or } from "drizzle-orm";
 import { db } from "./db";
-import { beans, brews, espresso, featureFlags, users } from "./schema";
+import {
+  beans,
+  brews,
+  espresso,
+  espressoDecentReadings,
+  featureFlags,
+  users,
+} from "./schema";
 import type {
   BeansWithUser,
   BeanWithRelations,
@@ -31,7 +38,6 @@ export const getBrews = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
   .handler(async ({ data: firebaseUid }): Promise<BrewWithBeans[]> => {
     try {
       const brewsList = await db
@@ -57,8 +63,10 @@ export const getBrew = createServerFn({
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
-  .handler(async ({ data: { brewFbId, firebaseUid } }): Promise<BrewWithBeans | null> => {
+  .handler(
+    async ({
+      data: { brewFbId, firebaseUid },
+    }): Promise<BrewWithBeans | null> => {
       try {
         const [brew] = await db
           .select()
@@ -87,7 +95,6 @@ export const getEspressos = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
   .handler(async ({ data: firebaseUid }): Promise<EspressoWithBeans[]> => {
     try {
       const espressoList = await db
@@ -113,8 +120,10 @@ export const getEspresso = createServerFn({
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
-  .handler(async ({ data: { espressoFbId, firebaseUid } }): Promise<EspressoWithBeans | null> => {
+  .handler(
+    async ({
+      data: { espressoFbId, firebaseUid },
+    }): Promise<EspressoWithBeans | null> => {
       try {
         const [shot] = await db
           .select()
@@ -138,6 +147,51 @@ export const getEspresso = createServerFn({
     },
   );
 
+export const getDecentReadings = createServerFn({
+  method: "GET",
+})
+  .inputValidator((input: { espressoFbId: string; firebaseUid: string }) => {
+    if (!input.espressoFbId) throw new Error("Espresso ID is required");
+    if (!input.firebaseUid) throw new Error("User ID is required");
+    return input;
+  })
+  .handler(async ({ data: { espressoFbId, firebaseUid } }) => {
+    try {
+      const [result] = await db
+        .select({
+          readings: espressoDecentReadings,
+        })
+        .from(espressoDecentReadings)
+        .innerJoin(espresso, eq(espressoDecentReadings.espressoId, espresso.id))
+        .innerJoin(users, eq(espresso.userId, users.id))
+        .where(
+          and(eq(espresso.fbId, espressoFbId), eq(users.fbId, firebaseUid)),
+        )
+        .limit(1);
+
+      if (!result) {
+        return null;
+      }
+
+      // Convert JSONB fields to arrays
+      return {
+        time: result.readings.time as number[],
+        pressure: result.readings.pressure as number[],
+        weightTotal: result.readings.weightTotal as number[],
+        flow: result.readings.flow as number[],
+        weightFlow: result.readings.weightFlow as number[],
+        temperatureBasket: result.readings.temperatureBasket as number[],
+        temperatureMix: result.readings.temperatureMix as number[],
+        pressureGoal: result.readings.pressureGoal as number[],
+        temperatureGoal: result.readings.temperatureGoal as number[],
+        flowGoal: result.readings.flowGoal as number[],
+      };
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
 export const getBeans = createServerFn({
   method: "GET",
 })
@@ -145,7 +199,6 @@ export const getBeans = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
   .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
     try {
       const beansList = await db
@@ -168,7 +221,6 @@ export const getBeansOpen = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
   .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
     try {
       // Open beans: not finished AND (never frozen OR thawed)
@@ -198,7 +250,6 @@ export const getBeansFrozen = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
   .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
     try {
       // Frozen beans: not finished AND frozen but not thawed
@@ -229,7 +280,6 @@ export const getBeansArchived = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
   .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
     try {
       // Archived beans: marked as finished
@@ -254,8 +304,10 @@ export const getBean = createServerFn({
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  // @ts-expect-error - TanStack Start server function typing issue
-  .handler(async ({ data: { beanFbId, firebaseUid } }): Promise<BeanWithRelations | null> => {
+  .handler(
+    async ({
+      data: { beanFbId, firebaseUid },
+    }): Promise<BeanWithRelations | null> => {
       try {
         // Get the bean with all related brews and espressos
         const [beanData] = await db
