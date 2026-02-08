@@ -1,0 +1,1058 @@
+{
+  "id": "f6fada41-7413-42da-a1ab-51b30eca1e51",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.beans": {
+      "name": "beans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "fb_id": {
+          "name": "fb_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "roaster": {
+          "name": "roaster",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "roast_date": {
+          "name": "roast_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "roast_style": {
+          "name": "roast_style",
+          "type": "roast_style",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "roast_level": {
+          "name": "roast_level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "roasting_notes": {
+          "name": "roasting_notes",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "freeze_date": {
+          "name": "freeze_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thaw_date": {
+          "name": "thaw_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_finished": {
+          "name": "is_finished",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "origin": {
+          "name": "origin",
+          "type": "bean_origin",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "region": {
+          "name": "region",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "varietals": {
+          "name": "varietals",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "altitude": {
+          "name": "altitude",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process": {
+          "name": "process",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "farmer": {
+          "name": "farmer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "harvest_date": {
+          "name": "harvest_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "blend_parts": {
+          "name": "blend_parts",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "beans_fb_id_unique": {
+          "name": "beans_fb_id_unique",
+          "columns": [
+            {
+              "expression": "fb_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "beans_user_roast_date_idx": {
+          "name": "beans_user_roast_date_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "roast_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "beans_user_id_users_id_fk": {
+          "name": "beans_user_id_users_id_fk",
+          "tableFrom": "beans",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "beans_blend_parts_check": {
+          "name": "beans_blend_parts_check",
+          "value": "\"beans\".\"origin\" <> 'blend' or (\"beans\".\"blend_parts\" is not null and jsonb_typeof(\"beans\".\"blend_parts\") = 'array')"
+        },
+        "beans_blend_parts_single_origin_check": {
+          "name": "beans_blend_parts_single_origin_check",
+          "value": "\"beans\".\"origin\" <> 'single-origin' or \"beans\".\"blend_parts\" is null"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.brews": {
+      "name": "brews",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "fb_id": {
+          "name": "fb_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "beans_id": {
+          "name": "beans_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "method": {
+          "name": "method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "grinder": {
+          "name": "grinder",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "grinder_burrs": {
+          "name": "grinder_burrs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "water_type": {
+          "name": "water_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "filter_type": {
+          "name": "filter_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "water_weight": {
+          "name": "water_weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "beans_weight": {
+          "name": "beans_weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "water_temperature": {
+          "name": "water_temperature",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "grind_setting": {
+          "name": "grind_setting",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "time_minutes": {
+          "name": "time_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "time_seconds": {
+          "name": "time_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "numeric(3, 1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tds": {
+          "name": "tds",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "final_brew_weight": {
+          "name": "final_brew_weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "extraction_type": {
+          "name": "extraction_type",
+          "type": "extraction_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aroma": {
+          "name": "aroma",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "acidity": {
+          "name": "acidity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sweetness": {
+          "name": "sweetness",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "body": {
+          "name": "body",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "finish": {
+          "name": "finish",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "brews_fb_id_unique": {
+          "name": "brews_fb_id_unique",
+          "columns": [
+            {
+              "expression": "fb_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "brews_user_date_idx": {
+          "name": "brews_user_date_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "brews_beans_idx": {
+          "name": "brews_beans_idx",
+          "columns": [
+            {
+              "expression": "beans_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "brews_user_id_users_id_fk": {
+          "name": "brews_user_id_users_id_fk",
+          "tableFrom": "brews",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "brews_beans_id_beans_id_fk": {
+          "name": "brews_beans_id_beans_id_fk",
+          "tableFrom": "brews",
+          "tableTo": "beans",
+          "columnsFrom": [
+            "beans_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.espresso": {
+      "name": "espresso",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "fb_id": {
+          "name": "fb_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "beans_id": {
+          "name": "beans_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "grind_setting": {
+          "name": "grind_setting",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "machine": {
+          "name": "machine",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "grinder": {
+          "name": "grinder",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "grinder_burrs": {
+          "name": "grinder_burrs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "portafilter": {
+          "name": "portafilter",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "basket": {
+          "name": "basket",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actual_time": {
+          "name": "actual_time",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_weight": {
+          "name": "target_weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "beans_weight": {
+          "name": "beans_weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "water_temperature": {
+          "name": "water_temperature",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actual_weight": {
+          "name": "actual_weight",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "from_decent": {
+          "name": "from_decent",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "partial": {
+          "name": "partial",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profile_name": {
+          "name": "profile_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uploaded_at": {
+          "name": "uploaded_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "numeric(3, 1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tds": {
+          "name": "tds",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aroma": {
+          "name": "aroma",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "acidity": {
+          "name": "acidity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sweetness": {
+          "name": "sweetness",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "body": {
+          "name": "body",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "finish": {
+          "name": "finish",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "espresso_fb_id_unique": {
+          "name": "espresso_fb_id_unique",
+          "columns": [
+            {
+              "expression": "fb_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "espresso_user_date_idx": {
+          "name": "espresso_user_date_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "espresso_beans_idx": {
+          "name": "espresso_beans_idx",
+          "columns": [
+            {
+              "expression": "beans_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "espresso_user_id_users_id_fk": {
+          "name": "espresso_user_id_users_id_fk",
+          "tableFrom": "espresso",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "espresso_beans_id_beans_id_fk": {
+          "name": "espresso_beans_id_beans_id_fk",
+          "tableFrom": "espresso",
+          "tableTo": "beans",
+          "columnsFrom": [
+            "beans_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "espresso_manual_required_fields_check": {
+          "name": "espresso_manual_required_fields_check",
+          "value": "\"espresso\".\"from_decent\" = true or (\"espresso\".\"beans_id\" is not null and \"espresso\".\"target_weight\" is not null and \"espresso\".\"beans_weight\" is not null)"
+        },
+        "espresso_decent_required_fields_check": {
+          "name": "espresso_decent_required_fields_check",
+          "value": "\"espresso\".\"from_decent\" = false or (\"espresso\".\"profile_name\" is not null and \"espresso\".\"uploaded_at\" is not null and \"espresso\".\"actual_weight\" is not null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.espresso_decent_readings": {
+      "name": "espresso_decent_readings",
+      "schema": "",
+      "columns": {
+        "espresso_id": {
+          "name": "espresso_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pressure": {
+          "name": "pressure",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weight_total": {
+          "name": "weight_total",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "flow": {
+          "name": "flow",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weight_flow": {
+          "name": "weight_flow",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "temperature_basket": {
+          "name": "temperature_basket",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "temperature_mix": {
+          "name": "temperature_mix",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pressure_goal": {
+          "name": "pressure_goal",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "temperature_goal": {
+          "name": "temperature_goal",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "flow_goal": {
+          "name": "flow_goal",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "espresso_decent_readings_espresso_id_espresso_id_fk": {
+          "name": "espresso_decent_readings_espresso_id_espresso_id_fk",
+          "tableFrom": "espresso_decent_readings",
+          "tableTo": "espresso",
+          "columnsFrom": [
+            "espresso_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.feature_flags": {
+      "name": "feature_flags",
+      "schema": "",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.tastings": {
+      "name": "tastings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "fb_id": {
+          "name": "fb_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "beans_id": {
+          "name": "beans_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "tastings_fb_id_unique": {
+          "name": "tastings_fb_id_unique",
+          "columns": [
+            {
+              "expression": "fb_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tastings_user_created_at_idx": {
+          "name": "tastings_user_created_at_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "tastings_user_id_users_id_fk": {
+          "name": "tastings_user_id_users_id_fk",
+          "tableFrom": "tastings",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "tastings_beans_id_beans_id_fk": {
+          "name": "tastings_beans_id_beans_id_fk",
+          "tableFrom": "tastings",
+          "tableTo": "beans",
+          "columnsFrom": [
+            "beans_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "fb_id": {
+          "name": "fb_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "secret_key": {
+          "name": "secret_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "users_fb_id_unique": {
+          "name": "users_fb_id_unique",
+          "columns": [
+            {
+              "expression": "fb_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.bean_origin": {
+      "name": "bean_origin",
+      "schema": "public",
+      "values": [
+        "single-origin",
+        "blend"
+      ]
+    },
+    "public.extraction_type": {
+      "name": "extraction_type",
+      "schema": "public",
+      "values": [
+        "percolation",
+        "immersion"
+      ]
+    },
+    "public.roast_style": {
+      "name": "roast_style",
+      "schema": "public",
+      "values": [
+        "filter",
+        "espresso",
+        "omni-roast"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

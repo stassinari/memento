@@ -3,7 +3,9 @@ serviceAccountKey*.json
 build/
 dist/
 .output/
-.env*
+.env
+.env.development
+.env.production
 
 # Logs
 *.log
