@@ -15,7 +15,6 @@ import {
   DrinksList as DrinksListPostgres,
   mergeBrewsAndEspressoByUniqueDate as mergePostgres,
 } from "~/components/drinks/DrinksList.Postgres";
-import { Heading } from "~/components/Heading";
 import { BeanBagIcon } from "~/components/icons/BeanBagIcon";
 import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
 import { DropIcon } from "~/components/icons/DropIcon";
@@ -166,8 +165,6 @@ function Home() {
 
   return (
     <>
-      <Heading>Memento</Heading>
-
       {/* Recently Used Beans Section */}
       {recentlyUsedBeans.length > 0 && (
         <section className="mt-6">
