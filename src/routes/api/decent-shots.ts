@@ -25,18 +25,45 @@ if (typeof window === "undefined") {
   }
 }
 
-// Initialize Firebase Admin SDK (only once)
-if (getApps().length === 0) {
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-    // Production: use service account credentials from env var (JSON string)
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    initializeApp({
-      credential: cert(serviceAccount),
-    });
-  } else {
+/**
+ * Initialize Firebase Admin SDK lazily (only when needed)
+ * This avoids issues with bundling in serverless environments
+ */
+function initializeFirebaseAdmin() {
+  if (getApps().length > 0) {
+    return; // Already initialized
+  }
+
+  const isLocal =
+    process.env.NODE_ENV !== "production" ||
+    process.env.VITE_FB_PROJECT_ID === "brewlog-dev";
+
+  if (isLocal) {
     // Local development: use emulators with brewlog-dev project ID
     initializeApp({
       projectId: "brewlog-dev",
+    });
+  } else {
+    // Production: use individual env vars (more reliable in serverless)
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+    if (!projectId || !clientEmail || !privateKey) {
+      throw new Error(
+        "Missing Firebase credentials: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY",
+      );
+    }
+
+    // Replace escaped newlines in private key
+    const formattedPrivateKey = privateKey.replace(/\\n/g, "\n");
+
+    initializeApp({
+      credential: cert({
+        projectId,
+        clientEmail,
+        privateKey: formattedPrivateKey,
+      }),
     });
   }
 }
@@ -90,6 +117,23 @@ export const Route = createFileRoute("/api/decent-shots")({
         }
 
         console.log("Call with user data", { email, reqSecretKey });
+
+        // Initialize Firebase Admin (lazy initialization)
+        try {
+          initializeFirebaseAdmin();
+        } catch (error) {
+          console.error("Firebase Admin initialization failed:", error);
+          return new Response(
+            JSON.stringify({
+              error: "Firebase initialization failed",
+              details: error instanceof Error ? error.message : String(error),
+            }),
+            {
+              status: 500,
+              headers: { "Content-Type": "application/json" },
+            },
+          );
+        }
 
         // Step 1: Verify email exists via Firebase Admin
         let firebaseUid: string;
