@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { randomBytes } from "crypto";
 import { and, eq } from "drizzle-orm";
-import { cert, getApps, initializeApp } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
 import { db } from "~/db/db";
 import { espresso, espressoDecentReadings, users } from "~/db/schema";
 import {
@@ -11,62 +9,8 @@ import {
   parseTclShot,
 } from "~/lib/decent-parsers";
 
-// Configure emulator hosts for local development
-if (typeof window === "undefined") {
-  // Server-side only
-  const isLocal =
-    process.env.NODE_ENV !== "production" ||
-    process.env.VITE_FB_PROJECT_ID === "brewlog-dev";
-
-  if (isLocal) {
-    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
-    process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
-    process.env.FIREBASE_STORAGE_EMULATOR_HOST = "127.0.0.1:9199";
-  }
-}
-
-/**
- * Initialize Firebase Admin SDK lazily (only when needed)
- * This avoids issues with bundling in serverless environments
- */
-function initializeFirebaseAdmin() {
-  if (getApps().length > 0) {
-    return; // Already initialized
-  }
-
-  const isLocal =
-    process.env.NODE_ENV !== "production" ||
-    process.env.VITE_FB_PROJECT_ID === "brewlog-dev";
-
-  if (isLocal) {
-    // Local development: use emulators with brewlog-dev project ID
-    initializeApp({
-      projectId: "brewlog-dev",
-    });
-  } else {
-    // Production: use individual env vars (more reliable in serverless)
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-
-    if (!projectId || !clientEmail || !privateKey) {
-      throw new Error(
-        "Missing Firebase credentials: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY",
-      );
-    }
-
-    // Replace escaped newlines in private key
-    const formattedPrivateKey = privateKey.replace(/\\n/g, "\n");
-
-    initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey: formattedPrivateKey,
-      }),
-    });
-  }
-}
+// No Firebase Admin initialization needed!
+// The Cloud Function already authenticates users and passes the UID
 
 /**
  * Generate a Firestore-compatible document ID (20 character alphanumeric)
@@ -87,8 +31,8 @@ function generateFirestoreId(): string {
  * API endpoint to receive Decent Espresso shot uploads
  * Writes to PostgreSQL only (Firestore writes handled by Firebase Function during migration)
  *
- * Security: Basic auth with email:secretKey
- * Expected header: Authorization: Basic <base64(email:secretKey)>
+ * Security: Basic auth with uid:secretKey (uid provided by Cloud Function after Firebase Auth)
+ * Expected header: Authorization: Basic <base64(uid:secretKey)>
  */
 export const Route = createFileRoute("/api/decent-shots")({
   server: {
@@ -107,54 +51,18 @@ export const Route = createFileRoute("/api/decent-shots")({
         const credentials = Buffer.from(base64Credentials, "base64").toString(
           "ascii",
         );
-        const [email, reqSecretKey] = credentials.split(":");
+        const [firebaseUid, reqSecretKey] = credentials.split(":");
 
-        if (!email || !reqSecretKey) {
+        if (!firebaseUid || !reqSecretKey) {
           return new Response(
             JSON.stringify({ error: "Invalid auth format" }),
             { status: 401, headers: { "Content-Type": "application/json" } },
           );
         }
 
-        console.log("Call with user data", { email, reqSecretKey });
+        console.log("Call with Firebase UID:", firebaseUid);
 
-        // Initialize Firebase Admin (lazy initialization)
-        try {
-          initializeFirebaseAdmin();
-        } catch (error) {
-          console.error("Firebase Admin initialization failed:", error);
-          return new Response(
-            JSON.stringify({
-              error: "Firebase initialization failed",
-              details: error instanceof Error ? error.message : String(error),
-            }),
-            {
-              status: 500,
-              headers: { "Content-Type": "application/json" },
-            },
-          );
-        }
-
-        // Step 1: Verify email exists via Firebase Admin
-        let firebaseUid: string;
-        try {
-          const auth = getAuth();
-
-          // console.log(auth);
-
-          const userRecord = await auth.getUserByEmail(email);
-          firebaseUid = userRecord.uid;
-        } catch (error) {
-          console.error("Firebase auth error:", error);
-          return new Response(JSON.stringify({ error: "User not found" }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-
-        console.log("User found", firebaseUid);
-
-        // Step 2: Find user in PostgreSQL and verify secretKey
+        // Find user in PostgreSQL and verify secretKey
         let userId: string;
         try {
           const [user] = await db
@@ -185,6 +93,8 @@ export const Route = createFileRoute("/api/decent-shots")({
             { status: 401, headers: { "Content-Type": "application/json" } },
           );
         }
+
+        console.log("User authenticated, PostgreSQL user ID:", userId);
 
         // Parse multipart/form-data
         try {

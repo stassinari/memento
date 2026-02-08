@@ -136,8 +136,23 @@ function Settings() {
             <>
               <div className="flex items-center justify-between">
                 <p className="text-sm">
+                  User ID:{" "}
+                  <strong className="font-mono font-semibold">{user.uid}</strong>
+                </p>
+                <Button
+                  variant="white"
+                  size="xs"
+                  onClick={async () =>
+                    await navigator.clipboard.writeText(user.uid)
+                  }
+                >
+                  Copy
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-sm">
                   Secret key:{" "}
-                  <strong className="font-semibold">{secretKey}</strong>
+                  <strong className="font-mono font-semibold">{secretKey}</strong>
                 </p>
                 <Button
                   variant="white"
@@ -164,7 +179,7 @@ function Settings() {
                 >
                   this guide
                 </Link>{" "}
-                to enable automatic uploads from you machine
+                to enable automatic uploads from your machine. <strong>Use your User ID (not email) when configuring your Decent machine.</strong>
               </p>
             </>
           ) : (

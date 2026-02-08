@@ -103,7 +103,7 @@ async function getFeatureFlags(): Promise<FeatureFlags> {
 async function forwardToPostgres(
   fileContent: string,
   filename: string,
-  email: string,
+  uid: string, // Firebase UID (already authenticated by Cloud Function)
   secretKey: string,
   fbId: string, // The Firestore ID to use for consistency
 ): Promise<void> {
@@ -127,8 +127,8 @@ async function forwardToPostgres(
     });
     formData.append("fbId", fbId); // Include the pre-generated Firestore ID
 
-    // Send to TanStack Start endpoint with Basic auth
-    const auth = Buffer.from(`${email}:${secretKey}`).toString("base64");
+    // Send to TanStack Start endpoint with Basic auth (uid:secretKey instead of email:secretKey)
+    const auth = Buffer.from(`${uid}:${secretKey}`).toString("base64");
 
     await axios.post(`${baseUrl}/api/decent-shots`, formData, {
       headers: {
@@ -254,7 +254,7 @@ app.post("/", async (req, res) => {
               await forwardToPostgres(
                 fileContent,
                 filename,
-                email,
+                uid, // Pass Firebase UID instead of email
                 reqSecretKey,
                 fbId, // Pass the generated ID
               );
