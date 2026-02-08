@@ -3,7 +3,6 @@ import { randomBytes } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { readFileSync } from "fs";
 import { db } from "~/db/db";
 import { espresso, espressoDecentReadings, users } from "~/db/schema";
 import {
@@ -29,10 +28,8 @@ if (typeof window === "undefined") {
 // Initialize Firebase Admin SDK (only once)
 if (getApps().length === 0) {
   if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-    // Production: use service account credentials
-    const serviceAccount = JSON.parse(
-      readFileSync(process.env.FIREBASE_SERVICE_ACCOUNT_KEY, "utf-8"),
-    );
+    // Production: use service account credentials from env var (JSON string)
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
     initializeApp({
       credential: cert(serviceAccount),
     });
