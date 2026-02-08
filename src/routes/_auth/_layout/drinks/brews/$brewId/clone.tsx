@@ -3,7 +3,9 @@ import {
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { setDoc } from "firebase/firestore";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { doc, setDoc } from "firebase/firestore";
+import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
@@ -12,16 +14,31 @@ import {
   brewFormEmptyValues,
 } from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
+import { addBrew } from "~/db/mutations";
+import { getBrew } from "~/db/queries";
+import type { BrewWithBeans } from "~/db/types";
+import { db } from "~/firebaseConfig";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
-import { useNewRef } from "~/hooks/firestore/useNewBeansRef";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import { Brew } from "~/types/brew";
-import { brewToFirestore } from "../add.lazy";
+import { brewToFirestore } from "../add";
+import { flagsQueryOptions } from "../../../featureFlags";
+
+const brewQueryOptions = (brewId: string, firebaseUid: string) =>
+  queryOptions<BrewWithBeans | null>({
+    queryKey: ["brews", brewId, firebaseUid],
+    queryFn: () => getBrew({ data: { brewFbId: brewId, firebaseUid } }) as Promise<BrewWithBeans | null>,
+  });
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/brews/$brewId/clone",
 )({
   component: BrewClone,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(flagsQueryOptions());
+  },
 });
 
 function BrewClone() {
@@ -29,40 +46,99 @@ function BrewClone() {
 
   const { brewId } = useParams({ strict: false });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const user = useAtomValue(userAtom);
+  const writeToFirestore = useFeatureFlag("write_to_firestore");
+
+  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+  const { data: sqlBrew } = useSuspenseQuery<BrewWithBeans | null>(
+    brewQueryOptions(brewId ?? "", user?.uid ?? ""),
+  );
+
+  const shouldReadFromPostgres = flags?.find(
+    (flag) => flag.name === "read_from_postgres",
+  )?.enabled;
 
   const docRef = useDocRef<Brew>("brews", brewId);
-  const { details: brew } = useFirestoreDocOneTime<Brew>(docRef);
+  const { details: fbBrew } = useFirestoreDocOneTime<Brew>(docRef);
 
-  const newBrewRef = useNewRef("brews");
+  const mutation = useMutation({
+    mutationFn: async (data: BrewFormInputs) => {
+      // 1. Call server function (PostgreSQL write)
+      const result = await addBrew({
+        data: { data, firebaseUid: user?.uid ?? "" },
+      });
 
-  const addBrew = async (data: BrewFormInputs) => {
-    await setDoc(newBrewRef, brewToFirestore(data));
-    navigate({
-      to: "/drinks/brews/$brewId",
-      params: { brewId: newBrewRef.id },
-    });
+      // 2. Conditionally write to Firestore (client-side)
+      if (writeToFirestore) {
+        try {
+          const fsData = brewToFirestore(data);
+          await setDoc(doc(db, `users/${user?.uid}/brews/${result.id}`), fsData);
+        } catch (error) {
+          console.error("Clone brew - Firestore write error:", error);
+          // Continue anyway - data is in PostgreSQL
+        }
+      }
+
+      return result;
+    },
+    onSuccess: (result) => {
+      // Invalidate all brews queries
+      queryClient.invalidateQueries({ queryKey: ["brews"] });
+
+      // Navigate to detail view
+      navigate({
+        to: "/drinks/brews/$brewId",
+        params: { brewId: result.id },
+      });
+    },
+  });
+
+  const handleClone = (data: BrewFormInputs) => {
+    mutation.mutate(data);
   };
+
+  // Check the appropriate data source based on flag
+  const brew = shouldReadFromPostgres ? sqlBrew?.brews : fbBrew;
 
   if (!brew || !brewId) {
     return null;
   }
 
-  // TODO find an automated way to do this
-  const fromFirestore: BrewFormInputs = {
-    ...brewFormEmptyValues(),
-    method: brew.method,
-    beans: brew.beans.path,
+  // Convert to form inputs based on data source
+  const defaultValues: BrewFormInputs = shouldReadFromPostgres
+    ? {
+        // From PostgreSQL
+        ...brewFormEmptyValues(),
+        method: sqlBrew!.brews.method,
+        beans: `users/${user?.uid}/beans/${sqlBrew!.beans.fbId}`,
 
-    grinder: brew.grinder,
-    grinderBurrs: brew.grinderBurrs,
-    waterType: brew.waterType,
-    filterType: brew.filterType,
+        grinder: sqlBrew!.brews.grinder,
+        grinderBurrs: sqlBrew!.brews.grinderBurrs,
+        waterType: sqlBrew!.brews.waterType,
+        filterType: sqlBrew!.brews.filterType,
 
-    waterWeight: brew.waterWeight,
-    beansWeight: brew.beansWeight,
-    waterTemperature: brew.waterTemperature,
-    grindSetting: brew.grindSetting,
-  };
+        waterWeight: sqlBrew!.brews.waterWeight,
+        beansWeight: sqlBrew!.brews.beansWeight,
+        waterTemperature: sqlBrew!.brews.waterTemperature,
+        grindSetting: sqlBrew!.brews.grindSetting,
+      }
+    : {
+        // From Firestore
+        ...brewFormEmptyValues(),
+        method: fbBrew!.method,
+        beans: fbBrew!.beans.path,
+
+        grinder: fbBrew!.grinder,
+        grinderBurrs: fbBrew!.grinderBurrs,
+        waterType: fbBrew!.waterType,
+        filterType: fbBrew!.filterType,
+
+        waterWeight: fbBrew!.waterWeight,
+        beansWeight: fbBrew!.beansWeight,
+        waterTemperature: fbBrew!.waterTemperature,
+        grindSetting: fbBrew!.grindSetting,
+      };
 
   return (
     <>
@@ -78,9 +154,9 @@ function BrewClone() {
       <Heading className="mb-4">Clone brew</Heading>
 
       <BrewForm
-        defaultValues={fromFirestore}
+        defaultValues={defaultValues}
         buttonLabel="Clone"
-        mutation={addBrew}
+        mutation={handleClone}
       />
     </>
   );

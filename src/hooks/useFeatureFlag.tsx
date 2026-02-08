@@ -1,5 +1,6 @@
 import { createContext, useContext, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { getFeatureFlags } from "~/db/queries";
 
 export type FeatureFlagName =
   | "read_from_postgres"
@@ -20,19 +21,30 @@ type FeatureFlagsContextType = FeatureFlagsResponse & {
 const FeatureFlagsContext = createContext<FeatureFlagsContextType | null>(null);
 
 async function fetchFeatureFlags(): Promise<FeatureFlagsResponse> {
-  const response = await fetch("/.netlify/functions/feature-flags");
-  if (!response.ok) {
-    throw new Error("Failed to fetch feature flags");
-  }
-  return response.json();
+  const flags = await getFeatureFlags();
+
+  // Transform array of flags to flat object
+  const flagsMap = flags.reduce(
+    (acc, flag) => {
+      acc[flag.name] = flag.enabled;
+      return acc;
+    },
+    {} as Record<string, boolean>
+  );
+
+  return {
+    read_from_postgres: flagsMap.read_from_postgres ?? false,
+    write_to_postgres: flagsMap.write_to_postgres ?? false,
+    write_to_firestore: flagsMap.write_to_firestore ?? true,
+  };
 }
 
 export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["featureFlags"],
+    queryKey: ["featureFlagsContext"], // Different key to avoid collision with featureFlags route
     queryFn: fetchFeatureFlags,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 0, // Always refetch - flags need to be fresh
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 min to avoid redundant fetches
   });
 
   const value: FeatureFlagsContextType = {

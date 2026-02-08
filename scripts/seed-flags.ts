@@ -1,30 +1,45 @@
 import "dotenv/config";
-import postgres from "postgres";
+import { db } from "../src/db/db";
+import { featureFlags } from "../src/db/schema";
 
-const sql = postgres(process.env.DATABASE_URL!);
-
-// FIXME really don't like this is raw sql, should use drizzle orm
 async function seedFlags() {
   console.log("Seeding feature flags...");
 
-  await sql`
-    INSERT INTO feature_flags (name, enabled, description)
-    VALUES
-      ('read_from_postgres', false, 'Controls whether to read data from Postgres instead of Firestore'),
-      ('write_to_postgres', false, 'Enables writes to Postgres database'),
-      ('write_to_firestore', true, 'Keeps Firestore writes enabled (default)')
-    ON CONFLICT (name) DO UPDATE SET
-      description = EXCLUDED.description
-  `;
+  const flagsToSeed = [
+    {
+      name: "read_from_postgres",
+      enabled: false,
+      description:
+        "Controls whether to read data from Postgres instead of Firestore",
+    },
+    {
+      name: "write_to_postgres",
+      enabled: false,
+      description: "Enables writes to Postgres database",
+    },
+    {
+      name: "write_to_firestore",
+      enabled: true,
+      description: "Keeps Firestore writes enabled (default)",
+    },
+  ];
+
+  for (const flag of flagsToSeed) {
+    await db
+      .insert(featureFlags)
+      .values(flag)
+      .onConflictDoUpdate({
+        target: featureFlags.name,
+        set: { description: flag.description },
+      });
+  }
 
   console.log("Feature flags seeded successfully!");
 
   // Verify
-  const flags = await sql`SELECT * FROM feature_flags ORDER BY name`;
+  const flags = await db.select().from(featureFlags);
   console.log("\nCurrent flags:");
   console.table(flags);
-
-  await sql.end();
 }
 
 seedFlags().catch(console.error);

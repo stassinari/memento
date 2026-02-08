@@ -1,4 +1,4 @@
-import { Stream } from "stream";
+import { Timestamp } from "firebase-admin/firestore";
 import { DecentReadings, Espresso } from ".";
 
 interface TclJsConversion {
@@ -25,13 +25,10 @@ const properties: TclJsConversion[] = [
 
 const bracesRegex = /\{(.*?)\}/g;
 
-const parseShotFile = (data: Stream): string[] =>
-  data
-    .toString()
-    .split("\n")
-    .filter((line) => {
-      return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
-    });
+const parseShotFile = (data: string): string[] =>
+  data.split("\n").filter((line) => {
+    return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
+  });
 
 const extractDate = (lines: string[]): Date => {
   const stringTs =
@@ -90,7 +87,7 @@ const extractTimeSeries = (lines: string[]): DecentReadings =>
 const extractTotalTime = (readings: DecentReadings): number =>
   Math.round(readings["time"][readings["time"].length - 1] * 10) / 10;
 
-export const extractTclShot = async (data: Stream, admin: any, uid: string) => {
+export const extractTclShot = async (data: string, admin: any, uid: string) => {
   const lines = parseShotFile(data);
   const date = extractDate(lines);
 
@@ -98,13 +95,14 @@ export const extractTclShot = async (data: Stream, admin: any, uid: string) => {
   console.log({ date });
 
   // check if shot was uploaded before by matching dates
-  // TODO refactor this to own func
+  // Convert to Timestamp for Firestore query
+  const firestoreDate = Timestamp.fromDate(date);
   const alreadyExists = await admin
     .firestore()
     .collection("users")
     .doc(uid)
     .collection("espresso")
-    .where("date", "==", date)
+    .where("date", "==", firestoreDate)
     .where("fromDecent", "==", true)
     .get()
     .then((espressoList: any) => espressoList.size > 0);

@@ -3,10 +3,13 @@ serviceAccountKey*.json
 build/
 dist/
 .output/
-.env*
+.env
+.env.development
+.env.production
 
 # Logs
 *.log
+migration-log.json
 
 # Local Netlify folder
 .netlify
@@ -23,6 +26,7 @@ tmp/
 
 # temporary while rebuilding the whole app
 srcOld/
+VIBE_*.md
 
 # firebase
 firebase-debug.log*

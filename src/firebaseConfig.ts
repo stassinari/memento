@@ -42,10 +42,10 @@ if (provider) {
 
 const vertex = app ? getVertexAI(app) : (null as any);
 
-// if (location && location.hostname === "localhost") {
+// // Connect to Firebase emulators when running on localhost
+// if (typeof window !== "undefined" && window.location.hostname === "localhost") {
 //   connectFirestoreEmulator(db, "127.0.0.1", 8080);
 //   connectAuthEmulator(auth, "http://127.0.0.1:9099");
-//   connectFunctionsEmulator(functions, "127.0.0.1", 5001); // this is not used now, as we're targeting the endpoint manually
 // }
 
 export { auth, db, vertex };

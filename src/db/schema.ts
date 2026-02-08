@@ -33,9 +33,7 @@ export const users = pgTable(
     fbId: text("fb_id"),
     secretKey: text("secret_key"),
   },
-  (table) => ({
-    fbIdUnique: uniqueIndex("users_fb_id_unique").on(table.fbId),
-  }),
+  (table) => [uniqueIndex("users_fb_id_unique").on(table.fbId)],
 );
 
 export const beans = pgTable(
@@ -76,21 +74,18 @@ export const beans = pgTable(
 
     blendParts: jsonb("blend_parts"),
   },
-  (table) => ({
-    fbIdUnique: uniqueIndex("beans_fb_id_unique").on(table.fbId),
-    byUserRoastDate: index("beans_user_roast_date_idx").on(
-      table.userId,
-      table.roastDate,
-    ),
-    blendPartsCheck: check(
+  (table) => [
+    uniqueIndex("beans_fb_id_unique").on(table.fbId),
+    index("beans_user_roast_date_idx").on(table.userId, table.roastDate),
+    check(
       "beans_blend_parts_check",
       sql`${table.origin} <> 'blend' or (${table.blendParts} is not null and jsonb_typeof(${table.blendParts}) = 'array')`,
     ),
-    blendPartsNullForSingleOrigin: check(
+    check(
       "beans_blend_parts_single_origin_check",
       sql`${table.origin} <> 'single-origin' or ${table.blendParts} is null`,
     ),
-  }),
+  ],
 );
 
 export const brews = pgTable(
@@ -113,31 +108,31 @@ export const brews = pgTable(
     waterType: text("water_type"),
     filterType: text("filter_type"),
 
-    waterWeight: numeric("water_weight").notNull(),
-    beansWeight: numeric("beans_weight").notNull(),
-    waterTemperature: numeric("water_temperature"),
+    waterWeight: numeric("water_weight", { mode: "number" }).notNull(),
+    beansWeight: numeric("beans_weight", { mode: "number" }).notNull(),
+    waterTemperature: numeric("water_temperature", { mode: "number" }),
     grindSetting: text("grind_setting"),
 
     timeMinutes: integer("time_minutes"),
     timeSeconds: integer("time_seconds"),
 
-    rating: numeric({ precision: 3, scale: 1 }),
+    rating: numeric("rating", { precision: 3, scale: 1, mode: "number" }),
     notes: text("notes"),
-    tds: numeric("tds"),
-    finalBrewWeight: numeric("final_brew_weight"),
+    tds: numeric("tds", { mode: "number" }),
+    finalBrewWeight: numeric("final_brew_weight", { mode: "number" }),
     extractionType: extractionTypeEnum("extraction_type"),
 
-    aroma: numeric("aroma"),
-    acidity: numeric("acidity"),
-    sweetness: numeric("sweetness"),
-    body: numeric("body"),
-    finish: numeric("finish"),
+    aroma: numeric("aroma", { mode: "number" }),
+    acidity: numeric("acidity", { mode: "number" }),
+    sweetness: numeric("sweetness", { mode: "number" }),
+    body: numeric("body", { mode: "number" }),
+    finish: numeric("finish", { mode: "number" }),
   },
-  (table) => ({
-    fbIdUnique: uniqueIndex("brews_fb_id_unique").on(table.fbId),
-    byUserDate: index("brews_user_date_idx").on(table.userId, table.date),
-    byBeans: index("brews_beans_idx").on(table.beansId),
-  }),
+  (table) => [
+    uniqueIndex("brews_fb_id_unique").on(table.fbId),
+    index("brews_user_date_idx").on(table.userId, table.date),
+    index("brews_beans_idx").on(table.beansId),
+  ],
 );
 
 export const espresso = pgTable(
@@ -161,42 +156,41 @@ export const espresso = pgTable(
     portafilter: text("portafilter"),
     basket: text("basket"),
 
-    actualTime: numeric("actual_time").notNull(),
+    actualTime: numeric("actual_time", { mode: "number" }).notNull(),
 
-    targetWeight: numeric("target_weight"),
-    beansWeight: numeric("beans_weight"),
-    waterTemperature: numeric("water_temperature"),
-
-    actualWeight: numeric("actual_weight"),
+    targetWeight: numeric("target_weight", { mode: "number" }),
+    beansWeight: numeric("beans_weight", { mode: "number" }),
+    waterTemperature: numeric("water_temperature", { mode: "number" }),
+    actualWeight: numeric("actual_weight", { mode: "number" }),
 
     fromDecent: boolean("from_decent").notNull().default(false),
     partial: boolean("partial"),
     profileName: text("profile_name"),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true, mode: "date" }),
 
-    rating: numeric({ precision: 3, scale: 1 }),
+    rating: numeric("rating", { precision: 3, scale: 1, mode: "number" }),
     notes: text("notes"),
-    tds: numeric("tds"),
+    tds: numeric("tds", { mode: "number" }),
 
-    aroma: numeric("aroma"),
-    acidity: numeric("acidity"),
-    sweetness: numeric("sweetness"),
-    body: numeric("body"),
-    finish: numeric("finish"),
+    aroma: numeric("aroma", { mode: "number" }),
+    acidity: numeric("acidity", { mode: "number" }),
+    sweetness: numeric("sweetness", { mode: "number" }),
+    body: numeric("body", { mode: "number" }),
+    finish: numeric("finish", { mode: "number" }),
   },
-  (table) => ({
-    fbIdUnique: uniqueIndex("espresso_fb_id_unique").on(table.fbId),
-    byUserDate: index("espresso_user_date_idx").on(table.userId, table.date),
-    byBeans: index("espresso_beans_idx").on(table.beansId),
-    espressoManualRequiredFields: check(
+  (table) => [
+    uniqueIndex("espresso_fb_id_unique").on(table.fbId),
+    index("espresso_user_date_idx").on(table.userId, table.date),
+    index("espresso_beans_idx").on(table.beansId),
+    check(
       "espresso_manual_required_fields_check",
       sql`${table.fromDecent} = true or (${table.beansId} is not null and ${table.targetWeight} is not null and ${table.beansWeight} is not null)`,
     ),
-    espressoDecentRequiredFields: check(
+    check(
       "espresso_decent_required_fields_check",
       sql`${table.fromDecent} = false or (${table.profileName} is not null and ${table.uploadedAt} is not null and ${table.actualWeight} is not null)`,
     ),
-  }),
+  ],
 );
 
 export const espressoDecentReadings = pgTable("espresso_decent_readings", {
@@ -229,13 +223,10 @@ export const tastings = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }),
     data: jsonb("data").notNull(),
   },
-  (table) => ({
-    fbIdUnique: uniqueIndex("tastings_fb_id_unique").on(table.fbId),
-    byUserCreatedAt: index("tastings_user_created_at_idx").on(
-      table.userId,
-      table.createdAt,
-    ),
-  }),
+  (table) => [
+    uniqueIndex("tastings_fb_id_unique").on(table.fbId),
+    index("tastings_user_created_at_idx").on(table.userId, table.createdAt),
+  ],
 );
 
 export const featureFlags = pgTable("feature_flags", {

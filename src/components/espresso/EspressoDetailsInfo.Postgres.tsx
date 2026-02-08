@@ -1,13 +1,17 @@
-import { Espresso } from "~/types/espresso";
+import type { Espresso } from "~/db/types";
 import { DetailsCard } from "../Details";
-import { BeansShortInfo } from "../beans/BeansShortInfo";
+import { BeansShortInfo } from "../beans/BeansShortInfo.Firebase";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface EspressoDetailsInfoProps {
   espresso: Espresso;
+  beansId?: string | null;
 }
 
-export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
+export const EspressoDetailsInfo = ({
+  espresso,
+  beansId,
+}: EspressoDetailsInfoProps) => {
   const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
     espresso?.actualWeight ?? espresso?.targetWeight ?? 0,
@@ -26,11 +30,8 @@ export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
           ]}
         />
       )}
-      {espresso.beans ? (
-        <BeansShortInfo
-          beansId={espresso.beans.id}
-          brewDate={espresso.date.toDate()}
-        />
+      {beansId ? (
+        <BeansShortInfo beansId={beansId} brewDate={espresso.date} />
       ) : null}
       <DetailsCard
         title="Equipment"

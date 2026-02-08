@@ -1,13 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { orderBy } from "firebase/firestore";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import countries from "~/data/countries";
 import { processes } from "~/data/processes";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { varietals } from "~/data/varietals";
+import { getBeans } from "~/db/queries";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans, BeansBlendPart, RoastStyle } from "~/types/beans";
 import { Button } from "../Button";
@@ -86,7 +91,7 @@ export const beansFormEmptyValues: BeansFormInputs = {
 interface BeansFormProps {
   defaultValues: BeansFormInputs;
   buttonLabel: string;
-  mutation: (data: BeansFormInputs) => Promise<void>;
+  mutation: (data: BeansFormInputs) => void;
   showStorageSection?: boolean;
 }
 
@@ -99,12 +104,31 @@ export const BeansForm = ({
   console.log("BeansForm");
 
   const navigate = useNavigate();
+  const user = useAtomValue(userAtom);
 
+  const readFromPostgres = useFeatureFlag("read_from_postgres");
+
+  // Load from PostgreSQL when flag enabled
+  const { data: pgBeansList, isLoading: isPgLoading } = useQuery({
+    queryKey: ["beans", user?.uid],
+    queryFn: () => getBeans({ data: user?.uid ?? "" }),
+    enabled: readFromPostgres && !!user?.uid,
+  });
+
+  // Load from Firestore when flag disabled
   const filters = useMemo(() => [orderBy("roastDate", "desc")], []);
-
   const query = useCollectionQuery<Beans>("beans", filters);
-  const { list: beansList, isLoading } =
+  const { list: fsBeansList, isLoading: isFsLoading } =
     useFirestoreCollectionOneTime<Beans>(query);
+
+  // Use appropriate data source based on flag
+  const isLoading = readFromPostgres ? isPgLoading : isFsLoading;
+
+  // Create a unified list with just the roaster field for suggestions
+  const beansList: Array<{ roaster: string }> = readFromPostgres
+    ? ((pgBeansList as any)?.map((b: any) => ({ roaster: b.beans.roaster })) ??
+      [])
+    : fsBeansList.map((b) => ({ roaster: b.roaster }));
 
   const isSm = useScreenMediaQuery("sm");
 

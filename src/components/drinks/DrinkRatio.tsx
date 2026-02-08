@@ -1,4 +1,4 @@
-import { BeanIcon } from "../icons/BeanIcon";
+import { BeanIconSolid } from "../icons/BeanIconSolid";
 import { DropIcon } from "../icons/DropIcon";
 import { useDrinkRatio } from "./useDrinkRatio";
 
@@ -18,7 +18,7 @@ export const DrinkRatio = ({
   return (
     <div className="text-gray-900 grid grid-cols-[30%_40%_30%]">
       <span className="flex items-center gap-2 text-left">
-        <BeanIcon className="w-4 h-4 text-gray-400" />
+        <BeanIconSolid className="w-4 h-4 text-gray-400" />
         {beans}g
       </span>
       <div className="flex flex-col text-center">

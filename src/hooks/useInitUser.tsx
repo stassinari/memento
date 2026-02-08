@@ -3,7 +3,9 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { auth } from "~/firebaseConfig";
 
-export const userAtom = atom<User | null>(null);
+type UserWithRole = User & { role?: string };
+
+export const userAtom = atom<UserWithRole | null>(null);
 export const authInitializedAtom = atom<boolean>(false);
 
 // Promise that resolves when auth state is first determined
@@ -35,9 +37,16 @@ export const useInitUser = () => {
 
   useEffect(() => {
     // Set up auth state listener (client-side only)
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       authInitialized = true; // Update module-level flag
-      setUser(user);
+      let role: string | undefined;
+      if (user) {
+        const idToken = await user.getIdToken(true);
+        const decoded = JSON.parse(atob(idToken.split(".")[1]));
+        role = decoded.role;
+      }
+
+      setUser(user ? { ...user, role } : null);
       setAuthInitialized(true);
     });
 

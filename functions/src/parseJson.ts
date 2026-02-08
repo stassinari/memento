@@ -1,12 +1,12 @@
-import { Stream } from "stream";
+import { Timestamp } from "firebase-admin/firestore";
 import { DecentReadings } from ".";
 
 export const extractJsonShot = async (
-  data: Stream,
+  data: string,
   admin: any,
-  uid: string
+  uid: string,
 ) => {
-  const jsonShot = JSON.parse(data.toString());
+  const jsonShot = JSON.parse(data);
 
   const date = new Date(parseInt(`${jsonShot.timestamp}000`));
 
@@ -14,13 +14,14 @@ export const extractJsonShot = async (
   console.log({ date });
 
   // check if shot was uploaded before by matching dates
-  // TODO refactor this to own func
+  // Convert to Timestamp for Firestore query
+  const firestoreDate = Timestamp.fromDate(date);
   const alreadyExists = await admin
     .firestore()
     .collection("users")
     .doc(uid)
     .collection("espresso")
-    .where("date", "==", date)
+    .where("date", "==", firestoreDate)
     .where("fromDecent", "==", true)
     .get()
     .then((espressoList: any) => espressoList.size > 0);

@@ -1,40 +1,61 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { doc } from "firebase/firestore";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { EspressoOutcomeForm } from "~/components/espresso/EspressoOutcomeForm";
-import { db } from "~/firebaseConfig";
+import { getEspresso } from "~/db/queries";
+import type { EspressoWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
-import { useCurrentUser } from "~/hooks/useInitUser";
+import { userAtom } from "~/hooks/useInitUser";
 import { Espresso } from "~/types/espresso";
+import { flagsQueryOptions } from "../../../featureFlags";
+
+const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+  queryOptions<EspressoWithBeans | null>({
+    queryKey: ["espresso", espressoId, firebaseUid],
+    queryFn: () =>
+      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans | null>,
+  });
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/outcome",
 )({
   component: EspressoEditOutcome,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(flagsQueryOptions());
+  },
 });
 
 function EspressoEditOutcome() {
   console.log("EspressoEditOutcome");
 
-  const user = useCurrentUser();
+  const user = useAtomValue(userAtom);
   const { espressoId } = useParams({ strict: false });
 
+  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+  const { data: sqlEspresso } = useSuspenseQuery<EspressoWithBeans | null>(
+    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+  );
+
+  const shouldReadFromPostgres = flags?.find(
+    (flag) => flag.name === "read_from_postgres",
+  )?.enabled;
+
   const docRef = useDocRef<Espresso>("espresso", espressoId);
-  const { details: espresso, isLoading } =
+  const { details: fbEspresso, isLoading } =
     useFirestoreDocOneTime<Espresso>(docRef);
 
-  if (!user) throw new Error("User is not logged in.");
+  // Check the appropriate data source based on flag
+  const espresso = shouldReadFromPostgres ? sqlEspresso?.espresso : fbEspresso;
 
   if (isLoading) return null;
 
   if (!espressoId || !espresso) {
     throw new Error("Espresso does not exist.");
   }
-
-  const espressoRef = doc(db, "users", user.uid, "espresso", espressoId);
 
   return (
     <>
@@ -49,7 +70,7 @@ function EspressoEditOutcome() {
 
       <Heading className="mb-4">Edit espresso outcome</Heading>
 
-      <EspressoOutcomeForm espresso={espresso} espressoRef={espressoRef} />
+      <EspressoOutcomeForm espresso={espresso as any} espressoId={espressoId} />
     </>
   );
 }

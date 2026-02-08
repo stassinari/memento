@@ -12,7 +12,10 @@ function TastingsPage() {
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings]} />
       <Heading>Tastings</Heading>
-      <p className="mt-4">Tastings here soon</p>
+      <p className="mt-4">
+        Tastings were a feature of the original Memento app, but have not yet
+        been implemented in this version.
+      </p>
     </>
   );
 }

@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Beans } from "~/types/beans";
 import { Espresso } from "~/types/espresso";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadioButtonGroup } from "../../form/FormInputRadioButtonGroup";
@@ -39,14 +37,14 @@ export const beansEquipmentEmptyValues: (
 
 interface BeansEquipmentProps {
   espressoList: Espresso[];
-  beansList: Beans[];
+  beansCardsSelectComponent: ReactNode;
   defaultValues: BeansEquipmentInputs;
   handleNestedSubmit: (data: BeansEquipmentInputs) => void;
 }
 
 export const BeansEquipment = ({
   espressoList,
-  beansList,
+  beansCardsSelectComponent,
   defaultValues,
   handleNestedSubmit,
 }: BeansEquipmentProps) => {
@@ -86,7 +84,7 @@ export const BeansEquipment = ({
             placeholder="Select espresso date"
           />
 
-          <BeansCardsSelect beansList={beansList} />
+          {beansCardsSelectComponent}
         </FormSection>
 
         <Divider className="hidden sm:block" />

@@ -2,36 +2,36 @@ import { Link as RouterLink } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { chain, entries } from "lodash";
 
-import { Beans } from "~/types/beans";
-import { Brew } from "~/types/brew";
-import { Espresso } from "~/types/espresso";
-import { Card } from "./Card";
-import { BeanBagIcon } from "./icons/BeanBagIcon";
-import { BeanIcon } from "./icons/BeanIcon";
-import { DripperIcon } from "./icons/DripperIcon";
-import { DropIcon } from "./icons/DropIcon";
-import { PortafilterIcon } from "./icons/PortafilterIcon";
+import type { Beans, Brew, Espresso } from "~/db/types";
+import { Card } from "../Card";
+import { BeanBagIcon } from "../icons/BeanBagIcon";
+import { BeanIconSolid } from "../icons/BeanIconSolid";
+import { DripperIcon } from "../icons/DripperIcon";
+import { DropIcon } from "../icons/DropIcon";
+import { PortafilterIcon } from "../icons/PortafilterIcon";
 
 const dateFormat = "ddd DD MMM YYYY";
 
 export const mergeBrewsAndEspressoByUniqueDate = (
-  brewsList: Brew[],
-  espressoList: Espresso[],
+  brewsList: { brews: Brew; beans: Beans | null }[],
+  espressoList: { espresso: Espresso; beans: Beans | null }[],
 ) => {
   const brews = chain(brewsList)
-    .groupBy((brew) => dayjs(brew.date.toDate()).format(dateFormat))
+    .groupBy((brew) => dayjs(brew.brews.date).format(dateFormat))
     .mapValues((values) =>
       values.map((brew) => ({
-        drink: brew,
+        drink: brew.brews,
+        beans: brew.beans,
         type: "brew" as const,
       })),
     )
     .value();
   const espressos = chain(espressoList)
-    .groupBy((espresso) => dayjs(espresso.date.toDate()).format(dateFormat))
+    .groupBy((espresso) => dayjs(espresso.espresso.date).format(dateFormat))
     .mapValues((values) =>
       values.map((espresso) => ({
-        drink: espresso,
+        drink: espresso.espresso,
+        beans: espresso.beans,
         type: "espresso" as const,
       })),
     )
@@ -39,7 +39,10 @@ export const mergeBrewsAndEspressoByUniqueDate = (
 
   const drinks: Record<
     string,
-    Array<{ drink: Brew; type: "brew" } | { drink: Espresso; type: "espresso" }>
+    Array<
+      | { drink: Brew; beans: Beans | null; type: "brew" }
+      | { drink: Espresso; beans: Beans | null; type: "espresso" }
+    >
   > = {};
 
   Object.keys(brews).forEach((key) => {
@@ -70,10 +73,12 @@ export const mergeBrewsAndEspressoByUniqueDate = (
       Array<
         | {
             drink: Brew;
+            beans: Beans | null;
             type: "brew";
           }
         | {
             drink: Espresso;
+            beans: Beans | null;
             type: "espresso";
           }
       >,
@@ -82,14 +87,10 @@ export const mergeBrewsAndEspressoByUniqueDate = (
     return [
       date,
       drinks.sort((a, b) => {
-        if (
-          dayjs(a.drink.date.toDate()).isBefore(dayjs(b.drink.date.toDate()))
-        ) {
+        if (dayjs(a.drink.date).isBefore(dayjs(b.drink.date))) {
           return 1;
         }
-        if (
-          dayjs(a.drink.date.toDate()).isAfter(dayjs(b.drink.date.toDate()))
-        ) {
+        if (dayjs(a.drink.date).isAfter(dayjs(b.drink.date))) {
           return -1;
         }
         return 0;
@@ -102,10 +103,9 @@ export const mergeBrewsAndEspressoByUniqueDate = (
 
 interface DrinksListProps {
   drinks: Array<[string, DrinkItemProps[]]>;
-  beansList: Beans[];
 }
 
-export const DrinksList = ({ drinks, beansList }: DrinksListProps) => (
+export const DrinksList = ({ drinks }: DrinksListProps) => (
   <>
     {drinks.map(([date, drinks]) => (
       <div key={date} className="mt-6 sm:mt-8 @container">
@@ -124,11 +124,7 @@ export const DrinksList = ({ drinks, beansList }: DrinksListProps) => (
         </div>
         <ul className="grid gap-4 @xl:grid-cols-2">
           {drinks.map((item) => (
-            <DrinkItem
-              key={item.drink.id}
-              {...item}
-              beans={beansList.find((b) => b.id === item.drink.beans?.id)}
-            />
+            <DrinkItem key={item.drink.id} {...item} beans={item.beans} />
           ))}
         </ul>
       </div>
@@ -139,12 +135,12 @@ export const DrinksList = ({ drinks, beansList }: DrinksListProps) => (
 type DrinkItemProps =
   | {
       drink: Brew;
-      beans?: Beans;
+      beans: Beans | null;
       type: "brew";
     }
   | {
       drink: Espresso;
-      beans?: Beans;
+      beans: Beans | null;
       type: "espresso";
     };
 
@@ -158,8 +154,8 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
       }
       params={
         type === "brew"
-          ? { brewId: drink.id ?? "" }
-          : { espressoId: drink.id ?? "" }
+          ? { brewId: drink.fbId ?? "" }
+          : { espressoId: drink.fbId ?? "" }
       }
     >
       <Card.Container className="grow text-sm">
@@ -181,7 +177,7 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
               at
             </>
           )}
-          <span>{dayjs(drink.date.toDate()).format("HH:mm")}</span>
+          <span>{dayjs(drink.date).format("HH:mm")}</span>
         </Card.Footer>
       </Card.Container>
     </RouterLink>
@@ -190,7 +186,7 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
 
 interface BrewCardContentProps {
   brew: Brew;
-  beans?: Beans;
+  beans?: Beans | null;
 }
 
 const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
@@ -202,7 +198,7 @@ const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
         {beans?.name}
       </p>
       <p className="flex items-center gap-1 text-gray-600">
-        <BeanIcon className="w-3 h-3 text-gray-400" />
+        <BeanIconSolid className="w-3 h-3 text-gray-400" />
         {brew.beansWeight}g : {brew.waterWeight}ml
         <DropIcon className="w-3 h-3 text-gray-400" />
       </p>
@@ -219,7 +215,7 @@ const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
 
 interface EspressoCardContentProps {
   espresso: Espresso;
-  beans?: Beans;
+  beans?: Beans | null;
 }
 
 const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
@@ -233,7 +229,7 @@ const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
         {beans?.name}
       </p>
       <p className="flex items-center gap-1 text-gray-600">
-        <BeanIcon className="w-3 h-3 text-gray-400" />
+        <BeanIconSolid className="w-3 h-3 text-gray-400" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
         <DropIcon className="w-3 h-3 text-gray-400" />
       </p>
