@@ -1,9 +1,14 @@
 import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import {
   createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { doc, setDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
@@ -22,14 +27,16 @@ import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import { userAtom } from "~/hooks/useInitUser";
 import { BaseEspresso } from "~/types/espresso";
+import { flagsQueryOptions } from "../../../feature-flags";
 import { espressoToFirestore } from "../add";
-import { flagsQueryOptions } from "../../../featureFlags";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions<EspressoWithBeans | null>({
     queryKey: ["espresso", espressoId, firebaseUid],
     queryFn: () =>
-      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans | null>,
+      getEspresso({
+        data: { espressoFbId: espressoId, firebaseUid },
+      }) as Promise<EspressoWithBeans | null>,
   });
 
 export const Route = createFileRoute(
@@ -77,7 +84,10 @@ function EspressoEditDetails() {
       if (writeToFirestore) {
         try {
           const fsData = espressoToFirestore(data);
-          await setDoc(doc(db, `users/${user?.uid}/espresso/${espressoId}`), fsData);
+          await setDoc(
+            doc(db, `users/${user?.uid}/espresso/${espressoId}`),
+            fsData,
+          );
         } catch (error) {
           console.error("Edit espresso - Firestore write error:", error);
           // Continue anyway - data is in PostgreSQL

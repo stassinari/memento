@@ -1,53 +1,53 @@
 import { Tab } from "@headlessui/react";
 import {
   queryOptions,
-  useSuspenseQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
-import { deleteDoc, serverTimestamp, updateDoc, Timestamp } from "firebase/firestore";
+import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
-import { userAtom } from "~/hooks/useInitUser";
 import { BeansDetailsInfo as FirebaseBeansDetailsInfo } from "~/components/beans/BeansDetailsInfo.Firebase";
-import { BeansDrinks as FirebaseBeansDrinks } from "~/components/beans/BeansDrinks.Firebase";
 import { BeansDetailsInfo as PostgresBeansDetailsInfo } from "~/components/beans/BeansDetailsInfo.Postgres";
+import { BeansDrinks as FirebaseBeansDrinks } from "~/components/beans/BeansDrinks.Firebase";
 import { BeansDrinks as PostgresBeansDrinks } from "~/components/beans/BeansDrinks.Postgres";
 import { areBeansFresh, areBeansFrozen } from "~/components/beans/utils";
-import { mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList.Postgres";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
 } from "~/components/ButtonWithDropdown";
+import { mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList.Postgres";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import {
   archiveBeans,
-  unarchiveBeans,
+  deleteBeans,
   freezeBeans,
   thawBeans,
-  deleteBeans,
+  unarchiveBeans,
 } from "~/db/mutations";
 import { getBean } from "~/db/queries";
 import type { BeanWithRelations } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { tabStyles } from "..";
-import { flagsQueryOptions } from "../../featureFlags";
+import { flagsQueryOptions } from "../../feature-flags";
 
 const beanQueryOptions = (beanId: string, firebaseUid: string) =>
   queryOptions<BeanWithRelations | null>({
     queryKey: ["bean", beanId, firebaseUid],
-    queryFn: () => getBean({ data: { beanFbId: beanId, firebaseUid } }) as Promise<BeanWithRelations | null>,
+    queryFn: () =>
+      getBean({
+        data: { beanFbId: beanId, firebaseUid },
+      }) as Promise<BeanWithRelations | null>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/beans/$beansId/")({
@@ -77,10 +77,13 @@ function BeansDetails() {
   const isSm = useScreenMediaQuery("sm");
 
   const docRef = useDocRef<Beans>("beans", beansId);
-  const { details: fbBeans, isLoading } = useFirestoreDocRealtime<Beans>(docRef);
+  const { details: fbBeans, isLoading } =
+    useFirestoreDocRealtime<Beans>(docRef);
 
   const beans = shouldReadFromPostgres ? sqlBean?.beans : fbBeans;
-  const beanForDropdown = shouldReadFromPostgres ? sqlBean?.beans as any : fbBeans;
+  const beanForDropdown = shouldReadFromPostgres
+    ? (sqlBean?.beans as any)
+    : fbBeans;
 
   if (!beans && !isLoading) {
     return <NotFound />;
@@ -97,7 +100,10 @@ function BeansDetails() {
       espresso: esp,
       beans: sqlBean.beans,
     }));
-    return mergeBrewsAndEspressoByUniqueDate(brewsWithBeans, espressosWithBeans);
+    return mergeBrewsAndEspressoByUniqueDate(
+      brewsWithBeans,
+      espressosWithBeans,
+    );
   }, [shouldReadFromPostgres, sqlBean]);
 
   const handleArchive = useCallback(async () => {

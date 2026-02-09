@@ -1,9 +1,14 @@
 import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import {
   createFileRoute,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { doc, setDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
@@ -19,13 +24,16 @@ import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import { userAtom } from "~/hooks/useInitUser";
 import { Brew } from "~/types/brew";
+import { flagsQueryOptions } from "../../../feature-flags";
 import { brewToFirestore } from "../add";
-import { flagsQueryOptions } from "../../../featureFlags";
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions<BrewWithBeans | null>({
     queryKey: ["brews", brewId, firebaseUid],
-    queryFn: () => getBrew({ data: { brewFbId: brewId, firebaseUid } }) as Promise<BrewWithBeans | null>,
+    queryFn: () =>
+      getBrew({
+        data: { brewFbId: brewId, firebaseUid },
+      }) as Promise<BrewWithBeans | null>,
   });
 
 export const Route = createFileRoute(

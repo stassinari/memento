@@ -1,10 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
 import { limit, orderBy } from "firebase/firestore";
-import { queryOptions } from "node_modules/@tanstack/react-query/build/modern/queryOptions";
 import { useAtomValue } from "jotai";
+import { queryOptions } from "node_modules/@tanstack/react-query/build/modern/queryOptions";
 import { useMemo, useState } from "react";
-import { userAtom } from "~/hooks/useInitUser";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
@@ -21,10 +20,11 @@ import { getBrews } from "~/db/queries";
 import type { BrewWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
+import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { type Brew } from "~/types/brew";
-import { flagsQueryOptions } from "../../featureFlags";
+import { flagsQueryOptions } from "../../feature-flags";
 
 const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions<BrewWithBeans[]>({

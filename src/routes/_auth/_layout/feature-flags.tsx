@@ -17,7 +17,7 @@ export const flagsQueryOptions = () =>
     queryFn: getFeatureFlags,
   });
 
-export const Route = createFileRoute("/_auth/_layout/featureFlags")({
+export const Route = createFileRoute("/_auth/_layout/feature-flags")({
   component: RouteComponent,
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(flagsQueryOptions());

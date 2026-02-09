@@ -28,7 +28,7 @@ import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCol
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import { useCurrentUser } from "~/hooks/useInitUser";
-import { flagsQueryOptions } from "~/routes/_auth/_layout/featureFlags";
+import { flagsQueryOptions } from "~/routes/_auth/_layout/feature-flags";
 import { DecentEspressoPrep, Espresso } from "~/types/espresso";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>

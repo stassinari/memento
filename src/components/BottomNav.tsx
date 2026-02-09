@@ -6,7 +6,7 @@ import {
   PhotoIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "@tanstack/react-router";
+import { Link, LinkProps } from "@tanstack/react-router";
 import clsx from "clsx";
 import { ReactNode } from "react";
 import { useActiveRoute } from "~/hooks/useActiveRoute";
@@ -16,7 +16,13 @@ import { EspressoIcon } from "./icons/EspressoIcon";
 import { FrenchPressIcon } from "./icons/FrenchPressIcon";
 import { SpoonIcon } from "./icons/SpoonIcon";
 
-export const navLinks = {
+type NavLink = {
+  label: string;
+  linkTo: LinkProps["to"];
+  Icon: ReactNode;
+};
+
+export const navLinks: Record<string, NavLink> = {
   home: {
     label: "Home",
     linkTo: "/",
@@ -59,7 +65,7 @@ export const navLinks = {
   },
   featureFlags: {
     label: "Feature Flags",
-    linkTo: "/featureFlags",
+    linkTo: "/feature-flags",
     Icon: <FlagIcon />,
   },
   settings: {
@@ -74,7 +80,7 @@ export const navLinks = {
   },
 };
 
-const bottomNavLinks: BottomNavItemProps[] = [
+const bottomNavLinks: NavLink[] = [
   navLinks.home,
   navLinks.beans,
   navLinks.drinks,
@@ -100,7 +106,7 @@ export const BottomNav = () => (
 interface BottomNavItemProps {
   Icon: ReactNode;
   label: string;
-  linkTo: string;
+  linkTo: LinkProps["to"];
 }
 
 const BottomNavItem = ({ Icon, label, linkTo }: BottomNavItemProps) => {

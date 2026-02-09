@@ -1,16 +1,20 @@
 import { Tab } from "@headlessui/react";
-import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useState } from "react";
-import { userAtom } from "~/hooks/useInitUser";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { BrewDetailsInfo as FirebaseBrewDetailsInfo } from "~/components/brews/BrewDetailsInfo.Firebase";
 import { BrewDetailsOutcome as FirebaseBrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome.Firebase";
+import { userAtom } from "~/hooks/useInitUser";
 
 import { BrewDetailsInfo as PostgresBrewDetailsInfo } from "~/components/brews/BrewDetailsInfo.Postgres";
 import { BrewDetailsOutcome as PostgresBrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome.Postgres";
@@ -26,12 +30,15 @@ import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Brew } from "~/types/brew";
 import { tabStyles } from "../../../beans";
-import { flagsQueryOptions } from "../../../featureFlags";
+import { flagsQueryOptions } from "../../../feature-flags";
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions<BrewWithBeans | null>({
     queryKey: ["brews", brewId, firebaseUid],
-    queryFn: () => getBrew({ data: { brewFbId: brewId, firebaseUid } }) as Promise<BrewWithBeans | null>,
+    queryFn: () =>
+      getBrew({
+        data: { brewFbId: brewId, firebaseUid },
+      }) as Promise<BrewWithBeans | null>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/")({
@@ -87,7 +94,7 @@ function BrewDetails() {
         await deleteDoc(docRef);
       } catch (error: any) {
         // If document doesn't exist in Firestore, that's okay
-        if (error?.code === 'not-found') {
+        if (error?.code === "not-found") {
           console.warn("Delete brew - Brew not found in Firestore");
         } else {
           console.error("Delete brew - Firestore delete error:", error);
@@ -147,7 +154,10 @@ function BrewDetails() {
             </h2>
 
             {shouldReadFromPostgres ? (
-              <PostgresBrewDetailsInfo brew={sqlBrew!.brews} beans={sqlBrew!.beans} />
+              <PostgresBrewDetailsInfo
+                brew={sqlBrew!.brews}
+                beans={sqlBrew!.beans}
+              />
             ) : (
               <FirebaseBrewDetailsInfo brew={fbBrew!} />
             )}
@@ -178,7 +188,10 @@ function BrewDetails() {
           <Tab.Panels className="mt-4">
             <Tab.Panel>
               {shouldReadFromPostgres ? (
-                <PostgresBrewDetailsInfo brew={sqlBrew!.brews} beans={sqlBrew!.beans} />
+                <PostgresBrewDetailsInfo
+                  brew={sqlBrew!.brews}
+                  beans={sqlBrew!.beans}
+                />
               ) : (
                 <FirebaseBrewDetailsInfo brew={fbBrew!} />
               )}
