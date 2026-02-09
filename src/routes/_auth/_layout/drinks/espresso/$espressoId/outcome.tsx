@@ -1,5 +1,5 @@
-import { createFileRoute, useParams } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -11,13 +11,15 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { userAtom } from "~/hooks/useInitUser";
 import { Espresso } from "~/types/espresso";
-import { flagsQueryOptions } from "../../../featureFlags";
+import { flagsQueryOptions } from "../../../feature-flags";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions<EspressoWithBeans | null>({
     queryKey: ["espresso", espressoId, firebaseUid],
     queryFn: () =>
-      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans | null>,
+      getEspresso({
+        data: { espressoFbId: espressoId, firebaseUid },
+      }) as Promise<EspressoWithBeans | null>,
   });
 
 export const Route = createFileRoute(

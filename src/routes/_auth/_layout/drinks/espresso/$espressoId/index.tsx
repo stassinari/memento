@@ -1,17 +1,16 @@
 import { Tab } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
-import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  createFileRoute,
-  Link,
-  useNavigate,
-} from "@tanstack/react-router";
+  queryOptions,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { deleteDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
-import { userAtom } from "~/hooks/useInitUser";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
@@ -22,8 +21,8 @@ import {
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { EspressoDetailsInfo as FirebaseEspressoDetailsInfo } from "~/components/espresso/EspressoDetailsInfo.Firebase";
-import { EspressoDetailsOutcome as FirebaseEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Firebase";
 import { EspressoDetailsInfo as PostgresEspressoDetailsInfo } from "~/components/espresso/EspressoDetailsInfo.Postgres";
+import { EspressoDetailsOutcome as FirebaseEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Firebase";
 import { EspressoDetailsOutcome as PostgresEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Postgres";
 import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
 import { deleteEspresso } from "~/db/mutations";
@@ -32,16 +31,19 @@ import type { EspressoWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Espresso } from "~/types/espresso";
 import { tabStyles } from "../../../beans";
-import { flagsQueryOptions } from "../../../featureFlags";
+import { flagsQueryOptions } from "../../../feature-flags";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions<EspressoWithBeans | null>({
     queryKey: ["espresso", espressoId, firebaseUid],
     queryFn: () =>
-      getEspresso({ data: { espressoFbId: espressoId, firebaseUid } }) as Promise<EspressoWithBeans | null>,
+      getEspresso({
+        data: { espressoFbId: espressoId, firebaseUid },
+      }) as Promise<EspressoWithBeans | null>,
   });
 
 export const Route = createFileRoute(
@@ -87,7 +89,7 @@ function EspressoDetails() {
     ? sqlEspresso?.espresso.fromDecent
     : fbEspresso?.fromDecent;
   const partial = shouldReadFromPostgres
-    ? sqlEspresso?.espresso.partial ?? false
+    ? (sqlEspresso?.espresso.partial ?? false)
     : (fbEspresso as any)?.partial;
 
   const handleDelete = useCallback(async () => {
@@ -102,7 +104,7 @@ function EspressoDetails() {
         await deleteDoc(docRef);
       } catch (error: any) {
         // If document doesn't exist in Firestore, that's okay
-        if (error?.code === 'not-found') {
+        if (error?.code === "not-found") {
           console.warn("Delete espresso - Espresso not found in Firestore");
         } else {
           console.error("Delete espresso - Firestore delete error:", error);
@@ -207,7 +209,9 @@ function EspressoDetails() {
             </h2>
 
             {shouldReadFromPostgres ? (
-              <PostgresEspressoDetailsOutcome espresso={sqlEspresso!.espresso} />
+              <PostgresEspressoDetailsOutcome
+                espresso={sqlEspresso!.espresso}
+              />
             ) : (
               <FirebaseEspressoDetailsOutcome espresso={fbEspresso!} />
             )}

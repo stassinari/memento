@@ -11,7 +11,7 @@ import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { userAtom } from "~/hooks/useInitUser";
 import { Brew } from "~/types/brew";
-import { flagsQueryOptions } from "../../../featureFlags";
+import { flagsQueryOptions } from "../../../feature-flags";
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions<BrewWithBeans | null>({

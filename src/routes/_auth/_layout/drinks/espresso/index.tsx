@@ -23,12 +23,13 @@ import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { Espresso } from "~/types/espresso";
-import { flagsQueryOptions } from "../../featureFlags";
+import { flagsQueryOptions } from "../../feature-flags";
 
 const espressosQueryOptions = (firebaseUid: string) =>
   queryOptions<EspressoWithBeans[]>({
     queryKey: ["espressos", firebaseUid],
-    queryFn: () => getEspressos({ data: firebaseUid }) as Promise<EspressoWithBeans[]>,
+    queryFn: () =>
+      getEspressos({ data: firebaseUid }) as Promise<EspressoWithBeans[]>,
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({

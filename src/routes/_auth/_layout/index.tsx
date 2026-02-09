@@ -37,7 +37,7 @@ import { useCurrentUser } from "~/hooks/useInitUser";
 import type { Beans } from "~/types/beans";
 import type { Brew } from "~/types/brew";
 import type { Espresso } from "~/types/espresso";
-import { flagsQueryOptions } from "./featureFlags";
+import { flagsQueryOptions } from "./feature-flags";
 
 const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions<BrewWithBeans[]>({

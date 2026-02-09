@@ -28,7 +28,7 @@ import type { BeansWithUser, BrewWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
 import { useCurrentUser } from "~/hooks/useInitUser";
-import { flagsQueryOptions } from "~/routes/_auth/_layout/featureFlags";
+import { flagsQueryOptions } from "~/routes/_auth/_layout/feature-flags";
 import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import { roundToDecimal } from "~/utils";
@@ -73,9 +73,12 @@ const columns = [
     cell: (info) => {
       const dateValue = info.getValue();
       // Handle both Firestore Timestamp (has toDate()) and Date objects
-      const date = typeof dateValue === 'object' && dateValue !== null && 'toDate' in dateValue
-        ? (dateValue as any).toDate()
-        : dateValue;
+      const date =
+        typeof dateValue === "object" &&
+        dateValue !== null &&
+        "toDate" in dateValue
+          ? (dateValue as any).toDate()
+          : dateValue;
       return dayjs(date).format("DD MMM YYYY | H:m");
     },
     header: () => "Date",
@@ -152,17 +155,19 @@ function BrewsTableWrapper() {
   if (readFromPostgres) {
     // Transform PostgreSQL data to match expected structure
     // Add a fake path to brews so the table can match them with beans
-    const brewsList = sqlBrewsList?.map((b) => ({
-      ...b.brews,
-      date: b.brews.date as any,
-      beans: {
-        path: `beans/${b.beans.fbId}`,
-      } as any,
-    })) ?? [];
-    const beansList = sqlBeansList?.map((b) => ({
-      ...b.beans,
-      id: b.beans.fbId,
-    })) ?? [];
+    const brewsList =
+      sqlBrewsList?.map((b) => ({
+        ...b.brews,
+        date: b.brews.date as any,
+        beans: {
+          path: `beans/${b.beans.fbId}`,
+        } as any,
+      })) ?? [];
+    const beansList =
+      sqlBeansList?.map((b) => ({
+        ...b.beans,
+        id: b.beans.fbId,
+      })) ?? [];
 
     if (brewsList.length === 0) return null;
     return <BrewsTable brewsList={brewsList} beansList={beansList} />;

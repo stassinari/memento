@@ -19,7 +19,7 @@ import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { isNotFrozenOrIsThawed } from "~/util";
-import { flagsQueryOptions } from "../featureFlags";
+import { flagsQueryOptions } from "../feature-flags";
 
 const beansOpenQueryOptions = (firebaseUid: string) =>
   queryOptions<BeansWithUser[]>({
