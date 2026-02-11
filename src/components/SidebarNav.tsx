@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, LinkProps } from "@tanstack/react-router";
 import clsx from "clsx";
 import { DocumentReference, doc } from "firebase/firestore";
 import { ReactNode, useMemo } from "react";
@@ -45,7 +45,7 @@ const SidebarNavItem = ({
 export interface SidebarNavItemProps {
   Icon: ReactNode;
   label: string;
-  linkTo: string;
+  linkTo: LinkProps["to"];
   nested?: boolean;
 }
 
@@ -71,7 +71,7 @@ export const SidebarNav = () => {
       { ...navLinks.espresso, nested: true },
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
-      ...(user.role === "admin" || process.env.NODE_ENV === "development"
+      ...(user.role === "admin" || import.meta.env.MODE === "development"
         ? [navLinks.aiPlayground, navLinks.featureFlags, navLinks.designLibrary]
         : []),
     ],

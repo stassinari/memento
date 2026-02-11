@@ -32,7 +32,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <body>
         {children}
         <Scripts />
-        {process.env.NODE_ENV === "development" && (
+        {import.meta.env.MODE === "development" && (
           <>
             <TanStackRouterDevtools position="top-right" />
             <ReactQueryDevtools buttonPosition="bottom-right" />
