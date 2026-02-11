@@ -164,8 +164,8 @@ function EspressoClone() {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
-          { label: "Clone", linkTo: "#" },
+          { label: "Detail", linkTo: "/drinks/espresso/$espressoId" },
+          { label: "Clone" },
         ]}
       />
 

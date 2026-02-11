@@ -116,11 +116,7 @@ function BrewDetails() {
   return (
     <>
       <BreadcrumbsWithHome
-        items={[
-          navLinks.drinks,
-          navLinks.brews,
-          { label: brewMethod, linkTo: "#" },
-        ]}
+        items={[navLinks.drinks, navLinks.brews, { label: brewMethod }]}
       />
 
       <Heading

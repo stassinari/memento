@@ -175,8 +175,8 @@ function DecentEspressoAddDetails() {
           items={[
             navLinks.drinks,
             navLinks.espresso,
-            { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
-            { label: "Add info", linkTo: "#" },
+            { label: "Detail", linkTo: "/drinks/espresso/$espressoId" },
+            { label: "Add info" },
           ]}
         />
 
@@ -214,8 +214,8 @@ function DecentEspressoAddDetails() {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
-          { label: "Add info", linkTo: "#" },
+          { label: "Detail", linkTo: "/drinks/espresso/$espressoId" },
+          { label: "Add info" },
         ]}
       />
 

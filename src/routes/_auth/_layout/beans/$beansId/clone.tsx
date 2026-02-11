@@ -157,8 +157,8 @@ function BeansClone() {
       <BreadcrumbsWithHome
         items={[
           navLinks.beans,
-          { label: beans.name, linkTo: `/beans/${beansId}` },
-          { label: "Clone", linkTo: "#" },
+          { label: beans.name, linkTo: "/beans/$beansId" },
+          { label: "Clone" },
         ]}
       />
 

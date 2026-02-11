@@ -144,14 +144,14 @@ function DesignLibrary() {
             items={[
               { label: "Drinks", linkTo: "/drinks" },
               { label: "Brews", linkTo: "/drinks/brews" },
-              { label: "Brew details", linkTo: "#" },
+              { label: "Brew details" },
             ]}
           />
           <BreadcrumbsWithHome
             items={[
               { label: "Drinks", linkTo: "/drinks" },
               { label: "Brews", linkTo: "/drinks/brews" },
-              { label: "Brew details", linkTo: "#" },
+              { label: "Brew details" },
             ]}
           />
         </div>

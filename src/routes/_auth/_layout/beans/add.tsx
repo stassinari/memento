@@ -109,9 +109,7 @@ function BeansAdd() {
 
   return (
     <>
-      <BreadcrumbsWithHome
-        items={[navLinks.beans, { label: "Add", linkTo: "#" }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.beans, { label: "Add" }]} />
 
       <Heading className="mb-4">Add beans</Heading>
 

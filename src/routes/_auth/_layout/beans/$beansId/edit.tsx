@@ -146,8 +146,8 @@ function BeansEdit() {
       <BreadcrumbsWithHome
         items={[
           navLinks.beans,
-          { label: beans.name, linkTo: `/beans/${beansId}` },
-          { label: "Edit", linkTo: "#" },
+          { label: beans.name, linkTo: "/beans/$beansId" },
+          { label: "Edit" },
         ]}
       />
 

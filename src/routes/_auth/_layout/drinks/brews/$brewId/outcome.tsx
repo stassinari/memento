@@ -64,8 +64,8 @@ function BrewEditOutcome() {
         items={[
           navLinks.drinks,
           navLinks.brews,
-          { label: brew.method, linkTo: `/drinks/brews/${brewId}` },
-          { label: "Outcome", linkTo: "#" },
+          { label: brew.method, linkTo: "/drinks/brews/$brewId" },
+          { label: "Outcome" },
         ]}
       />
 

@@ -245,11 +245,7 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
   return (
     <div className="relative">
       <BreadcrumbsWithHome
-        items={[
-          navLinks.drinks,
-          navLinks.brews,
-          { label: "Table", linkTo: "#" },
-        ]}
+        items={[navLinks.drinks, navLinks.brews, { label: "Table" }]}
       />
 
       <Stats title="Brew stats" stats={totalStats} />

@@ -1,15 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { doc, limit, orderBy, setDoc, Timestamp } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { userAtom } from "~/hooks/useInitUser";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   EspressoForm,
-  EspressoFormInputs,
   espressoFormEmptyValues,
+  EspressoFormInputs,
 } from "~/components/espresso/EspressoForm";
 import { Heading } from "~/components/Heading";
 import { addEspresso } from "~/db/mutations";
@@ -17,6 +16,7 @@ import { db } from "~/firebaseConfig";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { userAtom } from "~/hooks/useInitUser";
 import { Espresso } from "~/types/espresso";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/espresso/add")({
@@ -58,7 +58,10 @@ function EspressoAdd() {
         try {
           console.log("Add espresso - Writing to Firestore");
           const fsData = espressoToFirestore(data);
-          await setDoc(doc(db, `users/${user?.uid}/espresso/${result.id}`), fsData);
+          await setDoc(
+            doc(db, `users/${user?.uid}/espresso/${result.id}`),
+            fsData,
+          );
           console.log("Add espresso - Firestore write complete");
         } catch (error) {
           console.error("Add espresso - Firestore write error:", error);
@@ -93,11 +96,7 @@ function EspressoAdd() {
   return (
     <>
       <BreadcrumbsWithHome
-        items={[
-          navLinks.drinks,
-          navLinks.espresso,
-          { label: "Add", linkTo: "#" },
-        ]}
+        items={[navLinks.drinks, navLinks.espresso, { label: "Add" }]}
       />
 
       <Heading className="mb-4">Add espresso</Heading>

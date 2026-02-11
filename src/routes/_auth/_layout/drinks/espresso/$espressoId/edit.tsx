@@ -150,8 +150,8 @@ function EspressoEditDetails() {
         items={[
           navLinks.drinks,
           navLinks.espresso,
-          { label: "Detail", linkTo: `/drinks/espresso/${espressoId}` },
-          { label: "Edit", linkTo: "#" },
+          { label: "Detail", linkTo: "/drinks/espresso/$espressoId" },
+          { label: "Edit" },
         ]}
       />
 

@@ -1,5 +1,5 @@
-import { useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { doc, limit, orderBy, setDoc, Timestamp } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
@@ -7,8 +7,8 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   BrewForm,
-  BrewFormInputs,
   brewFormEmptyValues,
+  BrewFormInputs,
 } from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
@@ -54,7 +54,10 @@ function BrewsAdd() {
       if (writeToFirestore) {
         try {
           const fsData = brewToFirestore(data);
-          await setDoc(doc(db, `users/${user?.uid}/brews/${result.id}`), fsData);
+          await setDoc(
+            doc(db, `users/${user?.uid}/brews/${result.id}`),
+            fsData,
+          );
         } catch (error) {
           console.error("Add brew - Firestore write error:", error);
           // Continue anyway - data is in PostgreSQL
@@ -84,7 +87,7 @@ function BrewsAdd() {
   return (
     <>
       <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.brews, { label: "Add", linkTo: "#" }]}
+        items={[navLinks.drinks, navLinks.brews, { label: "Add" }]}
       />
 
       <Heading className="mb-4">Add brew</Heading>

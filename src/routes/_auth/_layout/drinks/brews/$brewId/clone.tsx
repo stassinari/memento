@@ -157,8 +157,8 @@ function BrewClone() {
         items={[
           navLinks.drinks,
           navLinks.brews,
-          { label: brew.method, linkTo: `/drinks/brews/${brewId}` },
-          { label: "Clone", linkTo: "#" },
+          { label: brew.method, linkTo: "/drinks/brews/$brewId" },
+          { label: "Clone" },
         ]}
       />
 

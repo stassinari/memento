@@ -240,9 +240,7 @@ function BeansDetails() {
 
   return (
     <>
-      <BreadcrumbsWithHome
-        items={[navLinks.beans, { label: beans.name, linkTo: "#" }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.beans, { label: beans.name }]} />
 
       <Heading actionSlot={<ButtonWithDropdown {...dropdownButtons} />}>
         {beans.name}

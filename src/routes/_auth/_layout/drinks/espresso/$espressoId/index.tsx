@@ -149,11 +149,7 @@ function EspressoDetails() {
   return (
     <>
       <BreadcrumbsWithHome
-        items={[
-          navLinks.drinks,
-          navLinks.espresso,
-          { label: "Detail", linkTo: "#" },
-        ]}
+        items={[navLinks.drinks, navLinks.espresso, { label: "Detail" }]}
       />
 
       <Heading
