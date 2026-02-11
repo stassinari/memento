@@ -26,6 +26,14 @@ export const extractionTypeEnum = pgEnum("extraction_type", [
   "immersion",
 ]);
 
+type BeansBlendPart = {
+  name: string | null;
+  country: string | null;
+  varietals: string[];
+  percentage: number | null;
+  process: string | null;
+};
+
 export const users = pgTable(
   "users",
   {
@@ -72,7 +80,7 @@ export const beans = pgTable(
     farmer: text("farmer"),
     harvestDate: date("harvest_date"),
 
-    blendParts: jsonb("blend_parts"),
+    blendParts: jsonb("blend_parts").$type<BeansBlendPart[]>(),
   },
   (table) => [
     uniqueIndex("beans_fb_id_unique").on(table.fbId),
