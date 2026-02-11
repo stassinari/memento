@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "@tanstack/react-router";
+import { LinkProps, Link as RouterLink } from "@tanstack/react-router";
 import clsx from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
 import { Card } from "./Card";
@@ -44,7 +44,7 @@ const Rating = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 );
 
 interface ListCardProps {
-  linkTo: string;
+  linkTo: LinkProps["to"];
   children: ReactNode;
   footerSlot?: ReactNode;
 }

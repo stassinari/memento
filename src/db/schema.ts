@@ -55,7 +55,7 @@ export const beans = pgTable(
 
     name: text("name").notNull(),
     roaster: text("roaster").notNull(),
-    roastDate: date("roast_date"),
+    roastDate: date("roast_date", { mode: "date" }).notNull(),
     roastStyle: roastStyleEnum("roast_style"),
     roastLevel: integer("roast_level"),
     roastingNotes: text("roasting_notes")

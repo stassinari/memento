@@ -1,5 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, isNotNull, isNull, or } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  isNotNull,
+  isNull,
+  or,
+} from "drizzle-orm";
 import { db } from "./db";
 import {
   beans,
@@ -10,6 +18,7 @@ import {
   users,
 } from "./schema";
 import type {
+  Beans,
   BeansWithUser,
   BeanWithRelations,
   BrewWithBeans,
@@ -245,11 +254,11 @@ export const getBeansOpen = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
+  .handler(async ({ data: firebaseUid }): Promise<Beans[]> => {
     try {
       // Open beans: not finished AND (never frozen OR thawed)
       const beansList = await db
-        .select()
+        .select({ ...getTableColumns(beans) })
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
         .where(
@@ -260,7 +269,7 @@ export const getBeansOpen = createServerFn({
           ),
         )
         .orderBy(desc(beans.roastDate));
-      return beansList as BeansWithUser[];
+      return beansList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -274,11 +283,11 @@ export const getBeansFrozen = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
+  .handler(async ({ data: firebaseUid }): Promise<Beans[]> => {
     try {
       // Frozen beans: not finished AND frozen but not thawed
       const beansList = await db
-        .select()
+        .select({ ...getTableColumns(beans) })
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
         .where(
@@ -290,7 +299,7 @@ export const getBeansFrozen = createServerFn({
           ),
         )
         .orderBy(desc(beans.freezeDate));
-      return beansList as BeansWithUser[];
+      return beansList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -304,16 +313,16 @@ export const getBeansArchived = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
+  .handler(async ({ data: firebaseUid }): Promise<Beans[]> => {
     try {
       // Archived beans: marked as finished
       const beansList = await db
-        .select()
+        .select({ ...getTableColumns(beans) })
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
         .where(and(eq(users.fbId, firebaseUid), eq(beans.isFinished, true)))
         .orderBy(desc(beans.roastDate));
-      return beansList as BeansWithUser[];
+      return beansList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
