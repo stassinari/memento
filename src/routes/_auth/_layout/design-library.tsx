@@ -167,7 +167,7 @@ function DesignLibrary() {
           <div className="space-y-4">
             {/* Example ListCard */}
             <ListCard
-              linkTo="#"
+              linkProps={{ to: "/" }}
               footerSlot={
                 <ListCard.Footer
                   text="Fake footer"
@@ -202,7 +202,7 @@ function DesignLibrary() {
 
             {/* Brew ListCard */}
             <ListCard
-              linkTo="#"
+              linkProps={{ to: "/" }}
               footerSlot={
                 <ListCard.Footer
                   text="Brewed at 08:10"
@@ -237,7 +237,7 @@ function DesignLibrary() {
 
             {/* Espresso ListCard */}
             <ListCard
-              linkTo="#"
+              linkProps={{ to: "/" }}
               footerSlot={
                 <ListCard.Footer
                   text="Pulled at 17:56"
@@ -272,7 +272,7 @@ function DesignLibrary() {
 
             {/* Beans ListCard */}
             <ListCard
-              linkTo="#"
+              linkProps={{ to: "/" }}
               footerSlot={
                 <ListCard.Footer
                   text="Roasted 18 days ago"
@@ -309,10 +309,14 @@ function DesignLibrary() {
         <div>
           <p>Button with dropdown</p>
           <ButtonWithDropdown
-            mainButton={{ type: "link", label: "Clone", href: "#" }}
+            mainButton={{
+              type: "link",
+              label: "Clone",
+              linkProps: { to: "/" },
+            }}
             dropdownItems={[
-              { type: "link", label: "Edit details", href: "#" },
-              { type: "link", label: "Edit outcome", href: "#" },
+              { type: "link", label: "Edit details", linkProps: { to: "/" } },
+              { type: "link", label: "Edit outcome", linkProps: { to: "/" } },
               {
                 type: "button",
                 label: "Delete",

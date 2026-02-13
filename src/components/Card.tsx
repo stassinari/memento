@@ -38,7 +38,7 @@ const Header = ({ title, action }: HeaderProps) => (
     <h3 className="text-sm font-bold leading-6 text-gray-900">{title}</h3>
     {action &&
       (action.type === "link" ? (
-        <Link to={action.href} className={clsx(actionStyles)}>
+        <Link {...action.linkProps} className={clsx(actionStyles)}>
           {action.label}
         </Link>
       ) : (

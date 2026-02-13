@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -15,18 +15,25 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export const roastStyleEnum = pgEnum("roast_style", [
-  "filter",
-  "espresso",
-  "omni-roast",
-]);
-export const beanOriginEnum = pgEnum("bean_origin", ["single-origin", "blend"]);
+export enum RoastStyle {
+  Filter = "filter",
+  Espresso = "espresso",
+  OmniRoast = "omni-roast",
+}
+const roastStyleEnum = pgEnum("roast_style", RoastStyle);
+
+export enum BeanOrigin {
+  SingleOrigin = "single-origin",
+  Blend = "blend",
+}
+const beanOriginEnum = pgEnum("bean_origin", BeanOrigin);
+
 export const extractionTypeEnum = pgEnum("extraction_type", [
   "percolation",
   "immersion",
 ]);
 
-type BeansBlendPart = {
+export type BeansBlendPart = {
   name: string | null;
   country: string | null;
   varietals: string[];
@@ -55,7 +62,7 @@ export const beans = pgTable(
 
     name: text("name").notNull(),
     roaster: text("roaster").notNull(),
-    roastDate: date("roast_date", { mode: "date" }).notNull(),
+    roastDate: date("roast_date", { mode: "date" }),
     roastStyle: roastStyleEnum("roast_style"),
     roastLevel: integer("roast_level"),
     roastingNotes: text("roasting_notes")
@@ -63,8 +70,8 @@ export const beans = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
 
-    freezeDate: date("freeze_date"),
-    thawDate: date("thaw_date"),
+    freezeDate: date("freeze_date", { mode: "date" }),
+    thawDate: date("thaw_date", { mode: "date" }),
     isFinished: boolean("is_finished").notNull().default(false),
 
     origin: beanOriginEnum("origin").notNull(),
@@ -78,7 +85,7 @@ export const beans = pgTable(
     altitude: integer("altitude"),
     process: text("process"),
     farmer: text("farmer"),
-    harvestDate: date("harvest_date"),
+    harvestDate: date("harvest_date", { mode: "date" }),
 
     blendParts: jsonb("blend_parts").$type<BeansBlendPart[]>(),
   },
@@ -242,3 +249,68 @@ export const featureFlags = pgTable("feature_flags", {
   enabled: boolean("enabled").notNull().default(false),
   description: text("description"),
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  beans: many(beans),
+  brews: many(brews),
+  espresso: many(espresso),
+  tastings: many(tastings),
+}));
+
+export const beansRelations = relations(beans, ({ one, many }) => ({
+  user: one(users, {
+    fields: [beans.userId],
+    references: [users.id],
+  }),
+  brews: many(brews),
+  espresso: many(espresso),
+  tastings: many(tastings),
+}));
+
+export const brewsRelations = relations(brews, ({ one }) => ({
+  user: one(users, {
+    fields: [brews.userId],
+    references: [users.id],
+  }),
+  beans: one(beans, {
+    fields: [brews.beansId],
+    references: [beans.id],
+  }),
+}));
+
+export const espressoRelations = relations(espresso, ({ one }) => ({
+  user: one(users, {
+    fields: [espresso.userId],
+    references: [users.id],
+  }),
+  beans: one(beans, {
+    fields: [espresso.beansId],
+    references: [beans.id],
+  }),
+  decentReadings: one(espressoDecentReadings, {
+    fields: [espresso.id],
+    references: [espressoDecentReadings.espressoId],
+  }),
+}));
+
+export const espressoDecentReadingsRelations = relations(
+  espressoDecentReadings,
+  ({ one }) => ({
+    espresso: one(espresso, {
+      fields: [espressoDecentReadings.espressoId],
+      references: [espresso.id],
+    }),
+  }),
+);
+
+export const tastingsRelations = relations(tastings, ({ one }) => ({
+  user: one(users, {
+    fields: [tastings.userId],
+    references: [users.id],
+  }),
+  beans: one(beans, {
+    fields: [tastings.beansId],
+    references: [beans.id],
+  }),
+}));

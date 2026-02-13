@@ -27,7 +27,6 @@ import { EspressoDetailsOutcome as PostgresEspressoDetailsOutcome } from "~/comp
 import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
 import { deleteEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import type { EspressoWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
@@ -36,6 +35,8 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Espresso } from "~/types/espresso";
 import { tabStyles } from "../../../beans";
 import { flagsQueryOptions } from "../../../feature-flags";
+
+type EspressoWithBeans = NonNullable<Awaited<ReturnType<typeof getEspresso>>>;
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions<EspressoWithBeans | null>({
@@ -119,9 +120,23 @@ function EspressoDetails() {
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({
-      mainButton: { type: "link", label: "Edit outcome", href: "outcome" },
+      mainButton: {
+        type: "link",
+        label: "Edit outcome",
+        linkProps: {
+          to: "/drinks/espresso/$espressoId/outcome",
+          params: { espressoId },
+        },
+      },
       dropdownItems: [
-        { type: "link", label: "Edit details", href: "decent/edit" },
+        {
+          type: "link",
+          label: "Edit details",
+          linkProps: {
+            to: "/drinks/espresso/$espressoId/decent/edit",
+            params: { espressoId },
+          },
+        },
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
     }),
@@ -130,10 +145,31 @@ function EspressoDetails() {
 
   const normalEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({
-      mainButton: { type: "link", label: "Clone", href: "clone" },
+      mainButton: {
+        type: "link",
+        label: "Clone",
+        linkProps: {
+          to: "/drinks/espresso/$espressoId/clone",
+          params: { espressoId },
+        },
+      },
       dropdownItems: [
-        { type: "link", label: "Edit details", href: "edit" },
-        { type: "link", label: "Edit outcome", href: "outcome" },
+        {
+          type: "link",
+          label: "Edit details",
+          linkProps: {
+            to: "/drinks/espresso/$espressoId/edit",
+            params: { espressoId },
+          },
+        },
+        {
+          type: "link",
+          label: "Edit outcome",
+          linkProps: {
+            to: "/drinks/espresso/$espressoId/outcome",
+            params: { espressoId },
+          },
+        },
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
     }),

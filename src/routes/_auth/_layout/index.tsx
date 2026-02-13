@@ -8,13 +8,13 @@ import { BeansCard } from "~/components/beans/BeansCard";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
 import {
+  DrinksList as DrinksListPostgres,
+  mergeBrewsAndEspressoByUniqueDate as mergePostgres,
+} from "~/components/drinks/DrinksList";
+import {
   DrinksList as DrinksListFirebase,
   mergeBrewsAndEspressoByUniqueDate as mergeFirebase,
 } from "~/components/drinks/DrinksList.Firebase";
-import {
-  DrinksList as DrinksListPostgres,
-  mergeBrewsAndEspressoByUniqueDate as mergePostgres,
-} from "~/components/drinks/DrinksList.Postgres";
 import { BeanBagIcon } from "~/components/icons/BeanBagIcon";
 import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
 import { DropIcon } from "~/components/icons/DropIcon";
@@ -26,11 +26,6 @@ import {
   getEspressos,
   getPartialEspressos,
 } from "~/db/queries";
-import type {
-  BeansWithUser,
-  BrewWithBeans,
-  EspressoWithBeans,
-} from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import { useCurrentUser } from "~/hooks/useInitUser";
@@ -38,6 +33,12 @@ import type { Beans } from "~/types/beans";
 import type { Brew } from "~/types/brew";
 import type { Espresso } from "~/types/espresso";
 import { flagsQueryOptions } from "./feature-flags";
+
+type BeansWithUser = Awaited<ReturnType<typeof getBeans>>[number];
+type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
+type EspressoWithBeans = NonNullable<
+  Awaited<ReturnType<typeof getEspressos>>
+>[number];
 
 const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions<BrewWithBeans[]>({
@@ -182,10 +183,7 @@ function Home() {
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {recentlyUsedBeans.slice(0, 5).map((beans) => (
               <li key={beans.id}>
-                <BeansCard
-                  beans={beans}
-                  shouldReadFromPostgres={readFromPostgres}
-                />
+                <BeansCard beans={beans} />
               </li>
             ))}
           </ul>
@@ -341,11 +339,12 @@ function PartialEspressoCard({
     ? espressoBeans
     : beansList.find((b) => `beans/${b.id}` === espresso.beans?.path);
 
-  const espressoId = readFromPostgres ? espresso.fbId : espresso.id;
-
   return (
     <ListCard
-      linkTo={`/drinks/espresso/${espressoId}/decent/add`}
+      linkProps={{
+        to: "/drinks/espresso/$espressoId/decent/add",
+        params: { espressoId: espresso.fbId },
+      }}
       footerSlot={
         <Card.Footer className="flex items-center h-8 gap-1 text-xs text-gray-500">
           <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" />

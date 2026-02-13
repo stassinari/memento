@@ -6,12 +6,13 @@ import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { BrewOutcomeForm } from "~/components/brews/BrewOutcomeForm";
 import { getBrew } from "~/db/queries";
-import type { BrewWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { userAtom } from "~/hooks/useInitUser";
 import { Brew } from "~/types/brew";
 import { flagsQueryOptions } from "../../../feature-flags";
+
+type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions<BrewWithBeans | null>({

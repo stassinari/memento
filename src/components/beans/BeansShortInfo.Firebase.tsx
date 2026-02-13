@@ -30,7 +30,10 @@ export const BeansShortInfo = ({ beansId, brewDate }: BeansShortInfoProps) => {
       action={{
         type: "link",
         label: "View",
-        href: beans.id ? `/beans/${beans.id}` : "",
+        linkProps: {
+          to: "/beans/$beansId",
+          params: { beansId: beans.id ?? "" },
+        },
       }}
       rows={[
         {

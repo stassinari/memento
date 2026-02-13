@@ -23,7 +23,6 @@ import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { deleteBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
-import type { BrewWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import { useFeatureFlag } from "~/hooks/useFeatureFlag";
@@ -31,6 +30,8 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Brew } from "~/types/brew";
 import { tabStyles } from "../../../beans";
 import { flagsQueryOptions } from "../../../feature-flags";
+
+type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions<BrewWithBeans | null>({
@@ -122,10 +123,31 @@ function BrewDetails() {
       <Heading
         actionSlot={
           <ButtonWithDropdown
-            mainButton={{ type: "link", label: "Clone", href: "clone" }}
+            mainButton={{
+              type: "link",
+              label: "Clone",
+              linkProps: {
+                to: "/drinks/brews/$brewId/clone",
+                params: { brewId },
+              },
+            }}
             dropdownItems={[
-              { type: "link", label: "Edit details", href: "edit" },
-              { type: "link", label: "Edit outcome", href: "outcome" },
+              {
+                type: "link",
+                label: "Edit details",
+                linkProps: {
+                  to: "/drinks/brews/$brewId/edit",
+                  params: { brewId },
+                },
+              },
+              {
+                type: "link",
+                label: "Edit outcome",
+                linkProps: {
+                  to: "/drinks/brews/$brewId/outcome",
+                  params: { brewId },
+                },
+              },
               {
                 type: "button",
                 label: "Delete",

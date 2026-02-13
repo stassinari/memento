@@ -11,7 +11,10 @@ type BeansCardProps = {
 export const BeansCard = ({ beans }: BeansCardProps) => {
   return (
     <ListCard
-      linkTo={`/beans/$beansId`}
+      linkProps={{
+        to: "/beans/$beansId",
+        params: { beansId: beans.id },
+      }}
       footerSlot={
         beans.roastDate ? (
           <ListCard.Footer

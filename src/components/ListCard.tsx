@@ -44,14 +44,14 @@ const Rating = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 );
 
 interface ListCardProps {
-  linkTo: LinkProps["to"];
+  linkProps: LinkProps;
   children: ReactNode;
   footerSlot?: ReactNode;
 }
 
-const ListCardRoot = ({ linkTo, children, footerSlot }: ListCardProps) => {
+const ListCardRoot = ({ linkProps, children, footerSlot }: ListCardProps) => {
   return (
-    <RouterLink to={linkTo} className="block">
+    <RouterLink {...linkProps} className="block">
       <Card.Container className="grow text-sm">
         <Card.Content>{children}</Card.Content>
         {footerSlot}

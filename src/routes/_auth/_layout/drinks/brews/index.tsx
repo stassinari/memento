@@ -8,16 +8,15 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import {
+  DrinksList as PostgresDrinksList,
+  mergeBrewsAndEspressoByUniqueDate as postgresMergeBrewsAndEspressoByUniqueDate,
+} from "~/components/drinks/DrinksList";
+import {
   DrinksList as FirebaseDrinksList,
   mergeBrewsAndEspressoByUniqueDate as firebaseMergeBrewsAndEspressoByUniqueDate,
 } from "~/components/drinks/DrinksList.Firebase";
-import {
-  DrinksList as PostgresDrinksList,
-  mergeBrewsAndEspressoByUniqueDate as postgresMergeBrewsAndEspressoByUniqueDate,
-} from "~/components/drinks/DrinksList.Postgres";
 import { Heading } from "~/components/Heading";
 import { getBrews } from "~/db/queries";
-import type { BrewWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import { userAtom } from "~/hooks/useInitUser";
@@ -25,6 +24,8 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Beans } from "~/types/beans";
 import { type Brew } from "~/types/brew";
 import { flagsQueryOptions } from "../../feature-flags";
+
+type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
 
 const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions<BrewWithBeans[]>({

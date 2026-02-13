@@ -88,13 +88,6 @@ async function getUserByFirebaseUid(
 }
 
 /**
- * Convert Date to SQL date string (YYYY-MM-DD)
- */
-function dateToSqlDate(date: Date | null): string | null {
-  return date ? date.toISOString().split("T")[0] : null;
-}
-
-/**
  * Validate beans input data
  */
 function validateBeansInput(data: BeansFormInputs): void {
@@ -108,7 +101,7 @@ function validateBeansInput(data: BeansFormInputs): void {
 
   // Discriminated union validation
   if (data.origin === "blend") {
-    if (!data.blend || data.blend.length === 0) {
+    if (!data.blendParts || data.blendParts.length === 0) {
       throw new Error("Blend must have at least one part");
     }
   }
@@ -182,73 +175,65 @@ export const addBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-    // 1. Get feature flags
-    const flags = await getFlags();
-
     // 2. Generate Firestore-compatible doc ID
     const fbId = generateFirestoreId();
 
-    // 3. CONDITIONAL WRITE TO POSTGRESQL
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (!userId) {
-          console.error(
-            "User not found in PostgreSQL, skipping Postgres write",
-          );
-        } else {
-          // Convert form data for PostgreSQL
-          const pgData = {
-            fbId,
-            userId,
-            name: data.name!,
-            roaster: data.roaster!,
-            roastDate: dateToSqlDate(data.roastDate),
-            roastStyle: data.roastStyle,
-            roastLevel: data.roastLevel,
-            roastingNotes: data.roastingNotes,
-            freezeDate: dateToSqlDate(data.freezeDate),
-            thawDate: dateToSqlDate(data.thawDate),
-            isFinished: data.isFinished ?? false,
-            origin: data.origin,
-            // Single-origin fields (null if blend)
-            country: data.origin === "single-origin" ? data.country : null,
-            region: data.origin === "single-origin" ? data.region : null,
-            varietals: data.origin === "single-origin" ? data.varietals : [],
-            altitude: data.origin === "single-origin" ? data.altitude : null,
-            process: data.origin === "single-origin" ? data.process : null,
-            farmer: data.origin === "single-origin" ? data.farmer : null,
-            harvestDate:
-              data.origin === "single-origin"
-                ? dateToSqlDate(data.harvestDate)
-                : null,
-            // Blend parts (null if single-origin)
-            blendParts: data.origin === "blend" ? data.blend : null,
-          };
-
-          await db.insert(beans).values(pgData);
-        }
-      } catch (error) {
-        console.error("PostgreSQL insert failed:", error);
-        // Log but continue (eventual consistency)
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (!userId) {
+        throw new Error("User not found in PostgreSQL");
       }
-    }
 
-    // 4. Return ID for client-side Firestore write
-    return { id: fbId };
+      // TODO move to the Form component
+      // Convert form data for PostgreSQL
+      const pgData = {
+        fbId,
+        userId,
+        name: data.name!, //FIXME
+        roaster: data.roaster!, // FIXME
+        roastDate: data.roastDate,
+        roastStyle: data.roastStyle,
+        roastLevel: data.roastLevel,
+        roastingNotes: data.roastingNotes,
+        freezeDate: data.freezeDate,
+        thawDate: data.thawDate,
+        isFinished: data.isFinished ?? false,
+        origin: data.origin,
+        // Single-origin fields (null if blend)
+        country: data.origin === "single-origin" ? data.country : null,
+        region: data.origin === "single-origin" ? data.region : null,
+        varietals: data.origin === "single-origin" ? data.varietals : [],
+        altitude: data.origin === "single-origin" ? data.altitude : null,
+        process: data.origin === "single-origin" ? data.process : null,
+        farmer: data.origin === "single-origin" ? data.farmer : null,
+        harvestDate: data.origin === "single-origin" ? data.harvestDate : null,
+        // Blend parts (null if single-origin)
+        blendParts: data.origin === "blend" ? data.blendParts : null,
+      };
+
+      const [inserted] = await db
+        .insert(beans)
+        .values(pgData)
+        .returning({ id: beans.id });
+
+      return { id: inserted.id };
+    } catch (error) {
+      console.error("PostgreSQL insert failed:", error);
+      throw error;
+    }
   });
 
 /**
  * Archive beans (set isFinished = true)
  */
 export const archiveBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansFbId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansFbId) {
+  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
+    if (!input.firebaseUid || !input.beansId) {
       throw new Error("Firebase UID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansFbId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
     const flags = await getFlags();
 
     if (flags.write_to_postgres) {
@@ -258,7 +243,7 @@ export const archiveBeans = createServerFn({ method: "POST" })
           await db
             .update(beans)
             .set({ isFinished: true })
-            .where(and(eq(beans.fbId, beansFbId), eq(beans.userId, userId)));
+            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
         }
       } catch (error) {
         console.error("PostgreSQL archive failed:", error);
@@ -270,13 +255,13 @@ export const archiveBeans = createServerFn({ method: "POST" })
  * Unarchive beans (set isFinished = false)
  */
 export const unarchiveBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansFbId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansFbId) {
+  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
+    if (!input.firebaseUid || !input.beansId) {
       throw new Error("Firebase UID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansFbId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
     const flags = await getFlags();
 
     if (flags.write_to_postgres) {
@@ -286,7 +271,7 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
           await db
             .update(beans)
             .set({ isFinished: false })
-            .where(and(eq(beans.fbId, beansFbId), eq(beans.userId, userId)));
+            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
         }
       } catch (error) {
         console.error("PostgreSQL unarchive failed:", error);
@@ -298,24 +283,23 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
  * Freeze beans (set freezeDate to current date)
  */
 export const freezeBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansFbId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansFbId) {
+  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
+    if (!input.firebaseUid || !input.beansId) {
       throw new Error("Firebase UID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansFbId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
     const flags = await getFlags();
 
     if (flags.write_to_postgres) {
       try {
         const userId = await getUserByFirebaseUid(firebaseUid);
         if (userId) {
-          const today = new Date().toISOString().split("T")[0];
           await db
             .update(beans)
-            .set({ freezeDate: today })
-            .where(and(eq(beans.fbId, beansFbId), eq(beans.userId, userId)));
+            .set({ freezeDate: new Date() })
+            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
         }
       } catch (error) {
         console.error("PostgreSQL freeze failed:", error);
@@ -327,24 +311,23 @@ export const freezeBeans = createServerFn({ method: "POST" })
  * Thaw beans (set thawDate to current date)
  */
 export const thawBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansFbId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansFbId) {
+  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
+    if (!input.firebaseUid || !input.beansId) {
       throw new Error("Firebase UID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansFbId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
     const flags = await getFlags();
 
     if (flags.write_to_postgres) {
       try {
         const userId = await getUserByFirebaseUid(firebaseUid);
         if (userId) {
-          const today = new Date().toISOString().split("T")[0];
           await db
             .update(beans)
-            .set({ thawDate: today })
-            .where(and(eq(beans.fbId, beansFbId), eq(beans.userId, userId)));
+            .set({ thawDate: new Date() })
+            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
         }
       } catch (error) {
         console.error("PostgreSQL thaw failed:", error);
@@ -356,13 +339,13 @@ export const thawBeans = createServerFn({ method: "POST" })
  * Delete beans
  */
 export const deleteBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansFbId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansFbId) {
+  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
+    if (!input.firebaseUid || !input.beansId) {
       throw new Error("Firebase UID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansFbId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
     const flags = await getFlags();
 
     if (flags.write_to_postgres) {
@@ -371,7 +354,7 @@ export const deleteBeans = createServerFn({ method: "POST" })
         if (userId) {
           await db
             .delete(beans)
-            .where(and(eq(beans.fbId, beansFbId), eq(beans.userId, userId)));
+            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
         }
       } catch (error) {
         console.error("PostgreSQL delete failed:", error);
@@ -386,72 +369,68 @@ export const updateBeans = createServerFn({ method: "POST" })
   .inputValidator(
     (input: {
       data: BeansFormInputs;
-      beansFbId: string;
+      beansId: string;
       firebaseUid: string;
     }) => {
       if (!input.firebaseUid) {
         throw new Error("Firebase UID is required");
       }
-      if (!input.beansFbId) {
+      if (!input.beansId) {
         throw new Error("Beans ID is required");
       }
       validateBeansInput(input.data);
       return input;
     },
   )
-  .handler(
-    async ({ data: { data, beansFbId, firebaseUid } }): Promise<void> => {
-      // 1. Get feature flags
-      const flags = await getFlags();
+  .handler(async ({ data: { data, beansId, firebaseUid } }): Promise<void> => {
+    // 1. Get feature flags
+    const flags = await getFlags();
 
-      // 2. CONDITIONAL UPDATE TO POSTGRESQL
-      if (flags.write_to_postgres) {
-        try {
-          const userId = await getUserByFirebaseUid(firebaseUid);
-          if (!userId) {
-            console.error(
-              "User not found in PostgreSQL, skipping Postgres update",
-            );
-          } else {
-            // Convert form data for PostgreSQL
-            const pgData = {
-              name: data.name!,
-              roaster: data.roaster!,
-              roastDate: dateToSqlDate(data.roastDate),
-              roastStyle: data.roastStyle,
-              roastLevel: data.roastLevel,
-              roastingNotes: data.roastingNotes,
-              freezeDate: dateToSqlDate(data.freezeDate),
-              thawDate: dateToSqlDate(data.thawDate),
-              isFinished: data.isFinished ?? false,
-              origin: data.origin,
-              // Single-origin fields (null if blend)
-              country: data.origin === "single-origin" ? data.country : null,
-              region: data.origin === "single-origin" ? data.region : null,
-              varietals: data.origin === "single-origin" ? data.varietals : [],
-              altitude: data.origin === "single-origin" ? data.altitude : null,
-              process: data.origin === "single-origin" ? data.process : null,
-              farmer: data.origin === "single-origin" ? data.farmer : null,
-              harvestDate:
-                data.origin === "single-origin"
-                  ? dateToSqlDate(data.harvestDate)
-                  : null,
-              // Blend parts (null if single-origin)
-              blendParts: data.origin === "blend" ? data.blend : null,
-            };
+    // 2. CONDITIONAL UPDATE TO POSTGRESQL
+    if (flags.write_to_postgres) {
+      try {
+        const userId = await getUserByFirebaseUid(firebaseUid);
+        if (!userId) {
+          console.error(
+            "User not found in PostgreSQL, skipping Postgres update",
+          );
+        } else {
+          // Convert form data for PostgreSQL
+          const pgData = {
+            name: data.name!,
+            roaster: data.roaster!,
+            roastDate: data.roastDate,
+            roastStyle: data.roastStyle,
+            roastLevel: data.roastLevel,
+            roastingNotes: data.roastingNotes,
+            freezeDate: data.freezeDate,
+            thawDate: data.thawDate,
+            isFinished: data.isFinished ?? false,
+            origin: data.origin,
+            // Single-origin fields (null if blend)
+            country: data.origin === "single-origin" ? data.country : null,
+            region: data.origin === "single-origin" ? data.region : null,
+            varietals: data.origin === "single-origin" ? data.varietals : [],
+            altitude: data.origin === "single-origin" ? data.altitude : null,
+            process: data.origin === "single-origin" ? data.process : null,
+            farmer: data.origin === "single-origin" ? data.farmer : null,
+            harvestDate:
+              data.origin === "single-origin" ? data.harvestDate : null,
+            // Blend parts (null if single-origin)
+            blendParts: data.origin === "blend" ? data.blendParts : null,
+          };
 
-            await db
-              .update(beans)
-              .set(pgData)
-              .where(and(eq(beans.fbId, beansFbId), eq(beans.userId, userId)));
-          }
-        } catch (error) {
-          console.error("PostgreSQL update failed:", error);
-          // Log but continue (eventual consistency)
+          await db
+            .update(beans)
+            .set(pgData)
+            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
         }
+      } catch (error) {
+        console.error("PostgreSQL update failed:", error);
+        // Log but continue (eventual consistency)
       }
-    },
-  );
+    }
+  });
 
 // ============================================================================
 // BREWS MUTATIONS

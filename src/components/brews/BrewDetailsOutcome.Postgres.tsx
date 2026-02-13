@@ -14,7 +14,14 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
     <div className="space-y-4">
       <DetailsCard
         title="Outcome"
-        action={{ type: "link", label: "Edit", href: "outcome" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/outcome",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           {
             label: "Overall score",
@@ -35,7 +42,14 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
 
       <DetailsCard
         title="Time"
-        action={{ type: "link", label: "Edit", href: "edit" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/edit",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           {
             label: "Time",
@@ -49,7 +63,14 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
 
       <DetailsCard
         title="Tasting notes"
-        action={{ type: "link", label: "Edit", href: "outcome" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/outcome",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           {
             label: "Aroma",
@@ -76,7 +97,14 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
 
       <DetailsCard
         title="Extraction"
-        action={{ type: "link", label: "Edit", href: "outcome" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/outcome",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           {
             label: "Extraction type",

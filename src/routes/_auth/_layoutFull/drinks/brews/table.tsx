@@ -24,7 +24,6 @@ import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { IconButton } from "~/components/IconButton";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
 import { getBeans, getBrews } from "~/db/queries";
-import type { BeansWithUser, BrewWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
 import { useCurrentUser } from "~/hooks/useInitUser";
@@ -32,6 +31,9 @@ import { flagsQueryOptions } from "~/routes/_auth/_layout/feature-flags";
 import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import { roundToDecimal } from "~/utils";
+
+type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
+type BeansWithUser = Awaited<ReturnType<typeof getBeans>>[number];
 
 const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions<BrewWithBeans[]>({

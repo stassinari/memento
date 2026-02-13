@@ -26,7 +26,7 @@ export const BeansBlendForm = () => {
   const { control, register } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "blend",
+    name: "blendParts",
   });
 
   const handleAppend = () => {
@@ -57,18 +57,18 @@ export const BeansBlendForm = () => {
           <div className="p-4 space-y-4">
             <FormInput
               label="Blend name"
-              id={`blend.${i}.name`}
+              id={`blendParts.${i}.name`}
               inputProps={{
-                ...register(`blend.${i}.name`),
+                ...register(`blendParts.${i}.name`),
                 type: "text",
                 placeholder: "Blend name",
               }}
             />
             <FormInput
               label="Percentage (%)"
-              id={`blend.${i}.percentage`}
+              id={`blendParts.${i}.percentage`}
               inputProps={{
-                ...register(`blend.${i}.percentage`, {
+                ...register(`blendParts.${i}.percentage`, {
                   valueAsNumber: true,
                 }),
                 type: "number",
@@ -76,7 +76,7 @@ export const BeansBlendForm = () => {
               }}
             />
             <FormComboboxSingle
-              name={`blend.${i}.country`}
+              name={`blendParts.${i}.country`}
               label="Country"
               options={countries.map(({ name }) => name)}
               placeholder="Ethiopia"
@@ -89,13 +89,13 @@ export const BeansBlendForm = () => {
             />
             <FormComboboxSingle
               label="Process"
-              name={`blend.${i}.process`}
+              name={`blendParts.${i}.process`}
               options={processes}
               placeholder="Red honey"
             />
             <FormComboboxMulti
               label="Varietal(s)"
-              name={`blend.${i}.varietals`}
+              name={`blendParts.${i}.varietals`}
               options={varietals}
               placeholder="Search variety..."
             />

@@ -6,12 +6,13 @@ import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { EspressoOutcomeForm } from "~/components/espresso/EspressoOutcomeForm";
 import { getEspresso } from "~/db/queries";
-import type { EspressoWithBeans } from "~/db/types";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { userAtom } from "~/hooks/useInitUser";
 import { Espresso } from "~/types/espresso";
 import { flagsQueryOptions } from "../../../feature-flags";
+
+type EspressoWithBeans = NonNullable<Awaited<ReturnType<typeof getEspresso>>>;
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions<EspressoWithBeans | null>({

@@ -5,17 +5,16 @@ import { useMemo } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
+  DrinksList as DrinksListPostgres,
+  mergeBrewsAndEspressoByUniqueDate as mergePostgres,
+} from "~/components/drinks/DrinksList";
+import {
   DrinksList as DrinksListFirebase,
   mergeBrewsAndEspressoByUniqueDate as mergeFirebase,
 } from "~/components/drinks/DrinksList.Firebase";
-import {
-  DrinksList as DrinksListPostgres,
-  mergeBrewsAndEspressoByUniqueDate as mergePostgres,
-} from "~/components/drinks/DrinksList.Postgres";
 import { Heading } from "~/components/Heading";
 import { Link } from "~/components/Link";
 import { getBrews, getEspressos } from "~/db/queries";
-import type { BrewWithBeans, EspressoWithBeans } from "~/db/types";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import { useCurrentUser } from "~/hooks/useInitUser";
@@ -23,6 +22,11 @@ import { Beans } from "~/types/beans";
 import { Brew } from "~/types/brew";
 import { Espresso } from "~/types/espresso";
 import { flagsQueryOptions } from "../feature-flags";
+
+type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
+type EspressoWithBeans = NonNullable<
+  Awaited<ReturnType<typeof getEspressos>>[number]
+>;
 
 const brewsQueryOptions = (firebaseUid: string) =>
   queryOptions<BrewWithBeans[]>({

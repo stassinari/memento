@@ -1,20 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { orderBy } from "firebase/firestore";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
-import { useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import countries from "~/data/countries";
 import { processes } from "~/data/processes";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { varietals } from "~/data/varietals";
-import { getBeans } from "~/db/queries";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { getBeansUniqueRoasters } from "~/db/queries";
+import { BeanOrigin, BeansBlendPart, RoastStyle } from "~/db/schema";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { Beans, BeansBlendPart, RoastStyle } from "~/types/beans";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
@@ -26,7 +20,6 @@ import { FormInputMonthYear } from "../form/FormInputMonthYear";
 import { FormInputRadio } from "../form/FormInputRadio";
 import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
-import { extractSuggestions } from "../form/FormSuggestions";
 import { TextWithImageOption } from "../form/ListOption";
 import { BeansAi } from "./BeansAi";
 import { BeansBlendForm, blendEmptyValues } from "./BeansBlendForm";
@@ -40,7 +33,7 @@ export interface BeansFormInputs {
   roastLevel: number | null;
   roastingNotes: string[];
 
-  origin: "single-origin" | "blend";
+  origin: BeanOrigin;
 
   country: string | null;
   region: string | null;
@@ -50,7 +43,7 @@ export interface BeansFormInputs {
   varietals: string[];
   harvestDate: Date | null;
 
-  blend: BeansBlendPart[];
+  blendParts: BeansBlendPart[] | null;
 
   freezeDate: Date | null;
   thawDate: Date | null;
@@ -76,17 +69,26 @@ export const beansFormEmptyValues: BeansFormInputs = {
   roastLevel: null,
   roastingNotes: [],
 
-  origin: "single-origin",
+  origin: BeanOrigin.SingleOrigin,
 
   ...singleOriginEmptyValues,
 
-  blend: [blendEmptyValues],
+  blendParts: [blendEmptyValues],
 
   freezeDate: null,
   thawDate: null,
 
   isFinished: false,
 };
+
+export const beansRoastersOptions = (firebaseUid: string) =>
+  queryOptions<string[] | null>({
+    queryKey: ["bean", "rosters"],
+    queryFn: () =>
+      getBeansUniqueRoasters({
+        data: firebaseUid,
+      }),
+  });
 
 interface BeansFormProps {
   defaultValues: BeansFormInputs;
@@ -103,32 +105,9 @@ export const BeansForm = ({
 }: BeansFormProps) => {
   console.log("BeansForm");
 
-  const navigate = useNavigate();
   const user = useAtomValue(userAtom);
 
-  const readFromPostgres = useFeatureFlag("read_from_postgres");
-
-  // Load from PostgreSQL when flag enabled
-  const { data: pgBeansList, isLoading: isPgLoading } = useQuery({
-    queryKey: ["beans", user?.uid],
-    queryFn: () => getBeans({ data: user?.uid ?? "" }),
-    enabled: readFromPostgres && !!user?.uid,
-  });
-
-  // Load from Firestore when flag disabled
-  const filters = useMemo(() => [orderBy("roastDate", "desc")], []);
-  const query = useCollectionQuery<Beans>("beans", filters);
-  const { list: fsBeansList, isLoading: isFsLoading } =
-    useFirestoreCollectionOneTime<Beans>(query);
-
-  // Use appropriate data source based on flag
-  const isLoading = readFromPostgres ? isPgLoading : isFsLoading;
-
-  // Create a unified list with just the roaster field for suggestions
-  const beansList: Array<{ roaster: string }> = readFromPostgres
-    ? ((pgBeansList as any)?.map((b: any) => ({ roaster: b.beans.roaster })) ??
-      [])
-    : fsBeansList.map((b) => ({ roaster: b.roaster }));
+  const { data: roasters } = useQuery(beansRoastersOptions(user?.uid ?? ""));
 
   const isSm = useScreenMediaQuery("sm");
 
@@ -147,14 +126,12 @@ export const BeansForm = ({
     if (data.origin === "blend") {
       data = { ...data, ...singleOriginEmptyValues };
     } else {
-      data = { ...data, blend: [] };
+      data = { ...data, blendParts: [] };
     }
     void mutation(data);
   };
 
   const isSingleOrigin = watch("origin") === "single-origin";
-
-  if (isLoading) return null;
 
   return (
     <>
@@ -191,13 +168,11 @@ export const BeansForm = ({
             <FormComboboxSingle
               label="Roaster *"
               name="roaster"
-              options={[
-                ...new Set(beansList.map(({ roaster }) => roaster).sort()),
-              ]}
+              options={roasters ?? []}
               placeholder="Square mile"
               requiredMsg="Please select a roaster"
               error={errors.roaster?.message}
-              suggestions={extractSuggestions(beansList, "roaster")}
+              suggestions={roasters ? roasters.slice(0, 3) : undefined}
             />
 
             <FormInputDate

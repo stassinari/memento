@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import {
   queryOptions,
   useQueryClient,
@@ -6,21 +6,19 @@ import {
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
-import { deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
-import { BeansDetailsInfo as FirebaseBeansDetailsInfo } from "~/components/beans/BeansDetailsInfo.Firebase";
-import { BeansDetailsInfo as PostgresBeansDetailsInfo } from "~/components/beans/BeansDetailsInfo.Postgres";
-import { BeansDrinks as FirebaseBeansDrinks } from "~/components/beans/BeansDrinks.Firebase";
-import { BeansDrinks as PostgresBeansDrinks } from "~/components/beans/BeansDrinks.Postgres";
-import { areBeansFresh, areBeansFrozen } from "~/components/beans/utils";
+import { BeansDetailsInfo } from "~/components/beans/BeansDetailsInfo";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
 } from "~/components/ButtonWithDropdown";
-import { mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList.Postgres";
+import {
+  DrinksList,
+  mergeBrewsAndEspressoByUniqueDate,
+} from "~/components/drinks/DrinksList";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import {
@@ -31,30 +29,34 @@ import {
   unarchiveBeans,
 } from "~/db/mutations";
 import { getBean } from "~/db/queries";
-import type { BeanWithRelations } from "~/db/types";
-import { useDocRef } from "~/hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { Beans } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { Beans } from "~/types/beans";
 import { tabStyles } from "..";
-import { flagsQueryOptions } from "../../feature-flags";
 
-const beanQueryOptions = (beanId: string, firebaseUid: string) =>
-  queryOptions<BeanWithRelations | null>({
+export type BeanWithDrinks = NonNullable<Awaited<ReturnType<typeof getBean>>>;
+
+// TODO this is the wrong place for this
+export const areBeansFresh = (beans: Beans | null): boolean =>
+  !beans?.freezeDate && !beans?.thawDate;
+
+export const areBeansFrozen = (beans: Beans | null): boolean =>
+  !!beans?.freezeDate && !beans?.thawDate;
+
+export const areBeansThawed = (beans: Beans | null): boolean =>
+  !!beans?.freezeDate && !!beans?.thawDate;
+
+export const beansQueryOptions = (beanId: string, firebaseUid: string) =>
+  queryOptions<BeanWithDrinks | null>({
     queryKey: ["bean", beanId, firebaseUid],
     queryFn: () =>
       getBean({
-        data: { beanFbId: beanId, firebaseUid },
-      }) as Promise<BeanWithRelations | null>,
+        data: { beanId, firebaseUid },
+      }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/beans/$beansId/")({
   component: BeansDetails,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
 function BeansDetails() {
@@ -62,136 +64,94 @@ function BeansDetails() {
   const navigate = useNavigate();
   const user = useAtomValue(userAtom);
   const queryClient = useQueryClient();
-  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlBean } = useSuspenseQuery<BeanWithRelations | null>(
-    beanQueryOptions(beansId, user?.uid ?? ""),
+  const { data: beansWithDrinks } = useSuspenseQuery<BeanWithDrinks | null>(
+    beansQueryOptions(beansId, user?.uid ?? ""),
   );
-
-  const shouldReadFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isSm = useScreenMediaQuery("sm");
 
-  const docRef = useDocRef<Beans>("beans", beansId);
-  const { details: fbBeans, isLoading } =
-    useFirestoreDocRealtime<Beans>(docRef);
+  const beanForDropdown = beansWithDrinks;
 
-  const beans = shouldReadFromPostgres ? sqlBean?.beans : fbBeans;
-  const beanForDropdown = shouldReadFromPostgres
-    ? (sqlBean?.beans as any)
-    : fbBeans;
-
-  if (!beans && !isLoading) {
+  if (!beansWithDrinks) {
     return <NotFound />;
   }
 
-  // For Postgres, merge brews and espressos into drinks format
+  // FIXME: this is stupid, it needs refactoring now we're in a SQL world
   const sqlDrinks = useMemo(() => {
-    if (!shouldReadFromPostgres || !sqlBean) return [];
-    const brewsWithBeans = (sqlBean.brews || []).map((brew) => ({
-      brews: brew,
-      beans: sqlBean.beans,
-    }));
-    const espressosWithBeans = (sqlBean.espressos || []).map((esp) => ({
-      espresso: esp,
-      beans: sqlBean.beans,
-    }));
     return mergeBrewsAndEspressoByUniqueDate(
-      brewsWithBeans,
-      espressosWithBeans,
+      beansWithDrinks.brews.map((brew) => ({
+        brews: brew,
+        beans: beansWithDrinks,
+      })),
+      beansWithDrinks.espressos.map((espresso) => ({
+        espresso,
+        beans: beansWithDrinks,
+      })),
     );
-  }, [shouldReadFromPostgres, sqlBean]);
+  }, [beansWithDrinks]);
 
   const handleArchive = useCallback(async () => {
-    // 1. Call server function (PostgreSQL write)
     await archiveBeans({
-      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 2. Conditionally write to Firestore
-    if (writeToFirestore) {
-      await updateDoc(docRef, { isFinished: true });
-    }
-
-    // 3. Invalidate and navigate
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
     navigate({ to: "/beans" });
-  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
+  }, [beansId, user?.uid, queryClient, navigate]);
 
   const handleUnarchive = useCallback(async () => {
-    // 1. Call server function (PostgreSQL write)
     await unarchiveBeans({
-      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 2. Conditionally write to Firestore
-    if (writeToFirestore) {
-      await updateDoc(docRef, { isFinished: false });
-    }
-
-    // 3. Invalidate queries
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
-  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient]);
+  }, [beansId, user?.uid, queryClient]);
 
   const handleFreeze = useCallback(async () => {
-    // 1. Call server function (PostgreSQL write)
     await freezeBeans({
-      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 2. Conditionally write to Firestore
-    if (writeToFirestore) {
-      await updateDoc(docRef, { freezeDate: serverTimestamp() });
-    }
-
-    // 3. Invalidate queries
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
-  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient]);
+  }, [beansId, user?.uid, queryClient]);
 
   const handleThaw = useCallback(async () => {
-    // 1. Call server function (PostgreSQL write)
     await thawBeans({
-      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 2. Conditionally write to Firestore
-    if (writeToFirestore) {
-      await updateDoc(docRef, { thawDate: serverTimestamp() });
-    }
-
-    // 3. Invalidate queries
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
-  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient]);
+  }, [beansId, user?.uid, queryClient]);
 
   const handleDelete = useCallback(async () => {
-    // 1. Call server function (PostgreSQL delete)
     await deleteBeans({
-      data: { beansFbId: beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, firebaseUid: user?.uid ?? "" },
     });
-
-    // 2. Conditionally delete from Firestore
-    if (writeToFirestore) {
-      await deleteDoc(docRef);
-    }
 
     // 3. Invalidate and navigate
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     navigate({ to: "/beans" });
-  }, [beansId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
+  }, [beansId, user?.uid, queryClient, navigate]);
 
   const dropdownButtons: ButtonWithDropdownProps = useMemo(
     () => ({
-      mainButton: { type: "link", label: "Clone", href: "clone" },
+      mainButton: {
+        type: "link",
+        label: "Clone",
+        linkProps: { to: "/beans/$beansId/clone", params: { beansId } },
+      },
       dropdownItems: [
-        { type: "link", label: "Edit details", href: "edit" },
+        {
+          type: "link",
+          label: "Edit details",
+          linkProps: { to: "/beans/$beansId/edit", params: { beansId } },
+        },
         ...(beanForDropdown?.isFinished
           ? [
               {
@@ -223,7 +183,7 @@ function BeansDetails() {
       ],
     }),
     [
-      beans,
+      beansWithDrinks,
       handleArchive,
       handleDelete,
       handleFreeze,
@@ -232,18 +192,18 @@ function BeansDetails() {
     ],
   );
 
-  if (isLoading) return null;
-
-  if (!beans) {
+  if (!beansWithDrinks) {
     return <NotFound />;
   }
 
   return (
     <>
-      <BreadcrumbsWithHome items={[navLinks.beans, { label: beans.name }]} />
+      <BreadcrumbsWithHome
+        items={[navLinks.beans, { label: beansWithDrinks.name }]}
+      />
 
       <Heading actionSlot={<ButtonWithDropdown {...dropdownButtons} />}>
-        {beans.name}
+        {beansWithDrinks.name}
       </Heading>
 
       {isSm ? (
@@ -253,11 +213,7 @@ function BeansDetails() {
               Beans info
             </h2>
 
-            {shouldReadFromPostgres ? (
-              <PostgresBeansDetailsInfo beans={sqlBean?.beans!} />
-            ) : (
-              <FirebaseBeansDetailsInfo beans={fbBeans!} />
-            )}
+            <BeansDetailsInfo beans={beansWithDrinks} />
           </div>
 
           <div>
@@ -265,40 +221,28 @@ function BeansDetails() {
               Drinks
             </h2>
 
-            {shouldReadFromPostgres ? (
-              <PostgresBeansDrinks drinks={sqlDrinks} />
-            ) : (
-              <FirebaseBeansDrinks beans={fbBeans!} />
-            )}
+            <DrinksList drinks={sqlDrinks} />
           </div>
         </div>
       ) : (
-        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List className="flex -mb-px">
+        <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <TabList className="flex -mb-px">
             <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
               Info
             </Tab>
             <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
               Drinks
             </Tab>
-          </Tab.List>
-          <Tab.Panels className="mt-4">
-            <Tab.Panel>
-              {shouldReadFromPostgres ? (
-                <PostgresBeansDetailsInfo beans={sqlBean?.beans!} />
-              ) : (
-                <FirebaseBeansDetailsInfo beans={fbBeans!} />
-              )}
-            </Tab.Panel>
-            <Tab.Panel>
-              {shouldReadFromPostgres ? (
-                <PostgresBeansDrinks drinks={sqlDrinks} />
-              ) : (
-                <FirebaseBeansDrinks beans={fbBeans!} />
-              )}
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+          </TabList>
+          <TabPanels className="mt-4">
+            <TabPanel>
+              <BeansDetailsInfo beans={beansWithDrinks!} />
+            </TabPanel>
+            <TabPanel>
+              <DrinksList drinks={sqlDrinks} />
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       )}
     </>
   );

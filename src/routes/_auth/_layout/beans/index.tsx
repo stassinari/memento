@@ -21,19 +21,19 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
 const beansOpenQueryOptions = (firebaseUid: string) =>
   queryOptions<Beans[]>({
-    queryKey: ["beans", "open", firebaseUid],
+    queryKey: ["beans", "open"],
     queryFn: () => getBeansOpen({ data: firebaseUid }),
   });
 
 const beansFrozenQueryOptions = (firebaseUid: string) =>
   queryOptions<Beans[]>({
-    queryKey: ["beans", "frozen", firebaseUid],
+    queryKey: ["beans", "frozen"],
     queryFn: () => getBeansFrozen({ data: firebaseUid }),
   });
 
 const beansArchivedQueryOptions = (firebaseUid: string) =>
   queryOptions<Beans[]>({
-    queryKey: ["beans", "archived", firebaseUid],
+    queryKey: ["beans", "archived"],
     queryFn: () => getBeansArchived({ data: firebaseUid }),
   });
 

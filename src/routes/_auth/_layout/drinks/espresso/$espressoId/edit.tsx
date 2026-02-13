@@ -20,7 +20,6 @@ import {
 import { Heading } from "~/components/Heading";
 import { updateEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import type { EspressoWithBeans } from "~/db/types";
 import { db } from "~/firebaseConfig";
 import { useDocRef } from "~/hooks/firestore/useDocRef";
 import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
@@ -29,6 +28,8 @@ import { userAtom } from "~/hooks/useInitUser";
 import { BaseEspresso } from "~/types/espresso";
 import { flagsQueryOptions } from "../../../feature-flags";
 import { espressoToFirestore } from "../add";
+
+type EspressoWithBeans = NonNullable<Awaited<ReturnType<typeof getEspresso>>>;
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions<EspressoWithBeans | null>({

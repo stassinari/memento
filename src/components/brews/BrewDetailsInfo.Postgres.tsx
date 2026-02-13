@@ -20,7 +20,14 @@ export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
 
       <DetailsCard
         title="Recipe"
-        action={{ type: "link", label: "Edit", href: "edit" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/edit",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           { label: "Ratio (beans / water)", value: beansByWater },
           { label: "Ratio (water / beans)", value: waterByBeans },
@@ -42,7 +49,14 @@ export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
 
       <DetailsCard
         title="Equipment"
-        action={{ type: "link", label: "Edit", href: "edit" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/edit",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           { label: "Grinder", value: brew.grinder ?? "" },
           { label: "Burrs", value: brew.grinderBurrs ?? "" },

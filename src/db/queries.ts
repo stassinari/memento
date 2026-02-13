@@ -6,6 +6,7 @@ import {
   getTableColumns,
   isNotNull,
   isNull,
+  max,
   or,
 } from "drizzle-orm";
 import { db } from "./db";
@@ -17,13 +18,7 @@ import {
   featureFlags,
   users,
 } from "./schema";
-import type {
-  Beans,
-  BeansWithUser,
-  BeanWithRelations,
-  BrewWithBeans,
-  EspressoWithBeans,
-} from "./types";
+import type { Beans } from "./types";
 
 export const getFeatureFlags = createServerFn({
   method: "GET",
@@ -47,7 +42,7 @@ export const getBrews = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<BrewWithBeans[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       const brewsList = await db
         .select()
@@ -57,7 +52,7 @@ export const getBrews = createServerFn({
         .where(eq(users.fbId, firebaseUid))
         .orderBy(desc(brews.date))
         .limit(50);
-      return brewsList as BrewWithBeans[];
+      return brewsList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -72,30 +67,26 @@ export const getBrew = createServerFn({
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(
-    async ({
-      data: { brewFbId, firebaseUid },
-    }): Promise<BrewWithBeans | null> => {
-      try {
-        const [brew] = await db
-          .select()
-          .from(brews)
-          .innerJoin(beans, eq(brews.beansId, beans.id))
-          .innerJoin(users, eq(brews.userId, users.id))
-          .where(and(eq(brews.fbId, brewFbId), eq(users.fbId, firebaseUid)))
-          .limit(1);
+  .handler(async ({ data: { brewFbId, firebaseUid } }) => {
+    try {
+      const [brew] = await db
+        .select()
+        .from(brews)
+        .innerJoin(beans, eq(brews.beansId, beans.id))
+        .innerJoin(users, eq(brews.userId, users.id))
+        .where(and(eq(brews.fbId, brewFbId), eq(users.fbId, firebaseUid)))
+        .limit(1);
 
-        if (!brew) {
-          return null;
-        }
-
-        return brew as BrewWithBeans;
-      } catch (error) {
-        console.error("Database error:", error);
-        throw error;
+      if (!brew) {
+        return null;
       }
-    },
-  );
+
+      return brew;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
 
 export const getEspressos = createServerFn({
   method: "GET",
@@ -104,7 +95,7 @@ export const getEspressos = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<EspressoWithBeans[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       const espressoList = await db
         .select()
@@ -114,7 +105,7 @@ export const getEspressos = createServerFn({
         .where(eq(users.fbId, firebaseUid))
         .orderBy(desc(espresso.date))
         .limit(50);
-      return espressoList as EspressoWithBeans[];
+      return espressoList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -129,32 +120,28 @@ export const getEspresso = createServerFn({
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(
-    async ({
-      data: { espressoFbId, firebaseUid },
-    }): Promise<EspressoWithBeans | null> => {
-      try {
-        const [shot] = await db
-          .select()
-          .from(espresso)
-          .leftJoin(beans, eq(espresso.beansId, beans.id))
-          .innerJoin(users, eq(espresso.userId, users.id))
-          .where(
-            and(eq(espresso.fbId, espressoFbId), eq(users.fbId, firebaseUid)),
-          )
-          .limit(1);
+  .handler(async ({ data: { espressoFbId, firebaseUid } }) => {
+    try {
+      const [shot] = await db
+        .select()
+        .from(espresso)
+        .leftJoin(beans, eq(espresso.beansId, beans.id))
+        .innerJoin(users, eq(espresso.userId, users.id))
+        .where(
+          and(eq(espresso.fbId, espressoFbId), eq(users.fbId, firebaseUid)),
+        )
+        .limit(1);
 
-        if (!shot) {
-          return null;
-        }
-
-        return shot as EspressoWithBeans;
-      } catch (error) {
-        console.error("Database error:", error);
-        throw error;
+      if (!shot) {
+        return null;
       }
-    },
-  );
+
+      return shot;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
 
 export const getPartialEspressos = createServerFn({
   method: "GET",
@@ -163,7 +150,7 @@ export const getPartialEspressos = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<EspressoWithBeans[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       const espressoList = await db
         .select()
@@ -173,7 +160,7 @@ export const getPartialEspressos = createServerFn({
         .where(and(eq(users.fbId, firebaseUid), eq(espresso.partial, true)))
         .orderBy(desc(espresso.date))
         .limit(5);
-      return espressoList as EspressoWithBeans[];
+      return espressoList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -232,7 +219,7 @@ export const getBeans = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<BeansWithUser[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       const beansList = await db
         .select()
@@ -240,7 +227,7 @@ export const getBeans = createServerFn({
         .innerJoin(users, eq(beans.userId, users.id))
         .where(eq(users.fbId, firebaseUid))
         .orderBy(desc(beans.roastDate));
-      return beansList as BeansWithUser[];
+      return beansList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -332,50 +319,68 @@ export const getBeansArchived = createServerFn({
 export const getBean = createServerFn({
   method: "GET",
 })
-  .inputValidator((input: { beanFbId: string; firebaseUid: string }) => {
-    if (!input.beanFbId) throw new Error("Bean ID is required");
+  .inputValidator((input: { beanId: string; firebaseUid: string }) => {
+    if (!input.beanId) throw new Error("Bean ID is required");
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(
-    async ({
-      data: { beanFbId, firebaseUid },
-    }): Promise<BeanWithRelations | null> => {
-      try {
-        // Get the bean with all related brews and espressos
-        const [beanData] = await db
-          .select()
-          .from(beans)
-          .innerJoin(users, eq(beans.userId, users.id))
-          .where(and(eq(beans.fbId, beanFbId), eq(users.fbId, firebaseUid)))
-          .limit(1);
+  .handler(async ({ data: { beanId, firebaseUid } }) => {
+    try {
+      // Single query with relations + ownership verification!
+      const bean = await db.query.beans.findFirst({
+        where: (beans, { eq }) => eq(beans.id, beanId),
+        with: {
+          user: true, // Include user to verify ownership
+          brews: {
+            orderBy: (brews, { desc }) => [desc(brews.date)],
+          },
+          espresso: {
+            orderBy: (espresso, { desc }) => [desc(espresso.date)],
+          },
+        },
+      });
 
-        if (!beanData) {
-          return null;
-        }
-
-        // Get related brews
-        const relatedBrews = await db
-          .select()
-          .from(brews)
-          .where(eq(brews.beansId, beanData.beans.id))
-          .orderBy(desc(brews.date));
-
-        // Get related espressos
-        const relatedEspressos = await db
-          .select()
-          .from(espresso)
-          .where(eq(espresso.beansId, beanData.beans.id))
-          .orderBy(desc(espresso.date));
-
-        return {
-          ...beanData,
-          brews: relatedBrews,
-          espressos: relatedEspressos,
-        } as BeanWithRelations;
-      } catch (error) {
-        console.error("Database error:", error);
-        throw error;
+      // Verify ownership
+      if (!bean || bean.user.fbId !== firebaseUid) {
+        return null;
       }
-    },
-  );
+
+      return {
+        ...bean,
+        espressos: bean.espresso,
+        brews: bean.brews,
+      };
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
+export const getBeansUniqueRoasters = createServerFn({
+  method: "GET",
+})
+  .inputValidator((firebaseUid: string) => {
+    if (!firebaseUid) throw new Error("User ID is required");
+    return firebaseUid;
+  })
+  .handler(async ({ data: firebaseUid }) => {
+    try {
+      const roasters = await db
+        .select({
+          roaster: beans.roaster,
+          maxRoastDate: max(beans.roastDate),
+        })
+        .from(beans)
+        .innerJoin(users, eq(beans.userId, users.id))
+        .where(eq(users.fbId, firebaseUid))
+        .groupBy(beans.roaster)
+        .orderBy(desc(max(beans.roastDate)));
+
+      console.log(roasters);
+
+      return roasters.map((r) => r.roaster);
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
