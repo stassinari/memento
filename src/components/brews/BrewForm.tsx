@@ -65,7 +65,7 @@ export const BrewForm = ({
   });
 
   const { data: brewFormValueSuggestions } = useQuery({
-    queryKey: ["brews", user?.uid ?? ""],
+    queryKey: ["brews", "formValueSuggestions"],
     queryFn: () => getBrewFormValueSuggestions({ data: user?.uid ?? "" }),
   });
 

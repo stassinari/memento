@@ -15,7 +15,7 @@ export const BrewDetailsInfo = ({ brew }: BrewDetailsInfoProp) => {
 
   return (
     <div className="space-y-4">
-      <BeansShortInfo beans={brew.beans} brewDate={brew.date} />
+      <BeansShortInfo beans={brew.beans} drinkDate={brew.date} />
 
       <DetailsCard
         title="Recipe"

@@ -21,6 +21,7 @@ export interface BrewOutcomeInputs {
   tds: number | null;
   finalBrewWeight: number | null;
   extractionType: ExtractionType | null;
+
   aroma: number | null;
   acidity: number | null;
   sweetness: number | null;

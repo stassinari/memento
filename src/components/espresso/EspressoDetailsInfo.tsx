@@ -1,17 +1,13 @@
-import type { Espresso } from "~/db/types";
+import { EspressoWithBeans } from "~/routes/_auth/_layout/drinks/espresso/$espressoId";
+import { BeansShortInfo } from "../beans/BeansShortInfo.Postgres";
 import { DetailsCard } from "../Details";
-import { BeansShortInfo } from "../beans/BeansShortInfo.Firebase";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface EspressoDetailsInfoProps {
-  espresso: Espresso;
-  beansId?: string | null;
+  espresso: EspressoWithBeans;
 }
 
-export const EspressoDetailsInfo = ({
-  espresso,
-  beansId,
-}: EspressoDetailsInfoProps) => {
+export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
   const { waterByBeans } = useDrinkRatio(
     espresso?.beansWeight ?? 0,
     espresso?.actualWeight ?? espresso?.targetWeight ?? 0,
@@ -30,9 +26,11 @@ export const EspressoDetailsInfo = ({
           ]}
         />
       )}
-      {beansId ? (
-        <BeansShortInfo beansId={beansId} brewDate={espresso.date} />
-      ) : null}
+
+      {espresso.beans && (
+        <BeansShortInfo beans={espresso.beans} drinkDate={espresso.date} />
+      )}
+
       <DetailsCard
         title="Equipment"
         rows={[

@@ -26,7 +26,7 @@ function BrewsAdd() {
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
       return await addBrew({
-        data: { data, userFbId: user?.uid ?? "" },
+        data: { data, firebaseUid: user?.uid ?? "" },
       });
     },
     onSuccess: (result) => {
@@ -38,6 +38,9 @@ function BrewsAdd() {
         to: "/drinks/brews/$brewId",
         params: { brewId: result.id },
       });
+    },
+    onError: (error) => {
+      console.error("Add brew - mutation error:", error);
     },
   });
 

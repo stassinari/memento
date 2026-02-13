@@ -23,6 +23,8 @@ import { getBrew } from "~/db/queries";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { tabStyles } from "../../../beans";
 
+export type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
+
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
@@ -53,7 +55,7 @@ function BrewDetails() {
 
   const handleDelete = useCallback(async () => {
     await deleteBrew({
-      data: { brewFbId: brewId, firebaseUid: user?.uid ?? "" },
+      data: { brewId, firebaseUid: user?.uid ?? "" },
     });
 
     // 3. Invalidate and navigate

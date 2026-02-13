@@ -3,14 +3,14 @@ import { DetailsCard } from "../Details";
 
 interface BeansShortInfoProps {
   beans: Beans;
-  brewDate: Date;
+  drinkDate: Date;
 }
 
-export const BeansShortInfo = ({ beans, brewDate }: BeansShortInfoProps) => {
+export const BeansShortInfo = ({ beans, drinkDate }: BeansShortInfoProps) => {
   console.log("BeansShortInfo.Postgres");
 
   const secondsBetween = beans.roastDate
-    ? Number(brewDate) - Number(new Date(beans.roastDate))
+    ? Number(drinkDate) - Number(new Date(beans.roastDate))
     : 0;
 
   const daysBetween = Math.round(secondsBetween / (1000 * 60 * 60 * 24));

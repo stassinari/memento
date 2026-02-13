@@ -10,14 +10,7 @@ import {
   or,
 } from "drizzle-orm";
 import { db } from "./db";
-import {
-  beans,
-  brews,
-  espresso,
-  espressoDecentReadings,
-  featureFlags,
-  users,
-} from "./schema";
+import { beans, brews, espresso, featureFlags, users } from "./schema";
 
 export const getFeatureFlags = createServerFn({
   method: "GET",
@@ -140,7 +133,41 @@ export const getBrew = createServerFn({
     }
   });
 
+// FIXME this is fetching way more data than needed. Beans should just really
+// come as a string (for name) and users are only needed for ownership
+// verification, which can be done in the same query without joining the whole table
 export const getEspressos = createServerFn({
+  method: "GET",
+})
+  .inputValidator(
+    (input: { firebaseUid: string; limit?: number; offset?: number }) => {
+      if (!input.firebaseUid) throw new Error("User ID is required");
+      return {
+        firebaseUid: input.firebaseUid,
+        limit: input.limit ?? 50,
+        offset: input.offset ?? 0,
+      };
+    },
+  )
+  .handler(async ({ data: { firebaseUid, limit, offset } }) => {
+    try {
+      const espressoList = await db
+        .select()
+        .from(espresso)
+        .leftJoin(beans, eq(espresso.beansId, beans.id))
+        .innerJoin(users, eq(espresso.userId, users.id))
+        .where(eq(users.fbId, firebaseUid))
+        .orderBy(desc(espresso.date))
+        .limit(limit)
+        .offset(offset);
+      return espressoList;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
+export const getEspressoFormValueSuggestions = createServerFn({
   method: "GET",
 })
   .inputValidator((firebaseUid: string) => {
@@ -150,14 +177,25 @@ export const getEspressos = createServerFn({
   .handler(async ({ data: firebaseUid }) => {
     try {
       const espressoList = await db
-        .select()
+        .select({
+          machine: espresso.machine,
+          grinder: espresso.grinder,
+          grinderBurrs: espresso.grinderBurrs,
+          basket: espresso.basket,
+        })
         .from(espresso)
-        .leftJoin(beans, eq(espresso.beansId, beans.id))
         .innerJoin(users, eq(espresso.userId, users.id))
         .where(eq(users.fbId, firebaseUid))
-        .orderBy(desc(espresso.date))
-        .limit(50);
-      return espressoList;
+        .orderBy(desc(espresso.date));
+
+      // Extract unique values per field, preserving most-recent-first order
+      const fields = ["machine", "grinder", "grinderBurrs", "basket"] as const;
+      return Object.fromEntries(
+        fields.map((field) => [
+          field,
+          [...new Set(espressoList.map((e) => e[field]).filter(Boolean))],
+        ]),
+      ) as Record<(typeof fields)[number], string[]>;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -167,28 +205,27 @@ export const getEspressos = createServerFn({
 export const getEspresso = createServerFn({
   method: "GET",
 })
-  .inputValidator((input: { espressoFbId: string; firebaseUid: string }) => {
-    if (!input.espressoFbId) throw new Error("Espresso ID is required");
+  .inputValidator((input: { espressoId: string; firebaseUid: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { espressoFbId, firebaseUid } }) => {
+  .handler(async ({ data: { espressoId, firebaseUid } }) => {
     try {
-      const [shot] = await db
-        .select()
-        .from(espresso)
-        .leftJoin(beans, eq(espresso.beansId, beans.id))
-        .innerJoin(users, eq(espresso.userId, users.id))
-        .where(
-          and(eq(espresso.fbId, espressoFbId), eq(users.fbId, firebaseUid)),
-        )
-        .limit(1);
+      const espresso = await db.query.espresso.findFirst({
+        where: (espresso, { eq }) => eq(espresso.id, espressoId),
+        with: {
+          beans: true,
+          user: true,
+          decentReadings: true,
+        },
+      });
 
-      if (!shot) {
+      if (!espresso || espresso.user.fbId !== firebaseUid) {
         return null;
       }
 
-      return shot;
+      return { ...espresso, beans: espresso.beans };
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -222,42 +259,19 @@ export const getPartialEspressos = createServerFn({
 export const getDecentReadings = createServerFn({
   method: "GET",
 })
-  .inputValidator((input: { espressoFbId: string; firebaseUid: string }) => {
-    if (!input.espressoFbId) throw new Error("Espresso ID is required");
+  .inputValidator((input: { espressoId: string; firebaseUid: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { espressoFbId, firebaseUid } }) => {
+  .handler(async ({ data: { espressoId, firebaseUid } }) => {
     try {
-      const [result] = await db
-        .select({
-          readings: espressoDecentReadings,
-        })
-        .from(espressoDecentReadings)
-        .innerJoin(espresso, eq(espressoDecentReadings.espressoId, espresso.id))
-        .innerJoin(users, eq(espresso.userId, users.id))
-        .where(
-          and(eq(espresso.fbId, espressoFbId), eq(users.fbId, firebaseUid)),
-        )
-        .limit(1);
+      const decentReadings = await db.query.espressoDecentReadings.findFirst({
+        where: (espressoDecentReadings, { eq }) =>
+          eq(espressoDecentReadings.espressoId, espressoId),
+      });
 
-      if (!result) {
-        return null;
-      }
-
-      // Convert JSONB fields to arrays
-      return {
-        time: result.readings.time as number[],
-        pressure: result.readings.pressure as number[],
-        weightTotal: result.readings.weightTotal as number[],
-        flow: result.readings.flow as number[],
-        weightFlow: result.readings.weightFlow as number[],
-        temperatureBasket: result.readings.temperatureBasket as number[],
-        temperatureMix: result.readings.temperatureMix as number[],
-        pressureGoal: result.readings.pressureGoal as number[],
-        temperatureGoal: result.readings.temperatureGoal as number[],
-        flowGoal: result.readings.flowGoal as number[],
-      };
+      return decentReadings;
     } catch (error) {
       console.error("Database error:", error);
       throw error;

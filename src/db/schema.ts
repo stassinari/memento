@@ -214,16 +214,16 @@ export const espressoDecentReadings = pgTable("espresso_decent_readings", {
   espressoId: uuid("espresso_id")
     .primaryKey()
     .references(() => espresso.id, { onDelete: "cascade" }),
-  time: jsonb("time").notNull(),
-  pressure: jsonb("pressure").notNull(),
-  weightTotal: jsonb("weight_total").notNull(),
-  flow: jsonb("flow").notNull(),
-  weightFlow: jsonb("weight_flow").notNull(),
-  temperatureBasket: jsonb("temperature_basket").notNull(),
-  temperatureMix: jsonb("temperature_mix").notNull(),
-  pressureGoal: jsonb("pressure_goal").notNull(),
-  temperatureGoal: jsonb("temperature_goal").notNull(),
-  flowGoal: jsonb("flow_goal").notNull(),
+  time: jsonb("time").$type<number[]>().notNull(),
+  pressure: jsonb("pressure").$type<number[]>().notNull(),
+  weightTotal: jsonb("weight_total").$type<number[]>().notNull(),
+  flow: jsonb("flow").$type<number[]>().notNull(),
+  weightFlow: jsonb("weight_flow").$type<number[]>().notNull(),
+  temperatureBasket: jsonb("temperature_basket").$type<number[]>().notNull(),
+  temperatureMix: jsonb("temperature_mix").$type<number[]>().notNull(),
+  pressureGoal: jsonb("pressure_goal").$type<number[]>().notNull(),
+  temperatureGoal: jsonb("temperature_goal").$type<number[]>().notNull(),
+  flowGoal: jsonb("flow_goal").$type<number[]>().notNull(),
 });
 
 export const tastings = pgTable(

@@ -1,38 +1,35 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
-import { limit, orderBy } from "firebase/firestore";
 import { useAtomValue } from "jotai";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import {
   DrinksList as PostgresDrinksList,
-  mergeBrewsAndEspressoByUniqueDate as postgresMergeBrewsAndEspressoByUniqueDate,
+  mergeBrewsAndEspressoByUniqueDate,
 } from "~/components/drinks/DrinksList";
-import {
-  DrinksList as FirebaseDrinksList,
-  mergeBrewsAndEspressoByUniqueDate as firebaseMergeBrewsAndEspressoByUniqueDate,
-} from "~/components/drinks/DrinksList.Firebase";
 import { Heading } from "~/components/Heading";
 import { getEspressos } from "~/db/queries";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { Beans } from "~/types/beans";
-import { Espresso } from "~/types/espresso";
 import { flagsQueryOptions } from "../../feature-flags";
 
-type EspressoWithBeans = NonNullable<
-  Awaited<ReturnType<typeof getEspressos>>
->[number];
+type EspressoWithBeans = Awaited<ReturnType<typeof getEspressos>>[number];
 
-const espressosQueryOptions = (firebaseUid: string) =>
-  queryOptions<EspressoWithBeans[]>({
-    queryKey: ["espressos", firebaseUid],
+const PAGE_SIZE = 15;
+
+const espressosQueryOptions = (
+  firebaseUid: string,
+  limit: number,
+  offset: number,
+) =>
+  queryOptions({
+    queryKey: ["espressos", firebaseUid, limit, offset],
     queryFn: () =>
-      getEspressos({ data: firebaseUid }) as Promise<EspressoWithBeans[]>,
+      getEspressos({
+        data: { firebaseUid, limit, offset },
+      }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
@@ -43,49 +40,39 @@ export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
 });
 
 function EspressoList() {
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
   const user = useAtomValue(userAtom);
-  const { data: sqlEspressosWithBeans } = useSuspenseQuery<EspressoWithBeans[]>(
-    espressosQueryOptions(user?.uid ?? ""),
+
+  const [offset, setOffset] = useState(0);
+  const [allEspressos, setAllEspressos] = useState<EspressoWithBeans[]>([]);
+
+  const { data: espressosWithBeans, isLoading } = useQuery<EspressoWithBeans[]>(
+    {
+      ...espressosQueryOptions(user?.uid ?? "", PAGE_SIZE, offset),
+    },
   );
 
-  const shouldReadFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
+  // TODO: i'm not in love with this
+  useEffect(() => {
+    if (espressosWithBeans) {
+      setAllEspressos((prev) => {
+        if (offset === 0) return espressosWithBeans;
+        return [...prev, ...espressosWithBeans];
+      });
+    }
+  }, [espressosWithBeans, offset]);
 
-  const [espressoLimit, setEspressoLimit] = useState(50);
-
-  const filters = useMemo(
-    () => [orderBy("date", "desc"), limit(espressoLimit)],
-    [espressoLimit],
-  );
-
-  const query = useCollectionQuery<Espresso>("espresso", filters);
-  const { list: espressoList, isLoading: espressoLoading } =
-    useFirestoreCollectionRealtime<Espresso>(query);
-
-  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
-  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: beansList, isLoading: beansLoading } =
-    useFirestoreCollectionRealtime<Beans>(beansQuery);
-
-  const firebaseDrinks = useMemo(
-    () => firebaseMergeBrewsAndEspressoByUniqueDate([], espressoList),
-    [espressoList],
-  );
-
-  const postgresDrinks = useMemo(
-    () => postgresMergeBrewsAndEspressoByUniqueDate([], sqlEspressosWithBeans),
-    [sqlEspressosWithBeans],
+  const drinks = useMemo(
+    () => mergeBrewsAndEspressoByUniqueDate([], allEspressos),
+    [allEspressos],
   );
 
   const isSm = useScreenMediaQuery("sm");
 
-  console.log("espressoList");
+  const hasMore = espressosWithBeans && espressosWithBeans.length >= PAGE_SIZE;
 
-  if (espressoLoading || beansLoading) {
-    return null;
-  }
+  const loadMore = () => {
+    setOffset((prev) => prev + PAGE_SIZE);
+  };
 
   return (
     <>
@@ -107,20 +94,17 @@ function EspressoList() {
       </Heading>
 
       <div className="mt-4">
-        {shouldReadFromPostgres ? (
-          <PostgresDrinksList drinks={postgresDrinks} />
-        ) : (
-          <FirebaseDrinksList drinks={firebaseDrinks} beansList={beansList} />
-        )}
+        <PostgresDrinksList drinks={drinks} />
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        {espressoList.length >= espressoLimit && (
+        {hasMore && (
           <Button
             variant="white"
             colour="accent"
-            onClick={() => setEspressoLimit(espressoLimit + 50)}
+            onClick={loadMore}
+            disabled={isLoading}
           >
-            Load more
+            {isLoading ? "Loading..." : "Load more"}
           </Button>
         )}
         <Button variant="white" colour="accent" asChild>

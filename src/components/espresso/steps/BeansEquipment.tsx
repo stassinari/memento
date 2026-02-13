@@ -9,7 +9,7 @@ import { FormSection } from "../../Form";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadioButtonGroup } from "../../form/FormInputRadioButtonGroup";
-import { extractSuggestions } from "../../form/FormSuggestions";
+import { EspressoFormValueSuggestions } from "../EspressoForm";
 
 export interface BeansEquipmentInputs {
   date: Date | null;
@@ -36,14 +36,14 @@ export const beansEquipmentEmptyValues: (
 });
 
 interface BeansEquipmentProps {
-  espressoList: Espresso[];
+  espressoFormValueSuggestions: EspressoFormValueSuggestions;
   beansCardsSelectComponent: ReactNode;
   defaultValues: BeansEquipmentInputs;
   handleNestedSubmit: (data: BeansEquipmentInputs) => void;
 }
 
 export const BeansEquipment = ({
-  espressoList,
+  espressoFormValueSuggestions,
   beansCardsSelectComponent,
   defaultValues,
   handleNestedSubmit,
@@ -99,44 +99,27 @@ export const BeansEquipment = ({
                 label="Machine"
                 name="machine"
                 placeholder="Lelit Elizabeth"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ machine }) => (machine ? [machine] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "machine")}
+                options={espressoFormValueSuggestions.machine.sort()}
+                suggestions={espressoFormValueSuggestions.machine.slice(0, 5)}
               />
 
               <FormComboboxSingle
                 label="Grinder"
                 name="grinder"
                 placeholder="Niche Zero"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "grinder")}
+                options={espressoFormValueSuggestions.grinder.sort()}
+                suggestions={espressoFormValueSuggestions.grinder.slice(0, 5)}
               />
 
               <FormComboboxSingle
                 label="Burrs"
                 name="grinderBurrs"
                 placeholder="54mm conical"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ grinderBurrs }) =>
-                        grinderBurrs ? [grinderBurrs] : [],
-                      )
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "grinderBurrs")}
+                options={espressoFormValueSuggestions.grinderBurrs.sort()}
+                suggestions={espressoFormValueSuggestions.grinderBurrs.slice(
+                  0,
+                  5,
+                )}
               />
 
               <FormInputRadioButtonGroup
@@ -153,14 +136,8 @@ export const BeansEquipment = ({
                 label="Basket"
                 name="basket"
                 placeholder="VST 18g"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ basket }) => (basket ? [basket] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "basket")}
+                options={espressoFormValueSuggestions.basket.sort()}
+                suggestions={espressoFormValueSuggestions.basket.slice(0, 5)}
               />
             </>
           ) : (

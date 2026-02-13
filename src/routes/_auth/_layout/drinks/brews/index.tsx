@@ -24,12 +24,9 @@ const brewsQueryOptions = (
   limit: number,
   offset: number,
 ) =>
-  queryOptions<BrewWithBeans[]>({
-    queryKey: ["brews"],
-    queryFn: () =>
-      getBrews({ data: { firebaseUid, limit, offset } }) as Promise<
-        BrewWithBeans[]
-      >,
+  queryOptions({
+    queryKey: ["brews", firebaseUid, limit, offset],
+    queryFn: () => getBrews({ data: { firebaseUid, limit, offset } }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
@@ -44,10 +41,9 @@ function BrewsList() {
 
   const { data: brewsWithBeans, isLoading } = useQuery<BrewWithBeans[]>({
     ...brewsQueryOptions(user?.uid ?? "", PAGE_SIZE, offset),
-    enabled: !!user?.uid,
   });
 
-  // Accumulate brews when new data arrives
+  // TODO: i'm not in love with this
   useEffect(() => {
     if (brewsWithBeans) {
       setAllBrews((prev) => {
@@ -69,8 +65,6 @@ function BrewsList() {
   const loadMore = () => {
     setOffset((prev) => prev + PAGE_SIZE);
   };
-
-  console.log("brewList");
 
   return (
     <>
