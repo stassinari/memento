@@ -4,8 +4,8 @@ import { useAtomValue } from "jotai";
 import { useMemo, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
+import { BeansCardsSelect as PostgresBeansCardsSelect } from "~/components/beans/BeansCardsSelect";
 import { BeansCardsSelect as FirebaseBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Firebase";
-import { BeansCardsSelect as PostgresBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Postgres";
 import { getBeans } from "~/db/queries";
 import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
 import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";

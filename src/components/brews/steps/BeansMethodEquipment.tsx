@@ -1,14 +1,14 @@
 import { ReactNode, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Brew } from "~/types/brew";
+import { Brew } from "~/db/types";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInputDate } from "../../form/FormInputDate";
-import { extractSuggestions } from "../../form/FormSuggestions";
+import { BrewFormValuesSuggestions } from "../BrewForm";
 
 export interface BeansMethodEquipmentInputs {
   date: Date | null;
@@ -35,14 +35,14 @@ export const beansMethodEquipmentEmptyValues: (
 });
 
 interface BeansMethodEquipmentProps {
-  brewsList: Brew[];
+  brewFormValueSuggestions: BrewFormValuesSuggestions;
   beansCardsSelectComponent: ReactNode;
   defaultValues: BeansMethodEquipmentInputs;
   handleNestedSubmit: (data: BeansMethodEquipmentInputs) => void;
 }
 
 export const BeansMethodEquipment = ({
-  brewsList,
+  brewFormValueSuggestions,
   beansCardsSelectComponent,
   defaultValues,
   handleNestedSubmit,
@@ -86,11 +86,11 @@ export const BeansMethodEquipment = ({
           <FormComboboxSingle
             label="Method *"
             name="method"
-            options={[...new Set(brewsList.map(({ method }) => method).sort())]}
+            options={brewFormValueSuggestions.method.sort()}
             placeholder="Orea v3"
             requiredMsg="Please enter the method of your brew"
             error={errors.method?.message}
-            suggestions={extractSuggestions(brewsList, "method")}
+            suggestions={brewFormValueSuggestions.method.slice(0, 5)}
           />
 
           {beansCardsSelectComponent}
@@ -108,59 +108,29 @@ export const BeansMethodEquipment = ({
                 label="Grinder"
                 name="grinder"
                 placeholder="Niche Zero"
-                options={[
-                  ...new Set(
-                    brewsList
-                      .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(brewsList, "grinder")}
+                options={brewFormValueSuggestions.grinder.sort()}
+                suggestions={brewFormValueSuggestions.grinder.slice(0, 5)}
               />
               <FormComboboxSingle
                 label="Burrs"
                 name="grinderBurrs"
                 placeholder="54mm conical"
-                options={[
-                  ...new Set(
-                    brewsList
-                      .flatMap(({ grinderBurrs }) =>
-                        grinderBurrs ? [grinderBurrs] : [],
-                      )
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(brewsList, "grinderBurrs")}
+                options={brewFormValueSuggestions.grinderBurrs.sort()}
+                suggestions={brewFormValueSuggestions.grinderBurrs.slice(0, 5)}
               />
               <FormComboboxSingle
                 label="Water type"
                 name="waterType"
                 placeholder="ZeroWater"
-                options={[
-                  ...new Set(
-                    brewsList
-                      .flatMap(({ waterType }) =>
-                        waterType ? [waterType] : [],
-                      )
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(brewsList, "waterType")}
+                options={brewFormValueSuggestions.waterType.sort()}
+                suggestions={brewFormValueSuggestions.waterType.slice(0, 5)}
               />
               <FormComboboxSingle
                 label="Filter"
                 name="filterType"
                 placeholder="Bleached"
-                options={[
-                  ...new Set(
-                    brewsList
-                      .flatMap(({ filterType }) =>
-                        filterType ? [filterType] : [],
-                      )
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(brewsList, "filterType")}
+                options={brewFormValueSuggestions.filterType.sort()}
+                suggestions={brewFormValueSuggestions.filterType.slice(0, 5)}
               />
             </>
           ) : (

@@ -28,10 +28,12 @@ export enum BeanOrigin {
 }
 const beanOriginEnum = pgEnum("bean_origin", BeanOrigin);
 
-export const extractionTypeEnum = pgEnum("extraction_type", [
-  "percolation",
-  "immersion",
-]);
+export enum ExtractionType {
+  Percolation = "percolation",
+  Immersion = "immersion",
+}
+
+const extractionTypeEnum = pgEnum("extraction_type", ExtractionType);
 
 export type BeansBlendPart = {
   name: string | null;

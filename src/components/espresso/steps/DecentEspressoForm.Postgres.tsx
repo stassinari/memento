@@ -6,7 +6,7 @@ import { beans } from "~/db/schema";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect.Postgres";
+import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInput } from "../../form/FormInput";
 import { FormInputDate } from "../../form/FormInputDate";

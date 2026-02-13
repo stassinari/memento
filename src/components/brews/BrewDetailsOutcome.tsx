@@ -1,12 +1,12 @@
 import ReactMarkdown from "react-markdown";
 
-import type { Brew } from "~/db/types";
+import { BrewWithBeans } from "~/routes/_auth/_layout/drinks/brews/$brewId";
 import { getEyFromBrew } from "~/utils";
 import { Card } from "../Card";
 import { DetailsCard } from "../Details";
 
 interface BrewDetailsOutcomeProp {
-  brew: Brew;
+  brew: BrewWithBeans;
 }
 
 export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {

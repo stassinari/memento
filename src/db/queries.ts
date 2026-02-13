@@ -18,7 +18,6 @@ import {
   featureFlags,
   users,
 } from "./schema";
-import type { Beans } from "./types";
 
 export const getFeatureFlags = createServerFn({
   method: "GET",
@@ -35,7 +34,49 @@ export const getFeatureFlags = createServerFn({
   }
 });
 
+// FIXME this is fetching way more data than needed. Beans should just really
+// come as a string (for name) and users are only needed for ownership
+// verification, which can be done in the same query without joining the whole table
 export const getBrews = createServerFn({
+  method: "GET",
+})
+  .inputValidator(
+    (input: { firebaseUid: string; limit?: number; offset?: number }) => {
+      if (!input.firebaseUid) throw new Error("User ID is required");
+      return {
+        firebaseUid: input.firebaseUid,
+        limit: input.limit ?? 50,
+        offset: input.offset ?? 0,
+      };
+    },
+  )
+  .handler(async ({ data: { firebaseUid, limit, offset } }) => {
+    try {
+      const brewsList = await db
+        .select()
+        .from(brews)
+        .innerJoin(beans, eq(brews.beansId, beans.id))
+        .innerJoin(users, eq(brews.userId, users.id))
+        .where(eq(users.fbId, firebaseUid))
+        .orderBy(desc(brews.date))
+        .limit(limit)
+        .offset(offset);
+      return brewsList;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
+const brewFormSuggestionFields = [
+  "method",
+  "grinder",
+  "grinderBurrs",
+  "waterType",
+  "filterType",
+] as const;
+
+export const getBrewFormValueSuggestions = createServerFn({
   method: "GET",
 })
   .inputValidator((firebaseUid: string) => {
@@ -45,14 +86,25 @@ export const getBrews = createServerFn({
   .handler(async ({ data: firebaseUid }) => {
     try {
       const brewsList = await db
-        .select()
+        .select({
+          method: brews.method,
+          grinder: brews.grinder,
+          grinderBurrs: brews.grinderBurrs,
+          waterType: brews.waterType,
+          filterType: brews.filterType,
+        })
         .from(brews)
-        .innerJoin(beans, eq(brews.beansId, beans.id))
         .innerJoin(users, eq(brews.userId, users.id))
         .where(eq(users.fbId, firebaseUid))
-        .orderBy(desc(brews.date))
-        .limit(50);
-      return brewsList;
+        .orderBy(desc(brews.date));
+
+      // Extract unique values per field, preserving most-recent-first order
+      return Object.fromEntries(
+        brewFormSuggestionFields.map((field) => [
+          field,
+          [...new Set(brewsList.map((b) => b[field]).filter(Boolean))],
+        ]),
+      ) as Record<(typeof brewFormSuggestionFields)[number], string[]>;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -62,26 +114,26 @@ export const getBrews = createServerFn({
 export const getBrew = createServerFn({
   method: "GET",
 })
-  .inputValidator((input: { brewFbId: string; firebaseUid: string }) => {
-    if (!input.brewFbId) throw new Error("Brew ID is required");
+  .inputValidator((input: { brewId: string; firebaseUid: string }) => {
+    if (!input.brewId) throw new Error("Brew ID is required");
     if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { brewFbId, firebaseUid } }) => {
+  .handler(async ({ data: { brewId, firebaseUid } }) => {
     try {
-      const [brew] = await db
-        .select()
-        .from(brews)
-        .innerJoin(beans, eq(brews.beansId, beans.id))
-        .innerJoin(users, eq(brews.userId, users.id))
-        .where(and(eq(brews.fbId, brewFbId), eq(users.fbId, firebaseUid)))
-        .limit(1);
+      const brew = await db.query.brews.findFirst({
+        where: (brews, { eq }) => eq(brews.id, brewId),
+        with: {
+          beans: true,
+          user: true,
+        },
+      });
 
-      if (!brew) {
+      if (!brew || brew.user.fbId !== firebaseUid) {
         return null;
       }
 
-      return brew;
+      return { ...brew, beans: brew.beans };
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -234,6 +286,8 @@ export const getBeans = createServerFn({
     }
   });
 
+// TODO can I combine these 4 next function into 1?
+
 export const getBeansOpen = createServerFn({
   method: "GET",
 })
@@ -241,7 +295,7 @@ export const getBeansOpen = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<Beans[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       // Open beans: not finished AND (never frozen OR thawed)
       const beansList = await db
@@ -270,7 +324,7 @@ export const getBeansFrozen = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<Beans[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       // Frozen beans: not finished AND frozen but not thawed
       const beansList = await db
@@ -300,7 +354,7 @@ export const getBeansArchived = createServerFn({
     if (!firebaseUid) throw new Error("User ID is required");
     return firebaseUid;
   })
-  .handler(async ({ data: firebaseUid }): Promise<Beans[]> => {
+  .handler(async ({ data: firebaseUid }) => {
     try {
       // Archived beans: marked as finished
       const beansList = await db
@@ -308,6 +362,39 @@ export const getBeansArchived = createServerFn({
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
         .where(and(eq(users.fbId, firebaseUid), eq(beans.isFinished, true)))
+        .orderBy(desc(beans.roastDate));
+      return beansList;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
+export const getBeansNonArchived = createServerFn({
+  method: "GET",
+})
+  .inputValidator((firebaseUid: string) => {
+    if (!firebaseUid) throw new Error("User ID is required");
+    return firebaseUid;
+  })
+  .handler(async ({ data: firebaseUid }) => {
+    try {
+      // Non-archived beans: not marked as finished
+      const beansList = await db
+        .select({
+          id: beans.id,
+          name: beans.name,
+          roaster: beans.roaster,
+          roastDate: beans.roastDate,
+          origin: beans.origin,
+          country: beans.country,
+          isFinished: beans.isFinished,
+          freezeDate: beans.freezeDate, // TODO can i define a "virtual column" here, i.e isFrozen?
+          thawDate: beans.thawDate, // TODO can i define a "virtual column" here, i.e isThawed?
+        })
+        .from(beans)
+        .innerJoin(users, eq(beans.userId, users.id))
+        .where(and(eq(users.fbId, firebaseUid), eq(beans.isFinished, false)))
         .orderBy(desc(beans.roastDate));
       return beansList;
     } catch (error) {
@@ -326,7 +413,7 @@ export const getBean = createServerFn({
   })
   .handler(async ({ data: { beanId, firebaseUid } }) => {
     try {
-      // Single query with relations + ownership verification!
+      // Single query with relations + ownership verification
       const bean = await db.query.beans.findFirst({
         where: (beans, { eq }) => eq(beans.id, beanId),
         with: {

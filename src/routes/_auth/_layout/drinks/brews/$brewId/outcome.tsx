@@ -1,26 +1,21 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { BrewOutcomeForm } from "~/components/brews/BrewOutcomeForm";
 import { getBrew } from "~/db/queries";
-import { useDocRef } from "~/hooks/firestore/useDocRef";
-import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
 import { userAtom } from "~/hooks/useInitUser";
-import { Brew } from "~/types/brew";
 import { flagsQueryOptions } from "../../../feature-flags";
 
-type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
-
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
-  queryOptions<BrewWithBeans | null>({
-    queryKey: ["brews", brewId, firebaseUid],
+  queryOptions({
+    queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewFbId: brewId, firebaseUid },
-      }) as Promise<BrewWithBeans | null>,
+        data: { brewId, firebaseUid },
+      }),
   });
 
 export const Route = createFileRoute(
@@ -36,22 +31,11 @@ function BrewEditOutcome() {
   console.log("BrewEditOutcome");
 
   const user = useAtomValue(userAtom);
-  const { brewId } = useParams({ strict: false });
+  const { brewId } = Route.useParams();
 
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlBrew } = useSuspenseQuery<BrewWithBeans | null>(
-    brewQueryOptions(brewId ?? "", user?.uid ?? ""),
+  const { data: brew, isLoading } = useSuspenseQuery(
+    brewQueryOptions(brewId, user?.uid ?? ""),
   );
-
-  const shouldReadFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
-
-  const docRef = useDocRef<Brew>("brews", brewId);
-  const { details: fbBrew, isLoading } = useFirestoreDocOneTime<Brew>(docRef);
-
-  // Check the appropriate data source based on flag
-  const brew = shouldReadFromPostgres ? sqlBrew?.brews : fbBrew;
 
   if (isLoading) return null;
 
@@ -72,7 +56,7 @@ function BrewEditOutcome() {
 
       <Heading className="mb-4">Edit brew outcome</Heading>
 
-      <BrewOutcomeForm brew={brew as any} brewId={brewId} />
+      <BrewOutcomeForm brew={brew} brewId={brewId} />
     </>
   );
 }

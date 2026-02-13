@@ -1,14 +1,13 @@
-import type { Beans, Brew } from "~/db/types";
+import { BrewWithBeans } from "~/routes/_auth/_layout/drinks/brews/$brewId";
 import { DetailsCard } from "../Details";
 import { BeansShortInfo } from "../beans/BeansShortInfo.Postgres";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface BrewDetailsInfoProp {
-  brew: Brew;
-  beans: Beans;
+  brew: BrewWithBeans;
 }
 
-export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
+export const BrewDetailsInfo = ({ brew }: BrewDetailsInfoProp) => {
   const { beansByWater, waterByBeans } = useDrinkRatio(
     brew?.beansWeight ?? 0,
     brew?.waterWeight ?? 0,
@@ -16,7 +15,7 @@ export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
 
   return (
     <div className="space-y-4">
-      <BeansShortInfo beans={beans} brewDate={brew.date} />
+      <BeansShortInfo beans={brew.beans} brewDate={brew.date} />
 
       <DetailsCard
         title="Recipe"

@@ -154,8 +154,8 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
       }
       params={
         type === "brew"
-          ? { brewId: drink.fbId ?? "" }
-          : { espressoId: drink.fbId ?? "" }
+          ? { brewId: drink.id ?? "" }
+          : { espressoId: drink.id ?? "" }
       }
     >
       <Card.Container className="grow text-sm">

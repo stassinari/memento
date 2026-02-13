@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import {
   queryOptions,
   useQueryClient,
@@ -7,47 +7,33 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { deleteDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
-import { BrewDetailsInfo as FirebaseBrewDetailsInfo } from "~/components/brews/BrewDetailsInfo.Firebase";
-import { BrewDetailsOutcome as FirebaseBrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome.Firebase";
 import { userAtom } from "~/hooks/useInitUser";
 
-import { BrewDetailsInfo as PostgresBrewDetailsInfo } from "~/components/brews/BrewDetailsInfo.Postgres";
-import { BrewDetailsOutcome as PostgresBrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome.Postgres";
+import { BrewDetailsInfo } from "~/components/brews/BrewDetailsInfo";
+import { BrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome";
 import { ButtonWithDropdown } from "~/components/ButtonWithDropdown";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { deleteBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
-import { useDocRef } from "~/hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { Brew } from "~/types/brew";
 import { tabStyles } from "../../../beans";
-import { flagsQueryOptions } from "../../../feature-flags";
-
-type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
-  queryOptions<BrewWithBeans | null>({
-    queryKey: ["brews", brewId, firebaseUid],
+  queryOptions({
+    queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewFbId: brewId, firebaseUid },
-      }) as Promise<BrewWithBeans | null>,
+        data: { brewId, firebaseUid },
+      }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/")({
   component: BrewDetails,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-    // User data and brew will be loaded in component since user is client-side only
-  },
 });
 
 function BrewDetails() {
@@ -57,56 +43,23 @@ function BrewDetails() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
-  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlBrew } = useSuspenseQuery<BrewWithBeans | null>(
+  const { data: brew, isLoading } = useSuspenseQuery(
     brewQueryOptions(brewId, user?.uid ?? ""),
   );
-
-  const shouldReadFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isSm = useScreenMediaQuery("sm");
 
-  const docRef = useDocRef<Brew>("brews", brewId);
-  const { details: fbBrew, isLoading } = useFirestoreDocRealtime<Brew>(docRef);
-
-  const brew = shouldReadFromPostgres ? sqlBrew?.brews : fbBrew;
-
-  const brewDate = shouldReadFromPostgres
-    ? sqlBrew?.brews.date
-    : fbBrew?.date.toDate();
-  const brewMethod = shouldReadFromPostgres
-    ? (sqlBrew?.brews.method ?? "")
-    : (fbBrew?.method ?? "");
-
   const handleDelete = useCallback(async () => {
-    // 1. Call server function (PostgreSQL delete)
     await deleteBrew({
       data: { brewFbId: brewId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 2. Conditionally delete from Firestore
-    if (writeToFirestore) {
-      try {
-        await deleteDoc(docRef);
-      } catch (error: any) {
-        // If document doesn't exist in Firestore, that's okay
-        if (error?.code === "not-found") {
-          console.warn("Delete brew - Brew not found in Firestore");
-        } else {
-          console.error("Delete brew - Firestore delete error:", error);
-        }
-      }
-    }
-
     // 3. Invalidate and navigate
     queryClient.invalidateQueries({ queryKey: ["brews"] });
     navigate({ to: "/drinks/brews" });
-  }, [brewId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
+  }, [brewId, user?.uid, queryClient, navigate]);
 
   if (isLoading) return null;
 
@@ -117,7 +70,7 @@ function BrewDetails() {
   return (
     <>
       <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.brews, { label: brewMethod }]}
+        items={[navLinks.drinks, navLinks.brews, { label: brew.method }]}
       />
 
       <Heading
@@ -157,11 +110,11 @@ function BrewDetails() {
           />
         }
       >
-        {brewMethod}
+        {brew.method}
       </Heading>
 
       <div className="mb-2 text-sm text-gray-500">
-        {dayjs(brewDate).format("DD MMM YYYY @ H:m")}
+        {dayjs(brew.date).format("DD MMM YYYY @ H:m")}
       </div>
 
       {isSm ? (
@@ -171,14 +124,7 @@ function BrewDetails() {
               Brew info
             </h2>
 
-            {shouldReadFromPostgres ? (
-              <PostgresBrewDetailsInfo
-                brew={sqlBrew!.brews}
-                beans={sqlBrew!.beans}
-              />
-            ) : (
-              <FirebaseBrewDetailsInfo brew={fbBrew!} />
-            )}
+            <BrewDetailsInfo brew={brew} />
           </div>
 
           <div>
@@ -186,43 +132,28 @@ function BrewDetails() {
               Outcome
             </h2>
 
-            {shouldReadFromPostgres ? (
-              <PostgresBrewDetailsOutcome brew={sqlBrew!.brews} />
-            ) : (
-              <FirebaseBrewDetailsOutcome brew={fbBrew!} />
-            )}
+            <BrewDetailsOutcome brew={brew} />
           </div>
         </div>
       ) : (
-        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List className="flex -mb-px">
+        <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <TabList className="flex -mb-px">
             <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
               Info
             </Tab>
             <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
               Outcome
             </Tab>
-          </Tab.List>
-          <Tab.Panels className="mt-4">
-            <Tab.Panel>
-              {shouldReadFromPostgres ? (
-                <PostgresBrewDetailsInfo
-                  brew={sqlBrew!.brews}
-                  beans={sqlBrew!.beans}
-                />
-              ) : (
-                <FirebaseBrewDetailsInfo brew={fbBrew!} />
-              )}
-            </Tab.Panel>
-            <Tab.Panel>
-              {shouldReadFromPostgres ? (
-                <PostgresBrewDetailsOutcome brew={sqlBrew!.brews} />
-              ) : (
-                <FirebaseBrewDetailsOutcome brew={fbBrew!} />
-              )}
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+          </TabList>
+          <TabPanels className="mt-4">
+            <TabPanel>
+              <BrewDetailsInfo brew={brew} />
+            </TabPanel>
+            <TabPanel>
+              <BrewDetailsOutcome brew={brew} />
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       )}
     </>
   );

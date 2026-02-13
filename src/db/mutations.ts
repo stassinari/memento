@@ -3,6 +3,7 @@ import { randomBytes } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { BeansFormInputs } from "~/components/beans/BeansForm";
 import { BrewFormInputs } from "~/components/brews/BrewForm";
+import { BrewOutcomeInputs } from "~/components/brews/BrewOutcomeForm";
 import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { db } from "./db";
 import { beans, brews, espresso, featureFlags, users } from "./schema";
@@ -174,8 +175,7 @@ export const addBeans = createServerFn({ method: "POST" })
     validateBeansInput(input.data);
     return input;
   })
-  .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-    // 2. Generate Firestore-compatible doc ID
+  .handler(async ({ data: { data, firebaseUid } }) => {
     const fbId = generateFirestoreId();
 
     try {
@@ -185,7 +185,6 @@ export const addBeans = createServerFn({ method: "POST" })
       }
 
       // TODO move to the Form component
-      // Convert form data for PostgreSQL
       const pgData = {
         fbId,
         userId,
@@ -477,9 +476,7 @@ async function getBeansIdByFbId(
   }
 }
 
-/**
- * Validate brew input data
- */
+// TODO should we use Zod?
 function validateBrewInput(data: BrewFormInputs): void {
   // Required fields
   if (!data.method?.trim()) {
@@ -499,156 +496,105 @@ function validateBrewInput(data: BrewFormInputs): void {
   }
 }
 
-/**
- * Add new brew with conditional dual-write to PostgreSQL and/or Firestore
- */
 export const addBrew = createServerFn({ method: "POST" })
-  .inputValidator((input: { data: BrewFormInputs; firebaseUid: string }) => {
-    if (!input.firebaseUid) {
+  .inputValidator((input: { data: BrewFormInputs; userFbId: string }) => {
+    if (!input.userFbId) {
       throw new Error("Firebase UID is required");
     }
     validateBrewInput(input.data);
     return input;
   })
-  .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-    // 1. Get feature flags
-    const flags = await getFlags();
-
-    // 2. Generate Firestore-compatible doc ID
+  .handler(async ({ data: { data, userFbId } }) => {
     const fbId = generateFirestoreId();
 
-    // 3. CONDITIONAL WRITE TO POSTGRESQL
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (!userId) {
-          console.error(
-            "User not found in PostgreSQL, skipping Postgres write",
-          );
-        } else {
-          // Extract beansFbId and resolve to UUID
-          const beansFbId = extractBeansFbId(data.beans);
-          const beansId = await getBeansIdByFbId(beansFbId, userId);
+    try {
+      const userId = await getUserByFirebaseUid(userFbId);
+      const beansId = data.beans;
+      if (!userId || !beansId) {
+        throw new Error("User or beans not found");
+      } else {
+        const pgData = {
+          fbId,
+          userId,
+          beansId,
+          date: data.date!,
+          method: data.method!,
+          grinder: data.grinder,
+          grinderBurrs: data.grinderBurrs,
+          waterType: data.waterType,
+          filterType: data.filterType,
+          waterWeight: data.waterWeight!,
+          beansWeight: data.beansWeight!,
+          waterTemperature: data.waterTemperature,
+          grindSetting: data.grindSetting,
+          timeMinutes: data.timeMinutes,
+          timeSeconds: data.timeSeconds,
+          // Outcome fields (initially null)
+          rating: null,
+          notes: null,
+          tds: null,
+          finalBrewWeight: null,
+          extractionType: null,
+          // Tasting scores flattened
+          aroma: null,
+          acidity: null,
+          sweetness: null,
+          body: null,
+          finish: null,
+        };
 
-          if (!beansId) {
-            console.error(
-              `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres write`,
-            );
-          } else {
-            // Convert form data for PostgreSQL
-            const pgData = {
-              fbId,
-              userId,
-              beansId,
-              date: data.date!,
-              method: data.method!,
-              grinder: data.grinder,
-              grinderBurrs: data.grinderBurrs,
-              waterType: data.waterType,
-              filterType: data.filterType,
-              waterWeight: data.waterWeight!,
-              beansWeight: data.beansWeight!,
-              waterTemperature: data.waterTemperature,
-              grindSetting: data.grindSetting,
-              timeMinutes: data.timeMinutes,
-              timeSeconds: data.timeSeconds,
-              // Outcome fields (initially null)
-              rating: null,
-              notes: null,
-              tds: null,
-              finalBrewWeight: null,
-              extractionType: null,
-              // Tasting scores flattened
-              aroma: null,
-              acidity: null,
-              sweetness: null,
-              body: null,
-              finish: null,
-            };
+        const [inserted] = await db
+          .insert(brews)
+          .values(pgData)
+          .returning({ id: brews.id });
 
-            await db.insert(brews).values(pgData);
-          }
-        }
-      } catch (error) {
-        console.error("PostgreSQL insert failed:", error);
-        // Log but continue (eventual consistency)
+        return { id: inserted.id };
       }
+    } catch (error) {
+      console.error("Add brew insert failed:", error);
+      throw error;
     }
-
-    // 4. Return ID for client-side Firestore write
-    return { id: fbId };
   });
 
-/**
- * Update existing brew with conditional dual-write to PostgreSQL and/or Firestore
- */
 export const updateBrew = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: {
-      data: BrewFormInputs;
-      brewFbId: string;
-      firebaseUid: string;
-    }) => {
+    (input: { data: BrewFormInputs; brewId: string; firebaseUid: string }) => {
       if (!input.firebaseUid) {
         throw new Error("Firebase UID is required");
       }
-      if (!input.brewFbId) {
+      if (!input.brewId) {
         throw new Error("Brew ID is required");
       }
       validateBrewInput(input.data);
       return input;
     },
   )
-  .handler(async ({ data: { data, brewFbId, firebaseUid } }): Promise<void> => {
-    // 1. Get feature flags
-    const flags = await getFlags();
-
-    // 2. CONDITIONAL UPDATE TO POSTGRESQL
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (!userId) {
-          console.error(
-            "User not found in PostgreSQL, skipping Postgres update",
-          );
-        } else {
-          // Extract beansFbId and resolve to UUID
-          const beansFbId = extractBeansFbId(data.beans);
-          const beansId = await getBeansIdByFbId(beansFbId, userId);
-
-          if (!beansId) {
-            console.error(
-              `Beans ${beansFbId} not found in PostgreSQL, skipping Postgres update`,
-            );
-          } else {
-            // Convert form data for PostgreSQL
-            const pgData = {
-              beansId,
-              date: data.date!,
-              method: data.method!,
-              grinder: data.grinder,
-              grinderBurrs: data.grinderBurrs,
-              waterType: data.waterType,
-              filterType: data.filterType,
-              waterWeight: data.waterWeight!,
-              beansWeight: data.beansWeight!,
-              waterTemperature: data.waterTemperature,
-              grindSetting: data.grindSetting,
-              timeMinutes: data.timeMinutes,
-              timeSeconds: data.timeSeconds,
-              // Note: outcome fields are NOT updated here (use updateBrewOutcome)
-            };
-
-            await db
-              .update(brews)
-              .set(pgData)
-              .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
-          }
-        }
-      } catch (error) {
-        console.error("PostgreSQL update failed:", error);
-        // Log but continue (eventual consistency)
+  .handler(async ({ data: { data, brewId, firebaseUid } }) => {
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      const beansId = data.beans;
+      if (!userId || !beansId) {
+        throw new Error("User or beans not found");
       }
+
+      // TODO is this nice?
+      // Convert null to undefined for Drizzle compatibility
+      const updateData = Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          value === null ? undefined : value,
+        ]),
+      ) as Partial<typeof brews.$inferInsert>;
+
+      await db
+        .update(brews)
+        .set(updateData)
+        .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
+
+      return;
+    } catch (error) {
+      console.error("Update brew failed:", error);
+      throw error;
     }
   });
 
@@ -658,69 +604,33 @@ export const updateBrew = createServerFn({ method: "POST" })
 export const updateBrewOutcome = createServerFn({ method: "POST" })
   .inputValidator(
     (input: {
-      data: {
-        rating: number | null;
-        notes: string | null;
-        tds: number | null;
-        finalBrewWeight: number | null;
-        extractionType: "percolation" | "immersion" | null;
-        tastingScores: {
-          aroma: number | null;
-          acidity: number | null;
-          sweetness: number | null;
-          body: number | null;
-          finish: number | null;
-        } | null;
-      };
-      brewFbId: string;
+      data: BrewOutcomeInputs;
+      brewId: string;
       firebaseUid: string;
     }) => {
       if (!input.firebaseUid) {
         throw new Error("Firebase UID is required");
       }
-      if (!input.brewFbId) {
+      if (!input.brewId) {
         throw new Error("Brew ID is required");
       }
       return input;
     },
   )
-  .handler(async ({ data: { data, brewFbId, firebaseUid } }): Promise<void> => {
-    // 1. Get feature flags
-    const flags = await getFlags();
-
-    // 2. CONDITIONAL UPDATE TO POSTGRESQL
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (!userId) {
-          console.error(
-            "User not found in PostgreSQL, skipping Postgres update",
-          );
-        } else {
-          // Flatten tasting scores for PostgreSQL
-          const pgData = {
-            rating: data.rating,
-            notes: data.notes,
-            tds: data.tds,
-            finalBrewWeight: data.finalBrewWeight,
-            extractionType: data.extractionType,
-            // Flatten tasting scores
-            aroma: data.tastingScores?.aroma ?? null,
-            acidity: data.tastingScores?.acidity ?? null,
-            sweetness: data.tastingScores?.sweetness ?? null,
-            body: data.tastingScores?.body ?? null,
-            finish: data.tastingScores?.finish ?? null,
-          };
-
-          await db
-            .update(brews)
-            .set(pgData)
-            .where(and(eq(brews.fbId, brewFbId), eq(brews.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL outcome update failed:", error);
-        // Log but continue (eventual consistency)
+  .handler(async ({ data: { data, brewId, firebaseUid } }): Promise<void> => {
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (!userId) {
+        throw new Error("User not found");
       }
+
+      await db
+        .update(brews)
+        .set(data)
+        .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
+    } catch (error) {
+      console.error("Update brew outcome failed:", error);
+      throw error;
     }
   });
 
