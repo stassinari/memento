@@ -16,73 +16,46 @@ import {
 } from "@tanstack/react-table";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { orderBy } from "firebase/firestore";
 import { countBy, maxBy, mean } from "lodash";
 import { Fragment, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { IconButton } from "~/components/IconButton";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
-import { getBeans, getBrews } from "~/db/queries";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
+import { getBrews } from "~/db/queries";
+import type { Brew } from "~/db/types";
 import { useCurrentUser } from "~/hooks/useInitUser";
-import { flagsQueryOptions } from "~/routes/_auth/_layout/feature-flags";
-import { Beans } from "~/types/beans";
-import { Brew } from "~/types/brew";
 import { roundToDecimal } from "~/utils";
 
-type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
-type BeansWithUser = Awaited<ReturnType<typeof getBeans>>[number];
-
 const brewsQueryOptions = (firebaseUid: string) =>
-  queryOptions<BrewWithBeans[]>({
+  queryOptions({
     queryKey: ["brews", firebaseUid],
-    queryFn: () => getBrews({ data: firebaseUid }) as Promise<BrewWithBeans[]>,
-  });
-
-const beansQueryOptions = (firebaseUid: string) =>
-  queryOptions<BeansWithUser[]>({
-    queryKey: ["beans", firebaseUid],
-    queryFn: () => getBeans({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+    queryFn: () => getBrews({ data: { firebaseUid } }),
   });
 
 export const Route = createFileRoute("/_auth/_layoutFull/drinks/brews/table")({
   component: BrewsTableWrapper,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
-type BrewFlatForTable = Omit<Brew, "beans"> & { beans?: Beans };
+type BrewForTable = Brew & {
+  beansName: string | null;
+  beansRoaster: string | null;
+};
 
-const columnHelper = createColumnHelper<BrewFlatForTable>();
+const columnHelper = createColumnHelper<BrewForTable>();
 
 const columns = [
   columnHelper.accessor("method", {
     header: () => "Method",
   }),
-  columnHelper.accessor((row) => (row.beans ? row.beans.name : ""), {
-    id: "beansName",
+  columnHelper.accessor("beansName", {
     header: "Beans name",
   }),
-  columnHelper.accessor((row) => (row.beans ? row.beans.roaster : ""), {
-    id: "beansRoaster",
+  columnHelper.accessor("beansRoaster", {
     header: "Beans roaster",
   }),
-  columnHelper.accessor((row) => row.date, {
-    id: "date",
-    cell: (info) => {
-      const dateValue = info.getValue();
-      // Handle both Firestore Timestamp (has toDate()) and Date objects
-      const date =
-        typeof dateValue === "object" &&
-        dateValue !== null &&
-        "toDate" in dateValue
-          ? (dateValue as any).toDate()
-          : dateValue;
-      return dayjs(date).format("DD MMM YYYY | H:m");
-    },
+  columnHelper.accessor("date", {
+    cell: (info) => dayjs(info.getValue()).format("DD MMM YYYY | H:m"),
     header: () => "Date",
   }),
   columnHelper.accessor("grinder", {
@@ -125,81 +98,29 @@ const columns = [
 ];
 
 function BrewsTableWrapper() {
-  console.log("BrewTableWrapper");
   const user = useCurrentUser();
 
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const readFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
-
-  // PostgreSQL data
-  const { data: sqlBrewsList } = useSuspenseQuery(
+  const { data: brewsList } = useSuspenseQuery(
     brewsQueryOptions(user?.uid ?? ""),
   );
-  const { data: sqlBeansList } = useSuspenseQuery(
-    beansQueryOptions(user?.uid ?? ""),
+
+  const data: BrewForTable[] = useMemo(
+    () =>
+      (brewsList ?? []).map((item) => ({
+        ...item.brews,
+        beansName: item.beans?.name ?? null,
+        beansRoaster: item.beans?.roaster ?? null,
+      })),
+    [brewsList],
   );
 
-  // Firestore data
-  const filters = useMemo(() => [orderBy("date", "desc")], []);
-  const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: fbBrewsList, isLoading } =
-    useFirestoreCollectionOneTime<Brew>(query);
-
-  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
-  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: fbBeansList, isLoading: areBeansLoading } =
-    useFirestoreCollectionOneTime<Beans>(beansQuery);
-
-  if (isLoading || areBeansLoading) return null;
-
-  if (readFromPostgres) {
-    // Transform PostgreSQL data to match expected structure
-    // Add a fake path to brews so the table can match them with beans
-    const brewsList =
-      sqlBrewsList?.map((b) => ({
-        ...b.brews,
-        date: b.brews.date as any,
-        beans: {
-          path: `beans/${b.beans.fbId}`,
-        } as any,
-      })) ?? [];
-    const beansList =
-      sqlBeansList?.map((b) => ({
-        ...b.beans,
-        id: b.beans.fbId,
-      })) ?? [];
-
-    if (brewsList.length === 0) return null;
-    return <BrewsTable brewsList={brewsList} beansList={beansList} />;
-  }
-
-  if (fbBrewsList.length === 0) return null;
-  return <BrewsTable brewsList={fbBrewsList} beansList={fbBeansList} />;
+  if (data.length === 0) return null;
+  return <BrewsTable data={data} />;
 }
 
-interface BrewsTableProps {
-  brewsList: Brew[];
-  beansList: Beans[];
-}
-
-const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
-  console.log("BrewsTable");
-
+const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
-
-  const data = useMemo(
-    () =>
-      brewsList.map((brew) => ({
-        ...brew,
-        beans: beansList.find(
-          (bean) => `beans/${bean.id ?? ""}` === brew.beans.path,
-        ),
-      })),
-    [beansList, brewsList],
-  );
 
   const table = useReactTable({
     data,
@@ -214,23 +135,19 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
   const totalStats: Stat[] = useMemo(() => {
     const totalNumberOfBrews = {
       name: "Total number of brews",
-      stat: brewsList.length.toString(),
+      stat: data.length.toString(),
     };
 
     const averageRating = {
       name: "Average (mean) rating",
       stat: roundToDecimal(
-        mean(
-          brewsList
-            .filter((b) => b.rating && b.rating > 0)
-            .map((b) => b.rating),
-        ),
+        mean(data.filter((b) => b.rating && b.rating > 0).map((b) => b.rating)),
         2,
       ).toString(),
       statSmall: "/ 10",
     };
 
-    const methodOccurrences = countBy(brewsList.map((b) => b.method));
+    const methodOccurrences = countBy(data.map((b) => b.method));
     const mostUsedMethod =
       maxBy(Object.keys(methodOccurrences), (o) => methodOccurrences[o]) ?? "";
     const correspondingNumber = methodOccurrences[mostUsedMethod];
@@ -242,7 +159,7 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
     };
 
     return [totalNumberOfBrews, averageRating, mostUsedMethodStat];
-  }, [brewsList]);
+  }, [data]);
 
   return (
     <div className="relative">
@@ -354,27 +271,6 @@ const BrewsTable = ({ brewsList, beansList }: BrewsTableProps) => {
     </div>
   );
 };
-
-// const solutions = [
-//   {
-//     name: "Insights",
-//     description: "Measure actions your users take",
-//     href: "##",
-//     icon: AtSymbolIcon,
-//   },
-//   {
-//     name: "Automations",
-//     description: "Create your own targeted content",
-//     href: "##",
-//     icon: CpuChipIcon,
-//   },
-//   {
-//     name: "Reports",
-//     description: "Keep track of your growth",
-//     href: "##",
-//     icon: ScaleIcon,
-//   },
-// ];
 
 interface Stat {
   name: string;
