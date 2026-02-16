@@ -15,8 +15,9 @@ import { Toggle } from "~/components/Toggle";
 import { deleteSecretKey, generateSecretKey } from "~/db/mutations";
 import { getUser } from "~/db/queries";
 import { auth } from "~/firebaseConfig";
-import { useCurrentUser } from "~/hooks/useInitUser";
+import { useCurrentUser, userAtom } from "~/hooks/useInitUser";
 import { generateRandomString } from "~/utils";
+import { useSetAtom } from "jotai";
 
 export const Route = createFileRoute("/_auth/_layout/settings")({
   component: Settings,
@@ -30,6 +31,7 @@ const signOut = async (auth: Auth) => {
 function Settings() {
   const user = useCurrentUser();
 
+  const setUser = useSetAtom(userAtom);
   const queryClient = useQueryClient();
   const { data: dbUser } = useSuspenseQuery({
     queryKey: ["user", user?.uid],
@@ -54,8 +56,9 @@ function Settings() {
 
       return newSecretKey;
     },
-    onSuccess: () => {
+    onSuccess: (newSecretKey) => {
       queryClient.invalidateQueries({ queryKey: ["user", user?.uid] });
+      setUser((prev) => (prev ? { ...prev, secretKey: newSecretKey } : prev));
     },
   });
 
@@ -73,6 +76,7 @@ function Settings() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", user?.uid] });
+      setUser((prev) => (prev ? { ...prev, secretKey: null } : prev));
     },
   });
 

@@ -1,9 +1,10 @@
 import { onAuthStateChanged, User } from "firebase/auth";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
+import { getUser } from "~/db/queries";
 import { auth } from "~/firebaseConfig";
 
-type UserWithRole = User & { role?: string };
+type UserWithRole = User & { role?: string; secretKey?: string | null };
 
 export const userAtom = atom<UserWithRole | null>(null);
 export const authInitializedAtom = atom<boolean>(false);
@@ -40,13 +41,22 @@ export const useInitUser = () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       authInitialized = true; // Update module-level flag
       let role: string | undefined;
+      let secretKey: string | null | undefined;
+
       if (user) {
         const idToken = await user.getIdToken(true);
         const decoded = JSON.parse(atob(idToken.split(".")[1]));
         role = decoded.role;
+
+        try {
+          const dbUser = await getUser({ data: user.uid });
+          secretKey = dbUser?.secretKey ?? null;
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+        }
       }
 
-      setUser(user ? { ...user, role } : null);
+      setUser(user ? { ...user, role, secretKey } : null);
       setAuthInitialized(true);
     });
 

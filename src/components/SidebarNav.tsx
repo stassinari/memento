@@ -1,13 +1,9 @@
 import { Link, LinkProps } from "@tanstack/react-router";
 import clsx from "clsx";
-import { DocumentReference, doc } from "firebase/firestore";
 import { ReactNode, useMemo } from "react";
-import { db } from "~/firebaseConfig";
-import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import { useActiveRoute } from "~/hooks/useActiveRoute";
 import { useCurrentUser } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { User } from "~/types/user";
 import { navLinks } from "./BottomNav";
 import { MementoLogo } from "./icons/MementoLogo";
 
@@ -51,14 +47,9 @@ export interface SidebarNavItemProps {
 
 export const SidebarNav = () => {
   const user = useCurrentUser();
+  const secretKey = user.secretKey ?? null;
 
-  const userRef = useMemo(
-    () => doc(db, "users", user.uid) as DocumentReference<User>,
-    [user?.uid],
-  );
-
-  const { details: dbUser } = useFirestoreDocRealtime<User>(userRef);
-  const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
+  console.log(secretKey);
 
   const isLg = useScreenMediaQuery("lg");
 
