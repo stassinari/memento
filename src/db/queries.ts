@@ -27,6 +27,25 @@ export const getFeatureFlags = createServerFn({
   }
 });
 
+export const getUser = createServerFn({
+  method: "GET",
+})
+  .inputValidator((firebaseUid: string) => {
+    if (!firebaseUid) throw new Error("User ID is required");
+    return firebaseUid;
+  })
+  .handler(async ({ data: firebaseUid }) => {
+    try {
+      const user = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.fbId, firebaseUid),
+      });
+      return user;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
 // FIXME this is fetching way more data than needed. Beans should just really
 // come as a string (for name) and users are only needed for ownership
 // verification, which can be done in the same query without joining the whole table

@@ -2,6 +2,7 @@ import {
   ArrowUpTrayIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   Link as RouterLink,
   createFileRoute,
@@ -9,8 +10,7 @@ import {
 } from "@tanstack/react-router";
 import axios from "axios";
 import clsx from "clsx";
-import { DocumentReference, doc } from "firebase/firestore";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -19,10 +19,8 @@ import { Heading } from "~/components/Heading";
 import { Link } from "~/components/Link";
 import { notification } from "~/components/Notification";
 import { Spinner } from "~/components/Spinner";
-import { db } from "~/firebaseConfig";
-import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
+import { getUser } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
-import { User } from "~/types/user";
 
 export const Route = createFileRoute("/_auth/_layout/decent-upload")({
   component: DecentUpload,
@@ -30,49 +28,45 @@ export const Route = createFileRoute("/_auth/_layout/decent-upload")({
 
 function DecentUpload() {
   const user = useCurrentUser();
-  const userRef = useMemo(
-    () => doc(db, "users", user?.uid || "") as DocumentReference<User>,
-    [user?.uid],
-  );
-
   const navigate = useNavigate();
 
-  const { details: dbUser, isLoading } = useFirestoreDocRealtime<User>(userRef);
-  const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
+  const { data: dbUser } = useSuspenseQuery({
+    queryKey: ["user", user?.uid],
+    queryFn: () => getUser({ data: user?.uid ?? "" }),
+  });
 
-  const userEmail = user?.email ? user.email : "";
+  const secretKey = dbUser?.secretKey;
 
   const [isFileUploading, setIsFileUploading] = useState(false);
 
   const handleUpload = async (files: File[]) => {
-    const url =
-      location.hostname === "localhost"
-        ? "http://127.0.0.1:5001/brewlog-dev/europe-west2/decentUpload"
-        : import.meta.env.VITE_DECENT_UPLOAD_ENDPOINT;
-    if (!url) {
-      throw new Error("decent upload endpoint not set");
-    }
+    // Use relative URL - works in both local dev and production
+    const url = "/api/decent-shots";
+
     if (!secretKey) {
       throw new Error("secret key not set");
     }
 
-    const formData = new FormData();
-    files.forEach((file, i) => {
-      formData.append(`file${i}`, file);
-    });
+    try {
+      // Upload files sequentially since API processes one file at a time
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file); // API expects key "file", not "file0", "file1", etc.
 
-    axios
-      .post(url, formData, {
-        auth: {
-          username: userEmail,
-          password: secretKey,
-        },
-      })
-      .then(() => navigate({ to: "/drinks/espresso" }))
-      .catch((error) => {
-        throw new Error(error);
-      })
-      .finally(() => setIsFileUploading(false));
+        await axios.post(url, formData, {
+          auth: {
+            username: user.uid, // API expects Firebase UID, not email
+            password: secretKey,
+          },
+        });
+      }
+
+      navigate({ to: "/drinks/espresso" });
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsFileUploading(false);
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -103,8 +97,6 @@ function DecentUpload() {
       await handleUpload(acceptedFiles);
     },
   });
-
-  if (isLoading) return null;
 
   return (
     <>
