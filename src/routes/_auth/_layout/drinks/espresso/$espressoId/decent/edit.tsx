@@ -1,24 +1,34 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/react-router";
-import { doc, orderBy, setDoc } from "firebase/firestore";
-import { useMemo } from "react";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   DecentEspressoForm,
+  decentEspressoFormEmptyValues,
   DecentEspressoFormInputs,
 } from "~/components/espresso/steps/DecentEspressoForm";
 import { Heading } from "~/components/Heading";
-import { db } from "~/firebaseConfig";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useDocRef } from "~/hooks/firestore/useDocRef";
-import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
-import { useFirestoreDocOneTime } from "~/hooks/firestore/useFirestoreDocOneTime";
+import { updateDecentEspressoDetails } from "~/db/mutations";
+import { getEspresso, getLastNonPartialEspresso } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
-import { DecentEspresso, Espresso } from "~/types/espresso";
+
+const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["espresso", espressoId],
+    queryFn: () =>
+      getEspresso({
+        data: { espressoId, firebaseUid },
+      }),
+  });
+
+const lastNonPartialEspressoQueryOptions = (firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["espresso", "lastNonPartial"],
+    queryFn: () =>
+      getLastNonPartialEspresso({
+        data: firebaseUid,
+      }),
+  });
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/decent/edit",
@@ -26,59 +36,55 @@ export const Route = createFileRoute(
   component: DecentEspressoEditDetails,
 });
 
-const decentEspressoToFirestore = (espresso: DecentEspressoFormInputs) => ({
-  ...espresso,
-  beans: doc(db, espresso.beans ?? ""),
-});
-
 function DecentEspressoEditDetails() {
   console.log("DecentEspressoEditDetails");
 
   const user = useCurrentUser();
-  const { espressoId } = useParams({ strict: false });
 
+  const { espressoId } = Route.useParams();
   const navigate = useNavigate();
 
-  const docRef = useDocRef<DecentEspresso>("espresso", espressoId);
-  const { details: decentEspresso, isLoading } =
-    useFirestoreDocOneTime<DecentEspresso>(docRef);
+  const { data: decentEspresso } = useSuspenseQuery(
+    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+  );
 
-  const filters = useMemo(() => [orderBy("date", "desc")], []);
-  const query = useCollectionQuery<Espresso>("espresso", filters);
-  const { list: espressoList, isLoading: areEspressoLoading } =
-    useFirestoreCollectionOneTime(query);
+  const { data: lastNonPartialEspresso } = useSuspenseQuery(
+    lastNonPartialEspressoQueryOptions(user?.uid ?? ""),
+  );
 
   if (!user) throw new Error("User is not logged in.");
 
-  if (isLoading || areEspressoLoading) return null;
-
-  if (!espressoId || !decentEspresso || !decentEspresso.beans) {
-    throw new Error("Espresso does not exist.");
-  }
-
-  const existingEspressoRef = doc(
-    db,
-    "users",
-    user.uid,
-    "espresso",
-    espressoId,
-  );
+  if (!decentEspresso) return null;
 
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
-    await setDoc(existingEspressoRef, decentEspressoToFirestore(data));
+    if (!user?.uid || !espressoId) {
+      throw new Error("User or espresso ID missing");
+    }
+
+    await updateDecentEspressoDetails({
+      data: {
+        data: {
+          date: decentEspresso.date,
+          beans: data.beans,
+          grindSetting: data.grindSetting,
+          machine: data.machine,
+          grinder: data.grinder,
+          grinderBurrs: data.grinderBurrs,
+          portafilter: data.portafilter,
+          basket: data.basket,
+          actualWeight: data.actualWeight,
+          targetWeight: data.targetWeight,
+          beansWeight: data.beansWeight,
+        },
+        espressoId,
+        firebaseUid: user.uid,
+      },
+    });
+
     navigate({
       to: "/drinks/espresso/$espressoId",
       params: { espressoId: espressoId! },
     });
-  };
-
-  // TODO find an automated way to do this
-  const fromFirestore: DecentEspressoFormInputs = {
-    ...decentEspresso,
-    targetWeight: decentEspresso.targetWeight ?? null,
-    beansWeight: decentEspresso.beansWeight ?? null,
-    date: decentEspresso.date.toDate(),
-    beans: decentEspresso.beans.path,
   };
 
   return (
@@ -97,10 +103,18 @@ function DecentEspressoEditDetails() {
       </Heading>
 
       <DecentEspressoForm
-        defaultValues={fromFirestore}
-        espressoList={espressoList}
+        defaultValues={decentEspressoFormEmptyValues(
+          { ...decentEspresso, beans: decentEspresso.beans?.id ?? null },
+          {
+            ...lastNonPartialEspresso,
+            beans: lastNonPartialEspresso?.beansId,
+          },
+        )}
         mutation={editDecentEspresso}
-        backLink={`/drinks/espresso/${espressoId}`}
+        backLinkProps={{
+          to: "/drinks/espresso/$espressoId",
+          params: { espressoId },
+        }}
       />
     </>
   );

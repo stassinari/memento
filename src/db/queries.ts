@@ -256,6 +256,30 @@ export const getPartialEspressos = createServerFn({
     }
   });
 
+export const getLastNonPartialEspresso = createServerFn({
+  method: "GET",
+})
+  .inputValidator((firebaseUid: string) => {
+    if (!firebaseUid) throw new Error("User ID is required");
+    return firebaseUid;
+  })
+  .handler(async ({ data: firebaseUid }) => {
+    try {
+      const lastEspresso = await db
+        .select({ ...getTableColumns(espresso) })
+        .from(espresso)
+        .innerJoin(users, eq(espresso.userId, users.id))
+        .where(and(eq(users.fbId, firebaseUid), eq(espresso.partial, false)))
+        .orderBy(desc(espresso.date))
+        .limit(1)
+        .then((results) => results[0] || null);
+      return lastEspresso;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
 export const getDecentReadings = createServerFn({
   method: "GET",
 })
