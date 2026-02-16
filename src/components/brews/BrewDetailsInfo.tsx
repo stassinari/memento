@@ -1,6 +1,6 @@
 import { BrewWithBeans } from "~/routes/_auth/_layout/drinks/brews/$brewId";
 import { DetailsCard } from "../Details";
-import { BeansShortInfo } from "../beans/BeansShortInfo.Postgres";
+import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface BrewDetailsInfoProp {

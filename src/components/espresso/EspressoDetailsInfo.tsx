@@ -1,5 +1,5 @@
 import { EspressoWithBeans } from "~/routes/_auth/_layout/drinks/espresso/$espressoId";
-import { BeansShortInfo } from "../beans/BeansShortInfo.Postgres";
+import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { DetailsCard } from "../Details";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
