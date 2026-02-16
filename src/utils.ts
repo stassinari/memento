@@ -1,4 +1,4 @@
-import { Espresso } from "./types/espresso";
+import { Espresso } from "./db/types";
 
 interface BrewEyData {
   tds: number;

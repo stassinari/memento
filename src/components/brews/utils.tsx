@@ -1,5 +1,5 @@
 import { MapPinIcon } from "@heroicons/react/20/solid";
-import { Brew } from "~/types/brew";
+import { Brew } from "~/db/types";
 import { DataListItem } from "../DataList";
 
 export const brewToDataListItem = (b: Brew): DataListItem => ({
@@ -9,7 +9,7 @@ export const brewToDataListItem = (b: Brew): DataListItem => ({
     pill: b.rating ? `${b.rating}/10 ★` : undefined,
   },
   bottomRow: {
-    date: b.date.toDate(),
+    date: b.date,
     tags: [...(b.grinder ? [{ icon: <MapPinIcon />, label: b.grinder }] : [])],
   },
 });

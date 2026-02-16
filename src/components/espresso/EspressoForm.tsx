@@ -8,8 +8,8 @@ import {
   getBeansNonArchived,
   getEspressoFormValueSuggestions,
 } from "~/db/queries";
+import { Espresso } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
-import { Espresso } from "~/types/espresso";
 import {
   BeansEquipment,
   BeansEquipmentInputs,

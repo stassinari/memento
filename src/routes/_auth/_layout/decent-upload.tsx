@@ -131,8 +131,6 @@ function DecentUpload() {
             variant="secondary"
             onClick={() => {
               console.log("not yet, dawg");
-
-              //   generateSecretKey(firestore, userId);
             }}
           >
             Generate secret key (TBD)

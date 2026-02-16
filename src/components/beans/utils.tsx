@@ -1,7 +1,7 @@
 import { MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { Schema } from "firebase/vertexai";
 import { BeanOrigin, RoastStyle } from "~/db/schema";
-import { Beans } from "~/types/beans";
+import { Beans } from "~/db/types";
 import { DataListItem } from "../DataList";
 import type { BeansFormInputs } from "./BeansForm";
 
@@ -18,9 +18,9 @@ export const beansToDataListItem = (b: Beans): DataListItem =>
   b.origin === "single-origin"
     ? {
         link: `/beans/${b.id ?? ""}`,
-        topRow: { title: b.name, pill: b.process ?? undefined },
+        topRow: { title: b.name, pill: b.process },
         bottomRow: {
-          date: b.roastDate?.toDate(),
+          date: b.roastDate,
           tags: [
             { icon: <UsersIcon />, label: b.roaster },
             ...(b.country ? [{ icon: <MapPinIcon />, label: b.country }] : []),
@@ -31,7 +31,7 @@ export const beansToDataListItem = (b: Beans): DataListItem =>
         link: `/beans/${b.id ?? ""}`,
         topRow: { title: b.name, pill: "Blend" },
         bottomRow: {
-          date: b.roastDate?.toDate(),
+          date: b.roastDate,
           tags: [{ icon: <UsersIcon />, label: b.roaster }],
         },
       };

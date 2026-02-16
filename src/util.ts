@@ -1,4 +1,4 @@
-import { Beans } from "./types/beans";
+import { Beans } from "./db/types";
 
 export function isNotNullable<T>(x: T | null | undefined): x is T {
   return x != null;

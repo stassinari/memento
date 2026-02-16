@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { Espresso } from "~/types/espresso";
+import { Espresso } from "~/db/types";
 import { Button } from "../../Button";
 import { Divider } from "../../Divider";
 import { EquipmentTable } from "../../EquipmentTable";

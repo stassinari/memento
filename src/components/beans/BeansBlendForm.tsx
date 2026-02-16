@@ -5,7 +5,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import countries from "~/data/countries";
 import { processes } from "~/data/processes";
 import { varietals } from "~/data/varietals";
-import { BeansBlendPart } from "~/types/beans";
+import { BeansBlendPart } from "~/db/schema";
 import { Button } from "../Button";
 import { IconButton } from "../IconButton";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
