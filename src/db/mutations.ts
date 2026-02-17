@@ -525,7 +525,7 @@ export const updateBrew = createServerFn({ method: "POST" })
 
       await db
         .update(brews)
-        .set(data as Partial<typeof brews.$inferInsert>)
+        .set({ ...data, beansId } as Partial<typeof brews.$inferInsert>)
         .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
 
       return;
@@ -706,7 +706,7 @@ export const updateEspresso = createServerFn({ method: "POST" })
 
       await db
         .update(espresso)
-        .set(data as Partial<typeof espresso.$inferInsert>)
+        .set({ ...data, beansId } as Partial<typeof espresso.$inferInsert>)
         .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
 
       return;
