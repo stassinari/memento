@@ -69,7 +69,7 @@ export const BeansBlendForm = () => {
               id={`blendParts.${i}.percentage`}
               inputProps={{
                 ...register(`blendParts.${i}.percentage`, {
-                  valueAsNumber: true,
+                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
                 placeholder: "34",

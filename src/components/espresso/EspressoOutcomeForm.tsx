@@ -152,7 +152,7 @@ export const EspressoOutcomeForm = ({
                   value: 0,
                   message: "Please enter a positive TDS.",
                 },
-                valueAsNumber: true,
+                setValueAs: (v: string) => (v === "" ? null : Number(v)),
               }),
               type: "number",
               step: "0.01",

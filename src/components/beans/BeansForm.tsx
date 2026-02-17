@@ -309,7 +309,7 @@ export const BeansForm = ({
                   label="Altitude (masl)"
                   id="altitude"
                   inputProps={{
-                    ...register("altitude", { valueAsNumber: true }),
+                    ...register("altitude", { setValueAs: (v: string) => (v === "" ? null : Number(v)) }),
                     type: "number",
                     placeholder: "1200",
                   }}

@@ -384,53 +384,39 @@ export const updateBeans = createServerFn({ method: "POST" })
     },
   )
   .handler(async ({ data: { data, beansId, firebaseUid } }): Promise<void> => {
-    // 1. Get feature flags
-    const flags = await getFlags();
-
-    // 2. CONDITIONAL UPDATE TO POSTGRESQL
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (!userId) {
-          console.error(
-            "User not found in PostgreSQL, skipping Postgres update",
-          );
-        } else {
-          // Convert form data for PostgreSQL
-          const pgData = {
-            name: data.name!,
-            roaster: data.roaster!,
-            roastDate: data.roastDate,
-            roastStyle: data.roastStyle,
-            roastLevel: data.roastLevel,
-            roastingNotes: data.roastingNotes,
-            freezeDate: data.freezeDate,
-            thawDate: data.thawDate,
-            isFinished: data.isFinished ?? false,
-            origin: data.origin,
-            // Single-origin fields (null if blend)
-            country: data.origin === "single-origin" ? data.country : null,
-            region: data.origin === "single-origin" ? data.region : null,
-            varietals: data.origin === "single-origin" ? data.varietals : [],
-            altitude: data.origin === "single-origin" ? data.altitude : null,
-            process: data.origin === "single-origin" ? data.process : null,
-            farmer: data.origin === "single-origin" ? data.farmer : null,
-            harvestDate:
-              data.origin === "single-origin" ? data.harvestDate : null,
-            // Blend parts (null if single-origin)
-            blendParts: data.origin === "blend" ? data.blendParts : null,
-          };
-
-          await db
-            .update(beans)
-            .set(pgData)
-            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL update failed:", error);
-        // Log but continue (eventual consistency)
-      }
+    const userId = await getUserByFirebaseUid(firebaseUid);
+    if (!userId) {
+      throw new Error("User not found");
     }
+
+    const pgData = {
+      name: data.name!,
+      roaster: data.roaster!,
+      roastDate: data.roastDate,
+      roastStyle: data.roastStyle,
+      roastLevel: data.roastLevel,
+      roastingNotes: data.roastingNotes,
+      freezeDate: data.freezeDate,
+      thawDate: data.thawDate,
+      isFinished: data.isFinished ?? false,
+      origin: data.origin,
+      // Single-origin fields (null if blend)
+      country: data.origin === "single-origin" ? data.country : null,
+      region: data.origin === "single-origin" ? data.region : null,
+      varietals: data.origin === "single-origin" ? data.varietals : [],
+      altitude: data.origin === "single-origin" ? data.altitude : null,
+      process: data.origin === "single-origin" ? data.process : null,
+      farmer: data.origin === "single-origin" ? data.farmer : null,
+      harvestDate:
+        data.origin === "single-origin" ? data.harvestDate : null,
+      // Blend parts (null if single-origin)
+      blendParts: data.origin === "blend" ? data.blendParts : null,
+    };
+
+    await db
+      .update(beans)
+      .set(pgData)
+      .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
   });
 
 // ============================================================================
@@ -537,18 +523,9 @@ export const updateBrew = createServerFn({ method: "POST" })
         throw new Error("User or beans not found");
       }
 
-      // TODO is this nice?
-      // Convert null to undefined for Drizzle compatibility
-      const updateData = Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [
-          key,
-          value === null ? undefined : value,
-        ]),
-      ) as Partial<typeof brews.$inferInsert>;
-
       await db
         .update(brews)
-        .set(updateData)
+        .set(data as Partial<typeof brews.$inferInsert>)
         .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
 
       return;
@@ -727,18 +704,9 @@ export const updateEspresso = createServerFn({ method: "POST" })
         throw new Error("User or beans not found");
       }
 
-      // TODO is this nice?
-      // Convert null to undefined for Drizzle compatibility
-      const updateData = Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [
-          key,
-          value === null ? undefined : value,
-        ]),
-      ) as Partial<typeof espresso.$inferInsert>;
-
       await db
         .update(espresso)
-        .set(updateData)
+        .set(data as Partial<typeof espresso.$inferInsert>)
         .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
 
       return;

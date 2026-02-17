@@ -50,6 +50,10 @@ export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
             value: espresso.targetWeight ? `${espresso.targetWeight} g` : "",
           },
           {
+            label: "Actual weight",
+            value: espresso.actualWeight ? `${espresso.actualWeight} g` : "",
+          },
+          {
             label: "Beans weight",
             value: espresso.beansWeight ? `${espresso.beansWeight} g` : "",
           },

@@ -90,7 +90,7 @@ export const BrewTime = ({
                     message:
                       "Please don't break space/time, enter a positive number.",
                   },
-                  valueAsNumber: true,
+                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
                 placeholder: "2",
@@ -109,7 +109,7 @@ export const BrewTime = ({
                     message:
                       "Please don't break space/time, enter a positive number.",
                   },
-                  valueAsNumber: true,
+                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
                 placeholder: "34",

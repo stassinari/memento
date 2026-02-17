@@ -101,6 +101,8 @@ export const BrewForm = ({
           defaultValues={brewFormInputs}
           ctaLabel={buttonLabel}
           handleNestedSubmit={(data) => {
+            console.log("this firing?", data);
+
             const toSend = { ...brewFormInputs, ...data };
             onSubmit(toSend);
           }}
