@@ -61,7 +61,7 @@ export const SidebarNav = () => {
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
       ...(user.role === "admin" || import.meta.env.MODE === "development"
-        ? [navLinks.aiPlayground, navLinks.featureFlags, navLinks.designLibrary]
+        ? [navLinks.aiPlayground, navLinks.designLibrary]
         : []),
     ],
     [secretKey, user.role],

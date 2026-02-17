@@ -9,22 +9,7 @@ import {
   or,
 } from "drizzle-orm";
 import { db } from "./db";
-import { beans, brews, espresso, featureFlags, users } from "./schema";
-
-export const getFeatureFlags = createServerFn({
-  method: "GET",
-}).handler(async () => {
-  try {
-    const flags = await db
-      .select()
-      .from(featureFlags)
-      .orderBy(featureFlags.name);
-    return flags;
-  } catch (error) {
-    console.error("Database error:", error);
-    throw error;
-  }
-});
+import { beans, brews, espresso, users } from "./schema";
 
 export const getUser = createServerFn({
   method: "GET",

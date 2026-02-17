@@ -8,6 +8,13 @@
       "when": 1770558614183,
       "tag": "0000_numerous_sue_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771364745409,
+      "tag": "0001_aspiring_kree",
+      "breakpoints": true
     }
   ]
 }

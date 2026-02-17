@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { randomBytes } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { BeansFormInputs } from "~/components/beans/BeansForm";
 import { BrewFormInputs } from "~/components/brews/BrewForm";
@@ -8,59 +7,7 @@ import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { EspressoOutcomeInputs } from "~/components/espresso/EspressoOutcomeForm";
 import { DecentEspressoFormInputs } from "~/components/espresso/steps/DecentEspressoForm";
 import { db } from "./db";
-import { beans, brews, espresso, featureFlags, users } from "./schema";
-
-/**
- * Generate a Firestore-compatible document ID (20 character alphanumeric)
- * Mimics Firestore's auto-generated IDs
- */
-function generateFirestoreId(): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const bytes = randomBytes(20);
-  let result = "";
-  for (let i = 0; i < 20; i++) {
-    result += chars[bytes[i] % chars.length];
-  }
-  return result;
-}
-
-/**
- * Helper to fetch feature flags from PostgreSQL
- * Returns flag values with safe defaults if query fails
- */
-async function getFlags(): Promise<{
-  write_to_postgres: boolean;
-  write_to_firestore: boolean;
-  read_from_postgres: boolean;
-}> {
-  try {
-    const flagsResult = await db
-      .select({ name: featureFlags.name, enabled: featureFlags.enabled })
-      .from(featureFlags);
-
-    const flags = flagsResult.reduce(
-      (acc, flag) => {
-        acc[flag.name] = flag.enabled;
-        return acc;
-      },
-      {} as Record<string, boolean>,
-    );
-
-    return {
-      write_to_postgres: flags.write_to_postgres ?? false,
-      write_to_firestore: flags.write_to_firestore ?? true,
-      read_from_postgres: flags.read_from_postgres ?? false,
-    };
-  } catch (error) {
-    console.error("Failed to fetch feature flags, using defaults:", error);
-    return {
-      write_to_postgres: false,
-      write_to_firestore: true,
-      read_from_postgres: false,
-    };
-  }
-}
+import { beans, brews, espresso, users } from "./schema";
 
 /**
  * Helper to resolve Firebase UID to PostgreSQL user UUID
@@ -178,8 +125,6 @@ export const addBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { data, firebaseUid } }) => {
-    const fbId = generateFirestoreId();
-
     try {
       const userId = await getUserByFirebaseUid(firebaseUid);
       if (!userId) {
@@ -188,7 +133,6 @@ export const addBeans = createServerFn({ method: "POST" })
 
       // TODO move to the Form component
       const pgData = {
-        fbId,
         userId,
         name: data.name!, //FIXME
         roaster: data.roaster!, // FIXME
@@ -235,20 +179,16 @@ export const archiveBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
-    const flags = await getFlags();
-
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (userId) {
-          await db
-            .update(beans)
-            .set({ isFinished: true })
-            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL archive failed:", error);
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (userId) {
+        await db
+          .update(beans)
+          .set({ isFinished: true })
+          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
+    } catch (error) {
+      console.error("PostgreSQL archive failed:", error);
     }
   });
 
@@ -263,20 +203,16 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
-    const flags = await getFlags();
-
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (userId) {
-          await db
-            .update(beans)
-            .set({ isFinished: false })
-            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL unarchive failed:", error);
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (userId) {
+        await db
+          .update(beans)
+          .set({ isFinished: false })
+          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
+    } catch (error) {
+      console.error("PostgreSQL unarchive failed:", error);
     }
   });
 
@@ -291,20 +227,16 @@ export const freezeBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
-    const flags = await getFlags();
-
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (userId) {
-          await db
-            .update(beans)
-            .set({ freezeDate: new Date() })
-            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL freeze failed:", error);
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (userId) {
+        await db
+          .update(beans)
+          .set({ freezeDate: new Date() })
+          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
+    } catch (error) {
+      console.error("PostgreSQL freeze failed:", error);
     }
   });
 
@@ -319,20 +251,16 @@ export const thawBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
-    const flags = await getFlags();
-
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (userId) {
-          await db
-            .update(beans)
-            .set({ thawDate: new Date() })
-            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL thaw failed:", error);
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (userId) {
+        await db
+          .update(beans)
+          .set({ thawDate: new Date() })
+          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
+    } catch (error) {
+      console.error("PostgreSQL thaw failed:", error);
     }
   });
 
@@ -347,19 +275,15 @@ export const deleteBeans = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
-    const flags = await getFlags();
-
-    if (flags.write_to_postgres) {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        if (userId) {
-          await db
-            .delete(beans)
-            .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-        }
-      } catch (error) {
-        console.error("PostgreSQL delete failed:", error);
+    try {
+      const userId = await getUserByFirebaseUid(firebaseUid);
+      if (userId) {
+        await db
+          .delete(beans)
+          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
+    } catch (error) {
+      console.error("PostgreSQL delete failed:", error);
     }
   });
 
@@ -407,8 +331,7 @@ export const updateBeans = createServerFn({ method: "POST" })
       altitude: data.origin === "single-origin" ? data.altitude : null,
       process: data.origin === "single-origin" ? data.process : null,
       farmer: data.origin === "single-origin" ? data.farmer : null,
-      harvestDate:
-        data.origin === "single-origin" ? data.harvestDate : null,
+      harvestDate: data.origin === "single-origin" ? data.harvestDate : null,
       // Blend parts (null if single-origin)
       blendParts: data.origin === "blend" ? data.blendParts : null,
     };
@@ -452,8 +375,6 @@ export const addBrew = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { data, firebaseUid } }) => {
-    const fbId = generateFirestoreId();
-
     try {
       const userId = await getUserByFirebaseUid(firebaseUid);
       const beansId = data.beans;
@@ -461,7 +382,6 @@ export const addBrew = createServerFn({ method: "POST" })
         throw new Error("User or beans not found");
       }
       const pgData = {
-        fbId,
         userId,
         beansId,
         date: data.date!,
@@ -587,7 +507,7 @@ export const deleteBrew = createServerFn({ method: "POST" })
       if (userId) {
         await db
           .delete(brews)
-          .where(and(eq(brews.fbId, brewId), eq(brews.userId, userId)));
+          .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
       }
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
@@ -625,8 +545,6 @@ export const addEspresso = createServerFn({ method: "POST" })
     },
   )
   .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
-    const fbId = generateFirestoreId();
-
     try {
       const userId = await getUserByFirebaseUid(firebaseUid);
       const beansId = data.beans;
@@ -636,7 +554,6 @@ export const addEspresso = createServerFn({ method: "POST" })
       }
 
       const pgData = {
-        fbId,
         userId,
         beansId,
         date: data.date!,
@@ -673,10 +590,8 @@ export const addEspresso = createServerFn({ method: "POST" })
     } catch (error) {
       console.error("PostgreSQL insert failed:", error);
       // Log but continue (eventual consistency)
+      throw error;
     }
-
-    // 4. Return ID for client-side Firestore write
-    return { id: fbId };
   });
 
 export const updateEspresso = createServerFn({ method: "POST" })
@@ -768,9 +683,7 @@ export const deleteEspresso = createServerFn({ method: "POST" })
       if (userId) {
         await db
           .delete(espresso)
-          .where(
-            and(eq(espresso.fbId, espressoId), eq(espresso.userId, userId)),
-          );
+          .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
       }
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);

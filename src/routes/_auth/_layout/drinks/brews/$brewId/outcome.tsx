@@ -7,7 +7,6 @@ import { Heading } from "~/components/Heading";
 import { BrewOutcomeForm } from "~/components/brews/BrewOutcomeForm";
 import { getBrew } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
-import { flagsQueryOptions } from "../../../feature-flags";
 
 const brewQueryOptions = (brewId: string, firebaseUid: string) =>
   queryOptions({
@@ -22,9 +21,6 @@ export const Route = createFileRoute(
   "/_auth/_layout/drinks/brews/$brewId/outcome",
 )({
   component: BrewEditOutcome,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
 function BrewEditOutcome() {

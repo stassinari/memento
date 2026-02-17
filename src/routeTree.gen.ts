@@ -18,7 +18,6 @@ import { Route as AuthLayoutFullRouteImport } from './routes/_auth/_layoutFull'
 import { Route as AuthLayoutRouteImport } from './routes/_auth/_layout'
 import { Route as AuthLayoutIndexRouteImport } from './routes/_auth/_layout/index'
 import { Route as AuthLayoutSettingsRouteImport } from './routes/_auth/_layout/settings'
-import { Route as AuthLayoutFeatureFlagsRouteImport } from './routes/_auth/_layout/feature-flags'
 import { Route as AuthLayoutDesignLibraryRouteImport } from './routes/_auth/_layout/design-library'
 import { Route as AuthLayoutDecentUploadRouteImport } from './routes/_auth/_layout/decent-upload'
 import { Route as AuthLayoutAiRouteImport } from './routes/_auth/_layout/ai'
@@ -84,11 +83,6 @@ const AuthLayoutIndexRoute = AuthLayoutIndexRouteImport.update({
 const AuthLayoutSettingsRoute = AuthLayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthLayoutFeatureFlagsRoute = AuthLayoutFeatureFlagsRouteImport.update({
-  id: '/feature-flags',
-  path: '/feature-flags',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
 const AuthLayoutDesignLibraryRoute = AuthLayoutDesignLibraryRouteImport.update({
@@ -244,7 +238,6 @@ export interface FileRoutesByFullPath {
   '/ai': typeof AuthLayoutAiRoute
   '/decent-upload': typeof AuthLayoutDecentUploadRoute
   '/design-library': typeof AuthLayoutDesignLibraryRoute
-  '/feature-flags': typeof AuthLayoutFeatureFlagsRoute
   '/settings': typeof AuthLayoutSettingsRoute
   '/beans/add': typeof AuthLayoutBeansAddRoute
   '/drinks/tastings': typeof AuthLayoutDrinksTastingsRoute
@@ -277,7 +270,6 @@ export interface FileRoutesByTo {
   '/ai': typeof AuthLayoutAiRoute
   '/decent-upload': typeof AuthLayoutDecentUploadRoute
   '/design-library': typeof AuthLayoutDesignLibraryRoute
-  '/feature-flags': typeof AuthLayoutFeatureFlagsRoute
   '/settings': typeof AuthLayoutSettingsRoute
   '/beans/add': typeof AuthLayoutBeansAddRoute
   '/drinks/tastings': typeof AuthLayoutDrinksTastingsRoute
@@ -314,7 +306,6 @@ export interface FileRoutesById {
   '/_auth/_layout/ai': typeof AuthLayoutAiRoute
   '/_auth/_layout/decent-upload': typeof AuthLayoutDecentUploadRoute
   '/_auth/_layout/design-library': typeof AuthLayoutDesignLibraryRoute
-  '/_auth/_layout/feature-flags': typeof AuthLayoutFeatureFlagsRoute
   '/_auth/_layout/settings': typeof AuthLayoutSettingsRoute
   '/_auth/_layout/': typeof AuthLayoutIndexRoute
   '/_auth/_layout/beans/add': typeof AuthLayoutBeansAddRoute
@@ -350,7 +341,6 @@ export interface FileRouteTypes {
     | '/ai'
     | '/decent-upload'
     | '/design-library'
-    | '/feature-flags'
     | '/settings'
     | '/beans/add'
     | '/drinks/tastings'
@@ -383,7 +373,6 @@ export interface FileRouteTypes {
     | '/ai'
     | '/decent-upload'
     | '/design-library'
-    | '/feature-flags'
     | '/settings'
     | '/beans/add'
     | '/drinks/tastings'
@@ -419,7 +408,6 @@ export interface FileRouteTypes {
     | '/_auth/_layout/ai'
     | '/_auth/_layout/decent-upload'
     | '/_auth/_layout/design-library'
-    | '/_auth/_layout/feature-flags'
     | '/_auth/_layout/settings'
     | '/_auth/_layout/'
     | '/_auth/_layout/beans/add'
@@ -516,13 +504,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthLayoutSettingsRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_auth/_layout/feature-flags': {
-      id: '/_auth/_layout/feature-flags'
-      path: '/feature-flags'
-      fullPath: '/feature-flags'
-      preLoaderRoute: typeof AuthLayoutFeatureFlagsRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
     '/_auth/_layout/design-library': {
@@ -707,7 +688,6 @@ interface AuthLayoutRouteChildren {
   AuthLayoutAiRoute: typeof AuthLayoutAiRoute
   AuthLayoutDecentUploadRoute: typeof AuthLayoutDecentUploadRoute
   AuthLayoutDesignLibraryRoute: typeof AuthLayoutDesignLibraryRoute
-  AuthLayoutFeatureFlagsRoute: typeof AuthLayoutFeatureFlagsRoute
   AuthLayoutSettingsRoute: typeof AuthLayoutSettingsRoute
   AuthLayoutIndexRoute: typeof AuthLayoutIndexRoute
   AuthLayoutBeansAddRoute: typeof AuthLayoutBeansAddRoute
@@ -737,7 +717,6 @@ const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutAiRoute: AuthLayoutAiRoute,
   AuthLayoutDecentUploadRoute: AuthLayoutDecentUploadRoute,
   AuthLayoutDesignLibraryRoute: AuthLayoutDesignLibraryRoute,
-  AuthLayoutFeatureFlagsRoute: AuthLayoutFeatureFlagsRoute,
   AuthLayoutSettingsRoute: AuthLayoutSettingsRoute,
   AuthLayoutIndexRoute: AuthLayoutIndexRoute,
   AuthLayoutBeansAddRoute: AuthLayoutBeansAddRoute,

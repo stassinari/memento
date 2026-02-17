@@ -58,7 +58,6 @@ export const beans = pgTable(
   "beans",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -93,7 +92,6 @@ export const beans = pgTable(
     blendParts: jsonb("blend_parts").$type<BeansBlendPart[]>(),
   },
   (table) => [
-    uniqueIndex("beans_fb_id_unique").on(table.fbId),
     index("beans_user_roast_date_idx").on(table.userId, table.roastDate),
     check(
       "beans_blend_parts_check",
@@ -110,7 +108,6 @@ export const brews = pgTable(
   "brews",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -147,7 +144,6 @@ export const brews = pgTable(
     finish: numeric("finish", { mode: "number" }),
   },
   (table) => [
-    uniqueIndex("brews_fb_id_unique").on(table.fbId),
     index("brews_user_date_idx").on(table.userId, table.date),
     index("brews_beans_idx").on(table.beansId),
   ],
@@ -157,7 +153,6 @@ export const espresso = pgTable(
   "espresso",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -197,7 +192,6 @@ export const espresso = pgTable(
     finish: numeric("finish", { mode: "number" }),
   },
   (table) => [
-    uniqueIndex("espresso_fb_id_unique").on(table.fbId),
     index("espresso_user_date_idx").on(table.userId, table.date),
     index("espresso_beans_idx").on(table.beansId),
     check(
@@ -231,7 +225,6 @@ export const tastings = pgTable(
   "tastings",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -242,16 +235,9 @@ export const tastings = pgTable(
     data: jsonb("data").notNull(),
   },
   (table) => [
-    uniqueIndex("tastings_fb_id_unique").on(table.fbId),
     index("tastings_user_created_at_idx").on(table.userId, table.createdAt),
   ],
 );
-
-export const featureFlags = pgTable("feature_flags", {
-  name: text("name").primaryKey(),
-  enabled: boolean("enabled").notNull().default(false),
-  description: text("description"),
-});
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({

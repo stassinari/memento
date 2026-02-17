@@ -13,7 +13,6 @@ import { Heading } from "~/components/Heading";
 import { getEspressos } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { flagsQueryOptions } from "../../feature-flags";
 
 type EspressoWithBeans = Awaited<ReturnType<typeof getEspressos>>[number];
 
@@ -34,9 +33,6 @@ const espressosQueryOptions = (
 
 export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
   component: EspressoList,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
 function EspressoList() {

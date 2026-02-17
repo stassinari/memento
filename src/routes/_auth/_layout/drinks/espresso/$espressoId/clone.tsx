@@ -17,7 +17,6 @@ import { Heading } from "~/components/Heading";
 import { addEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
-import { flagsQueryOptions } from "../../../feature-flags";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions({
@@ -32,9 +31,6 @@ export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/clone",
 )({
   component: EspressoClone,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
 function EspressoClone() {
