@@ -10,6 +10,7 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   EspressoForm,
+  espressoFormEmptyValues,
   EspressoFormInputs,
 } from "~/components/espresso/EspressoForm";
 import { Heading } from "~/components/Heading";
@@ -43,7 +44,7 @@ function EspressoClone() {
   const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
 
-  const { data: espresso, isLoading } = useSuspenseQuery(
+  const { data: espressoToClone, isLoading } = useSuspenseQuery(
     espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
   );
 
@@ -72,9 +73,25 @@ function EspressoClone() {
     mutation.mutate(data);
   };
 
-  if (!espresso || !espressoId || isLoading) {
+  if (!espressoToClone || !espressoId || isLoading) {
     return null;
   }
+
+  // Convert to form inputs based on data source
+  const defaultValues: EspressoFormInputs = {
+    // From PostgreSQL
+    ...espressoFormEmptyValues(),
+    beans: espressoToClone.beans?.id ?? null,
+    machine: espressoToClone.machine,
+    grinder: espressoToClone.grinder,
+    grinderBurrs: espressoToClone.grinderBurrs,
+    portafilter: espressoToClone.portafilter,
+    basket: espressoToClone.basket,
+    targetWeight: espressoToClone.targetWeight ?? null,
+    beansWeight: espressoToClone.beansWeight ?? null,
+    waterTemperature: espressoToClone.waterTemperature,
+    grindSetting: espressoToClone.grindSetting,
+  };
 
   return (
     <>
@@ -90,10 +107,7 @@ function EspressoClone() {
       <Heading className="mb-4">Clone espresso</Heading>
 
       <EspressoForm
-        defaultValues={{
-          ...espresso,
-          beans: espresso.beans ? espresso.beans.id : null,
-        }}
+        defaultValues={defaultValues}
         buttonLabel="Clone"
         mutation={handleClone}
       />

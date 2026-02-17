@@ -8,7 +8,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
-import { BrewForm, BrewFormInputs } from "~/components/brews/BrewForm";
+import {
+  BrewForm,
+  brewFormEmptyValues,
+  BrewFormInputs,
+} from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
@@ -38,7 +42,7 @@ function BrewClone() {
   const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
 
-  const { data: brew, isLoading } = useSuspenseQuery(
+  const { data: brewToClone, isLoading } = useSuspenseQuery(
     brewQueryOptions(brewId ?? "", user?.uid ?? ""),
   );
 
@@ -67,9 +71,27 @@ function BrewClone() {
     mutation.mutate(data);
   };
 
-  if (!brew || !brewId || isLoading) {
+  if (!brewToClone || !brewId || isLoading) {
     return null;
   }
+
+  // Convert to form inputs based on data source
+  const defaultValues: BrewFormInputs = {
+    // From PostgreSQL
+    ...brewFormEmptyValues(),
+    method: brewToClone.method,
+    beans: brewToClone.beans.id,
+
+    grinder: brewToClone.grinder,
+    grinderBurrs: brewToClone.grinderBurrs,
+    waterType: brewToClone.waterType,
+    filterType: brewToClone.filterType,
+
+    waterWeight: brewToClone.waterWeight,
+    beansWeight: brewToClone.beansWeight,
+    waterTemperature: brewToClone.waterTemperature,
+    grindSetting: brewToClone.grindSetting,
+  };
 
   return (
     <>
@@ -77,7 +99,7 @@ function BrewClone() {
         items={[
           navLinks.drinks,
           navLinks.brews,
-          { label: brew.method, linkTo: "/drinks/brews/$brewId" },
+          { label: brewToClone.method, linkTo: "/drinks/brews/$brewId" },
           { label: "Clone" },
         ]}
       />
@@ -85,7 +107,7 @@ function BrewClone() {
       <Heading className="mb-4">Clone brew</Heading>
 
       <BrewForm
-        defaultValues={{ ...brew, beans: brew.beans.id }}
+        defaultValues={defaultValues}
         buttonLabel="Clone"
         mutation={handleClone}
       />
