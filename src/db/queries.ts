@@ -491,7 +491,7 @@ export const getBean = createServerFn({
           brews: {
             orderBy: (brews, { desc }) => [desc(brews.date)],
           },
-          espresso: {
+          espressos: {
             orderBy: (espresso, { desc }) => [desc(espresso.date)],
           },
         },
@@ -504,7 +504,7 @@ export const getBean = createServerFn({
 
       return {
         ...bean,
-        espressos: bean.espresso,
+        espressos: bean.espressos,
         brews: bean.brews,
       };
     } catch (error) {

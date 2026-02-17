@@ -243,7 +243,7 @@ export const tastings = pgTable(
 export const usersRelations = relations(users, ({ many }) => ({
   beans: many(beans),
   brews: many(brews),
-  espresso: many(espresso),
+  espressos: many(espresso),
   tastings: many(tastings),
 }));
 
@@ -253,7 +253,7 @@ export const beansRelations = relations(beans, ({ one, many }) => ({
     references: [users.id],
   }),
   brews: many(brews),
-  espresso: many(espresso),
+  espressos: many(espresso),
   tastings: many(tastings),
 }));
 
