@@ -1,4 +1,4 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import countries from "~/data/countries";
@@ -81,15 +81,6 @@ export const beansFormEmptyValues: BeansFormInputs = {
   isFinished: false,
 };
 
-export const beansRoastersOptions = (firebaseUid: string) =>
-  queryOptions<string[] | null>({
-    queryKey: ["bean", "rosters"],
-    queryFn: () =>
-      getBeansUniqueRoasters({
-        data: firebaseUid,
-      }),
-  });
-
 interface BeansFormProps {
   defaultValues: BeansFormInputs;
   buttonLabel: string;
@@ -107,7 +98,13 @@ export const BeansForm = ({
 
   const user = useAtomValue(userAtom);
 
-  const { data: roasters } = useQuery(beansRoastersOptions(user?.uid ?? ""));
+  const { data: uniqueRoasters } = useQuery({
+    queryKey: ["bean", "roasters"],
+    queryFn: () =>
+      getBeansUniqueRoasters({
+        data: user?.uid ?? "",
+      }),
+  });
 
   const isSm = useScreenMediaQuery("sm");
 
@@ -132,6 +129,20 @@ export const BeansForm = ({
   };
 
   const isSingleOrigin = watch("origin") === "single-origin";
+
+  if (!uniqueRoasters) return null;
+
+  // get the top 5 most recent roasters (excludes beans with no roast date)
+  const roastersSuggestions = [
+    ...new Set(
+      uniqueRoasters.filter((r) => r.roastDate !== null).map((r) => r.roaster),
+    ),
+  ].slice(0, 5);
+
+  // get all unique roasters sorted by name
+  const roastersList = [
+    ...new Set(uniqueRoasters.map((r) => r.roaster)),
+  ].sort();
 
   return (
     <>
@@ -168,11 +179,11 @@ export const BeansForm = ({
             <FormComboboxSingle
               label="Roaster *"
               name="roaster"
-              options={roasters ?? []}
+              options={roastersList}
               placeholder="Square mile"
               requiredMsg="Please select a roaster"
               error={errors.roaster?.message}
-              suggestions={roasters ? roasters.slice(0, 3) : undefined}
+              suggestions={roastersSuggestions}
             />
 
             <FormInputDate

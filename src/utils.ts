@@ -49,5 +49,5 @@ export const roundToDecimal = (n?: number, decimal = 1) =>
 export const generateRandomString = (len: number = 16) =>
   Array(len)
     .fill(0)
-    .map((x) => Math.random().toString(36).charAt(2))
+    .map(() => Math.random().toString(36).charAt(2))
     .join("");

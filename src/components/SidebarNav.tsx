@@ -49,8 +49,6 @@ export const SidebarNav = () => {
   const user = useCurrentUser();
   const secretKey = user.secretKey ?? null;
 
-  console.log(secretKey);
-
   const isLg = useScreenMediaQuery("lg");
 
   const sidebarNavLinks: SidebarNavItemProps[] = useMemo(

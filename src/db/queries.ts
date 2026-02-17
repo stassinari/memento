@@ -6,7 +6,6 @@ import {
   getTableColumns,
   isNotNull,
   isNull,
-  max,
   or,
 } from "drizzle-orm";
 import { db } from "./db";
@@ -509,20 +508,17 @@ export const getBeansUniqueRoasters = createServerFn({
   })
   .handler(async ({ data: firebaseUid }) => {
     try {
-      const roasters = await db
+      const beansList = await db
         .select({
           roaster: beans.roaster,
-          maxRoastDate: max(beans.roastDate),
+          roastDate: beans.roastDate,
         })
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
         .where(eq(users.fbId, firebaseUid))
-        .groupBy(beans.roaster)
-        .orderBy(desc(max(beans.roastDate)));
+        .orderBy(desc(beans.roastDate));
 
-      console.log(roasters);
-
-      return roasters.map((r) => r.roaster);
+      return beansList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
