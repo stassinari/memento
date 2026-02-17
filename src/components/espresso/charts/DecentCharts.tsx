@@ -1,30 +1,27 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { getDecentReadings } from "~/db/queries";
-import { useCurrentUser } from "~/hooks/useInitUser";
 import { PressureFlowWeightChart } from "./PressureFlowWeightChart";
 import { TemperatureChart } from "./TemperatureChart";
 
 interface DecentChartProps {
-  espressoId?: string;
+  espressoId: string;
 }
 
-const decentReadingsQueryOptions = (espressoId: string, firebaseUid: string) =>
+const decentReadingsQueryOptions = (espressoId: string) =>
   queryOptions({
-    queryKey: ["decentReadings", espressoId, firebaseUid],
+    queryKey: ["decentReadings", espressoId],
     queryFn: () =>
       getDecentReadings({
-        data: { espressoId: espressoId, firebaseUid },
+        data: { espressoId: espressoId },
       }),
   });
 
 export const DecentCharts = ({ espressoId }: DecentChartProps) => {
   console.log("DecentCharts");
 
-  const user = useCurrentUser();
-
   const { data: decentReadings, isLoading } = useSuspenseQuery(
-    decentReadingsQueryOptions(espressoId ?? "", user?.uid ?? ""),
+    decentReadingsQueryOptions(espressoId),
   );
 
   if (isLoading || !decentReadings) return null;

@@ -315,12 +315,11 @@ export const getLastEspresso = createServerFn({
 export const getDecentReadings = createServerFn({
   method: "GET",
 })
-  .inputValidator((input: { espressoId: string; firebaseUid: string }) => {
+  .inputValidator((input: { espressoId: string }) => {
     if (!input.espressoId) throw new Error("Espresso ID is required");
-    if (!input.firebaseUid) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { espressoId, firebaseUid } }) => {
+  .handler(async ({ data: { espressoId } }) => {
     try {
       const decentReadings = await db.query.espressoDecentReadings.findFirst({
         where: (espressoDecentReadings, { eq }) =>
