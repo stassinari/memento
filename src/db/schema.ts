@@ -20,20 +20,21 @@ export enum RoastStyle {
   Espresso = "espresso",
   OmniRoast = "omni-roast",
 }
-const roastStyleEnum = pgEnum("roast_style", RoastStyle);
+
+export const roastStyleEnum = pgEnum("roast_style", RoastStyle);
 
 export enum BeanOrigin {
   SingleOrigin = "single-origin",
   Blend = "blend",
 }
-const beanOriginEnum = pgEnum("bean_origin", BeanOrigin);
 
+export const beanOriginEnum = pgEnum("bean_origin", BeanOrigin);
 export enum ExtractionType {
   Percolation = "percolation",
   Immersion = "immersion",
 }
 
-const extractionTypeEnum = pgEnum("extraction_type", ExtractionType);
+export const extractionTypeEnum = pgEnum("extraction_type", ExtractionType);
 
 export type BeansBlendPart = {
   name: string | null;
