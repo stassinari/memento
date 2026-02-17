@@ -9,8 +9,9 @@ import {
 } from "~/components/espresso/steps/DecentEspressoForm";
 import { Heading } from "~/components/Heading";
 import { updateDecentEspressoDetails } from "~/db/mutations";
-import { getEspresso, getLastNonPartialEspresso } from "~/db/queries";
+import { getEspresso } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
+import { lastEspressoQueryOptions } from "../../add";
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
   queryOptions({
@@ -18,15 +19,6 @@ const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
     queryFn: () =>
       getEspresso({
         data: { espressoId, firebaseUid },
-      }),
-  });
-
-const lastNonPartialEspressoQueryOptions = (firebaseUid: string) =>
-  queryOptions({
-    queryKey: ["espresso", "lastNonPartial"],
-    queryFn: () =>
-      getLastNonPartialEspresso({
-        data: firebaseUid,
       }),
   });
 
@@ -46,8 +38,8 @@ function DecentEspressoAddDetails() {
     espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
   );
 
-  const { data: lastNonPartialEspresso } = useSuspenseQuery(
-    lastNonPartialEspressoQueryOptions(user?.uid ?? ""),
+  const { data: lastEspresso } = useSuspenseQuery(
+    lastEspressoQueryOptions(user?.uid ?? ""),
   );
 
   if (!user) throw new Error("User is not logged in.");
@@ -104,8 +96,8 @@ function DecentEspressoAddDetails() {
         defaultValues={decentEspressoFormEmptyValues(
           { ...decentEspresso, beans: decentEspresso.beans?.id ?? null },
           {
-            ...lastNonPartialEspresso,
-            beans: lastNonPartialEspresso?.beansId,
+            ...lastEspresso,
+            beans: lastEspresso?.beansId,
           },
         )}
         mutation={editDecentEspresso}

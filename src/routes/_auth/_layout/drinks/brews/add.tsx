@@ -1,4 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
@@ -10,11 +15,21 @@ import {
 } from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
+import { getLastBrew } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/add")({
   component: BrewsAdd,
 });
+
+const lastBrewQueryOptions = (firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["brews", "last"],
+    queryFn: () =>
+      getLastBrew({
+        data: firebaseUid,
+      }),
+  });
 
 function BrewsAdd() {
   console.log("BrewsAdd");
@@ -22,6 +37,10 @@ function BrewsAdd() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
+
+  const { data: lastBrew } = useSuspenseQuery(
+    lastBrewQueryOptions(user?.uid ?? ""),
+  );
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
@@ -57,7 +76,7 @@ function BrewsAdd() {
       <Heading className="mb-4">Add brew</Heading>
 
       <BrewForm
-        defaultValues={brewFormEmptyValues()}
+        defaultValues={brewFormEmptyValues(lastBrew)}
         buttonLabel="Add"
         mutation={handleAdd}
       />

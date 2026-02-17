@@ -45,6 +45,30 @@ export const getUser = createServerFn({
     }
   });
 
+export const getLastBrew = createServerFn({
+  method: "GET",
+})
+  .inputValidator((firebaseUid: string) => {
+    if (!firebaseUid) throw new Error("User ID is required");
+    return firebaseUid;
+  })
+  .handler(async ({ data: firebaseUid }) => {
+    try {
+      const lastBrew = await db
+        .select({ ...getTableColumns(brews) })
+        .from(brews)
+        .innerJoin(users, eq(brews.userId, users.id))
+        .where(eq(users.fbId, firebaseUid))
+        .orderBy(desc(brews.date))
+        .limit(1)
+        .then((results) => results[0] || null);
+      return lastBrew;
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
 // FIXME this is fetching way more data than needed. Beans should just really
 // come as a string (for name) and users are only needed for ownership
 // verification, which can be done in the same query without joining the whole table
@@ -274,7 +298,7 @@ export const getPartialEspressos = createServerFn({
     }
   });
 
-export const getLastNonPartialEspresso = createServerFn({
+export const getLastEspresso = createServerFn({
   method: "GET",
 })
   .inputValidator((firebaseUid: string) => {
@@ -287,7 +311,12 @@ export const getLastNonPartialEspresso = createServerFn({
         .select({ ...getTableColumns(espresso) })
         .from(espresso)
         .innerJoin(users, eq(espresso.userId, users.id))
-        .where(and(eq(users.fbId, firebaseUid), eq(espresso.partial, false)))
+        .where(
+          and(
+            eq(users.fbId, firebaseUid),
+            or(isNull(espresso.partial), eq(espresso.partial, false)),
+          ),
+        ) // not partial excludes Decent shots that haven't had details added yet
         .orderBy(desc(espresso.date))
         .limit(1)
         .then((results) => results[0] || null);
