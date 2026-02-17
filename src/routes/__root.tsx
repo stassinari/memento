@@ -15,7 +15,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "~/components/ErrorFallback";
 import { NotFound } from "~/components/ErrorPage";
 import { NotificationContainer } from "~/components/NotificationContainer";
-import { FeatureFlagsProvider } from "~/hooks/useFeatureFlag";
 import { useInitUser } from "~/hooks/useInitUser";
 import { RouterContext } from "~/router";
 import "~/styles/config.css";
@@ -32,7 +31,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <body>
         {children}
         <Scripts />
-        {process.env.NODE_ENV === "development" && (
+        {import.meta.env.MODE === "development" && (
           <>
             <TanStackRouterDevtools position="top-right" />
             <ReactQueryDevtools buttonPosition="bottom-right" />
@@ -56,14 +55,12 @@ const RootComponent = () => {
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <QueryClientProvider client={queryClient}>
           <JotaiProvider>
-            <FeatureFlagsProvider>
-              <RootDocument>
-                <Suspense fallback={<div>Initializing...</div>}>
-                  <NotificationContainer />
-                  <Outlet />
-                </Suspense>
-              </RootDocument>
-            </FeatureFlagsProvider>
+            <RootDocument>
+              <Suspense fallback={<div>Initializing...</div>}>
+                <NotificationContainer />
+                <Outlet />
+              </Suspense>
+            </RootDocument>
           </JotaiProvider>
         </QueryClientProvider>
       </ErrorBoundary>

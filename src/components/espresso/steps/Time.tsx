@@ -95,7 +95,7 @@ export const EspressoTime = ({
                     message:
                       "Please don't break space/time, enter a positive number.",
                   },
-                  valueAsNumber: true,
+                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
                 placeholder: "2",
@@ -114,7 +114,7 @@ export const EspressoTime = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                valueAsNumber: true,
+                setValueAs: (v: string) => (v === "" ? null : Number(v)),
               }),
               type: "number",
               step: "0.01",

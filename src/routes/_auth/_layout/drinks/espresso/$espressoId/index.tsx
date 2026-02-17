@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { PuzzlePieceIcon } from "@heroicons/react/20/solid";
 import {
   queryOptions,
@@ -8,7 +8,6 @@ import {
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { deleteDoc } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
@@ -20,39 +19,32 @@ import {
 } from "~/components/ButtonWithDropdown";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
-import { EspressoDetailsInfo as FirebaseEspressoDetailsInfo } from "~/components/espresso/EspressoDetailsInfo.Firebase";
-import { EspressoDetailsInfo as PostgresEspressoDetailsInfo } from "~/components/espresso/EspressoDetailsInfo.Postgres";
-import { EspressoDetailsOutcome as FirebaseEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Firebase";
-import { EspressoDetailsOutcome as PostgresEspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome.Postgres";
+import { EspressoDetailsInfo } from "~/components/espresso/EspressoDetailsInfo";
+import { EspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOutcome";
 import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
 import { deleteEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import type { EspressoWithBeans } from "~/db/types";
-import { useDocRef } from "~/hooks/firestore/useDocRef";
-import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { Espresso } from "~/types/espresso";
 import { tabStyles } from "../../../beans";
-import { flagsQueryOptions } from "../../../feature-flags";
+
+export type EspressoWithBeans = NonNullable<
+  Awaited<ReturnType<typeof getEspresso>>
+>;
 
 const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
-  queryOptions<EspressoWithBeans | null>({
-    queryKey: ["espresso", espressoId, firebaseUid],
+  queryOptions({
+    queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoFbId: espressoId, firebaseUid },
-      }) as Promise<EspressoWithBeans | null>,
+        data: { espressoId, firebaseUid },
+      }),
   });
 
 export const Route = createFileRoute(
   "/_auth/_layout/drinks/espresso/$espressoId/",
 )({
   component: EspressoDetails,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
 function EspressoDetails() {
@@ -60,68 +52,45 @@ function EspressoDetails() {
 
   const { espressoId } = Route.useParams();
   const navigate = useNavigate();
+
   const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
-  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
-  const { data: sqlEspresso } = useSuspenseQuery<EspressoWithBeans | null>(
+  const { data: espresso, isLoading } = useSuspenseQuery(
     espressoQueryOptions(espressoId, user?.uid ?? ""),
   );
-
-  const shouldReadFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isSm = useScreenMediaQuery("sm");
 
-  const docRef = useDocRef<Espresso>("espresso", espressoId);
-  const { details: fbEspresso, isLoading } =
-    useFirestoreDocRealtime<Espresso>(docRef);
-
-  const espresso = shouldReadFromPostgres ? sqlEspresso?.espresso : fbEspresso;
-
-  const espressoDate = shouldReadFromPostgres
-    ? sqlEspresso?.espresso.date
-    : fbEspresso?.date.toDate();
-  const fromDecent = shouldReadFromPostgres
-    ? sqlEspresso?.espresso.fromDecent
-    : fbEspresso?.fromDecent;
-  const partial = shouldReadFromPostgres
-    ? (sqlEspresso?.espresso.partial ?? false)
-    : (fbEspresso as any)?.partial;
-
   const handleDelete = useCallback(async () => {
-    // 1. Call server function (PostgreSQL delete)
     await deleteEspresso({
-      data: { espressoFbId: espressoId, firebaseUid: user?.uid ?? "" },
+      data: { espressoId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 2. Conditionally delete from Firestore
-    if (writeToFirestore) {
-      try {
-        await deleteDoc(docRef);
-      } catch (error: any) {
-        // If document doesn't exist in Firestore, that's okay
-        if (error?.code === "not-found") {
-          console.warn("Delete espresso - Espresso not found in Firestore");
-        } else {
-          console.error("Delete espresso - Firestore delete error:", error);
-        }
-      }
-    }
-
-    // 3. Invalidate and navigate
     queryClient.invalidateQueries({ queryKey: ["espresso"] });
     navigate({ to: "/drinks/espresso" });
-  }, [espressoId, user?.uid, writeToFirestore, docRef, queryClient, navigate]);
+  }, [espressoId, user?.uid, queryClient, navigate]);
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({
-      mainButton: { type: "link", label: "Edit outcome", href: "outcome" },
+      mainButton: {
+        type: "link",
+        label: "Edit outcome",
+        linkProps: {
+          to: "/drinks/espresso/$espressoId/outcome",
+          params: { espressoId },
+        },
+      },
       dropdownItems: [
-        { type: "link", label: "Edit details", href: "decent/edit" },
+        {
+          type: "link",
+          label: "Edit details",
+          linkProps: {
+            to: "/drinks/espresso/$espressoId/decent/edit",
+            params: { espressoId },
+          },
+        },
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
     }),
@@ -130,10 +99,31 @@ function EspressoDetails() {
 
   const normalEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({
-      mainButton: { type: "link", label: "Clone", href: "clone" },
+      mainButton: {
+        type: "link",
+        label: "Clone",
+        linkProps: {
+          to: "/drinks/espresso/$espressoId/clone",
+          params: { espressoId },
+        },
+      },
       dropdownItems: [
-        { type: "link", label: "Edit details", href: "edit" },
-        { type: "link", label: "Edit outcome", href: "outcome" },
+        {
+          type: "link",
+          label: "Edit details",
+          linkProps: {
+            to: "/drinks/espresso/$espressoId/edit",
+            params: { espressoId },
+          },
+        },
+        {
+          type: "link",
+          label: "Edit outcome",
+          linkProps: {
+            to: "/drinks/espresso/$espressoId/outcome",
+            params: { espressoId },
+          },
+        },
         { type: "button", label: "Delete", onClick: handleDelete },
       ],
     }),
@@ -149,17 +139,15 @@ function EspressoDetails() {
   return (
     <>
       <BreadcrumbsWithHome
-        items={[
-          navLinks.drinks,
-          navLinks.espresso,
-          { label: "Detail", linkTo: "#" },
-        ]}
+        items={[navLinks.drinks, navLinks.espresso, { label: "Detail" }]}
       />
 
       <Heading
         actionSlot={
           <ButtonWithDropdown
-            {...(fromDecent ? decentEspressoButtons : normalEspressoButtons)}
+            {...(espresso.fromDecent
+              ? decentEspressoButtons
+              : normalEspressoButtons)}
           />
         }
       >
@@ -167,10 +155,10 @@ function EspressoDetails() {
       </Heading>
 
       <div className="mb-2 text-sm text-gray-500">
-        {dayjs(espressoDate).format("DD MMM YYYY @ H:m")}
+        {dayjs(espresso.date).format("DD MMM YYYY @ H:m")}
       </div>
 
-      {fromDecent && partial && (
+      {espresso.fromDecent && espresso.partial && (
         <div className="inline-flex items-center gap-4">
           <Button variant="secondary" size="sm" className="shrink-0" asChild>
             <Link
@@ -184,7 +172,7 @@ function EspressoDetails() {
         </div>
       )}
 
-      {fromDecent && <DecentCharts espressoId={espressoId} />}
+      {espresso.fromDecent && <DecentCharts espressoId={espressoId} />}
 
       {isSm ? (
         <div className="grid grid-cols-2 gap-4 my-6">
@@ -193,14 +181,7 @@ function EspressoDetails() {
               Espresso info
             </h2>
 
-            {shouldReadFromPostgres ? (
-              <PostgresEspressoDetailsInfo
-                espresso={sqlEspresso!.espresso}
-                beansId={sqlEspresso!.beans?.id}
-              />
-            ) : (
-              <FirebaseEspressoDetailsInfo espresso={fbEspresso!} />
-            )}
+            <EspressoDetailsInfo espresso={espresso} />
           </div>
 
           <div>
@@ -208,47 +189,28 @@ function EspressoDetails() {
               Outcome
             </h2>
 
-            {shouldReadFromPostgres ? (
-              <PostgresEspressoDetailsOutcome
-                espresso={sqlEspresso!.espresso}
-              />
-            ) : (
-              <FirebaseEspressoDetailsOutcome espresso={fbEspresso!} />
-            )}
+            <EspressoDetailsOutcome espresso={espresso} />
           </div>
         </div>
       ) : (
-        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List className="flex -mb-px">
+        <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <TabList className="flex -mb-px">
             <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
               Info
             </Tab>
             <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
               Outcome
             </Tab>
-          </Tab.List>
-          <Tab.Panels className="mt-4">
-            <Tab.Panel>
-              {shouldReadFromPostgres ? (
-                <PostgresEspressoDetailsInfo
-                  espresso={sqlEspresso!.espresso}
-                  beansId={sqlEspresso!.beans?.id}
-                />
-              ) : (
-                <FirebaseEspressoDetailsInfo espresso={fbEspresso!} />
-              )}
-            </Tab.Panel>
-            <Tab.Panel>
-              {shouldReadFromPostgres ? (
-                <PostgresEspressoDetailsOutcome
-                  espresso={sqlEspresso!.espresso}
-                />
-              ) : (
-                <FirebaseEspressoDetailsOutcome espresso={fbEspresso!} />
-              )}
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+          </TabList>
+          <TabPanels className="mt-4">
+            <TabPanel>
+              <EspressoDetailsInfo espresso={espresso} />
+            </TabPanel>
+            <TabPanel>
+              <EspressoDetailsOutcome espresso={espresso} />
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       )}
     </>
   );

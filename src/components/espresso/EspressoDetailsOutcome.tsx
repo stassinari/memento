@@ -1,11 +1,10 @@
 import ReactMarkdown from "react-markdown";
 
-import { Espresso } from "~/types/espresso";
-import { getEyFromEspresso } from "~/utils";
+import { EspressoWithBeans } from "~/routes/_auth/_layout/drinks/espresso/$espressoId";
 import { DetailsCard } from "../Details";
 
 interface EspressoDetailsOutcomeProps {
-  espresso: Espresso;
+  espresso: EspressoWithBeans;
 }
 
 export const EspressoDetailsOutcome = ({
@@ -35,43 +34,29 @@ export const EspressoDetailsOutcome = ({
         rows={[
           {
             label: "Aroma",
-            value: espresso.tastingScores?.aroma
-              ? `${espresso.tastingScores.aroma}/10`
-              : "",
+            value: espresso.aroma ? `${espresso.aroma}/10` : "",
           },
           {
             label: "Acidity",
-            value: espresso.tastingScores?.acidity
-              ? `${espresso.tastingScores.acidity}/10`
-              : "",
+            value: espresso.acidity ? `${espresso.acidity}/10` : "",
           },
           {
             label: "Sweetness",
-            value: espresso.tastingScores?.sweetness
-              ? `${espresso.tastingScores.sweetness}/10`
-              : "",
+            value: espresso.sweetness ? `${espresso.sweetness}/10` : "",
           },
           {
             label: "Body",
-            value: espresso.tastingScores?.body
-              ? `${espresso.tastingScores.body}/10`
-              : "",
+            value: espresso.body ? `${espresso.body}/10` : "",
           },
           {
             label: "Finish",
-            value: espresso.tastingScores?.finish
-              ? `${espresso.tastingScores.finish}/10`
-              : "",
+            value: espresso.finish ? `${espresso.finish}/10` : "",
           },
         ]}
       />
       <DetailsCard
         title="Extraction"
         rows={[
-          {
-            label: "Extraction yield",
-            value: `${getEyFromEspresso(espresso)}%`,
-          },
           {
             label: "TDS",
             value: espresso.tds ? `${espresso.tds}%` : "",

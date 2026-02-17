@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { DecentReadings } from "~/types/espresso";
+import { DecentReadings } from "~/lib/decent-parsers";
 import { ChartLegend } from "./ChartLegend";
 import { ChartTooltip } from "./ChartTooltip";
 
@@ -35,9 +35,9 @@ export const propertyToValues: Record<string, DataValues> = {
   goal: { label: "T. goal", unit: "℃" },
 };
 
-export const PressureFlowWeightChart: React.FC<
-  PressureFlowWeightChartProps
-> = ({ readings }) => {
+export const PressureFlowWeightChart = ({
+  readings,
+}: PressureFlowWeightChartProps) => {
   // TODO improve performance of this chart
   const data = readings.time.map((t, i) => ({
     time: t,

@@ -1,4 +1,4 @@
-import { Beans } from "./types/beans";
+import { Beans } from "./db/types";
 
 export function isNotNullable<T>(x: T | null | undefined): x is T {
   return x != null;
@@ -21,7 +21,7 @@ const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 const WEEK = DAY * 7;
 const MONTH = DAY * 30;
-const YEAR = DAY * 365;
+// const YEAR = DAY * 365;
 
 export function getTimeAgo(date: Date) {
   const secondsAgo = Math.round((Date.now() - Number(date)) / 1000);

@@ -1,6 +1,7 @@
 import { MapPinIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { Schema } from "firebase/vertexai";
-import { Beans, RoastStyle } from "~/types/beans";
+import { BeanOrigin, RoastStyle } from "~/db/schema";
+import { Beans } from "~/db/types";
 import { DataListItem } from "../DataList";
 import type { BeansFormInputs } from "./BeansForm";
 
@@ -17,9 +18,9 @@ export const beansToDataListItem = (b: Beans): DataListItem =>
   b.origin === "single-origin"
     ? {
         link: `/beans/${b.id ?? ""}`,
-        topRow: { title: b.name, pill: b.process ?? undefined },
+        topRow: { title: b.name, pill: b.process },
         bottomRow: {
-          date: b.roastDate?.toDate(),
+          date: b.roastDate,
           tags: [
             { icon: <UsersIcon />, label: b.roaster },
             ...(b.country ? [{ icon: <MapPinIcon />, label: b.country }] : []),
@@ -30,7 +31,7 @@ export const beansToDataListItem = (b: Beans): DataListItem =>
         link: `/beans/${b.id ?? ""}`,
         topRow: { title: b.name, pill: "Blend" },
         bottomRow: {
-          date: b.roastDate?.toDate(),
+          date: b.roastDate,
           tags: [{ icon: <UsersIcon />, label: b.roaster }],
         },
       };
@@ -66,10 +67,10 @@ export function parseVertexBeansToBeansFormInput(
       name: json.name,
       roaster: json.roaster,
       roastDate,
-      roastStyle: json.roastStyle as RoastStyle,
+      roastStyle: json.roastStyle as RoastStyle | null,
       roastLevel: json.roastLevel,
       roastingNotes: json.roastingNotes,
-      origin: "single-origin",
+      origin: BeanOrigin.SingleOrigin,
       country: json.country,
       varietals: json.varietals,
       altitude: typeof json.altitude === "number" ? json.altitude : null,
@@ -77,7 +78,7 @@ export function parseVertexBeansToBeansFormInput(
       farmer: typeof json.farmer === "string" ? json.farmer : null,
       harvestDate,
       region: typeof json.region === "string" ? json.region : null,
-      blend: [],
+      blendParts: [],
       freezeDate: null,
       thawDate: null,
       isFinished: false,

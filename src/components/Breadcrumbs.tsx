@@ -1,5 +1,5 @@
 import { ChevronRightIcon, HomeIcon } from "@heroicons/react/20/solid";
-import { Link } from "@tanstack/react-router";
+import { Link, LinkProps } from "@tanstack/react-router";
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
@@ -7,7 +7,7 @@ interface BreadcrumbsProps {
 
 interface BreadcrumbItem {
   label: string;
-  linkTo: string;
+  linkTo?: LinkProps["to"];
 }
 
 export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
@@ -17,13 +17,19 @@ export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
         {items.map((item, i) => (
           <li key={item.label}>
             <div className="flex items-center">
-              <Link
-                to={item.linkTo}
-                className="mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-                // aria-current={item.current ? "page" : undefined}
-              >
-                {item.label}
-              </Link>
+              {item.linkTo ? (
+                <Link
+                  to={item.linkTo}
+                  className="mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  // aria-current={item.current ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <p className="mr-4 text-sm font-medium text-gray-500">
+                  {item.label}
+                </p>
+              )}
               {i !== items.length - 1 && (
                 <ChevronRightIcon
                   className="shrink-0 w-5 h-5 text-gray-400"
@@ -53,18 +59,14 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
             </Link>
           </div>
         </li>
-        {items.map((item, i) => (
+        {items.map((item) => (
           <li key={item.label}>
             <div className="flex items-center">
               <ChevronRightIcon
                 className="shrink-0 w-5 h-5 text-gray-400"
                 aria-hidden="true"
               />
-              {i === items.length - 1 ? (
-                <p className="ml-2 text-sm font-medium text-gray-500 sm:ml-4 whitespace-nowrap">
-                  {item.label}
-                </p>
-              ) : (
+              {item.linkTo ? (
                 <Link
                   to={item.linkTo}
                   className="ml-2 text-sm font-medium text-gray-500 sm:ml-4 hover:text-gray-700 whitespace-nowrap"
@@ -72,6 +74,10 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
                 >
                   {item.label}
                 </Link>
+              ) : (
+                <p className="ml-2 text-sm font-medium text-gray-500 sm:ml-4 whitespace-nowrap">
+                  {item.label}
+                </p>
               )}
             </div>
           </li>

@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "@tanstack/react-router";
+import { LinkProps, Link as RouterLink } from "@tanstack/react-router";
 import clsx from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
 import { Card } from "./Card";
@@ -44,14 +44,14 @@ const Rating = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 );
 
 interface ListCardProps {
-  linkTo: string;
+  linkProps: LinkProps;
   children: ReactNode;
   footerSlot?: ReactNode;
 }
 
-const ListCardRoot = ({ linkTo, children, footerSlot }: ListCardProps) => {
+const ListCardRoot = ({ linkProps, children, footerSlot }: ListCardProps) => {
   return (
-    <RouterLink to={linkTo} className="block">
+    <RouterLink {...linkProps} className="block">
       <Card.Container className="grow text-sm">
         <Card.Content>{children}</Card.Content>
         {footerSlot}

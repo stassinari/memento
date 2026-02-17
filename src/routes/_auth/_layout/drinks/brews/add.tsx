@@ -1,33 +1,35 @@
-import { useNavigate, createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { doc, limit, orderBy, setDoc, Timestamp } from "firebase/firestore";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
-import { useMemo } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   BrewForm,
-  BrewFormInputs,
   brewFormEmptyValues,
+  BrewFormInputs,
 } from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
-import { db } from "~/firebaseConfig";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { getLastBrew } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
-import { Brew } from "~/types/brew";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/add")({
   component: BrewsAdd,
 });
 
-export const brewToFirestore = (brew: BrewFormInputs) => ({
-  ...brew,
-  beans: doc(db, brew.beans ?? ""),
-  date: brew.date ? Timestamp.fromDate(brew.date) : Timestamp.now(),
-});
+const lastBrewQueryOptions = (firebaseUid: string) =>
+  queryOptions({
+    queryKey: ["brews", "last"],
+    queryFn: () =>
+      getLastBrew({
+        data: firebaseUid,
+      }),
+  });
 
 function BrewsAdd() {
   console.log("BrewsAdd");
@@ -35,33 +37,16 @@ function BrewsAdd() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = useAtomValue(userAtom);
-  const writeToFirestore = useFeatureFlag("write_to_firestore");
 
-  const filters = useMemo(() => [orderBy("date", "desc"), limit(1)], []);
-
-  const query = useCollectionQuery<Brew>("brews", filters);
-  const { list: brewsList, isLoading } =
-    useFirestoreCollectionOneTime<Brew>(query);
+  const { data: lastBrew } = useSuspenseQuery(
+    lastBrewQueryOptions(user?.uid ?? ""),
+  );
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
-      // 1. Call server function (PostgreSQL write)
-      const result = await addBrew({
+      return await addBrew({
         data: { data, firebaseUid: user?.uid ?? "" },
       });
-
-      // 2. Conditionally write to Firestore (client-side)
-      if (writeToFirestore) {
-        try {
-          const fsData = brewToFirestore(data);
-          await setDoc(doc(db, `users/${user?.uid}/brews/${result.id}`), fsData);
-        } catch (error) {
-          console.error("Add brew - Firestore write error:", error);
-          // Continue anyway - data is in PostgreSQL
-        }
-      }
-
-      return result;
     },
     onSuccess: (result) => {
       // Invalidate all brews queries
@@ -73,24 +58,25 @@ function BrewsAdd() {
         params: { brewId: result.id },
       });
     },
+    onError: (error) => {
+      console.error("Add brew - mutation error:", error);
+    },
   });
 
   const handleAdd = (data: BrewFormInputs) => {
     mutation.mutate(data);
   };
 
-  if (isLoading) return null;
-
   return (
     <>
       <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.brews, { label: "Add", linkTo: "#" }]}
+        items={[navLinks.drinks, navLinks.brews, { label: "Add" }]}
       />
 
       <Heading className="mb-4">Add brew</Heading>
 
       <BrewForm
-        defaultValues={brewFormEmptyValues(brewsList[0])}
+        defaultValues={brewFormEmptyValues(lastBrew)}
         buttonLabel="Add"
         mutation={handleAdd}
       />

@@ -5,7 +5,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import countries from "~/data/countries";
 import { processes } from "~/data/processes";
 import { varietals } from "~/data/varietals";
-import { BeansBlendPart } from "~/types/beans";
+import { BeansBlendPart } from "~/db/schema";
 import { Button } from "../Button";
 import { IconButton } from "../IconButton";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
@@ -26,7 +26,7 @@ export const BeansBlendForm = () => {
   const { control, register } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "blend",
+    name: "blendParts",
   });
 
   const handleAppend = () => {
@@ -57,26 +57,26 @@ export const BeansBlendForm = () => {
           <div className="p-4 space-y-4">
             <FormInput
               label="Blend name"
-              id={`blend.${i}.name`}
+              id={`blendParts.${i}.name`}
               inputProps={{
-                ...register(`blend.${i}.name`),
+                ...register(`blendParts.${i}.name`),
                 type: "text",
                 placeholder: "Blend name",
               }}
             />
             <FormInput
               label="Percentage (%)"
-              id={`blend.${i}.percentage`}
+              id={`blendParts.${i}.percentage`}
               inputProps={{
-                ...register(`blend.${i}.percentage`, {
-                  valueAsNumber: true,
+                ...register(`blendParts.${i}.percentage`, {
+                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
                 placeholder: "34",
               }}
             />
             <FormComboboxSingle
-              name={`blend.${i}.country`}
+              name={`blendParts.${i}.country`}
               label="Country"
               options={countries.map(({ name }) => name)}
               placeholder="Ethiopia"
@@ -89,13 +89,13 @@ export const BeansBlendForm = () => {
             />
             <FormComboboxSingle
               label="Process"
-              name={`blend.${i}.process`}
+              name={`blendParts.${i}.process`}
               options={processes}
               placeholder="Red honey"
             />
             <FormComboboxMulti
               label="Varietal(s)"
-              name={`blend.${i}.varietals`}
+              name={`blendParts.${i}.varietals`}
               options={varietals}
               placeholder="Search variety..."
             />

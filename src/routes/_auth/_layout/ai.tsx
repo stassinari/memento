@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Timestamp } from "firebase/firestore";
 import { getGenerativeModel, Schema } from "firebase/vertexai";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -11,8 +10,9 @@ import { Input } from "~/components/Input";
 import { Textarea } from "~/components/Textarea";
 import { BeansCard } from "~/components/beans/BeansCard";
 import sampleText from "~/data/beans-page-example.txt?raw";
+import { BeanOrigin, RoastStyle } from "~/db/schema";
+import { Beans } from "~/db/types";
 import { vertex } from "~/firebaseConfig";
-import { BeansSingleOrigin, RoastStyle } from "~/types/beans";
 
 export const Route = createFileRoute("/_auth/_layout/ai")({
   component: AiPlayground,
@@ -107,7 +107,7 @@ const beansSchema = Schema.object({
   },
 });
 
-function parseBeansSingleOrigin(json: any): BeansSingleOrigin | null {
+function parseBeansSingleOrigin(json: any): Beans | null {
   try {
     // Basic type checks for required fields
     if (
@@ -126,17 +126,15 @@ function parseBeansSingleOrigin(json: any): BeansSingleOrigin | null {
     // Optional fields with safe parsing
     const roastDate =
       typeof json.roastDate === "number"
-        ? Timestamp.fromDate(new Date(json.roastDate * 1000))
+        ? new Date(json.roastDate * 1000)
         : null;
 
     const harvestDate =
-      typeof json.harvestDate === "string"
-        ? Timestamp.fromDate(new Date(json.harvestDate))
-        : null;
+      typeof json.harvestDate === "string" ? new Date(json.harvestDate) : null;
 
     return {
       id: "generated",
-      origin: "single-origin",
+      origin: BeanOrigin.SingleOrigin,
       name: json.name,
       roaster: json.roaster,
       roastDate,
@@ -152,7 +150,7 @@ function parseBeansSingleOrigin(json: any): BeansSingleOrigin | null {
       region: typeof json.region === "string" ? json.region : null,
       freezeDate: null,
       thawDate: null,
-    };
+    } as Beans;
   } catch {
     return null;
   }
@@ -294,7 +292,7 @@ const StructuredOutputWeb = () => {
 
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [structuredOutput, setStructuredOutput] = useState<BeansSingleOrigin>();
+  const [structuredOutput, setStructuredOutput] = useState<Beans>();
 
   const generateStructuredOutput = async () => {
     setIsLoading(true);
@@ -436,7 +434,7 @@ const StructuredOutputImage = () => {
 
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [structuredOutput, setStructuredOutput] = useState<BeansSingleOrigin>();
+  const [structuredOutput, setStructuredOutput] = useState<Beans>();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;

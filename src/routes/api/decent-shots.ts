@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { randomBytes } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { db } from "~/db/db";
 import { espresso, espressoDecentReadings, users } from "~/db/schema";
@@ -11,21 +10,6 @@ import {
 
 // No Firebase Admin initialization needed!
 // The Cloud Function already authenticates users and passes the UID
-
-/**
- * Generate a Firestore-compatible document ID (20 character alphanumeric)
- * Used for maintaining consistency between Firestore and PostgreSQL during migration
- */
-function generateFirestoreId(): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const bytes = randomBytes(20);
-  let result = "";
-  for (let i = 0; i < 20; i++) {
-    result += chars[bytes[i] % chars.length];
-  }
-  return result;
-}
 
 /**
  * API endpoint to receive Decent Espresso shot uploads
@@ -108,7 +92,6 @@ export const Route = createFileRoute("/api/decent-shots")({
 
           const formData = await request.formData();
           const file = formData.get("file") as File;
-          const providedFbId = formData.get("fbId") as string | null; // Optional fbId from Cloud Function
 
           if (!file) {
             return new Response(JSON.stringify({ error: "No file provided" }), {
@@ -166,14 +149,10 @@ export const Route = createFileRoute("/api/decent-shots")({
             });
           }
 
-          // Use provided fbId from Cloud Function, or generate a new one
-          const fbId = providedFbId || generateFirestoreId();
-
           // Insert espresso record
           const [insertedEspresso] = await db
             .insert(espresso)
             .values({
-              fbId,
               userId,
               date: shotData.date,
               fromDecent: true,
@@ -217,9 +196,11 @@ export const Route = createFileRoute("/api/decent-shots")({
             flowGoal: timeSeries.flowGoal,
           });
 
-          console.log(`Decent shot ${fbId} written to PostgreSQL`);
+          console.log(
+            `Decent shot ${insertedEspresso.id} written to PostgreSQL`,
+          );
 
-          return new Response(JSON.stringify({ id: fbId }), {
+          return new Response(JSON.stringify({ id: insertedEspresso.id }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           });

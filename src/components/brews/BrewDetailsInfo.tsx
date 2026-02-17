@@ -1,14 +1,13 @@
-import type { Beans, Brew } from "~/db/types";
+import { BrewWithBeans } from "~/routes/_auth/_layout/drinks/brews/$brewId";
 import { DetailsCard } from "../Details";
-import { BeansShortInfo } from "../beans/BeansShortInfo.Postgres";
+import { BeansShortInfo } from "../beans/BeansShortInfo";
 import { useDrinkRatio } from "../drinks/useDrinkRatio";
 
 interface BrewDetailsInfoProp {
-  brew: Brew;
-  beans: Beans;
+  brew: BrewWithBeans;
 }
 
-export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
+export const BrewDetailsInfo = ({ brew }: BrewDetailsInfoProp) => {
   const { beansByWater, waterByBeans } = useDrinkRatio(
     brew?.beansWeight ?? 0,
     brew?.waterWeight ?? 0,
@@ -16,11 +15,18 @@ export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
 
   return (
     <div className="space-y-4">
-      <BeansShortInfo beans={beans} brewDate={brew.date} />
+      <BeansShortInfo beans={brew.beans} drinkDate={brew.date} />
 
       <DetailsCard
         title="Recipe"
-        action={{ type: "link", label: "Edit", href: "edit" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/edit",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           { label: "Ratio (beans / water)", value: beansByWater },
           { label: "Ratio (water / beans)", value: waterByBeans },
@@ -42,7 +48,14 @@ export const BrewDetailsInfo = ({ brew, beans }: BrewDetailsInfoProp) => {
 
       <DetailsCard
         title="Equipment"
-        action={{ type: "link", label: "Edit", href: "edit" }}
+        action={{
+          type: "link",
+          label: "Edit",
+          linkProps: {
+            to: "/drinks/brews/$brewId/edit",
+            params: { brewId: brew.id },
+          },
+        }}
         rows={[
           { label: "Grinder", value: brew.grinder ?? "" },
           { label: "Burrs", value: brew.grinderBurrs ?? "" },

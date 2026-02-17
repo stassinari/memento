@@ -1,7 +1,6 @@
 import {
   ArrowUpOnSquareIcon,
   Cog6ToothIcon,
-  FlagIcon,
   HomeIcon,
   PhotoIcon,
   SparklesIcon,
@@ -62,11 +61,6 @@ export const navLinks: Record<string, NavLink> = {
     label: "AI playground",
     linkTo: "/ai",
     Icon: <SparklesIcon />,
-  },
-  featureFlags: {
-    label: "Feature Flags",
-    linkTo: "/feature-flags",
-    Icon: <FlagIcon />,
   },
   settings: {
     label: "Settings",

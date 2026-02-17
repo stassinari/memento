@@ -1,30 +1,24 @@
 import { BeakerIcon, FireIcon, MapPinIcon } from "@heroicons/react/16/solid";
 import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
 import { ListCard } from "~/components/ListCard";
-import { Beans } from "~/types/beans";
+import { Beans } from "~/db/types";
 import { getTimeAgo } from "~/util";
 
 type BeansCardProps = {
   beans: Beans;
-  shouldReadFromPostgres?: boolean;
 };
 
-export const BeansCard = ({
-  beans,
-  shouldReadFromPostgres,
-}: BeansCardProps) => {
-  const roastDate = shouldReadFromPostgres
-    ? beans.roastDate
-    : (beans.roastDate as any)?.toDate();
-  const beansId = shouldReadFromPostgres ? (beans as any).fbId : beans.id;
-
+export const BeansCard = ({ beans }: BeansCardProps) => {
   return (
     <ListCard
-      linkTo={`/beans/${beansId ?? ""}`}
+      linkProps={{
+        to: "/beans/$beansId",
+        params: { beansId: beans.id },
+      }}
       footerSlot={
-        roastDate ? (
+        beans.roastDate ? (
           <ListCard.Footer
-            text={`Roasted ${getTimeAgo(roastDate)}`}
+            text={`Roasted ${getTimeAgo(beans.roastDate)}`}
             Icon={<BeanIconSolid />}
           />
         ) : undefined

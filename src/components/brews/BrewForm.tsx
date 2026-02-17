@@ -1,18 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { orderBy } from "firebase/firestore";
 import { useAtomValue } from "jotai";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
-import { BeansCardsSelect as FirebaseBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Firebase";
-import { BeansCardsSelect as PostgresBeansCardsSelect } from "~/components/beans/BeansCardsSelect.Postgres";
-import { getBeans } from "~/db/queries";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
-import { useFeatureFlag } from "~/hooks/useFeatureFlag";
+import { BeansCardsSelect } from "~/components/beans/BeansCardsSelect";
+import { getBeansNonArchived, getBrewFormValueSuggestions } from "~/db/queries";
+import { Brew } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
-import { Beans } from "~/types/beans";
-import { Brew } from "~/types/brew";
 import {
   BeansMethodEquipment,
   BeansMethodEquipmentInputs,
@@ -28,6 +22,10 @@ import { BrewTime, BrewTimeInputs, brewTimeEmptyValues } from "./steps/Time";
 // FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface BrewFormInputs
   extends BeansMethodEquipmentInputs, BrewRecipeInputs, BrewTimeInputs {}
+
+export type BrewFormValuesSuggestions = Awaited<
+  ReturnType<typeof getBrewFormValueSuggestions>
+>;
 
 export const brewFormEmptyValues: (copyFrom?: Brew) => BrewFormInputs = (
   copyFrom,
@@ -55,56 +53,34 @@ export const BrewForm = ({
   console.log("BrewForm");
 
   const user = useAtomValue(userAtom);
-  const readFromPostgres = useFeatureFlag("read_from_postgres");
 
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] = useState<BrewFormStep>(
     "beansMethodEquipment",
   );
 
-  // Load beans from PostgreSQL or Firestore based on flag
-  const { data: pgBeansList, isLoading: isPgBeansLoading } = useQuery({
-    queryKey: ["beans", user?.uid],
-    queryFn: () => getBeans({ data: user?.uid ?? "" }),
-    enabled: readFromPostgres && !!user?.uid,
+  const { data: beansList, isLoading: areBeansLoading } = useQuery({
+    queryKey: ["beans", "notArchived"],
+    queryFn: () => getBeansNonArchived({ data: user?.uid ?? "" }),
   });
 
-  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
-  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: fsBeansList, isLoading: isFsBeansLoading } =
-    useFirestoreCollectionOneTime<Beans>(beansQuery);
-
-  const brewFilters = useMemo(() => [orderBy("date", "desc")], []);
-  const brewQuery = useCollectionQuery<Brew>("brews", brewFilters);
-  const { list: brewsList, isLoading: areBrewsLoading } =
-    useFirestoreCollectionOneTime<Brew>(brewQuery);
+  const { data: brewFormValueSuggestions } = useQuery({
+    queryKey: ["brews", "formValueSuggestions"],
+    queryFn: () => getBrewFormValueSuggestions({ data: user?.uid ?? "" }),
+  });
 
   const onSubmit: SubmitHandler<BrewFormInputs> = (data) => {
     mutation(data);
   };
 
-  const areBeansLoading = readFromPostgres
-    ? isPgBeansLoading
-    : isFsBeansLoading;
-
-  if (areBeansLoading || areBrewsLoading) return null;
-
-  // Conditionally render the appropriate BeansCardsSelect component
-
-  const beansCardsSelectComponent = readFromPostgres ? (
-    <PostgresBeansCardsSelect
-      beansList={((pgBeansList as any) || []).map((b: any) => b.beans)}
-    />
-  ) : (
-    <FirebaseBeansCardsSelect beansList={fsBeansList} />
-  );
+  if (areBeansLoading || !brewFormValueSuggestions || !beansList) return null;
 
   return (
     <>
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
-          brewsList={brewsList}
-          beansCardsSelectComponent={beansCardsSelectComponent}
+          brewFormValueSuggestions={brewFormValueSuggestions}
+          beansCardsSelectComponent={<BeansCardsSelect beansList={beansList} />}
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {
             setBrewFormInputs({ ...brewFormInputs, ...data });
@@ -125,6 +101,8 @@ export const BrewForm = ({
           defaultValues={brewFormInputs}
           ctaLabel={buttonLabel}
           handleNestedSubmit={(data) => {
+            console.log("this firing?", data);
+
             const toSend = { ...brewFormInputs, ...data };
             onSubmit(toSend);
           }}

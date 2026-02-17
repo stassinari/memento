@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -15,16 +15,34 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export const roastStyleEnum = pgEnum("roast_style", [
-  "filter",
-  "espresso",
-  "omni-roast",
-]);
-export const beanOriginEnum = pgEnum("bean_origin", ["single-origin", "blend"]);
-export const extractionTypeEnum = pgEnum("extraction_type", [
-  "percolation",
-  "immersion",
-]);
+export enum RoastStyle {
+  Filter = "filter",
+  Espresso = "espresso",
+  OmniRoast = "omni-roast",
+}
+
+export const roastStyleEnum = pgEnum("roast_style", RoastStyle);
+
+export enum BeanOrigin {
+  SingleOrigin = "single-origin",
+  Blend = "blend",
+}
+
+export const beanOriginEnum = pgEnum("bean_origin", BeanOrigin);
+export enum ExtractionType {
+  Percolation = "percolation",
+  Immersion = "immersion",
+}
+
+export const extractionTypeEnum = pgEnum("extraction_type", ExtractionType);
+
+export type BeansBlendPart = {
+  name: string | null;
+  country: string | null;
+  varietals: string[];
+  percentage: number | null;
+  process: string | null;
+};
 
 export const users = pgTable(
   "users",
@@ -40,14 +58,13 @@ export const beans = pgTable(
   "beans",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
 
     name: text("name").notNull(),
     roaster: text("roaster").notNull(),
-    roastDate: date("roast_date"),
+    roastDate: date("roast_date", { mode: "date" }),
     roastStyle: roastStyleEnum("roast_style"),
     roastLevel: integer("roast_level"),
     roastingNotes: text("roasting_notes")
@@ -55,8 +72,8 @@ export const beans = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
 
-    freezeDate: date("freeze_date"),
-    thawDate: date("thaw_date"),
+    freezeDate: date("freeze_date", { mode: "date" }),
+    thawDate: date("thaw_date", { mode: "date" }),
     isFinished: boolean("is_finished").notNull().default(false),
 
     origin: beanOriginEnum("origin").notNull(),
@@ -70,12 +87,11 @@ export const beans = pgTable(
     altitude: integer("altitude"),
     process: text("process"),
     farmer: text("farmer"),
-    harvestDate: date("harvest_date"),
+    harvestDate: date("harvest_date", { mode: "date" }),
 
-    blendParts: jsonb("blend_parts"),
+    blendParts: jsonb("blend_parts").$type<BeansBlendPart[]>(),
   },
   (table) => [
-    uniqueIndex("beans_fb_id_unique").on(table.fbId),
     index("beans_user_roast_date_idx").on(table.userId, table.roastDate),
     check(
       "beans_blend_parts_check",
@@ -92,7 +108,6 @@ export const brews = pgTable(
   "brews",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -129,7 +144,6 @@ export const brews = pgTable(
     finish: numeric("finish", { mode: "number" }),
   },
   (table) => [
-    uniqueIndex("brews_fb_id_unique").on(table.fbId),
     index("brews_user_date_idx").on(table.userId, table.date),
     index("brews_beans_idx").on(table.beansId),
   ],
@@ -139,7 +153,6 @@ export const espresso = pgTable(
   "espresso",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -179,7 +192,6 @@ export const espresso = pgTable(
     finish: numeric("finish", { mode: "number" }),
   },
   (table) => [
-    uniqueIndex("espresso_fb_id_unique").on(table.fbId),
     index("espresso_user_date_idx").on(table.userId, table.date),
     index("espresso_beans_idx").on(table.beansId),
     check(
@@ -197,23 +209,22 @@ export const espressoDecentReadings = pgTable("espresso_decent_readings", {
   espressoId: uuid("espresso_id")
     .primaryKey()
     .references(() => espresso.id, { onDelete: "cascade" }),
-  time: jsonb("time").notNull(),
-  pressure: jsonb("pressure").notNull(),
-  weightTotal: jsonb("weight_total").notNull(),
-  flow: jsonb("flow").notNull(),
-  weightFlow: jsonb("weight_flow").notNull(),
-  temperatureBasket: jsonb("temperature_basket").notNull(),
-  temperatureMix: jsonb("temperature_mix").notNull(),
-  pressureGoal: jsonb("pressure_goal").notNull(),
-  temperatureGoal: jsonb("temperature_goal").notNull(),
-  flowGoal: jsonb("flow_goal").notNull(),
+  time: jsonb("time").$type<number[]>().notNull(),
+  pressure: jsonb("pressure").$type<number[]>().notNull(),
+  weightTotal: jsonb("weight_total").$type<number[]>().notNull(),
+  flow: jsonb("flow").$type<number[]>().notNull(),
+  weightFlow: jsonb("weight_flow").$type<number[]>().notNull(),
+  temperatureBasket: jsonb("temperature_basket").$type<number[]>().notNull(),
+  temperatureMix: jsonb("temperature_mix").$type<number[]>().notNull(),
+  pressureGoal: jsonb("pressure_goal").$type<number[]>().notNull(),
+  temperatureGoal: jsonb("temperature_goal").$type<number[]>().notNull(),
+  flowGoal: jsonb("flow_goal").$type<number[]>().notNull(),
 });
 
 export const tastings = pgTable(
   "tastings",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    fbId: text("fb_id"),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -224,13 +235,71 @@ export const tastings = pgTable(
     data: jsonb("data").notNull(),
   },
   (table) => [
-    uniqueIndex("tastings_fb_id_unique").on(table.fbId),
     index("tastings_user_created_at_idx").on(table.userId, table.createdAt),
   ],
 );
 
-export const featureFlags = pgTable("feature_flags", {
-  name: text("name").primaryKey(),
-  enabled: boolean("enabled").notNull().default(false),
-  description: text("description"),
-});
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  beans: many(beans),
+  brews: many(brews),
+  espressos: many(espresso),
+  tastings: many(tastings),
+}));
+
+export const beansRelations = relations(beans, ({ one, many }) => ({
+  user: one(users, {
+    fields: [beans.userId],
+    references: [users.id],
+  }),
+  brews: many(brews),
+  espressos: many(espresso),
+  tastings: many(tastings),
+}));
+
+export const brewsRelations = relations(brews, ({ one }) => ({
+  user: one(users, {
+    fields: [brews.userId],
+    references: [users.id],
+  }),
+  beans: one(beans, {
+    fields: [brews.beansId],
+    references: [beans.id],
+  }),
+}));
+
+export const espressoRelations = relations(espresso, ({ one }) => ({
+  user: one(users, {
+    fields: [espresso.userId],
+    references: [users.id],
+  }),
+  beans: one(beans, {
+    fields: [espresso.beansId],
+    references: [beans.id],
+  }),
+  decentReadings: one(espressoDecentReadings, {
+    fields: [espresso.id],
+    references: [espressoDecentReadings.espressoId],
+  }),
+}));
+
+export const espressoDecentReadingsRelations = relations(
+  espressoDecentReadings,
+  ({ one }) => ({
+    espresso: one(espresso, {
+      fields: [espressoDecentReadings.espressoId],
+      references: [espresso.id],
+    }),
+  }),
+);
+
+export const tastingsRelations = relations(tastings, ({ one }) => ({
+  user: one(users, {
+    fields: [tastings.userId],
+    references: [users.id],
+  }),
+  beans: one(beans, {
+    fields: [tastings.beansId],
+    references: [beans.id],
+  }),
+}));

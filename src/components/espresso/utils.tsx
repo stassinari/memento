@@ -1,5 +1,5 @@
 import { MapPinIcon } from "@heroicons/react/20/solid";
-import { Espresso } from "~/types/espresso";
+import { Espresso } from "~/db/types";
 import { DataListItem } from "../DataList";
 
 export const espressoToDataListItem = (e: Espresso): DataListItem =>
@@ -7,11 +7,11 @@ export const espressoToDataListItem = (e: Espresso): DataListItem =>
     ? {
         link: `/drinks/espresso/${e.id ?? ""}`,
         topRow: {
-          title: e.profileName,
+          title: e.profileName ?? "",
           pill: e.partial ? "NEW !" : e.rating ? `${e.rating}/10 ★` : undefined,
         },
         bottomRow: {
-          date: e.date.toDate(),
+          date: e.date,
           tags: [
             {
               icon: <MapPinIcon />,
@@ -29,7 +29,7 @@ export const espressoToDataListItem = (e: Espresso): DataListItem =>
           pill: e.rating ? `${e.rating}/10 ★` : undefined,
         },
         bottomRow: {
-          date: e.date.toDate(),
+          date: e.date,
           tags: [
             ...(e.grinder ? [{ icon: <MapPinIcon />, label: e.grinder }] : []),
           ],

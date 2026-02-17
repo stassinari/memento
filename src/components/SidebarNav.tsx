@@ -1,13 +1,9 @@
-import { Link } from "@tanstack/react-router";
+import { Link, LinkProps } from "@tanstack/react-router";
 import clsx from "clsx";
-import { DocumentReference, doc } from "firebase/firestore";
 import { ReactNode, useMemo } from "react";
-import { db } from "~/firebaseConfig";
-import { useFirestoreDocRealtime } from "~/hooks/firestore/useFirestoreDocRealtime";
 import { useActiveRoute } from "~/hooks/useActiveRoute";
 import { useCurrentUser } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { User } from "~/types/user";
 import { navLinks } from "./BottomNav";
 import { MementoLogo } from "./icons/MementoLogo";
 
@@ -45,20 +41,13 @@ const SidebarNavItem = ({
 export interface SidebarNavItemProps {
   Icon: ReactNode;
   label: string;
-  linkTo: string;
+  linkTo: LinkProps["to"];
   nested?: boolean;
 }
 
 export const SidebarNav = () => {
   const user = useCurrentUser();
-
-  const userRef = useMemo(
-    () => doc(db, "users", user.uid) as DocumentReference<User>,
-    [user?.uid],
-  );
-
-  const { details: dbUser } = useFirestoreDocRealtime<User>(userRef);
-  const secretKey = dbUser?.secretKey ? dbUser.secretKey : null;
+  const secretKey = user.secretKey ?? null;
 
   const isLg = useScreenMediaQuery("lg");
 
@@ -71,8 +60,8 @@ export const SidebarNav = () => {
       { ...navLinks.espresso, nested: true },
       { ...navLinks.tastings, nested: true },
       ...(secretKey ? [navLinks.decentUpload] : []),
-      ...(user.role === "admin" || process.env.NODE_ENV === "development"
-        ? [navLinks.aiPlayground, navLinks.featureFlags, navLinks.designLibrary]
+      ...(user.role === "admin" || import.meta.env.MODE === "development"
+        ? [navLinks.aiPlayground, navLinks.designLibrary]
         : []),
     ],
     [secretKey, user.role],

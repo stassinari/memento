@@ -1,13 +1,19 @@
-import { Menu, Transition } from "@headlessui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { Link } from "@tanstack/react-router";
+import { Link, LinkProps } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Fragment } from "react";
 
 interface LinkAction {
   type: "link";
   label: string;
-  href: string;
+  linkProps: LinkProps;
 }
 
 interface ButtonAction {
@@ -35,7 +41,7 @@ export const ButtonWithDropdown = ({
 }: ButtonWithDropdownProps) => (
   <div className="inline-flex rounded-md shadow-xs">
     {mainButton.type === "link" ? (
-      <Link to={mainButton.href} className={clsx(buttonStyles)}>
+      <Link {...mainButton.linkProps} className={clsx(buttonStyles)}>
         {mainButton.label}
       </Link>
     ) : (
@@ -49,10 +55,10 @@ export const ButtonWithDropdown = ({
     )}
 
     <Menu as="div" className="relative block -ml-px">
-      <Menu.Button className="relative inline-flex items-center px-2 py-2 text-gray-400 bg-white rounded-r-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+      <MenuButton className="relative inline-flex items-center px-2 py-2 text-gray-400 bg-white rounded-r-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         <span className="sr-only">Open options</span>
         <ChevronDownIcon className="w-5 h-5" aria-hidden="true" />
-      </Menu.Button>
+      </MenuButton>
       <Transition
         as={Fragment}
         enter="transition ease-out duration-100"
@@ -62,12 +68,15 @@ export const ButtonWithDropdown = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 w-48 mt-2 -mr-1 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black/5 focus:outline-hidden">
+        <MenuItems className="absolute right-0 z-10 w-48 mt-2 -mr-1 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black/5 focus:outline-hidden">
           <div className="py-1">
             {dropdownItems.map((item) => (
-              <Menu.Item key={item.label}>
+              <MenuItem key={item.label}>
                 {item.type === "link" ? (
-                  <Link to={item.href} className={clsx(dropdownItemStyles)}>
+                  <Link
+                    {...item.linkProps}
+                    className={clsx(dropdownItemStyles)}
+                  >
                     {item.label}
                   </Link>
                 ) : (
@@ -78,10 +87,10 @@ export const ButtonWithDropdown = ({
                     {item.label}
                   </button>
                 )}
-              </Menu.Item>
+              </MenuItem>
             ))}
           </div>
-        </Menu.Items>
+        </MenuItems>
       </Transition>
     </Menu>
   </div>

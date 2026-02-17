@@ -9,6 +9,8 @@ import { propertyToValues } from "./PressureFlowWeightChart";
 
 interface CustomTooltipProps {
   title: number;
+  // FIXME need to type this properly, but first need to update the charting library
+  // @ts-ignore
   payload?: Payload<ValueType, NameType>[];
 }
 

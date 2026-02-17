@@ -1,21 +1,22 @@
-import { Link } from "@tanstack/react-router";
-import { orderBy } from "firebase/firestore";
-import { useMemo, useState } from "react";
+import { Link, LinkProps } from "@tanstack/react-router";
+import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionOneTime } from "~/hooks/firestore/useFirestoreCollectionOneTime";
-import { Beans } from "~/types/beans";
-import { DecentEspressoPrep, Espresso } from "~/types/espresso";
+import { useQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
+import {
+  getBeansNonArchived,
+  getEspressoFormValueSuggestions,
+} from "~/db/queries";
+import { userAtom } from "~/hooks/useInitUser";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
-import { BeansCardsSelect } from "../../beans/BeansCardsSelect.Firebase";
+import { BeansCardsSelect } from "../../beans/BeansCardsSelect";
 import { FormComboboxSingle } from "../../form/FormComboboxSingle";
 import { FormInput } from "../../form/FormInput";
 import { FormInputDate } from "../../form/FormInputDate";
 import { FormInputRadioButtonGroup } from "../../form/FormInputRadioButtonGroup";
-import { extractSuggestions } from "../../form/FormSuggestions";
 
 export interface DecentEspressoFormInputs {
   date: Date;
@@ -27,22 +28,21 @@ export interface DecentEspressoFormInputs {
   portafilter: string | null;
   basket: string | null;
 
-  actualWeight: number; // FIXME this should be nullable if no scale is used
+  actualWeight: number | null;
   targetWeight: number | null;
   beansWeight: number | null;
   grindSetting: string | null;
 }
 
 export const decentEspressoFormEmptyValues: (
-  partialEspresso: DecentEspressoPrep,
-  latestEspresso?: Espresso,
+  partialEspresso: DecentEspressoFormInputs,
+  latestEspresso?: DecentEspressoFormInputs,
 ) => DecentEspressoFormInputs = (partialEspresso, latestEspresso) => ({
-  date: partialEspresso.date.toDate(),
+  date: partialEspresso.date,
 
   beans: null,
   grindSetting: null,
-  actualTime: partialEspresso.actualTime,
-  actualWeight: partialEspresso.actualWeight,
+  actualWeight: partialEspresso.actualWeight ?? 0,
 
   targetWeight: partialEspresso.targetWeight ?? null,
   beansWeight: null,
@@ -56,25 +56,31 @@ export const decentEspressoFormEmptyValues: (
 
 interface DecentEspressoFormProps {
   defaultValues: DecentEspressoFormInputs;
-  espressoList: Espresso[];
   mutation: (data: DecentEspressoFormInputs) => void;
-  backLink: string;
+  backLinkProps: LinkProps;
 }
 
 export const DecentEspressoForm = ({
   defaultValues,
-  espressoList,
   mutation,
-  backLink,
+  backLinkProps,
 }: DecentEspressoFormProps) => {
+  const user = useAtomValue(userAtom);
+
+  const { data: beansList, isLoading: areBeansLoading } = useQuery({
+    queryKey: ["beans", user?.uid],
+    queryFn: () => getBeansNonArchived({ data: user?.uid ?? "" }),
+  });
+
+  const {
+    data: espressoFormValueSuggestions,
+    isLoading: areEspressoFormValueSuggestionsLoading,
+  } = useQuery({
+    queryKey: ["espressos", "formValueSuggestions"],
+    queryFn: () => getEspressoFormValueSuggestions({ data: user?.uid ?? "" }),
+  });
+
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
-
-  // where("isFinished", "==", false), TODO consider smarter way, ie only non-finished beans + possible archived+selected one
-  const beansFilters = useMemo(() => [orderBy("roastDate", "desc")], []);
-
-  const beansQuery = useCollectionQuery<Beans>("beans", beansFilters);
-  const { list: beansList, isLoading: areBeansLoading } =
-    useFirestoreCollectionOneTime<Beans>(beansQuery);
 
   const methods = useForm<DecentEspressoFormInputs>({
     defaultValues,
@@ -91,7 +97,14 @@ export const DecentEspressoForm = ({
     mutation(data);
   };
 
-  if (areBeansLoading) return null;
+  if (
+    areBeansLoading ||
+    areEspressoFormValueSuggestionsLoading ||
+    !beansList ||
+    !espressoFormValueSuggestions
+  ) {
+    return null;
+  }
 
   return (
     <FormProvider {...methods}>
@@ -128,7 +141,7 @@ export const DecentEspressoForm = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                valueAsNumber: true,
+                setValueAs: (v: string) => (v === "" ? null : Number(v)),
               }),
               type: "number",
               step: "0.01",
@@ -147,7 +160,7 @@ export const DecentEspressoForm = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                valueAsNumber: true,
+                setValueAs: (v: string) => (v === "" ? null : Number(v)),
               }),
               type: "number",
               step: "0.01",
@@ -165,7 +178,7 @@ export const DecentEspressoForm = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                valueAsNumber: true,
+                setValueAs: (v: string) => (v === "" ? null : Number(v)),
               }),
               type: "number",
               step: "0.01",
@@ -195,44 +208,27 @@ export const DecentEspressoForm = ({
                 label="Machine"
                 name="machine"
                 placeholder="Lelit Elizabeth"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ machine }) => (machine ? [machine] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "machine")}
+                options={espressoFormValueSuggestions.machine.sort()}
+                suggestions={espressoFormValueSuggestions.machine.slice(0, 5)}
               />
 
               <FormComboboxSingle
                 label="Grinder"
                 name="grinder"
                 placeholder="Niche Zero"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ grinder }) => (grinder ? [grinder] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "grinder")}
+                options={espressoFormValueSuggestions.grinder.sort()}
+                suggestions={espressoFormValueSuggestions.grinder.slice(0, 5)}
               />
 
               <FormComboboxSingle
                 label="Burrs"
                 name="grinderBurrs"
                 placeholder="54mm conical"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ grinderBurrs }) =>
-                        grinderBurrs ? [grinderBurrs] : [],
-                      )
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "grinderBurrs")}
+                options={espressoFormValueSuggestions.grinderBurrs.sort()}
+                suggestions={espressoFormValueSuggestions.grinderBurrs.slice(
+                  0,
+                  5,
+                )}
               />
 
               <FormInputRadioButtonGroup
@@ -249,14 +245,8 @@ export const DecentEspressoForm = ({
                 label="Basket"
                 name="basket"
                 placeholder="VST 18g"
-                options={[
-                  ...new Set(
-                    espressoList
-                      .flatMap(({ basket }) => (basket ? [basket] : []))
-                      .sort(),
-                  ),
-                ]}
-                suggestions={extractSuggestions(espressoList, "basket")}
+                options={espressoFormValueSuggestions.basket.sort()}
+                suggestions={espressoFormValueSuggestions.basket.slice(0, 5)}
               />
             </>
           ) : (
@@ -275,7 +265,7 @@ export const DecentEspressoForm = ({
 
         <div className="flex justify-end gap-4">
           <Button variant="white" asChild>
-            <Link to={backLink}>Back</Link>
+            <Link {...backLinkProps}>Back</Link>
           </Button>
           <Button variant="primary" type="submit" colour="accent">
             Update

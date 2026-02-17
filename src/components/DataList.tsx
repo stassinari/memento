@@ -7,11 +7,11 @@ import { getTimeAgo } from "~/util";
 export interface DataListItem {
   topRow: {
     title: string;
-    pill?: string;
+    pill?: string | null;
   };
   bottomRow: {
     tags: Array<{ icon?: ReactNode; label: string }>;
-    date?: Date;
+    date?: Date | null;
   };
   link: string;
 }

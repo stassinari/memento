@@ -1,8 +1,11 @@
-import { Tab } from "@headlessui/react";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { Tab, TabGroup, TabList, TabPanels } from "@headlessui/react";
+import {
+  queryOptions,
+  useSuspenseQuery,
+  UseSuspenseQueryOptions,
+} from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
-import { orderBy, QueryConstraint, where } from "firebase/firestore";
 import { useAtomValue } from "jotai";
 import { ReactNode, useState } from "react";
 import { BeansCard } from "~/components/beans/BeansCard";
@@ -12,48 +15,42 @@ import { Button } from "~/components/Button";
 import { EmptyState } from "~/components/EmptyState";
 import { Heading } from "~/components/Heading";
 import { getBeansArchived, getBeansFrozen, getBeansOpen } from "~/db/queries";
-import type { BeansWithUser } from "~/db/types";
-import { useCollectionQuery } from "~/hooks/firestore/useCollectionQuery";
-import { useFirestoreCollectionRealtime } from "~/hooks/firestore/useFirestoreCollectionRealtime";
+import type { Beans } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { Beans } from "~/types/beans";
-import { isNotFrozenOrIsThawed } from "~/util";
-import { flagsQueryOptions } from "../feature-flags";
 
 const beansOpenQueryOptions = (firebaseUid: string) =>
-  queryOptions<BeansWithUser[]>({
-    queryKey: ["beans", "open", firebaseUid],
-    queryFn: () =>
-      getBeansOpen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+  queryOptions<Beans[]>({
+    queryKey: ["beans", "open"],
+    queryFn: () => getBeansOpen({ data: firebaseUid }),
   });
 
 const beansFrozenQueryOptions = (firebaseUid: string) =>
-  queryOptions<BeansWithUser[]>({
-    queryKey: ["beans", "frozen", firebaseUid],
-    queryFn: () =>
-      getBeansFrozen({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+  queryOptions<Beans[]>({
+    queryKey: ["beans", "frozen"],
+    queryFn: () => getBeansFrozen({ data: firebaseUid }),
   });
 
 const beansArchivedQueryOptions = (firebaseUid: string) =>
-  queryOptions<BeansWithUser[]>({
-    queryKey: ["beans", "archived", firebaseUid],
-    queryFn: () =>
-      getBeansArchived({ data: firebaseUid }) as Promise<BeansWithUser[]>,
+  queryOptions<Beans[]>({
+    queryKey: ["beans", "archived"],
+    queryFn: () => getBeansArchived({ data: firebaseUid }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({
   component: BeansList,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(flagsQueryOptions());
-  },
 });
 
-const tabs: BeansTabProps[] = [
+type BeansTab = {
+  name: "Archived" | "Frozen" | "Open";
+  drizzleQuery: (uid: string) => UseSuspenseQueryOptions<Beans[]>;
+  EmptyState: ReactNode;
+};
+
+const tabs: BeansTab[] = [
   {
     name: "Open",
-    filters: [where("isFinished", "==", false)],
-    removeFrozen: true,
+    drizzleQuery: beansOpenQueryOptions,
     EmptyState: (
       <EmptyState
         title="No open beans"
@@ -64,12 +61,7 @@ const tabs: BeansTabProps[] = [
   },
   {
     name: "Frozen",
-    filters: [
-      orderBy("freezeDate", "desc"),
-      where("isFinished", "==", false),
-      where("freezeDate", "!=", null),
-      where("thawDate", "==", null),
-    ],
+    drizzleQuery: beansFrozenQueryOptions,
     EmptyState: (
       <EmptyState
         title="No frozen beans"
@@ -79,7 +71,7 @@ const tabs: BeansTabProps[] = [
   },
   {
     name: "Archived",
-    filters: [where("isFinished", "==", true)],
+    drizzleQuery: beansArchivedQueryOptions,
     EmptyState: (
       <EmptyState
         title="No archived beans"
@@ -101,8 +93,6 @@ export function BeansList() {
 
   const isSm = useScreenMediaQuery("sm");
 
-  console.log("BeansList");
-
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.beans]} />
@@ -123,99 +113,50 @@ export function BeansList() {
       </Heading>
 
       <div className="mt-2">
-        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <Tab.List className="flex -mb-px">
+        <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <TabList className="flex -mb-px">
             {tabs.map(({ name }, i) => (
               <Tab key={name} className={clsx(tabStyles(selectedIndex === i))}>
                 {name}
               </Tab>
             ))}
-          </Tab.List>
-          <Tab.Panels className="mt-4">
+          </TabList>
+          <TabPanels className="mt-4">
             {tabs.map((t, i) => (
               <Tab.Panel key={t.name}>
-                <BeansTab
-                  name={tabs[i].name}
-                  filters={tabs[i].filters}
-                  removeFrozen={tabs[i].removeFrozen}
+                <BeansTabContent
+                  drizzleQuery={tabs[i].drizzleQuery}
                   EmptyState={tabs[i].EmptyState}
                 />
               </Tab.Panel>
             ))}
-          </Tab.Panels>
-        </Tab.Group>
+          </TabPanels>
+        </TabGroup>
       </div>
     </>
   );
 }
 
-export interface BeansTabProps {
-  name: "Archived" | "Frozen" | "Open";
-  filters: QueryConstraint[];
-  removeFrozen?: boolean;
+export interface BeansTabContentProps {
+  drizzleQuery: (uid: string) => UseSuspenseQueryOptions<Beans[]>;
   EmptyState: ReactNode;
 }
 
-export const BeansTab = ({
-  name,
-  filters,
-  removeFrozen,
+export const BeansTabContent = ({
+  drizzleQuery,
   EmptyState,
-}: BeansTabProps) => {
-  console.log("BeansTab");
-
-  const { data: flags } = useSuspenseQuery(flagsQueryOptions());
+}: BeansTabContentProps) => {
   const user = useAtomValue(userAtom);
 
-  const shouldReadFromPostgres = flags?.find(
-    (flag) => flag.name === "read_from_postgres",
-  )?.enabled;
+  const { data: beansList } = useSuspenseQuery(drizzleQuery(user?.uid ?? ""));
 
-  // SQL queries
-  const { data: sqlBeansOpen } = useSuspenseQuery(
-    beansOpenQueryOptions(user?.uid ?? ""),
-  );
-  const { data: sqlBeansFrozen } = useSuspenseQuery(
-    beansFrozenQueryOptions(user?.uid ?? ""),
-  );
-  const { data: sqlBeansArchived } = useSuspenseQuery(
-    beansArchivedQueryOptions(user?.uid ?? ""),
-  );
-
-  // Firebase queries
-  const query = useCollectionQuery<Beans>("beans", filters);
-  const { list: fbBeansList, isLoading } =
-    useFirestoreCollectionRealtime<Beans>(query);
-
-  if (isLoading) return null;
-
-  const fbSortedAndFiltered = fbBeansList
-    .sort((a, b) =>
-      (a.roastDate?.toDate() ?? 0) < (b.roastDate?.toDate() ?? 0) ? 1 : -1,
-    )
-    .filter(removeFrozen ? isNotFrozenOrIsThawed : () => true);
-
-  const sqlBeansList: BeansWithUser[] =
-    name === "Open"
-      ? sqlBeansOpen
-      : name === "Frozen"
-        ? sqlBeansFrozen
-        : sqlBeansArchived;
-
-  const displayBeans = shouldReadFromPostgres
-    ? sqlBeansList.map((b) => b.beans)
-    : fbSortedAndFiltered;
-
-  if (displayBeans.length === 0) return <>{EmptyState}</>;
+  if (beansList.length === 0) return <>{EmptyState}</>;
 
   return (
     <ul className="grid gap-4 sm:grid-cols-2">
-      {displayBeans.map((beans) => (
+      {beansList.map((beans) => (
         <li key={beans.id}>
-          <BeansCard
-            beans={beans}
-            shouldReadFromPostgres={shouldReadFromPostgres}
-          />
+          <BeansCard beans={beans} />
         </li>
       ))}
     </ul>
