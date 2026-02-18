@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import React from "react";
 import { getTrackBackground, Range } from "react-range";
 
 export interface InputSliderProps {
@@ -37,7 +36,7 @@ export const InputSlider = ({
               ...props.style,
               background: getTrackBackground({
                 values,
-                colors: ["#f97316", "e5e7eb"], // FIXME better tw theme
+                colors: ["#f97316", "#e5e7eb"], // FIXME better tw theme
                 min,
                 max,
               }),
@@ -87,7 +86,7 @@ export const InputSlider = ({
         }}
       />
 
-      <div className="flex justify-between mt-2 -mx-2 text-sm text-gray-700 sm:text-xs">
+      <div className="flex justify-between mt-2 -mx-2 text-sm text-gray-700 px-1 sm:text-xs">
         {overrideLabels ? (
           <>
             {overrideLabels.map((l) => (
@@ -101,10 +100,6 @@ export const InputSlider = ({
           </>
         )}
       </div>
-
-      {/* <span className="flex items-center justify-center w-6 h-6 mx-4 text-sm bg-gray-200 rounded-md">
-        {values[0] || 0}
-      </span> */}
     </div>
   );
 };
