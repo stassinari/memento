@@ -11,6 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BeansDetailsInfo } from "~/components/beans/BeansDetailsInfo";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Button } from "~/components/Button";
 import {
   ButtonWithDropdown,
   ButtonWithDropdownProps,
@@ -21,6 +22,7 @@ import {
 } from "~/components/drinks/DrinksList";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
+import { Modal } from "~/components/Modal";
 import {
   archiveBeans,
   deleteBeans,
@@ -70,6 +72,7 @@ function BeansDetails() {
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isDeleteErrorModalOpen, setIsDeleteErrorModalOpen] = useState(false);
   const isSm = useScreenMediaQuery("sm");
 
   const beanForDropdown = beansWithDrinks;
@@ -130,13 +133,17 @@ function BeansDetails() {
   }, [beansId, user?.uid, queryClient]);
 
   const handleDelete = useCallback(async () => {
-    await deleteBeans({
+    const wasSuccessful = await deleteBeans({
       data: { beansId, firebaseUid: user?.uid ?? "" },
     });
 
-    // 3. Invalidate and navigate
-    queryClient.invalidateQueries({ queryKey: ["beans"] });
-    navigate({ to: "/beans" });
+    if (wasSuccessful) {
+      // 3. Invalidate and navigate
+      queryClient.invalidateQueries({ queryKey: ["beans"] });
+      navigate({ to: "/beans" });
+    } else {
+      setIsDeleteErrorModalOpen(true);
+    }
   }, [beansId, user?.uid, queryClient, navigate]);
 
   const dropdownButtons: ButtonWithDropdownProps = useMemo(
@@ -198,6 +205,26 @@ function BeansDetails() {
 
   return (
     <>
+      <Modal
+        open={isDeleteErrorModalOpen}
+        handleClose={() => setIsDeleteErrorModalOpen(false)}
+      >
+        <p className="text-sm text-gray-700">
+          Cannot delete beans that have associated drinks. Please delete the
+          drinks first.
+        </p>
+        <div className="mt-4 flex justify-end">
+          <Button
+            type="button"
+            variant="primary"
+            colour="accent"
+            onClick={() => setIsDeleteErrorModalOpen(false)}
+          >
+            Okay
+          </Button>
+        </div>
+      </Modal>
+
       <BreadcrumbsWithHome
         items={[navLinks.beans, { label: beansWithDrinks.name }]}
       />

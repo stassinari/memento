@@ -274,14 +274,35 @@ export const deleteBeans = createServerFn({ method: "POST" })
     }
     return input;
   })
-  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, firebaseUid } }) => {
     try {
       const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .delete(beans)
-          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
+      if (!userId) {
+        throw new Error("User not found");
       }
+
+      // check if beans have associated brews or espressos before deleting
+      const hasDrinks = await db
+        .select({ id: brews.id })
+        .from(brews)
+        .where(eq(brews.beansId, beansId))
+        .union(
+          db
+            .select({ id: espresso.id })
+            .from(espresso)
+            .where(eq(espresso.beansId, beansId)),
+        )
+        .limit(1);
+
+      if (hasDrinks.length > 0) {
+        return false; // Cannot delete beans with associated brews or espressos
+      }
+
+      await db
+        .delete(beans)
+        .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
+
+      return true; // Deletion successful
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
     }
