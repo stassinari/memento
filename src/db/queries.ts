@@ -65,22 +65,24 @@ export const getBrews = createServerFn({
       if (!input.firebaseUid) throw new Error("User ID is required");
       return {
         firebaseUid: input.firebaseUid,
-        limit: input.limit ?? 50,
+        limit: input.limit,
         offset: input.offset ?? 0,
       };
     },
   )
   .handler(async ({ data: { firebaseUid, limit, offset } }) => {
     try {
-      const brewsList = await db
+      const query = db
         .select()
         .from(brews)
         .innerJoin(beans, eq(brews.beansId, beans.id))
         .innerJoin(users, eq(brews.userId, users.id))
         .where(eq(users.fbId, firebaseUid))
         .orderBy(desc(brews.date))
-        .limit(limit)
-        .offset(offset);
+        .offset(offset)
+        .$dynamic();
+
+      const brewsList = await (limit ? query.limit(limit) : query);
       return brewsList;
     } catch (error) {
       console.error("Database error:", error);
