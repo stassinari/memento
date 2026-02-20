@@ -246,7 +246,7 @@ export const BeansForm = ({
             label="Origin"
             name="origin"
             options={[
-              { label: "Singe origin", value: "single-origin" },
+              { label: "Single origin", value: "single-origin" },
               { label: "Blend", value: "blend" },
             ]}
             variant="secondary"
@@ -279,12 +279,12 @@ export const BeansForm = ({
                 placeholder="Search variety..."
               />
               <FormInput
-                label="Farmer"
+                label="Farmer / producer"
                 id="farmer"
                 inputProps={{
                   ...register("farmer"),
                   type: "text",
-                  placeholder: "Cooperativa lollanza",
+                  placeholder: "Lollanza Cooperative",
                 }}
               />
               <FormInput

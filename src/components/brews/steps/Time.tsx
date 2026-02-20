@@ -93,7 +93,6 @@ export const BrewTime = ({
                   setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
-                placeholder: "2",
                 disabled: !manualInput,
               }}
               error={errors.timeMinutes?.message}
@@ -112,7 +111,6 @@ export const BrewTime = ({
                   setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
-                placeholder: "34",
                 disabled: !manualInput,
               }}
               error={errors.timeSeconds?.message}

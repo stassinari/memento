@@ -68,7 +68,6 @@ export const EspressoRecipe = ({
               }),
               type: "number",
               step: "0.01",
-              placeholder: "42",
             }}
             error={errors.targetWeight?.message}
           />
@@ -87,7 +86,6 @@ export const EspressoRecipe = ({
               }),
               type: "number",
               step: "0.01",
-              placeholder: "15",
             }}
             error={errors.beansWeight?.message}
           />
@@ -109,7 +107,6 @@ export const EspressoRecipe = ({
               }),
               type: "number",
               step: "0.01",
-              placeholder: "98",
             }}
             error={errors.waterTemperature?.message}
           />
@@ -120,7 +117,6 @@ export const EspressoRecipe = ({
             inputProps={{
               ...register("grindSetting"),
               type: "text",
-              placeholder: "1.5",
             }}
           />
         </FormSection>

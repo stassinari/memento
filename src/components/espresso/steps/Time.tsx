@@ -98,7 +98,6 @@ export const EspressoTime = ({
                   setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
                 type: "number",
-                placeholder: "2",
                 disabled: !manualInput,
               }}
               error={errors.actualTime?.message}
