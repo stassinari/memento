@@ -52,7 +52,7 @@ export const EspressoRecipe = ({
       >
         <FormSection
           title="Recipe"
-          subtitle="All the info unique to this espresso."
+          subtitle="The numbers that defined this shot."
         >
           <FormInput
             label="Yield *"

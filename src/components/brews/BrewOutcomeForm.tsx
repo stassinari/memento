@@ -95,7 +95,10 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
         autoComplete="off"
         className="space-y-6"
       >
-        <FormSection title="Scores" subtitle="Bla">
+        <FormSection
+          title="Scores"
+          subtitle="Your overall impression and any notes worth remembering."
+        >
           <FormInputSlider
             label="Overall score"
             id="rating"
@@ -115,7 +118,7 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
 
         <FormSection
           title="Tasting notes"
-          subtitle="(Optional) More granular tasting notes."
+          subtitle="Break down the cup — from aroma to finish."
         >
           <FormInputSlider label="Aroma" id="aroma" min={0} max={10} step={1} />
           <FormInputSlider
@@ -144,7 +147,7 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
 
         <FormSection
           title="Extraction"
-          subtitle="(Optional) Find out the TDS of you brew."
+          subtitle="The technical side of how the brew turned out."
         >
           <FormInputRadioButtonGroup
             label="Extraction type"

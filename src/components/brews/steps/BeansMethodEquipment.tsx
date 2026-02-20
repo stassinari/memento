@@ -72,8 +72,8 @@ export const BeansMethodEquipment = ({
         className="space-y-6"
       >
         <FormSection
-          title="Base information"
-          subtitle="This section includes the information that boh I don't know."
+          title="Details"
+          subtitle="The essentials — when you made it and what you used."
         >
           <FormInputDate
             label="Date *"
@@ -99,8 +99,8 @@ export const BeansMethodEquipment = ({
         <Divider className="hidden sm:block" />
 
         <FormSection
-          title="Equipment information"
-          subtitle="This section is about equipment. Duh."
+          title="Equipment"
+          subtitle="The gear that went into this brew."
         >
           {showEquipmentForm ? (
             <>

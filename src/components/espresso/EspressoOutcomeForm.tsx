@@ -93,7 +93,10 @@ export const EspressoOutcomeForm = ({
         autoComplete="off"
         className="mt-6 space-y-6"
       >
-        <FormSection title="Scores" subtitle="Bla">
+        <FormSection
+          title="Scores"
+          subtitle="Your overall impression and any notes worth remembering."
+        >
           <FormInputSlider
             label="Overall score"
             id="rating"
@@ -112,7 +115,7 @@ export const EspressoOutcomeForm = ({
 
         <FormSection
           title="Tasting notes"
-          subtitle="(Optional) More granular tasting notes."
+          subtitle="Break down the cup — from aroma to finish."
         >
           <FormInputSlider label="Aroma" id="aroma" min={0} max={10} step={1} />
           <FormInputSlider
@@ -141,7 +144,7 @@ export const EspressoOutcomeForm = ({
 
         <FormSection
           title="Extraction"
-          subtitle="(Optional) Find out the TDS of you espresso."
+          subtitle="The technical side of how the shot turned out."
         >
           <FormInput
             label="TDS (%)"

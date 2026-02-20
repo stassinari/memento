@@ -52,7 +52,7 @@ export const BrewRecipe = ({
       >
         <FormSection
           title="Recipe"
-          subtitle="All the info unique to this brew."
+          subtitle="The numbers that defined this brew."
         >
           <FormInput
             label="Water weight (ml) *"

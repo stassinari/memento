@@ -61,7 +61,7 @@ export const BrewTime = ({
       >
         <FormSection
           title="Time"
-          subtitle="Keep track of how long your brew takes."
+          subtitle="How long the brew took — use the timer or enter it manually."
         >
           <Stopwatch
             atom={brewStopwatchAtom}

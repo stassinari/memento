@@ -61,7 +61,7 @@ export const EspressoTime = ({
       >
         <FormSection
           title="Time"
-          subtitle="Keep track of how long your espresso takes."
+          subtitle="How long the shot took — use the timer or enter it manually."
         >
           <Stopwatch
             atom={espressoStopwatchAtom}
