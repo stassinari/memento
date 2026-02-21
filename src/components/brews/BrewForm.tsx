@@ -4,8 +4,8 @@ import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 import { BeansCardsSelect } from "~/components/beans/BeansCardsSelect";
-import { getBeansNonArchived, getBrewFormValueSuggestions } from "~/db/queries";
-import { Brew } from "~/db/types";
+import { getBrewFormValueSuggestions, getSelectableBeans } from "~/db/queries";
+import { Beans, Brew } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
 import {
   BeansMethodEquipment,
@@ -41,12 +41,14 @@ type BrewFormStep = "beansMethodEquipment" | "recipe" | "time";
 
 interface BrewFormProps {
   defaultValues: BrewFormInputs;
+  existingBeans?: Beans;
   buttonLabel: string;
   mutation: (data: BrewFormInputs) => void;
 }
 
 export const BrewForm = ({
   defaultValues,
+  existingBeans,
   buttonLabel,
   mutation,
 }: BrewFormProps) => {
@@ -61,7 +63,7 @@ export const BrewForm = ({
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans", "notArchived"],
-    queryFn: () => getBeansNonArchived({ data: user?.uid ?? "" }),
+    queryFn: () => getSelectableBeans({ data: user?.uid ?? "" }),
   });
 
   const { data: brewFormValueSuggestions } = useQuery({
@@ -73,6 +75,7 @@ export const BrewForm = ({
     mutation(data);
   };
 
+  // FIXME can display the page as this is loading
   if (areBeansLoading || !brewFormValueSuggestions || !beansList) return null;
 
   return (
@@ -80,7 +83,12 @@ export const BrewForm = ({
       {activeStep === "beansMethodEquipment" ? (
         <BeansMethodEquipment
           brewFormValueSuggestions={brewFormValueSuggestions}
-          beansCardsSelectComponent={<BeansCardsSelect beansList={beansList} />}
+          beansCardsSelectComponent={
+            <BeansCardsSelect
+              beansList={beansList}
+              existingBeans={existingBeans}
+            />
+          }
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {
             setBrewFormInputs({ ...brewFormInputs, ...data });

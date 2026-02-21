@@ -4,7 +4,6 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   DecentEspressoForm,
-  decentEspressoFormEmptyValues,
   DecentEspressoFormInputs,
 } from "~/components/espresso/steps/DecentEspressoForm";
 import { Heading } from "~/components/Heading";
@@ -90,10 +89,11 @@ function DecentEspressoEditDetails() {
       </Heading>
 
       <DecentEspressoForm
-        defaultValues={decentEspressoFormEmptyValues({
+        defaultValues={{
           ...decentEspresso,
           beans: decentEspresso.beans?.id ?? null,
-        })}
+        }}
+        existingBeans={decentEspresso.beans ?? undefined}
         mutation={editDecentEspresso}
         backLinkProps={{
           to: "/drinks/espresso/$espressoId",

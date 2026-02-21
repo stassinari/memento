@@ -92,6 +92,7 @@ function EspressoEditDetails() {
           ...espresso,
           beans: espresso.beans ? espresso.beans.id : null,
         }}
+        existingBeans={espresso.beans ?? undefined}
         buttonLabel="Edit"
         mutation={handleEdit}
       />

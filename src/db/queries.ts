@@ -1,13 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import {
-  and,
-  desc,
-  eq,
-  getTableColumns,
-  isNotNull,
-  isNull,
-  or,
-} from "drizzle-orm";
+import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
+import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
 import { beans, brews, espresso, users } from "./schema";
 
@@ -338,18 +331,33 @@ export const getDecentReadings = createServerFn({
 export const getBeans = createServerFn({
   method: "GET",
 })
-  .inputValidator((firebaseUid: string) => {
-    if (!firebaseUid) throw new Error("User ID is required");
-    return firebaseUid;
+  .inputValidator((input: { state: BeansStateName; firebaseUid: string }) => {
+    if (!input.firebaseUid) throw new Error("User ID is required");
+    return input;
   })
-  .handler(async ({ data: firebaseUid }) => {
+  .handler(async ({ data: { state, firebaseUid } }) => {
     try {
-      const beansList = await db
-        .select()
+      const query = db
+        .select({ ...getTableColumns(beans) })
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
         .where(eq(users.fbId, firebaseUid))
-        .orderBy(desc(beans.roastDate));
+        .orderBy(desc(beans.roastDate))
+        .$dynamic();
+
+      switch (state) {
+        case "Open":
+          query.where(eq(beans.isOpen, true));
+          break;
+        case "Frozen":
+          query.where(eq(beans.isFrozen, true));
+          break;
+        case "Archived":
+          query.where(eq(beans.isArchived, true));
+          break;
+      }
+
+      const beansList = await query;
       return beansList;
     } catch (error) {
       console.error("Database error:", error);
@@ -357,91 +365,7 @@ export const getBeans = createServerFn({
     }
   });
 
-// TODO can I combine these 4 next function into 1?
-
-export const getBeansOpen = createServerFn({
-  method: "GET",
-})
-  .inputValidator((firebaseUid: string) => {
-    if (!firebaseUid) throw new Error("User ID is required");
-    return firebaseUid;
-  })
-  .handler(async ({ data: firebaseUid }) => {
-    try {
-      // Open beans: not finished AND (never frozen OR thawed)
-      const beansList = await db
-        .select({ ...getTableColumns(beans) })
-        .from(beans)
-        .innerJoin(users, eq(beans.userId, users.id))
-        .where(
-          and(
-            eq(users.fbId, firebaseUid),
-            eq(beans.isFinished, false),
-            or(isNull(beans.freezeDate), isNotNull(beans.thawDate)),
-          ),
-        )
-        .orderBy(desc(beans.roastDate));
-      return beansList;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  });
-
-export const getBeansFrozen = createServerFn({
-  method: "GET",
-})
-  .inputValidator((firebaseUid: string) => {
-    if (!firebaseUid) throw new Error("User ID is required");
-    return firebaseUid;
-  })
-  .handler(async ({ data: firebaseUid }) => {
-    try {
-      // Frozen beans: not finished AND frozen but not thawed
-      const beansList = await db
-        .select({ ...getTableColumns(beans) })
-        .from(beans)
-        .innerJoin(users, eq(beans.userId, users.id))
-        .where(
-          and(
-            eq(users.fbId, firebaseUid),
-            eq(beans.isFinished, false),
-            isNotNull(beans.freezeDate),
-            isNull(beans.thawDate),
-          ),
-        )
-        .orderBy(desc(beans.freezeDate));
-      return beansList;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  });
-
-export const getBeansArchived = createServerFn({
-  method: "GET",
-})
-  .inputValidator((firebaseUid: string) => {
-    if (!firebaseUid) throw new Error("User ID is required");
-    return firebaseUid;
-  })
-  .handler(async ({ data: firebaseUid }) => {
-    try {
-      // Archived beans: marked as finished
-      const beansList = await db
-        .select({ ...getTableColumns(beans) })
-        .from(beans)
-        .innerJoin(users, eq(beans.userId, users.id))
-        .where(and(eq(users.fbId, firebaseUid), eq(beans.isFinished, true)))
-        .orderBy(desc(beans.roastDate));
-      return beansList;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  });
-
-export const getBeansNonArchived = createServerFn({
+export const getSelectableBeans = createServerFn({
   method: "GET",
 })
   .inputValidator((firebaseUid: string) => {
@@ -459,13 +383,13 @@ export const getBeansNonArchived = createServerFn({
           roastDate: beans.roastDate,
           origin: beans.origin,
           country: beans.country,
-          isFinished: beans.isFinished,
-          freezeDate: beans.freezeDate, // TODO can i define a "virtual column" here, i.e isFrozen?
-          thawDate: beans.thawDate, // TODO can i define a "virtual column" here, i.e isThawed?
+          isArchived: beans.isArchived,
+          isFrozen: beans.isFrozen,
+          isOpen: beans.isOpen,
         })
         .from(beans)
         .innerJoin(users, eq(beans.userId, users.id))
-        .where(and(eq(users.fbId, firebaseUid), eq(beans.isFinished, false)))
+        .where(and(eq(users.fbId, firebaseUid), eq(beans.isArchived, false)))
         .orderBy(desc(beans.roastDate));
       return beansList;
     } catch (error) {

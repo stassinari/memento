@@ -5,9 +5,10 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import {
-  getBeansNonArchived,
   getEspressoFormValueSuggestions,
+  getSelectableBeans,
 } from "~/db/queries";
+import { Beans } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
@@ -56,12 +57,14 @@ export const decentEspressoFormEmptyValues: (
 
 interface DecentEspressoFormProps {
   defaultValues: DecentEspressoFormInputs;
+  existingBeans?: Beans;
   mutation: (data: DecentEspressoFormInputs) => void;
   backLinkProps: LinkProps;
 }
 
 export const DecentEspressoForm = ({
   defaultValues,
+  existingBeans,
   mutation,
   backLinkProps,
 }: DecentEspressoFormProps) => {
@@ -69,7 +72,7 @@ export const DecentEspressoForm = ({
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans", user?.uid],
-    queryFn: () => getBeansNonArchived({ data: user?.uid ?? "" }),
+    queryFn: () => getSelectableBeans({ data: user?.uid ?? "" }),
   });
 
   const {
@@ -125,7 +128,10 @@ export const DecentEspressoForm = ({
             placeholder="Select espresso date"
           />
 
-          <BeansCardsSelect beansList={beansList} />
+          <BeansCardsSelect
+            beansList={beansList}
+            existingBeans={existingBeans}
+          />
         </FormSection>
 
         <FormSection

@@ -47,7 +47,7 @@ export interface BeansFormInputs {
   freezeDate: Date | null;
   thawDate: Date | null;
 
-  isFinished?: boolean;
+  isArchived?: boolean;
 }
 
 const singleOriginEmptyValues = {
@@ -77,7 +77,7 @@ export const beansFormEmptyValues: BeansFormInputs = {
   freezeDate: null,
   thawDate: null,
 
-  isFinished: false,
+  isArchived: false,
 };
 
 interface BeansFormProps {

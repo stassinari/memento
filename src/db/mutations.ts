@@ -142,7 +142,7 @@ export const addBeans = createServerFn({ method: "POST" })
         roastingNotes: data.roastingNotes,
         freezeDate: data.freezeDate,
         thawDate: data.thawDate,
-        isFinished: data.isFinished ?? false,
+        isArchived: data.isArchived ?? false,
         origin: data.origin,
         // Single-origin fields (null if blend)
         country: data.origin === "single-origin" ? data.country : null,
@@ -169,7 +169,7 @@ export const addBeans = createServerFn({ method: "POST" })
   });
 
 /**
- * Archive beans (set isFinished = true)
+ * Archive beans (set isArchived = true)
  */
 export const archiveBeans = createServerFn({ method: "POST" })
   .inputValidator((input: { beansId: string; firebaseUid: string }) => {
@@ -184,7 +184,7 @@ export const archiveBeans = createServerFn({ method: "POST" })
       if (userId) {
         await db
           .update(beans)
-          .set({ isFinished: true })
+          .set({ isArchived: true })
           .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
     } catch (error) {
@@ -193,7 +193,7 @@ export const archiveBeans = createServerFn({ method: "POST" })
   });
 
 /**
- * Unarchive beans (set isFinished = false)
+ * Unarchive beans (set isArchived = false)
  */
 export const unarchiveBeans = createServerFn({ method: "POST" })
   .inputValidator((input: { beansId: string; firebaseUid: string }) => {
@@ -208,7 +208,7 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
       if (userId) {
         await db
           .update(beans)
-          .set({ isFinished: false })
+          .set({ isArchived: false })
           .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
       }
     } catch (error) {
@@ -343,7 +343,7 @@ export const updateBeans = createServerFn({ method: "POST" })
       roastingNotes: data.roastingNotes,
       freezeDate: data.freezeDate,
       thawDate: data.thawDate,
-      isFinished: data.isFinished ?? false,
+      isArchived: data.isArchived ?? false,
       origin: data.origin,
       // Single-origin fields (null if blend)
       country: data.origin === "single-origin" ? data.country : null,

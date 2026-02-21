@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import clsx from "clsx";
-import { getBeansNonArchived } from "~/db/queries";
+import { getSelectableBeans } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 import { getTimeAgo } from "~/util";
 import { Input, labelStyles } from "../Input";
@@ -13,13 +13,8 @@ import { Toggle } from "../Toggle";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
 
 type BeansForSelect = NonNullable<
-  Awaited<ReturnType<typeof getBeansNonArchived>>
+  Awaited<ReturnType<typeof getSelectableBeans>>
 >[0];
-
-const isNotArchived = (beans: BeansForSelect) => !beans.isFinished;
-
-const isNotFrozenOrIsThawed = (beans: BeansForSelect) =>
-  !beans.freezeDate || !!beans.thawDate;
 
 const beansRadioOption = (beans: BeansForSelect): InputRadioCardsOption => ({
   value: beans.id,
@@ -39,9 +34,13 @@ const beansRadioOption = (beans: BeansForSelect): InputRadioCardsOption => ({
 
 interface BeansCardsSelectProps {
   beansList: BeansForSelect[];
+  existingBeans?: BeansForSelect;
 }
 
-export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
+export const BeansCardsSelect = ({
+  beansList,
+  existingBeans,
+}: BeansCardsSelectProps) => {
   const { watch, formState } = useFormContext();
   const user = useAtomValue(userAtom);
 
@@ -49,22 +48,33 @@ export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
   const [showFrozenBeans, setShowFrozenBeans] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const selectedBeans = watch("beans");
+  const selectedBeans = watch("beans") as string | null;
 
-  const mainBeans = useMemo(() => {
-    if (selectedBeans && user?.uid) {
-      // return the only beans to display
+  const quickSelectBeans = useMemo(() => {
+    if (selectedBeans && beansList.some((b) => b.id === selectedBeans)) {
+      // if there's a selected beans and it's in the list, show only that one
       return beansList.filter((b) => selectedBeans === b.id);
+    } else if (selectedBeans && existingBeans) {
+      // if there's a selected beans but it's not in the list, it means it's archived, so show the archived one
+      return [
+        {
+          id: existingBeans.id,
+          name: existingBeans.name,
+          roaster: existingBeans.roaster,
+          roastDate: existingBeans.roastDate,
+          origin: existingBeans.origin,
+          country: existingBeans.country,
+          isArchived: existingBeans.isArchived,
+          isFrozen: existingBeans.isFrozen,
+          isOpen: existingBeans.isOpen,
+        },
+      ];
     }
-    return beansList
-      .filter(isNotFrozenOrIsThawed)
-      .filter(isNotArchived)
-      .slice(0, !selectedBeans ? 3 : 1);
-  }, [beansList, selectedBeans, user?.uid]);
+    return beansList.filter((b) => b.isOpen).slice(0, 3);
+  }, [beansList, selectedBeans, existingBeans]);
 
   const modalBeans = useMemo(() => {
     return beansList
-      .filter(isNotArchived)
       .filter((b) => {
         if (!searchQuery) return b;
         return (
@@ -74,13 +84,12 @@ export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
             b.country?.toLowerCase().includes(searchQuery.toLowerCase()))
         );
       })
-      .filter(showFrozenBeans ? () => true : isNotFrozenOrIsThawed);
+      .filter((b) => b.isFrozen === showFrozenBeans);
   }, [beansList, searchQuery, showFrozenBeans]);
 
   const showMore = useMemo(() => {
-    const shownLength = beansList.length;
-    return (!!selectedBeans && shownLength > 1) || shownLength >= 3;
-  }, [beansList, selectedBeans]);
+    return quickSelectBeans?.length !== beansList.length;
+  }, [beansList, selectedBeans, modalBeans]);
 
   if (!user?.uid) return null;
 
@@ -89,7 +98,7 @@ export const BeansCardsSelect = ({ beansList }: BeansCardsSelectProps) => {
       <FormInputRadioCards
         name="beans"
         label="Select beans *"
-        options={mainBeans.map((b) => beansRadioOption(b))}
+        options={quickSelectBeans.map((b) => beansRadioOption(b))}
         requiredMsg="Please select the beans you're using"
         error={formState.errors.beans?.message?.toString()}
       />

@@ -169,10 +169,9 @@ function DesignLibrary() {
             <ListCard
               linkProps={{ to: "/" }}
               footerSlot={
-                <ListCard.Footer
-                  text="Fake footer"
-                  Icon={<AcademicCapIcon />}
-                />
+                <ListCard.Footer Icon={<AcademicCapIcon />}>
+                  Fake footer
+                </ListCard.Footer>
               }
             >
               <div className="flex">
@@ -204,10 +203,9 @@ function DesignLibrary() {
             <ListCard
               linkProps={{ to: "/" }}
               footerSlot={
-                <ListCard.Footer
-                  text="Brewed at 08:10"
-                  Icon={<DripperIcon />}
-                />
+                <ListCard.Footer Icon={<DripperIcon />}>
+                  Brewed at 08:10
+                </ListCard.Footer>
               }
             >
               <div className="flex">
@@ -239,10 +237,9 @@ function DesignLibrary() {
             <ListCard
               linkProps={{ to: "/" }}
               footerSlot={
-                <ListCard.Footer
-                  text="Pulled at 17:56"
-                  Icon={<PortafilterIcon />}
-                />
+                <ListCard.Footer Icon={<PortafilterIcon />}>
+                  Pulled at 17:56
+                </ListCard.Footer>
               }
             >
               <div className="flex">
@@ -274,10 +271,9 @@ function DesignLibrary() {
             <ListCard
               linkProps={{ to: "/" }}
               footerSlot={
-                <ListCard.Footer
-                  text="Roasted 18 days ago"
-                  Icon={<BeanIconSolid />}
-                />
+                <ListCard.Footer Icon={<BeanIconSolid />}>
+                  Roasted 18 days ago
+                </ListCard.Footer>
               }
             >
               <div className="flex">

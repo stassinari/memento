@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { relations, sql, SQL } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -72,10 +72,6 @@ export const beans = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
 
-    freezeDate: date("freeze_date", { mode: "date" }),
-    thawDate: date("thaw_date", { mode: "date" }),
-    isFinished: boolean("is_finished").notNull().default(false),
-
     origin: beanOriginEnum("origin").notNull(),
 
     country: text("country"),
@@ -90,6 +86,19 @@ export const beans = pgTable(
     harvestDate: date("harvest_date", { mode: "date" }),
 
     blendParts: jsonb("blend_parts").$type<BeansBlendPart[]>(),
+
+    freezeDate: date("freeze_date", { mode: "date" }),
+    thawDate: date("thaw_date", { mode: "date" }),
+    isArchived: boolean("is_archived").notNull().default(false),
+
+    isFrozen: boolean("is_frozen").generatedAlwaysAs(
+      (): SQL =>
+        sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,
+    ),
+    isOpen: boolean("is_open").generatedAlwaysAs(
+      (): SQL =>
+        sql`${beans.isArchived} = false AND (${beans.freezeDate} IS NULL OR ${beans.thawDate} IS NOT NULL)`,
+    ),
   },
   (table) => [
     index("beans_user_roast_date_idx").on(table.userId, table.roastDate),

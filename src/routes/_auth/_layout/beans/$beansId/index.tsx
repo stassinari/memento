@@ -159,7 +159,7 @@ function BeansDetails() {
           label: "Edit details",
           linkProps: { to: "/beans/$beansId/edit", params: { beansId } },
         },
-        ...(beanForDropdown?.isFinished
+        ...(beanForDropdown?.isArchived
           ? [
               {
                 type: "button" as const,

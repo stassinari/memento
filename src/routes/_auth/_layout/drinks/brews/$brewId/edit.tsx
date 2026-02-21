@@ -86,6 +86,7 @@ function BrewEditDetails() {
 
       <BrewForm
         defaultValues={{ ...brew, beans: brew.beans.id }}
+        existingBeans={brew.beans}
         buttonLabel="Edit"
         mutation={handleEdit}
       />

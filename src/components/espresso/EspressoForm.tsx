@@ -5,10 +5,10 @@ import { SubmitHandler } from "react-hook-form";
 
 import { BeansCardsSelect } from "~/components/beans/BeansCardsSelect";
 import {
-  getBeansNonArchived,
   getEspressoFormValueSuggestions,
+  getSelectableBeans,
 } from "~/db/queries";
-import { Espresso } from "~/db/types";
+import { Beans, Espresso } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
 import {
   BeansEquipment,
@@ -48,12 +48,14 @@ type EspressoFormStep = "beansEquipment" | "recipe" | "time";
 
 interface EspressoFormProps {
   defaultValues: EspressoFormInputs;
+  existingBeans?: Beans;
   buttonLabel: string;
   mutation: (data: EspressoFormInputs) => void;
 }
 
 export const EspressoForm = ({
   defaultValues,
+  existingBeans,
   buttonLabel,
   mutation,
 }: EspressoFormProps) => {
@@ -67,7 +69,7 @@ export const EspressoForm = ({
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans", user?.uid],
-    queryFn: () => getBeansNonArchived({ data: user?.uid ?? "" }),
+    queryFn: () => getSelectableBeans({ data: user?.uid ?? "" }),
   });
 
   const { data: espressoFormValueSuggestions } = useQuery({
@@ -79,6 +81,7 @@ export const EspressoForm = ({
     mutation(data);
   };
 
+  // FIXME can display the page as this is loading
   if (areBeansLoading || !espressoFormValueSuggestions || !beansList)
     return null;
 
@@ -87,7 +90,12 @@ export const EspressoForm = ({
       {activeStep === "beansEquipment" ? (
         <BeansEquipment
           espressoFormValueSuggestions={espressoFormValueSuggestions}
-          beansCardsSelectComponent={<BeansCardsSelect beansList={beansList} />}
+          beansCardsSelectComponent={
+            <BeansCardsSelect
+              beansList={beansList}
+              existingBeans={existingBeans}
+            />
+          }
           defaultValues={espressoFormInputs}
           handleNestedSubmit={(data) => {
             setEspressoFormInputs({ ...espressoFormInputs, ...data });
