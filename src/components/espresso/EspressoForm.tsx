@@ -26,7 +26,6 @@ import {
   espressoTimeEmptyValues,
 } from "./steps/Time";
 
-// FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface EspressoFormInputs
   extends BeansEquipmentInputs, EspressoRecipeInputs, EspressoTimeInputs {}
 

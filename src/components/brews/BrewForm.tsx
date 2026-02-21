@@ -19,7 +19,6 @@ import {
 } from "./steps/Recipe";
 import { BrewTime, BrewTimeInputs, brewTimeEmptyValues } from "./steps/Time";
 
-// FIXME introduce global "createdAt" and "updatedAt" on every object
 export interface BrewFormInputs
   extends BeansMethodEquipmentInputs, BrewRecipeInputs, BrewTimeInputs {}
 

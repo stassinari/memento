@@ -253,11 +253,7 @@ export const deleteBeans = createServerFn({ method: "POST" })
  */
 export const updateBeans = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: {
-      data: BeansFormInputs;
-      beansId: string;
-      userId: string;
-    }) => {
+    (input: { data: BeansFormInputs; beansId: string; userId: string }) => {
       if (!input.userId) {
         throw new Error("User ID is required");
       }
@@ -414,11 +410,7 @@ export const updateBrew = createServerFn({ method: "POST" })
  */
 export const updateBrewOutcome = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: {
-      data: BrewOutcomeInputs;
-      brewId: string;
-      userId: string;
-    }) => {
+    (input: { data: BrewOutcomeInputs; brewId: string; userId: string }) => {
       if (!input.userId) {
         throw new Error("User ID is required");
       }
@@ -481,15 +473,13 @@ function validateEspressoInput(data: EspressoFormInputs): void {
  * Add new espresso
  */
 export const addEspresso = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: EspressoFormInputs; userId: string }) => {
-      if (!input.userId) {
-        throw new Error("User ID is required");
-      }
-      validateEspressoInput(input.data);
-      return input;
-    },
-  )
+  .inputValidator((input: { data: EspressoFormInputs; userId: string }) => {
+    if (!input.userId) {
+      throw new Error("User ID is required");
+    }
+    validateEspressoInput(input.data);
+    return input;
+  })
   .handler(async ({ data: { data, userId } }): Promise<{ id: string }> => {
     try {
       const beansId = data.beans;
@@ -644,36 +634,34 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(
-    async ({ data: { data, espressoId, userId } }): Promise<void> => {
-      try {
-        const beansId = data.beans;
-        if (!beansId) {
-          throw new Error("Beans not found for the provided beansId");
-        }
-
-        // Update espresso with decent details
-        await db
-          .update(espresso)
-          .set({
-            partial: false,
-            beansId,
-            grindSetting: data.grindSetting,
-            machine: data.machine,
-            grinder: data.grinder,
-            grinderBurrs: data.grinderBurrs,
-            portafilter: data.portafilter,
-            basket: data.basket,
-            actualWeight: data.actualWeight,
-            targetWeight: data.targetWeight,
-            beansWeight: data.beansWeight,
-          })
-          .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
-
-        return;
-      } catch (error) {
-        console.error("PostgreSQL update failed:", error);
-        throw error;
+  .handler(async ({ data: { data, espressoId, userId } }): Promise<void> => {
+    try {
+      const beansId = data.beans;
+      if (!beansId) {
+        throw new Error("Beans not found for the provided beansId");
       }
-    },
-  );
+
+      // Update espresso with decent details
+      await db
+        .update(espresso)
+        .set({
+          partial: false,
+          beansId,
+          grindSetting: data.grindSetting,
+          machine: data.machine,
+          grinder: data.grinder,
+          grinderBurrs: data.grinderBurrs,
+          portafilter: data.portafilter,
+          basket: data.basket,
+          actualWeight: data.actualWeight,
+          targetWeight: data.targetWeight,
+          beansWeight: data.beansWeight,
+        })
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
+
+      return;
+    } catch (error) {
+      console.error("PostgreSQL update failed:", error);
+      throw error;
+    }
+  });
