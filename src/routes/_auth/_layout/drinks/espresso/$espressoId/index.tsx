@@ -32,12 +32,12 @@ export type EspressoWithBeans = NonNullable<
   Awaited<ReturnType<typeof getEspresso>>
 >;
 
-const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+const espressoQueryOptions = (espressoId: string, userId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, firebaseUid },
+        data: { espressoId, userId },
       }),
   });
 
@@ -57,7 +57,7 @@ function EspressoDetails() {
   const user = useAtomValue(userAtom);
 
   const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId, user?.uid ?? ""),
+    espressoQueryOptions(espressoId, user?.dbId ?? ""),
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -65,12 +65,12 @@ function EspressoDetails() {
 
   const handleDelete = useCallback(async () => {
     await deleteEspresso({
-      data: { espressoId, firebaseUid: user?.uid ?? "" },
+      data: { espressoId, userId: user?.dbId ?? "" },
     });
 
     queryClient.invalidateQueries({ queryKey: ["espresso"] });
     navigate({ to: "/drinks/espresso" });
-  }, [espressoId, user?.uid, queryClient, navigate]);
+  }, [espressoId, user?.dbId, queryClient, navigate]);
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({

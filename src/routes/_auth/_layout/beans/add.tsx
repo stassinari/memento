@@ -25,7 +25,7 @@ function BeansAdd() {
     mutationFn: async (data: BeansFormInputs) => {
       // 1. Call server function (handles PostgreSQL write)
       return await addBeans({
-        data: { data, firebaseUid: user?.uid ?? "" },
+        data: { data, userId: user?.dbId ?? "" },
       });
     },
     onSuccess: (result) => {

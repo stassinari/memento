@@ -22,12 +22,12 @@ export const Route = createFileRoute("/_auth/_layout/drinks/brews/add")({
   component: BrewsAdd,
 });
 
-const lastBrewQueryOptions = (firebaseUid: string) =>
+const lastBrewQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: ["brews", "last"],
     queryFn: () =>
       getLastBrew({
-        data: firebaseUid,
+        data: userId,
       }),
   });
 
@@ -39,13 +39,13 @@ function BrewsAdd() {
   const user = useAtomValue(userAtom);
 
   const { data: lastBrew } = useSuspenseQuery(
-    lastBrewQueryOptions(user?.uid ?? ""),
+    lastBrewQueryOptions(user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
       return await addBrew({
-        data: { data, firebaseUid: user?.uid ?? "" },
+        data: { data, userId: user?.dbId ?? "" },
       });
     },
     onSuccess: (result) => {

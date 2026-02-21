@@ -63,12 +63,12 @@ export const BrewForm = ({
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans", "notArchived"],
-    queryFn: () => getSelectableBeans({ data: user?.uid ?? "" }),
+    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
   });
 
   const { data: brewFormValueSuggestions } = useQuery({
     queryKey: ["brews", "formValueSuggestions"],
-    queryFn: () => getBrewFormValueSuggestions({ data: user?.uid ?? "" }),
+    queryFn: () => getBrewFormValueSuggestions({ data: user?.dbId ?? "" }),
   });
 
   const onSubmit: SubmitHandler<BrewFormInputs> = (data) => {

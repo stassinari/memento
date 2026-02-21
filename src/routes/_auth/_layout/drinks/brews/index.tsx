@@ -20,13 +20,13 @@ type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
 const PAGE_SIZE = 15;
 
 const brewsQueryOptions = (
-  firebaseUid: string,
+  userId: string,
   limit: number,
   offset: number,
 ) =>
   queryOptions({
-    queryKey: ["brews", firebaseUid, limit, offset],
-    queryFn: () => getBrews({ data: { firebaseUid, limit, offset } }),
+    queryKey: ["brews", userId, limit, offset],
+    queryFn: () => getBrews({ data: { userId, limit, offset } }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
@@ -40,7 +40,7 @@ function BrewsList() {
   const [allBrews, setAllBrews] = useState<BrewWithBeans[]>([]);
 
   const { data: brewsWithBeans, isLoading } = useQuery<BrewWithBeans[]>({
-    ...brewsQueryOptions(user?.uid ?? "", PAGE_SIZE, offset),
+    ...brewsQueryOptions(user?.dbId ?? "", PAGE_SIZE, offset),
   });
 
   // TODO: i'm not in love with this

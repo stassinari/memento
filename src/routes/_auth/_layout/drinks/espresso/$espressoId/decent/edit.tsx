@@ -11,12 +11,12 @@ import { updateDecentEspressoDetails } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+const espressoQueryOptions = (espressoId: string, userId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, firebaseUid },
+        data: { espressoId, userId },
       }),
   });
 
@@ -35,7 +35,7 @@ function DecentEspressoEditDetails() {
   const navigate = useNavigate();
 
   const { data: decentEspresso } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
   );
 
   if (!user) throw new Error("User is not logged in.");
@@ -43,7 +43,7 @@ function DecentEspressoEditDetails() {
   if (!decentEspresso) return null;
 
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
-    if (!user?.uid || !espressoId) {
+    if (!user?.dbId || !espressoId) {
       throw new Error("User or espresso ID missing");
     }
 
@@ -63,7 +63,7 @@ function DecentEspressoEditDetails() {
           beansWeight: data.beansWeight,
         },
         espressoId,
-        firebaseUid: user.uid,
+        userId: user.dbId,
       },
     });
 

@@ -14,12 +14,12 @@ import { updateBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
-const brewQueryOptions = (brewId: string, firebaseUid: string) =>
+const brewQueryOptions = (brewId: string, userId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, firebaseUid },
+        data: { brewId, userId },
       }),
   });
 
@@ -39,7 +39,7 @@ function BrewEditDetails() {
   const queryClient = useQueryClient();
 
   const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId ?? "", user?.uid ?? ""),
+    brewQueryOptions(brewId ?? "", user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
@@ -48,7 +48,7 @@ function BrewEditDetails() {
         data: {
           data,
           brewId,
-          firebaseUid: user?.uid ?? "",
+          userId: user?.dbId ?? "",
         },
       });
     },

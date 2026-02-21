@@ -101,7 +101,7 @@ export const BeansForm = ({
     queryKey: ["bean", "roasters"],
     queryFn: () =>
       getBeansUniqueRoasters({
-        data: user?.uid ?? "",
+        data: user?.dbId ?? "",
       }),
   });
 

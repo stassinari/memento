@@ -8,12 +8,12 @@ import { BrewOutcomeForm } from "~/components/brews/BrewOutcomeForm";
 import { getBrew } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
-const brewQueryOptions = (brewId: string, firebaseUid: string) =>
+const brewQueryOptions = (brewId: string, userId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, firebaseUid },
+        data: { brewId, userId },
       }),
   });
 
@@ -30,7 +30,7 @@ function BrewEditOutcome() {
   const { brewId } = Route.useParams();
 
   const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId, user?.uid ?? ""),
+    brewQueryOptions(brewId, user?.dbId ?? ""),
   );
 
   if (isLoading) return null;

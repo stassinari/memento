@@ -47,7 +47,7 @@ function Settings() {
 
       try {
         await generateSecretKey({
-          data: { firebaseUid: user.uid, secretKey: newSecretKey },
+          data: { userId: user.dbId ?? "", secretKey: newSecretKey },
         });
         console.log("Secret key written to PostgreSQL");
       } catch (error) {
@@ -67,7 +67,7 @@ function Settings() {
     mutationFn: async () => {
       try {
         await deleteSecretKey({
-          data: { firebaseUid: user.uid },
+          data: { userId: user.dbId ?? "" },
         });
         console.log("Secret key deleted from PostgreSQL");
       } catch (error) {

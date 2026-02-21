@@ -91,7 +91,7 @@ export const BeansCardsSelect = ({
     return quickSelectBeans?.length !== beansList.length;
   }, [beansList, selectedBeans, modalBeans]);
 
-  if (!user?.uid) return null;
+  if (!user?.dbId) return null;
 
   return (
     <div>

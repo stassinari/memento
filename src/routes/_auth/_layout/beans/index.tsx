@@ -144,7 +144,7 @@ export const BeansTabContent = ({ name, EmptyState }: BeansTabContentProps) => {
   const { data: beansList } = useSuspenseQuery({
     queryKey: ["beans", name.toLowerCase()],
     queryFn: () =>
-      getBeans({ data: { firebaseUid: user?.uid ?? "", state: name } }),
+      getBeans({ data: { userId: user?.dbId ?? "", state: name } }),
   });
 
   if (beansList.length === 0) return <>{EmptyState}</>;

@@ -8,12 +8,12 @@ import { EspressoOutcomeForm } from "~/components/espresso/EspressoOutcomeForm";
 import { getEspresso } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+const espressoQueryOptions = (espressoId: string, userId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId: espressoId, firebaseUid },
+        data: { espressoId, userId },
       }),
   });
 
@@ -30,7 +30,7 @@ function EspressoEditOutcome() {
   const { espressoId } = Route.useParams();
 
   const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
   );
 
   if (isLoading) return null;

@@ -68,13 +68,13 @@ export const EspressoForm = ({
     useState<EspressoFormStep>("beansEquipment");
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
-    queryKey: ["beans", user?.uid],
-    queryFn: () => getSelectableBeans({ data: user?.uid ?? "" }),
+    queryKey: ["beans", user?.dbId],
+    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
   });
 
   const { data: espressoFormValueSuggestions } = useQuery({
     queryKey: ["espressos", "formValueSuggestions"],
-    queryFn: () => getEspressoFormValueSuggestions({ data: user?.uid ?? "" }),
+    queryFn: () => getEspressoFormValueSuggestions({ data: user?.dbId ?? "" }),
   });
 
   const onSubmit: SubmitHandler<EspressoFormInputs> = (data) => {

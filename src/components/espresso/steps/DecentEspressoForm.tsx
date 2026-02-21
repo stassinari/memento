@@ -71,8 +71,8 @@ export const DecentEspressoForm = ({
   const user = useAtomValue(userAtom);
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
-    queryKey: ["beans", user?.uid],
-    queryFn: () => getSelectableBeans({ data: user?.uid ?? "" }),
+    queryKey: ["beans", user?.dbId],
+    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
   });
 
   const {
@@ -80,7 +80,7 @@ export const DecentEspressoForm = ({
     isLoading: areEspressoFormValueSuggestionsLoading,
   } = useQuery({
     queryKey: ["espressos", "formValueSuggestions"],
-    queryFn: () => getEspressoFormValueSuggestions({ data: user?.uid ?? "" }),
+    queryFn: () => getEspressoFormValueSuggestions({ data: user?.dbId ?? "" }),
   });
 
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
