@@ -18,12 +18,12 @@ import { addEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+const espressoQueryOptions = (espressoId: string, userId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId: espressoId, firebaseUid },
+        data: { espressoId: espressoId, userId },
       }),
   });
 
@@ -41,13 +41,13 @@ function EspressoClone() {
   const user = useAtomValue(userAtom);
 
   const { data: espressoToClone, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: EspressoFormInputs) => {
       return await addEspresso({
-        data: { data, firebaseUid: user?.uid ?? "" },
+        data: { data, userId: user?.dbId ?? "" },
       });
     },
     onSuccess: (result) => {

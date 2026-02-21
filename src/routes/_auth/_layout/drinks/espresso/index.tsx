@@ -19,15 +19,15 @@ type EspressoWithBeans = Awaited<ReturnType<typeof getEspressos>>[number];
 const PAGE_SIZE = 15;
 
 const espressosQueryOptions = (
-  firebaseUid: string,
+  userId: string,
   limit: number,
   offset: number,
 ) =>
   queryOptions({
-    queryKey: ["espressos", firebaseUid, limit, offset],
+    queryKey: ["espressos", userId, limit, offset],
     queryFn: () =>
       getEspressos({
-        data: { firebaseUid, limit, offset },
+        data: { userId, limit, offset },
       }),
   });
 
@@ -43,7 +43,7 @@ function EspressoList() {
 
   const { data: espressosWithBeans, isLoading } = useQuery<EspressoWithBeans[]>(
     {
-      ...espressosQueryOptions(user?.uid ?? "", PAGE_SIZE, offset),
+      ...espressosQueryOptions(user?.dbId ?? "", PAGE_SIZE, offset),
     },
   );
 

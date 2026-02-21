@@ -4,36 +4,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Memento is a coffee brewing tracker web app built with React, TypeScript, and Firebase. It tracks coffee beans, filter/brew coffee, espresso shots, and tastings. The app is designed as a PWA for native-like experience on mobile devices.
+Memento is a coffee brewing tracker web app built with React, TypeScript, and PostgreSQL. It tracks coffee beans, filter/brew coffee, espresso shots, and tastings. The app is designed as a PWA for native-like experience on mobile devices.
 
 ## Branch Strategy
 
-- **`next`** - Active development branch with the modern stack (Vite, Tailwind, react-hook-form). This is where all new work happens.
-- **`main`** - Legacy branch with older stack (MUI, Formik). Scheduled for deprecation once `next` reaches feature parity.
+- **`master`** - Main development branch. All new work happens here.
 
-**Note:** There's a `srcOld/` folder (gitignored) containing the old `main` branch source for reference. Ignore it unless explicitly mentioned.
+**Note:** There's a `srcOld/` folder (gitignored) containing legacy source for reference. Ignore it unless explicitly mentioned.
 
 ## Development Commands
 
 ```bash
-# Frontend development (runs Vite dev server)
-pnpm start
-
-# Run with Firebase emulators for local development
-pnpm emulators:start          # With auth-only seed data
-pnpm emulators:start:empty    # Fresh emulators
-pnpm emulators:start:complete # With complete seed data
+# Development server (TanStack Start / Nitro)
+pnpm dev
 
 # Build and type checking
 pnpm build
 pnpm type-check
 
-# Functions (in /functions directory)
-cd functions
-npm run build       # Compile TypeScript
-npm run serve       # Build + start emulators
-npm run deploy      # Deploy to default project
-npm run deploy:prod # Deploy to production
+# Database (Drizzle)
+pnpm db:generate  # Generate migrations from schema changes
+pnpm db:migrate   # Run pending migrations
+pnpm db:push      # Push schema directly (dev only)
+
+# Tests
+pnpm test           # Vitest watch mode
+pnpm test:run       # Single test run
+pnpm test:coverage  # Coverage report
+pnpm test:e2e       # Playwright end-to-end tests
+
+# Firebase emulators (Auth only)
+pnpm emulators:start          # With auth seed data
+pnpm emulators:start:empty    # Fresh emulators
 ```
 
 ## Architecture
@@ -41,39 +43,51 @@ npm run deploy:prod # Deploy to production
 ### Frontend Stack
 
 - **React 19** with TypeScript, **Vite** bundler, **Tailwind CSS 4** for styling
-- **React Router v6** for routing (see `src/App.tsx` for all routes)
+- **TanStack Start** for full-stack routing and SSR (file-based routes in `src/routes/`)
+- **TanStack Query** for data fetching and caching (`useSuspenseQuery`, `useMutation`)
 - **Jotai** for minimal global state (user auth atom in `src/hooks/useInitUser.tsx`)
 - **react-hook-form** for form handling
 - **Recharts** for Decent Espresso shot visualization
 
-### Firebase Backend
+### Backend
 
-- **Firestore** for data storage (real-time subscriptions)
-- **Firebase Auth** (Google login + email/password + guest access)
-- **Cloud Functions** in `/functions` for Decent Espresso machine integration
+- **PostgreSQL** as the primary database
+- **Drizzle ORM** (`src/db/schema.ts`) for type-safe queries and migrations
+- **TanStack Start server functions** (`createServerFn`) for type-safe RPC — defined in `src/db/queries.ts` and `src/db/mutations.ts`
+- **Nitro** as the server runtime (Netlify preset for deployment)
+- **Firebase Auth** for authentication (Google login + email/password + guest access)
 
 ### Data Model
 
-User data is stored under `users/{uid}/` with subcollections:
+Schema defined in `src/db/schema.ts`. Core tables:
 
-- `beans` - Coffee bean bags (single origin or blends)
-- `brews` - Filter/brew coffee entries
-- `espresso` - Espresso shots (with optional Decent machine data in `decentReadings` subcollection)
+- `users` — `id` (UUID), `fbId` (Firebase UID), `secretKey` (Decent machine auth)
+- `beans` — Coffee bean bags; single-origin or blend, with freeze/thaw dates, computed `isFrozen` / `isOpen` columns
+- `brews` — Filter/brew coffee entries with grinder settings and tasting scores
+- `espresso` — Espresso shots; manual or from Decent machine (`fromDecent` flag)
+- `espressoDecentReadings` — Time-series JSONB arrays (pressure, flow, weight, temperature) for Decent shots
+- `tastings` — Per-bean tasting notes
 
-Types defined in `src/types/` (beans.ts, brew.ts, espresso.ts, user.ts).
+Inferred TypeScript types live in `src/db/types.ts`.
 
 ### Key Patterns
 
-**Firestore Hooks** (`src/hooks/firestore/`):
+**Server Functions** (`src/db/queries.ts`, `src/db/mutations.ts`):
 
-- `useFirestoreCollectionRealtime` / `useFirestoreDocRealtime` - Real-time subscriptions
-- `useFirestoreCollectionOneTime` / `useFirestoreDocOneTime` - Single fetch
-- `useCollectionQuery` - Builds typed Firestore queries
+- All data access goes through `createServerFn()` — no direct DB calls from the client
+- Server functions resolve Firebase UID → PostgreSQL UUID and verify ownership before returning data
 
 **Auth Flow**:
 
-- `RequireAuth` / `RequireNoAuth` wrapper components for route protection
-- `useCurrentUser()` hook throws if user not logged in
+- Firebase Auth client-side listener managed by `useInitUser()` (Jotai atoms)
+- Route `beforeLoad` hooks call `getAuthInitPromise()` to gate protected routes
+- Server functions receive the Firebase UID token and look up the corresponding PostgreSQL user
+
+**Query Pattern**:
+
+- Routes define `queryOptions()` for reusable query definitions
+- Components use `useSuspenseQuery()` for data, wrapped in `<Suspense>` boundaries
+- Mutations use `useMutation()` with query invalidation on success
 
 **Form Components** (`src/components/form/`):
 
@@ -82,8 +96,10 @@ Types defined in `src/types/` (beans.ts, brew.ts, espresso.ts, user.ts).
 
 ### Decent Espresso Integration
 
-The `/functions/src/index.ts` Cloud Function receives shot files (TCL or JSON format) from Decent Espresso machines and stores them with time-series data for pressure, flow, temperature graphs.
+The `/api/decent-shots` route (server function) receives shot files (TCL or JSON format) from Decent Espresso machines, authenticated via the user's `secretKey`. Shot time-series data is stored in `espressoDecentReadings`.
 
 ## Environment Variables
 
-Firebase config via `VITE_FB_*` environment variables. Local development auto-connects to emulators when on localhost.
+- `DATABASE_URL` — PostgreSQL connection string
+- `VITE_FB_*` — Firebase client config (Auth only)
+- `SENTRY_DSN` — Error tracking

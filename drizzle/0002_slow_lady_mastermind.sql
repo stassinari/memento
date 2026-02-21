@@ -1,0 +1,3 @@
+ALTER TABLE "beans" RENAME COLUMN "is_finished" TO "is_archived";--> statement-breakpoint
+ALTER TABLE "beans" ADD COLUMN "is_frozen" boolean GENERATED ALWAYS AS ("beans"."freeze_date" IS NOT NULL AND "beans"."thaw_date" IS NULL) STORED;--> statement-breakpoint
+ALTER TABLE "beans" ADD COLUMN "is_open" boolean GENERATED ALWAYS AS ("beans"."is_archived" = false AND ("beans"."freeze_date" IS NULL OR "beans"."thaw_date" IS NOT NULL)) STORED;

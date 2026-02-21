@@ -18,12 +18,12 @@ import { addBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
-const brewQueryOptions = (brewId: string, firebaseUid: string) =>
+const brewQueryOptions = (brewId: string, userId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, firebaseUid },
+        data: { brewId, userId },
       }),
   });
 
@@ -43,13 +43,13 @@ function BrewClone() {
   const user = useAtomValue(userAtom);
 
   const { data: brewToClone, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId ?? "", user?.uid ?? ""),
+    brewQueryOptions(brewId ?? "", user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
       return await addBrew({
-        data: { data, firebaseUid: user?.uid ?? "" },
+        data: { data, userId: user?.dbId ?? "" },
       });
     },
     onSuccess: (result) => {

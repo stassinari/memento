@@ -17,12 +17,12 @@ import { updateEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+const espressoQueryOptions = (espressoId: string, userId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, firebaseUid },
+        data: { espressoId, userId },
       }),
   });
 
@@ -40,7 +40,7 @@ function EspressoEditDetails() {
   const queryClient = useQueryClient();
 
   const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
@@ -49,7 +49,7 @@ function EspressoEditDetails() {
         data: {
           data,
           espressoId,
-          firebaseUid: user?.uid ?? "",
+          userId: user?.dbId ?? "",
         },
       });
     },
@@ -92,6 +92,7 @@ function EspressoEditDetails() {
           ...espresso,
           beans: espresso.beans ? espresso.beans.id : null,
         }}
+        existingBeans={espresso.beans ?? undefined}
         buttonLabel="Edit"
         mutation={handleEdit}
       />

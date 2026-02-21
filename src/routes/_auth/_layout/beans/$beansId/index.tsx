@@ -48,12 +48,12 @@ export const areBeansFrozen = (beans: Beans | null): boolean =>
 export const areBeansThawed = (beans: Beans | null): boolean =>
   !!beans?.freezeDate && !!beans?.thawDate;
 
-export const beansQueryOptions = (beanId: string, firebaseUid: string) =>
+export const beansQueryOptions = (beanId: string, userId: string) =>
   queryOptions<BeanWithDrinks | null>({
-    queryKey: ["bean", beanId, firebaseUid],
+    queryKey: ["bean", beanId, userId],
     queryFn: () =>
       getBean({
-        data: { beanId, firebaseUid },
+        data: { beanId, userId },
       }),
   });
 
@@ -68,7 +68,7 @@ function BeansDetails() {
   const queryClient = useQueryClient();
 
   const { data: beansWithDrinks } = useSuspenseQuery<BeanWithDrinks | null>(
-    beansQueryOptions(beansId, user?.uid ?? ""),
+    beansQueryOptions(beansId, user?.dbId ?? ""),
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -97,44 +97,44 @@ function BeansDetails() {
 
   const handleArchive = useCallback(async () => {
     await archiveBeans({
-      data: { beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, userId: user?.dbId ?? "" },
     });
 
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
     navigate({ to: "/beans" });
-  }, [beansId, user?.uid, queryClient, navigate]);
+  }, [beansId, user?.dbId, queryClient, navigate]);
 
   const handleUnarchive = useCallback(async () => {
     await unarchiveBeans({
-      data: { beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, userId: user?.dbId ?? "" },
     });
 
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
-  }, [beansId, user?.uid, queryClient]);
+  }, [beansId, user?.dbId, queryClient]);
 
   const handleFreeze = useCallback(async () => {
     await freezeBeans({
-      data: { beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, userId: user?.dbId ?? "" },
     });
 
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
-  }, [beansId, user?.uid, queryClient]);
+  }, [beansId, user?.dbId, queryClient]);
 
   const handleThaw = useCallback(async () => {
     await thawBeans({
-      data: { beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, userId: user?.dbId ?? "" },
     });
 
     queryClient.invalidateQueries({ queryKey: ["beans"] });
     queryClient.invalidateQueries({ queryKey: ["bean", beansId] });
-  }, [beansId, user?.uid, queryClient]);
+  }, [beansId, user?.dbId, queryClient]);
 
   const handleDelete = useCallback(async () => {
     const wasSuccessful = await deleteBeans({
-      data: { beansId, firebaseUid: user?.uid ?? "" },
+      data: { beansId, userId: user?.dbId ?? "" },
     });
 
     if (wasSuccessful) {
@@ -144,7 +144,7 @@ function BeansDetails() {
     } else {
       setIsDeleteErrorModalOpen(true);
     }
-  }, [beansId, user?.uid, queryClient, navigate]);
+  }, [beansId, user?.dbId, queryClient, navigate]);
 
   const dropdownButtons: ButtonWithDropdownProps = useMemo(
     () => ({
@@ -159,7 +159,7 @@ function BeansDetails() {
           label: "Edit details",
           linkProps: { to: "/beans/$beansId/edit", params: { beansId } },
         },
-        ...(beanForDropdown?.isFinished
+        ...(beanForDropdown?.isArchived
           ? [
               {
                 type: "button" as const,

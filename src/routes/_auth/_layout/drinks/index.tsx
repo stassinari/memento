@@ -11,17 +11,17 @@ import { Link } from "~/components/Link";
 import { getBrews, getEspressos } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
 
-const brewsQueryOptions = (firebaseUid: string) =>
+const brewsQueryOptions = (userId: string) =>
   queryOptions({
-    queryKey: ["brews", firebaseUid],
-    queryFn: () => getBrews({ data: { firebaseUid, limit: 30, offset: 0 } }),
+    queryKey: ["brews", userId],
+    queryFn: () => getBrews({ data: { userId, limit: 30, offset: 0 } }),
   });
 
-const espressosQueryOptions = (firebaseUid: string) =>
+const espressosQueryOptions = (userId: string) =>
   queryOptions({
-    queryKey: ["espressos", firebaseUid],
+    queryKey: ["espressos", userId],
     queryFn: () =>
-      getEspressos({ data: { firebaseUid, limit: 30, offset: 0 } }),
+      getEspressos({ data: { userId, limit: 30, offset: 0 } }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/")({
@@ -33,10 +33,10 @@ function DrinksPage() {
   const user = useCurrentUser();
 
   const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(user?.uid ?? ""),
+    brewsQueryOptions(user?.dbId ?? ""),
   );
   const { data: espressosList } = useSuspenseQuery(
-    espressosQueryOptions(user?.uid ?? ""),
+    espressosQueryOptions(user?.dbId ?? ""),
   );
 
   if (!brewsList || !espressosList) {

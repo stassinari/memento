@@ -4,7 +4,11 @@ import { useEffect } from "react";
 import { getUser } from "~/db/queries";
 import { auth } from "~/firebaseConfig";
 
-type UserWithRole = User & { role?: string; secretKey?: string | null };
+type UserWithRole = User & {
+  role?: string;
+  secretKey?: string | null;
+  dbId?: string | null;
+};
 
 export const userAtom = atom<UserWithRole | null>(null);
 export const authInitializedAtom = atom<boolean>(false);
@@ -42,6 +46,7 @@ export const useInitUser = () => {
       authInitialized = true; // Update module-level flag
       let role: string | undefined;
       let secretKey: string | null | undefined;
+      let dbId: string | null | undefined;
 
       if (user) {
         const idToken = await user.getIdToken(true);
@@ -51,12 +56,13 @@ export const useInitUser = () => {
         try {
           const dbUser = await getUser({ data: user.uid });
           secretKey = dbUser?.secretKey ?? null;
+          dbId = dbUser?.id ?? null;
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
         }
       }
 
-      setUser(user ? { ...user, role, secretKey } : null);
+      setUser(user ? { ...user, role, secretKey, dbId } : null);
       setAuthInitialized(true);
     });
 

@@ -27,7 +27,7 @@ function BeansEdit() {
   const user = useAtomValue(userAtom);
 
   const { data: beansWithDrinks } = useSuspenseQuery<BeanWithDrinks | null>(
-    beansQueryOptions(beansId, user?.uid ?? ""),
+    beansQueryOptions(beansId, user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
@@ -36,7 +36,7 @@ function BeansEdit() {
         data: {
           data,
           beansId,
-          firebaseUid: user?.uid ?? "",
+          userId: user?.dbId ?? "",
         },
       });
     },

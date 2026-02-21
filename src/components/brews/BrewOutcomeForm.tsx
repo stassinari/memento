@@ -71,7 +71,7 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
         data: {
           data,
           brewId,
-          firebaseUid: user?.uid ?? "",
+          userId: user?.dbId ?? "",
         },
       });
     },

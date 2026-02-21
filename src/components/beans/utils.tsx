@@ -81,7 +81,7 @@ export function parseVertexBeansToBeansFormInput(
       blendParts: [],
       freezeDate: null,
       thawDate: null,
-      isFinished: false,
+      isArchived: false,
     };
   } catch {
     return null;

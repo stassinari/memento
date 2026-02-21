@@ -25,12 +25,12 @@ import { tabStyles } from "../../../beans";
 
 export type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
 
-const brewQueryOptions = (brewId: string, firebaseUid: string) =>
+const brewQueryOptions = (brewId: string, userId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, firebaseUid },
+        data: { brewId, userId },
       }),
   });
 
@@ -47,7 +47,7 @@ function BrewDetails() {
   const user = useAtomValue(userAtom);
 
   const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId, user?.uid ?? ""),
+    brewQueryOptions(brewId, user?.dbId ?? ""),
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -55,13 +55,13 @@ function BrewDetails() {
 
   const handleDelete = useCallback(async () => {
     await deleteBrew({
-      data: { brewId, firebaseUid: user?.uid ?? "" },
+      data: { brewId, userId: user?.dbId ?? "" },
     });
 
     // 3. Invalidate and navigate
     queryClient.invalidateQueries({ queryKey: ["brews"] });
     navigate({ to: "/drinks/brews" });
-  }, [brewId, user?.uid, queryClient, navigate]);
+  }, [brewId, user?.dbId, queryClient, navigate]);
 
   if (isLoading) return null;
 

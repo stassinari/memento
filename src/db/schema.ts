@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { relations, sql, SQL } from "drizzle-orm";
 import {
   boolean,
   check,
@@ -44,12 +44,22 @@ export type BeansBlendPart = {
   process: string | null;
 };
 
+export const timestamps = {
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+};
+
 export const users = pgTable(
   "users",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     fbId: text("fb_id"),
     secretKey: text("secret_key"),
+    ...timestamps,
   },
   (table) => [uniqueIndex("users_fb_id_unique").on(table.fbId)],
 );
@@ -72,10 +82,6 @@ export const beans = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
 
-    freezeDate: date("freeze_date", { mode: "date" }),
-    thawDate: date("thaw_date", { mode: "date" }),
-    isFinished: boolean("is_finished").notNull().default(false),
-
     origin: beanOriginEnum("origin").notNull(),
 
     country: text("country"),
@@ -90,6 +96,21 @@ export const beans = pgTable(
     harvestDate: date("harvest_date", { mode: "date" }),
 
     blendParts: jsonb("blend_parts").$type<BeansBlendPart[]>(),
+
+    freezeDate: date("freeze_date", { mode: "date" }),
+    thawDate: date("thaw_date", { mode: "date" }),
+    isArchived: boolean("is_archived").notNull().default(false),
+
+    isFrozen: boolean("is_frozen").generatedAlwaysAs(
+      (): SQL =>
+        sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,
+    ),
+    isOpen: boolean("is_open").generatedAlwaysAs(
+      (): SQL =>
+        sql`${beans.isArchived} = false AND (${beans.freezeDate} IS NULL OR ${beans.thawDate} IS NOT NULL)`,
+    ),
+
+    ...timestamps,
   },
   (table) => [
     index("beans_user_roast_date_idx").on(table.userId, table.roastDate),
@@ -142,6 +163,8 @@ export const brews = pgTable(
     sweetness: numeric("sweetness", { mode: "number" }),
     body: numeric("body", { mode: "number" }),
     finish: numeric("finish", { mode: "number" }),
+
+    ...timestamps,
   },
   (table) => [
     index("brews_user_date_idx").on(table.userId, table.date),
@@ -190,6 +213,8 @@ export const espresso = pgTable(
     sweetness: numeric("sweetness", { mode: "number" }),
     body: numeric("body", { mode: "number" }),
     finish: numeric("finish", { mode: "number" }),
+
+    ...timestamps,
   },
   (table) => [
     index("espresso_user_date_idx").on(table.userId, table.date),
@@ -219,6 +244,8 @@ export const espressoDecentReadings = pgTable("espresso_decent_readings", {
   pressureGoal: jsonb("pressure_goal").$type<number[]>().notNull(),
   temperatureGoal: jsonb("temperature_goal").$type<number[]>().notNull(),
   flowGoal: jsonb("flow_goal").$type<number[]>().notNull(),
+
+  ...timestamps,
 });
 
 export const tastings = pgTable(
@@ -231,8 +258,9 @@ export const tastings = pgTable(
     beansId: uuid("beans_id").references(() => beans.id, {
       onDelete: "set null",
     }),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }),
     data: jsonb("data").notNull(),
+
+    ...timestamps,
   },
   (table) => [
     index("tastings_user_created_at_idx").on(table.userId, table.createdAt),

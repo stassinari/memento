@@ -27,10 +27,10 @@ import type { Brew } from "~/db/types";
 import { useCurrentUser } from "~/hooks/useInitUser";
 import { roundToDecimal } from "~/utils";
 
-const brewsQueryOptions = (firebaseUid: string) =>
+const brewsQueryOptions = (userId: string) =>
   queryOptions({
-    queryKey: ["brews", firebaseUid],
-    queryFn: () => getBrews({ data: { firebaseUid } }),
+    queryKey: ["brews", userId],
+    queryFn: () => getBrews({ data: { userId } }),
   });
 
 export const Route = createFileRoute("/_auth/_layoutFull/drinks/brews/table")({
@@ -101,7 +101,7 @@ function BrewsTableWrapper() {
   const user = useCurrentUser();
 
   const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(user?.uid ?? ""),
+    brewsQueryOptions(user?.dbId ?? ""),
   );
 
   const data: BrewForTable[] = useMemo(

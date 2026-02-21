@@ -5,9 +5,10 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import {
-  getBeansNonArchived,
   getEspressoFormValueSuggestions,
+  getSelectableBeans,
 } from "~/db/queries";
+import { Beans } from "~/db/types";
 import { userAtom } from "~/hooks/useInitUser";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
@@ -56,20 +57,22 @@ export const decentEspressoFormEmptyValues: (
 
 interface DecentEspressoFormProps {
   defaultValues: DecentEspressoFormInputs;
+  existingBeans?: Beans;
   mutation: (data: DecentEspressoFormInputs) => void;
   backLinkProps: LinkProps;
 }
 
 export const DecentEspressoForm = ({
   defaultValues,
+  existingBeans,
   mutation,
   backLinkProps,
 }: DecentEspressoFormProps) => {
   const user = useAtomValue(userAtom);
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
-    queryKey: ["beans", user?.uid],
-    queryFn: () => getBeansNonArchived({ data: user?.uid ?? "" }),
+    queryKey: ["beans", user?.dbId],
+    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
   });
 
   const {
@@ -77,7 +80,7 @@ export const DecentEspressoForm = ({
     isLoading: areEspressoFormValueSuggestionsLoading,
   } = useQuery({
     queryKey: ["espressos", "formValueSuggestions"],
-    queryFn: () => getEspressoFormValueSuggestions({ data: user?.uid ?? "" }),
+    queryFn: () => getEspressoFormValueSuggestions({ data: user?.dbId ?? "" }),
   });
 
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
@@ -125,7 +128,10 @@ export const DecentEspressoForm = ({
             placeholder="Select espresso date"
           />
 
-          <BeansCardsSelect beansList={beansList} />
+          <BeansCardsSelect
+            beansList={beansList}
+            existingBeans={existingBeans}
+          />
         </FormSection>
 
         <FormSection

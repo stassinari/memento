@@ -3,15 +3,19 @@ import clsx from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
 import { Card } from "./Card";
 
-interface FooterProps {
+type FooterProps = {
   Icon?: ReactNode;
-  text: string;
-}
+} & HTMLAttributes<HTMLDivElement>;
 
-const Footer = ({ Icon, text }: FooterProps) => (
-  <Card.Footer className="flex items-center h-8 gap-1 text-xs text-gray-500">
+const Footer = ({ Icon, children, className }: FooterProps) => (
+  <Card.Footer
+    className={clsx(
+      "flex items-center h-8 gap-1 text-xs text-gray-500",
+      className,
+    )}
+  >
     {Icon && <span className="w-4 h-4 mr-1 text-gray-400">{Icon}</span>}
-    {text}
+    {children}
   </Card.Footer>
 );
 
@@ -44,12 +48,20 @@ const Rating = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
 );
 
 interface ListCardProps {
-  linkProps: LinkProps;
+  linkProps?: LinkProps;
   children: ReactNode;
   footerSlot?: ReactNode;
 }
 
 const ListCardRoot = ({ linkProps, children, footerSlot }: ListCardProps) => {
+  if (!linkProps) {
+    return (
+      <Card.Container className="grow text-sm">
+        <Card.Content>{children}</Card.Content>
+        {footerSlot}
+      </Card.Container>
+    );
+  }
   return (
     <RouterLink {...linkProps} className="block">
       <Card.Container className="grow text-sm">

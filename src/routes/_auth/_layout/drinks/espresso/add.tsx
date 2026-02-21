@@ -22,12 +22,12 @@ export const Route = createFileRoute("/_auth/_layout/drinks/espresso/add")({
   component: EspressoAdd,
 });
 
-export const lastEspressoQueryOptions = (firebaseUid: string) =>
+export const lastEspressoQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: ["espresso", "last"],
     queryFn: () =>
       getLastEspresso({
-        data: firebaseUid,
+        data: userId,
       }),
   });
 
@@ -39,13 +39,13 @@ function EspressoAdd() {
   const user = useAtomValue(userAtom);
 
   const { data: lastEspresso } = useSuspenseQuery(
-    lastEspressoQueryOptions(user?.uid ?? ""),
+    lastEspressoQueryOptions(user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: EspressoFormInputs) => {
       return await addEspresso({
-        data: { data, firebaseUid: user?.uid ?? "" },
+        data: { data, userId: user?.dbId ?? "" },
       });
     },
     onSuccess: (result) => {

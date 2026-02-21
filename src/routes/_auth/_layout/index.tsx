@@ -18,23 +18,23 @@ import { getBrews, getEspressos, getPartialEspressos } from "~/db/queries";
 import type { Beans, Espresso } from "~/db/types";
 import { useCurrentUser } from "~/hooks/useInitUser";
 
-const brewsQueryOptions = (firebaseUid: string) =>
+const brewsQueryOptions = (userId: string) =>
   queryOptions({
-    queryKey: ["brews", firebaseUid],
-    queryFn: () => getBrews({ data: { firebaseUid, limit: 30, offset: 0 } }),
+    queryKey: ["brews", userId],
+    queryFn: () => getBrews({ data: { userId, limit: 30, offset: 0 } }),
   });
 
-const espressosQueryOptions = (firebaseUid: string) =>
+const espressosQueryOptions = (userId: string) =>
   queryOptions({
-    queryKey: ["espressos", firebaseUid],
+    queryKey: ["espressos", userId],
     queryFn: () =>
-      getEspressos({ data: { firebaseUid, limit: 30, offset: 0 } }),
+      getEspressos({ data: { userId, limit: 30, offset: 0 } }),
   });
 
-const partialEspressosQueryOptions = (firebaseUid: string) =>
+const partialEspressosQueryOptions = (userId: string) =>
   queryOptions({
-    queryKey: ["espressos", "partial", firebaseUid],
-    queryFn: () => getPartialEspressos({ data: firebaseUid }),
+    queryKey: ["espressos", "partial", userId],
+    queryFn: () => getPartialEspressos({ data: userId }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/")({
@@ -45,13 +45,13 @@ function Home() {
   const user = useCurrentUser();
 
   const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(user?.uid ?? ""),
+    brewsQueryOptions(user?.dbId ?? ""),
   );
   const { data: espressoList } = useSuspenseQuery(
-    espressosQueryOptions(user?.uid ?? ""),
+    espressosQueryOptions(user?.dbId ?? ""),
   );
   const { data: partialEspressos } = useSuspenseQuery(
-    partialEspressosQueryOptions(user?.uid ?? ""),
+    partialEspressosQueryOptions(user?.dbId ?? ""),
   );
 
   // Calculate recently used beans from the already-fetched brew/espresso data

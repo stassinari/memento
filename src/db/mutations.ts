@@ -10,34 +10,6 @@ import { db } from "./db";
 import { beans, brews, espresso, users } from "./schema";
 
 /**
- * Helper to resolve Firebase UID to PostgreSQL user UUID
- * Returns null if user not found (allows graceful degradation)
- */
-async function getUserByFirebaseUid(
-  firebaseUid: string,
-): Promise<string | null> {
-  try {
-    const [user] = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.fbId, firebaseUid))
-      .limit(1);
-
-    if (!user) {
-      console.warn(
-        `User with Firebase UID ${firebaseUid} not found in PostgreSQL`,
-      );
-      return null;
-    }
-
-    return user.id;
-  } catch (error) {
-    console.error("Failed to fetch user by Firebase UID:", error);
-    return null;
-  }
-}
-
-/**
  * Validate beans input data
  */
 function validateBeansInput(data: BeansFormInputs): void {
@@ -62,24 +34,19 @@ function validateBeansInput(data: BeansFormInputs): void {
  * Used for Decent Espresso integration
  */
 export const generateSecretKey = createServerFn({ method: "POST" })
-  .inputValidator((input: { firebaseUid: string; secretKey: string }) => {
-    if (!input.firebaseUid) {
-      throw new Error("Firebase UID is required");
+  .inputValidator((input: { userId: string; secretKey: string }) => {
+    if (!input.userId) {
+      throw new Error("User ID is required");
     }
     return input;
   })
   .handler(async ({ data }): Promise<{ secretKey: string }> => {
-    const { firebaseUid, secretKey } = data;
+    const { userId, secretKey } = data;
 
-    // Update user in PostgreSQL
-    const userId = await getUserByFirebaseUid(firebaseUid);
-    if (userId) {
-      try {
-        await db.update(users).set({ secretKey }).where(eq(users.id, userId));
-        console.log(`Secret key generated for user ${userId}`);
-      } catch (error) {
-        console.error("Failed to update secret key in PostgreSQL:", error);
-      }
+    try {
+      await db.update(users).set({ secretKey }).where(eq(users.id, userId));
+    } catch (error) {
+      console.error("Failed to update secret key:", error);
     }
 
     return { secretKey };
@@ -89,48 +56,38 @@ export const generateSecretKey = createServerFn({ method: "POST" })
  * Delete the secretKey for a user
  */
 export const deleteSecretKey = createServerFn({ method: "POST" })
-  .inputValidator((input: { firebaseUid: string }) => {
-    if (!input.firebaseUid) {
-      throw new Error("Firebase UID is required");
+  .inputValidator((input: { userId: string }) => {
+    if (!input.userId) {
+      throw new Error("User ID is required");
     }
     return input;
   })
   .handler(async ({ data }): Promise<void> => {
-    const { firebaseUid } = data;
+    const { userId } = data;
 
-    // Update user in PostgreSQL
-    const userId = await getUserByFirebaseUid(firebaseUid);
-    if (userId) {
-      try {
-        await db
-          .update(users)
-          .set({ secretKey: null })
-          .where(eq(users.id, userId));
-        console.log(`Secret key deleted for user ${userId}`);
-      } catch (error) {
-        console.error("Failed to delete secret key in PostgreSQL:", error);
-      }
+    try {
+      await db
+        .update(users)
+        .set({ secretKey: null })
+        .where(eq(users.id, userId));
+    } catch (error) {
+      console.error("Failed to delete secret key:", error);
     }
   });
 
 /**
- * Add new beans with conditional dual-write to PostgreSQL and/or Firestore
+ * Add new beans
  */
 export const addBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { data: BeansFormInputs; firebaseUid: string }) => {
-    if (!input.firebaseUid) {
-      throw new Error("Firebase UID is required");
+  .inputValidator((input: { data: BeansFormInputs; userId: string }) => {
+    if (!input.userId) {
+      throw new Error("User ID is required");
     }
     validateBeansInput(input.data);
     return input;
   })
-  .handler(async ({ data: { data, firebaseUid } }) => {
+  .handler(async ({ data: { data, userId } }) => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (!userId) {
-        throw new Error("User not found in PostgreSQL");
-      }
-
       // TODO move to the Form component
       const pgData = {
         userId,
@@ -142,7 +99,7 @@ export const addBeans = createServerFn({ method: "POST" })
         roastingNotes: data.roastingNotes,
         freezeDate: data.freezeDate,
         thawDate: data.thawDate,
-        isFinished: data.isFinished ?? false,
+        isArchived: data.isArchived ?? false,
         origin: data.origin,
         // Single-origin fields (null if blend)
         country: data.origin === "single-origin" ? data.country : null,
@@ -169,48 +126,42 @@ export const addBeans = createServerFn({ method: "POST" })
   });
 
 /**
- * Archive beans (set isFinished = true)
+ * Archive beans (set isArchived = true)
  */
 export const archiveBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansId) {
-      throw new Error("Firebase UID and Beans ID are required");
+  .inputValidator((input: { beansId: string; userId: string }) => {
+    if (!input.userId || !input.beansId) {
+      throw new Error("User ID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .update(beans)
-          .set({ isFinished: true })
-          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-      }
+      await db
+        .update(beans)
+        .set({ isArchived: true })
+        .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL archive failed:", error);
     }
   });
 
 /**
- * Unarchive beans (set isFinished = false)
+ * Unarchive beans (set isArchived = false)
  */
 export const unarchiveBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansId) {
-      throw new Error("Firebase UID and Beans ID are required");
+  .inputValidator((input: { beansId: string; userId: string }) => {
+    if (!input.userId || !input.beansId) {
+      throw new Error("User ID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .update(beans)
-          .set({ isFinished: false })
-          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-      }
+      await db
+        .update(beans)
+        .set({ isArchived: false })
+        .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL unarchive failed:", error);
     }
@@ -220,21 +171,18 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
  * Freeze beans (set freezeDate to current date)
  */
 export const freezeBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansId) {
-      throw new Error("Firebase UID and Beans ID are required");
+  .inputValidator((input: { beansId: string; userId: string }) => {
+    if (!input.userId || !input.beansId) {
+      throw new Error("User ID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .update(beans)
-          .set({ freezeDate: new Date() })
-          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-      }
+      await db
+        .update(beans)
+        .set({ freezeDate: new Date() })
+        .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL freeze failed:", error);
     }
@@ -244,21 +192,18 @@ export const freezeBeans = createServerFn({ method: "POST" })
  * Thaw beans (set thawDate to current date)
  */
 export const thawBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansId) {
-      throw new Error("Firebase UID and Beans ID are required");
+  .inputValidator((input: { beansId: string; userId: string }) => {
+    if (!input.userId || !input.beansId) {
+      throw new Error("User ID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { beansId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .update(beans)
-          .set({ thawDate: new Date() })
-          .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
-      }
+      await db
+        .update(beans)
+        .set({ thawDate: new Date() })
+        .where(and(eq(beans.id, beansId), eq(beans.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL thaw failed:", error);
     }
@@ -268,19 +213,14 @@ export const thawBeans = createServerFn({ method: "POST" })
  * Delete beans
  */
 export const deleteBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.beansId) {
-      throw new Error("Firebase UID and Beans ID are required");
+  .inputValidator((input: { beansId: string; userId: string }) => {
+    if (!input.userId || !input.beansId) {
+      throw new Error("User ID and Beans ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { beansId, firebaseUid } }) => {
+  .handler(async ({ data: { beansId, userId } }) => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (!userId) {
-        throw new Error("User not found");
-      }
-
       // check if beans have associated brews or espressos before deleting
       const hasDrinks = await db
         .select({ id: brews.id })
@@ -309,17 +249,13 @@ export const deleteBeans = createServerFn({ method: "POST" })
   });
 
 /**
- * Update existing beans with conditional dual-write to PostgreSQL and/or Firestore
+ * Update existing beans
  */
 export const updateBeans = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: {
-      data: BeansFormInputs;
-      beansId: string;
-      firebaseUid: string;
-    }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
+    (input: { data: BeansFormInputs; beansId: string; userId: string }) => {
+      if (!input.userId) {
+        throw new Error("User ID is required");
       }
       if (!input.beansId) {
         throw new Error("Beans ID is required");
@@ -328,12 +264,7 @@ export const updateBeans = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(async ({ data: { data, beansId, firebaseUid } }): Promise<void> => {
-    const userId = await getUserByFirebaseUid(firebaseUid);
-    if (!userId) {
-      throw new Error("User not found");
-    }
-
+  .handler(async ({ data: { data, beansId, userId } }): Promise<void> => {
     const pgData = {
       name: data.name!,
       roaster: data.roaster!,
@@ -343,7 +274,7 @@ export const updateBeans = createServerFn({ method: "POST" })
       roastingNotes: data.roastingNotes,
       freezeDate: data.freezeDate,
       thawDate: data.thawDate,
-      isFinished: data.isFinished ?? false,
+      isArchived: data.isArchived ?? false,
       origin: data.origin,
       // Single-origin fields (null if blend)
       country: data.origin === "single-origin" ? data.country : null,
@@ -388,19 +319,18 @@ function validateBrewInput(data: BrewFormInputs): void {
 }
 
 export const addBrew = createServerFn({ method: "POST" })
-  .inputValidator((input: { data: BrewFormInputs; firebaseUid: string }) => {
-    if (!input.firebaseUid) {
-      throw new Error("Firebase UID is required");
+  .inputValidator((input: { data: BrewFormInputs; userId: string }) => {
+    if (!input.userId) {
+      throw new Error("User ID is required");
     }
     validateBrewInput(input.data);
     return input;
   })
-  .handler(async ({ data: { data, firebaseUid } }) => {
+  .handler(async ({ data: { data, userId } }) => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
       const beansId = data.beans;
-      if (!userId || !beansId) {
-        throw new Error("User or beans not found");
+      if (!beansId) {
+        throw new Error("Beans not found");
       }
       const pgData = {
         userId,
@@ -445,9 +375,9 @@ export const addBrew = createServerFn({ method: "POST" })
 
 export const updateBrew = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: { data: BrewFormInputs; brewId: string; firebaseUid: string }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
+    (input: { data: BrewFormInputs; brewId: string; userId: string }) => {
+      if (!input.userId) {
+        throw new Error("User ID is required");
       }
       if (!input.brewId) {
         throw new Error("Brew ID is required");
@@ -456,12 +386,11 @@ export const updateBrew = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(async ({ data: { data, brewId, firebaseUid } }) => {
+  .handler(async ({ data: { data, brewId, userId } }) => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
       const beansId = data.beans;
-      if (!userId || !beansId) {
-        throw new Error("User or beans not found");
+      if (!beansId) {
+        throw new Error("Beans not found");
       }
 
       await db
@@ -481,13 +410,9 @@ export const updateBrew = createServerFn({ method: "POST" })
  */
 export const updateBrewOutcome = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: {
-      data: BrewOutcomeInputs;
-      brewId: string;
-      firebaseUid: string;
-    }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
+    (input: { data: BrewOutcomeInputs; brewId: string; userId: string }) => {
+      if (!input.userId) {
+        throw new Error("User ID is required");
       }
       if (!input.brewId) {
         throw new Error("Brew ID is required");
@@ -495,13 +420,8 @@ export const updateBrewOutcome = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(async ({ data: { data, brewId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { data, brewId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (!userId) {
-        throw new Error("User not found");
-      }
-
       await db
         .update(brews)
         .set(data)
@@ -516,20 +436,17 @@ export const updateBrewOutcome = createServerFn({ method: "POST" })
  * Delete brew
  */
 export const deleteBrew = createServerFn({ method: "POST" })
-  .inputValidator((input: { brewId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.brewId) {
-      throw new Error("Firebase UID and Brew ID are required");
+  .inputValidator((input: { brewId: string; userId: string }) => {
+    if (!input.userId || !input.brewId) {
+      throw new Error("User ID and Brew ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { brewId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { brewId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .delete(brews)
-          .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
-      }
+      await db
+        .delete(brews)
+        .where(and(eq(brews.id, brewId), eq(brews.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
     }
@@ -553,25 +470,22 @@ function validateEspressoInput(data: EspressoFormInputs): void {
 }
 
 /**
- * Add new espresso with conditional dual-write to PostgreSQL and/or Firestore
+ * Add new espresso
  */
 export const addEspresso = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: EspressoFormInputs; firebaseUid: string }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
-      }
-      validateEspressoInput(input.data);
-      return input;
-    },
-  )
-  .handler(async ({ data: { data, firebaseUid } }): Promise<{ id: string }> => {
+  .inputValidator((input: { data: EspressoFormInputs; userId: string }) => {
+    if (!input.userId) {
+      throw new Error("User ID is required");
+    }
+    validateEspressoInput(input.data);
+    return input;
+  })
+  .handler(async ({ data: { data, userId } }): Promise<{ id: string }> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
       const beansId = data.beans;
 
-      if (!userId || !beansId) {
-        throw new Error("User or beans not found");
+      if (!beansId) {
+        throw new Error("Beans not found");
       }
 
       const pgData = {
@@ -610,7 +524,6 @@ export const addEspresso = createServerFn({ method: "POST" })
       return { id: inserted.id };
     } catch (error) {
       console.error("PostgreSQL insert failed:", error);
-      // Log but continue (eventual consistency)
       throw error;
     }
   });
@@ -620,10 +533,10 @@ export const updateEspresso = createServerFn({ method: "POST" })
     (input: {
       data: EspressoFormInputs;
       espressoId: string;
-      firebaseUid: string;
+      userId: string;
     }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
+      if (!input.userId) {
+        throw new Error("User ID is required");
       }
       if (!input.espressoId) {
         throw new Error("Espresso ID is required");
@@ -632,12 +545,11 @@ export const updateEspresso = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(async ({ data: { data, espressoId, firebaseUid } }) => {
+  .handler(async ({ data: { data, espressoId, userId } }) => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
       const beansId = data.beans;
-      if (!userId || !beansId) {
-        throw new Error("User or beans not found");
+      if (!beansId) {
+        throw new Error("Beans not found");
       }
 
       await db
@@ -660,10 +572,10 @@ export const updateEspressoOutcome = createServerFn({ method: "POST" })
     (input: {
       data: EspressoOutcomeInputs;
       espressoId: string;
-      firebaseUid: string;
+      userId: string;
     }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
+      if (!input.userId) {
+        throw new Error("User ID is required");
       }
       if (!input.espressoId) {
         throw new Error("Espresso ID is required");
@@ -671,20 +583,14 @@ export const updateEspressoOutcome = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(async ({ data: { data, espressoId, firebaseUid } }) => {
+  .handler(async ({ data: { data, espressoId, userId } }) => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (!userId) {
-        throw new Error("User not found");
-      }
-
       await db
         .update(espresso)
         .set(data)
         .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL outcome update failed:", error);
-      // Log but continue (eventual consistency)
     }
   });
 
@@ -692,24 +598,22 @@ export const updateEspressoOutcome = createServerFn({ method: "POST" })
  * Delete espresso
  */
 export const deleteEspresso = createServerFn({ method: "POST" })
-  .inputValidator((input: { espressoId: string; firebaseUid: string }) => {
-    if (!input.firebaseUid || !input.espressoId) {
-      throw new Error("Firebase UID and Espresso ID are required");
+  .inputValidator((input: { espressoId: string; userId: string }) => {
+    if (!input.userId || !input.espressoId) {
+      throw new Error("User ID and Espresso ID are required");
     }
     return input;
   })
-  .handler(async ({ data: { espressoId, firebaseUid } }): Promise<void> => {
+  .handler(async ({ data: { espressoId, userId } }): Promise<void> => {
     try {
-      const userId = await getUserByFirebaseUid(firebaseUid);
-      if (userId) {
-        await db
-          .delete(espresso)
-          .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
-      }
+      await db
+        .delete(espresso)
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
     }
   });
+
 /**
  * Update Decent espresso partial details (add shot info)
  * Sets partial=false and adds beans + equipment details
@@ -719,10 +623,10 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
     (input: {
       data: DecentEspressoFormInputs;
       espressoId: string;
-      firebaseUid: string;
+      userId: string;
     }) => {
-      if (!input.firebaseUid) {
-        throw new Error("Firebase UID is required");
+      if (!input.userId) {
+        throw new Error("User ID is required");
       }
       if (!input.espressoId) {
         throw new Error("Espresso ID is required");
@@ -730,41 +634,34 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
       return input;
     },
   )
-  .handler(
-    async ({ data: { data, espressoId, firebaseUid } }): Promise<void> => {
-      try {
-        const userId = await getUserByFirebaseUid(firebaseUid);
-        const beansId = data.beans;
-        if (!userId) {
-          throw new Error("User not found");
-        }
-
-        if (!beansId) {
-          throw new Error("Beans not found for the provided beansId");
-        }
-
-        // Update espresso with decent details
-        await db
-          .update(espresso)
-          .set({
-            partial: false,
-            beansId,
-            grindSetting: data.grindSetting,
-            machine: data.machine,
-            grinder: data.grinder,
-            grinderBurrs: data.grinderBurrs,
-            portafilter: data.portafilter,
-            basket: data.basket,
-            actualWeight: data.actualWeight,
-            targetWeight: data.targetWeight,
-            beansWeight: data.beansWeight,
-          })
-          .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
-
-        return;
-      } catch (error) {
-        console.error("PostgreSQL update failed:", error);
-        throw error;
+  .handler(async ({ data: { data, espressoId, userId } }): Promise<void> => {
+    try {
+      const beansId = data.beans;
+      if (!beansId) {
+        throw new Error("Beans not found for the provided beansId");
       }
-    },
-  );
+
+      // Update espresso with decent details
+      await db
+        .update(espresso)
+        .set({
+          partial: false,
+          beansId,
+          grindSetting: data.grindSetting,
+          machine: data.machine,
+          grinder: data.grinder,
+          grinderBurrs: data.grinderBurrs,
+          portafilter: data.portafilter,
+          basket: data.basket,
+          actualWeight: data.actualWeight,
+          targetWeight: data.targetWeight,
+          beansWeight: data.beansWeight,
+        })
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, userId)));
+
+      return;
+    } catch (error) {
+      console.error("PostgreSQL update failed:", error);
+      throw error;
+    }
+  });

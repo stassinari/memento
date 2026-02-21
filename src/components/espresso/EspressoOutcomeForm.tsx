@@ -68,7 +68,7 @@ export const EspressoOutcomeForm = ({
         data: {
           data,
           espressoId,
-          firebaseUid: user?.uid ?? "",
+          userId: user?.dbId ?? "",
         },
       });
     },

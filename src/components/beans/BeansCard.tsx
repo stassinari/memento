@@ -17,10 +17,9 @@ export const BeansCard = ({ beans }: BeansCardProps) => {
       }}
       footerSlot={
         beans.roastDate ? (
-          <ListCard.Footer
-            text={`Roasted ${getTimeAgo(beans.roastDate)}`}
-            Icon={<BeanIconSolid />}
-          />
+          <ListCard.Footer Icon={<BeanIconSolid />}>
+            Roasted {getTimeAgo(beans.roastDate)}
+          </ListCard.Footer>
         ) : undefined
       }
     >

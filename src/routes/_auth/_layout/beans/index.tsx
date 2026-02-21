@@ -1,56 +1,36 @@
-import { Tab, TabGroup, TabList, TabPanels } from "@headlessui/react";
-import {
-  queryOptions,
-  useSuspenseQuery,
-  UseSuspenseQueryOptions,
-} from "@tanstack/react-query";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
-import { ReactNode, useState } from "react";
+import { ReactNode, Suspense, useState } from "react";
 import { BeansCard } from "~/components/beans/BeansCard";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
+import { CardSkeleton } from "~/components/CardSkeleton";
 import { EmptyState } from "~/components/EmptyState";
 import { Heading } from "~/components/Heading";
-import { getBeansArchived, getBeansFrozen, getBeansOpen } from "~/db/queries";
-import type { Beans } from "~/db/types";
+import { getBeans } from "~/db/queries";
 import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-
-const beansOpenQueryOptions = (firebaseUid: string) =>
-  queryOptions<Beans[]>({
-    queryKey: ["beans", "open"],
-    queryFn: () => getBeansOpen({ data: firebaseUid }),
-  });
-
-const beansFrozenQueryOptions = (firebaseUid: string) =>
-  queryOptions<Beans[]>({
-    queryKey: ["beans", "frozen"],
-    queryFn: () => getBeansFrozen({ data: firebaseUid }),
-  });
-
-const beansArchivedQueryOptions = (firebaseUid: string) =>
-  queryOptions<Beans[]>({
-    queryKey: ["beans", "archived"],
-    queryFn: () => getBeansArchived({ data: firebaseUid }),
-  });
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({
   component: BeansList,
 });
 
+export type BeansStateName = "Archived" | "Frozen" | "Open";
+
 type BeansTab = {
-  name: "Archived" | "Frozen" | "Open";
-  drizzleQuery: (uid: string) => UseSuspenseQueryOptions<Beans[]>;
+  name: BeansStateName;
+  numberOfLoadingCards: number;
   EmptyState: ReactNode;
 };
 
 const tabs: BeansTab[] = [
   {
     name: "Open",
-    drizzleQuery: beansOpenQueryOptions,
+    numberOfLoadingCards: 5,
     EmptyState: (
       <EmptyState
         title="No open beans"
@@ -61,7 +41,7 @@ const tabs: BeansTab[] = [
   },
   {
     name: "Frozen",
-    drizzleQuery: beansFrozenQueryOptions,
+    numberOfLoadingCards: 3,
     EmptyState: (
       <EmptyState
         title="No frozen beans"
@@ -71,7 +51,7 @@ const tabs: BeansTab[] = [
   },
   {
     name: "Archived",
-    drizzleQuery: beansArchivedQueryOptions,
+    numberOfLoadingCards: 13,
     EmptyState: (
       <EmptyState
         title="No archived beans"
@@ -121,34 +101,51 @@ export function BeansList() {
               </Tab>
             ))}
           </TabList>
+
           <TabPanels className="mt-4">
             {tabs.map((t, i) => (
-              <Tab.Panel key={t.name}>
-                <BeansTabContent
-                  drizzleQuery={tabs[i].drizzleQuery}
-                  EmptyState={tabs[i].EmptyState}
-                />
-              </Tab.Panel>
+              <TabPanel key={t.name}>
+                <Suspense
+                  fallback={
+                    <ul className="grid gap-4 sm:grid-cols-2">
+                      {Array.from({ length: t.numberOfLoadingCards }).map(
+                        (_, index) => (
+                          <li key={index}>
+                            <CardSkeleton />
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  }
+                >
+                  <BeansTabContent
+                    name={t.name}
+                    EmptyState={tabs[i].EmptyState}
+                  />
+                </Suspense>
+              </TabPanel>
             ))}
           </TabPanels>
         </TabGroup>
+        {/* </Suspense> */}
       </div>
     </>
   );
 }
 
 export interface BeansTabContentProps {
-  drizzleQuery: (uid: string) => UseSuspenseQueryOptions<Beans[]>;
+  name: BeansStateName;
   EmptyState: ReactNode;
 }
 
-export const BeansTabContent = ({
-  drizzleQuery,
-  EmptyState,
-}: BeansTabContentProps) => {
+export const BeansTabContent = ({ name, EmptyState }: BeansTabContentProps) => {
   const user = useAtomValue(userAtom);
 
-  const { data: beansList } = useSuspenseQuery(drizzleQuery(user?.uid ?? ""));
+  const { data: beansList } = useSuspenseQuery({
+    queryKey: ["beans", name.toLowerCase()],
+    queryFn: () =>
+      getBeans({ data: { userId: user?.dbId ?? "", state: name } }),
+  });
 
   if (beansList.length === 0) return <>{EmptyState}</>;
 

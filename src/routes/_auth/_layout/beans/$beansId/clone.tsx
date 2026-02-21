@@ -27,13 +27,13 @@ function BeansClone() {
   const user = useAtomValue(userAtom);
 
   const { data: beansWithDrinks } = useSuspenseQuery<BeanWithDrinks | null>(
-    beansQueryOptions(beansId, user?.uid ?? ""),
+    beansQueryOptions(beansId, user?.dbId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: BeansFormInputs) => {
       return await addBeans({
-        data: { data, firebaseUid: user?.uid ?? "" },
+        data: { data, userId: user?.dbId ?? "" },
       });
     },
     onSuccess: (result) => {

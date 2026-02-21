@@ -4,7 +4,6 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
   DecentEspressoForm,
-  decentEspressoFormEmptyValues,
   DecentEspressoFormInputs,
 } from "~/components/espresso/steps/DecentEspressoForm";
 import { Heading } from "~/components/Heading";
@@ -12,12 +11,12 @@ import { updateDecentEspressoDetails } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, firebaseUid: string) =>
+const espressoQueryOptions = (espressoId: string, userId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, firebaseUid },
+        data: { espressoId, userId },
       }),
   });
 
@@ -36,7 +35,7 @@ function DecentEspressoEditDetails() {
   const navigate = useNavigate();
 
   const { data: decentEspresso } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.uid ?? ""),
+    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
   );
 
   if (!user) throw new Error("User is not logged in.");
@@ -44,7 +43,7 @@ function DecentEspressoEditDetails() {
   if (!decentEspresso) return null;
 
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
-    if (!user?.uid || !espressoId) {
+    if (!user?.dbId || !espressoId) {
       throw new Error("User or espresso ID missing");
     }
 
@@ -64,7 +63,7 @@ function DecentEspressoEditDetails() {
           beansWeight: data.beansWeight,
         },
         espressoId,
-        firebaseUid: user.uid,
+        userId: user.dbId,
       },
     });
 
@@ -90,10 +89,11 @@ function DecentEspressoEditDetails() {
       </Heading>
 
       <DecentEspressoForm
-        defaultValues={decentEspressoFormEmptyValues({
+        defaultValues={{
           ...decentEspresso,
           beans: decentEspresso.beans?.id ?? null,
-        })}
+        }}
+        existingBeans={decentEspresso.beans ?? undefined}
         mutation={editDecentEspresso}
         backLinkProps={{
           to: "/drinks/espresso/$espressoId",

@@ -1,5 +1,3 @@
-import { Beans } from "./db/types";
-
 export function isNotNullable<T>(x: T | null | undefined): x is T {
   return x != null;
 }
@@ -7,14 +5,6 @@ export function isNotNullable<T>(x: T | null | undefined): x is T {
 export function immutableRemove<T>(array: T[], item: T) {
   return array.filter((i) => i !== item);
 }
-
-export const isNotFrozenOrIsThawed = (beans: Beans): boolean =>
-  !beans.freezeDate || (!!beans.freezeDate && !!beans.thawDate);
-
-export const isFrozen = (beans: Beans): boolean =>
-  !!beans.freezeDate && !beans.thawDate;
-
-export const isNotArchived = (beans: Beans): boolean => !beans.isFinished;
 
 const MINUTE = 60;
 const HOUR = MINUTE * 60;
@@ -30,7 +20,7 @@ export function getTimeAgo(date: Date) {
     return secondsAgo + ` second${secondsAgo !== 1 ? "s" : ""} ago`;
   }
 
-  let divisor;
+  let divisor: number;
   let unit = "";
 
   if (secondsAgo < HOUR) {
