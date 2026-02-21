@@ -12,9 +12,7 @@
     "start:prod": "env-cmd -f ./.env.production vite",
     "emulators:start": "firebase emulators:start  --import=./seed/auth-only",
     "emulators:start:empty": "firebase emulators:start",
-    "emulators:start:complete": "firebase emulators:start --import=./seed/complete",
     "emulators:export-seed:auth-only": "firebase emulators:export ./seed/auth-only",
-    "emulators:export-seed:complete": "firebase emulators:export ./seed/complete",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -25,7 +23,6 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "decent:upload": "pnpm --dir scripts decent:upload",
-    "migrate:firestore": "pnpm --dir scripts migrate:firestore",
     "type-check": "tsc --noEmit",
     "type-watch": "tsc --noEmit --watch"
   },
