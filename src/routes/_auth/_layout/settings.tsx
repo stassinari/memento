@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { Auth } from "firebase/auth";
+import { useSetAtom } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
@@ -15,9 +16,8 @@ import { Toggle } from "~/components/Toggle";
 import { deleteSecretKey, generateSecretKey } from "~/db/mutations";
 import { getUser } from "~/db/queries";
 import { auth } from "~/firebaseConfig";
-import { useCurrentUser, userAtom } from "~/hooks/useInitUser";
+import { userAtom } from "~/hooks/useInitUser";
 import { generateRandomString } from "~/utils";
-import { useSetAtom } from "jotai";
 
 export const Route = createFileRoute("/_auth/_layout/settings")({
   component: Settings,
@@ -29,13 +29,11 @@ const signOut = async (auth: Auth) => {
 };
 
 function Settings() {
-  const user = useCurrentUser();
-
   const setUser = useSetAtom(userAtom);
   const queryClient = useQueryClient();
   const { data: dbUser } = useSuspenseQuery({
-    queryKey: ["user", user?.uid],
-    queryFn: () => getUser({ data: user?.uid ?? "" }),
+    queryKey: ["user"],
+    queryFn: () => getUser(),
   });
 
   const secretKey = dbUser?.secretKey;
@@ -57,7 +55,7 @@ function Settings() {
       return newSecretKey;
     },
     onSuccess: (newSecretKey) => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.uid] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       setUser((prev) => (prev ? { ...prev, secretKey: newSecretKey } : prev));
     },
   });
@@ -74,7 +72,7 @@ function Settings() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.uid] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       setUser((prev) => (prev ? { ...prev, secretKey: null } : prev));
     },
   });
@@ -103,14 +101,14 @@ function Settings() {
                 <p className="text-sm">
                   User ID:{" "}
                   <strong className="font-mono font-semibold">
-                    {user.uid}
+                    {dbUser.fbId}
                   </strong>
                 </p>
                 <Button
                   variant="white"
                   size="xs"
                   onClick={async () =>
-                    await navigator.clipboard.writeText(user.uid)
+                    await navigator.clipboard.writeText(dbUser.fbId)
                   }
                 >
                   Copy
@@ -163,9 +161,6 @@ function Settings() {
           )}
         </FormSection>
         <FormSection title="Account">
-          <p className="text-sm">
-            Email: <strong className="font-semibold">{user.email}</strong>
-          </p>
           <Button variant="white" onClick={async () => await signOut(auth)}>
             Sign out
           </Button>
