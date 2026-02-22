@@ -1,4 +1,6 @@
 /// <reference types="vite/client" />
+import "@fontsource-variable/inter";
+import "@fontsource-variable/montserrat";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
@@ -97,7 +99,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         sizes: "180x180",
       },
       { rel: "mask-icon", href: "/favicon.svg", color: "#FFFFFF" },
-      { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
     ],
   }),
   component: RootComponent,

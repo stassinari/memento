@@ -147,11 +147,8 @@
   --color-mui-brown-800: #4e342e;
   --color-mui-brown-900: #3e2723;
 
-  --font-sans:
-    Inter var, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  --spacing-5\/4: 125%;
+  --font-body: "Inter Variable", sans-serif;
+  --font-heading: "Montserrat Variable", serif;
 }
 
 /*
@@ -202,8 +199,17 @@ html {
 }
 
 body {
-  @apply h-full antialiased;
+  @apply h-full antialiased font-body;
   -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-heading font-semibold;
 }
 
 /* Styling for react-datepicker taken from https://github.com/msnegurski/tailwind-react-datepicker */

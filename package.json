@@ -27,6 +27,8 @@
     "type-watch": "tsc --noEmit --watch"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/montserrat": "^5.2.8",
     "@headlessui/react": "^2.2.9",
     "@headlessui/tailwindcss": "^0.2.2",
     "@heroicons/react": "^2.2.0",
