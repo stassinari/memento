@@ -1,4 +1,4 @@
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onIdTokenChanged, User } from "firebase/auth";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { getUser } from "~/db/queries";
@@ -23,10 +23,10 @@ export const getAuthInitPromise = () => {
     return Promise.resolve(auth.currentUser);
   }
 
-  // Otherwise, wait for first auth state change
+  // Otherwise, wait for first token change
   if (!authInitPromise) {
     authInitPromise = new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const unsubscribe = onIdTokenChanged(auth, (user) => {
         authInitialized = true;
         unsubscribe();
         resolve(user);
@@ -41,20 +41,20 @@ export const useInitUser = () => {
   const setAuthInitialized = useSetAtom(authInitializedAtom);
 
   useEffect(() => {
-    // Set up auth state listener (client-side only)
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      authInitialized = true; // Update module-level flag
+    // onIdTokenChanged fires on sign-in, sign-out, AND token refresh (every hour)
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+      authInitialized = true;
       let role: string | undefined;
       let secretKey: string | null | undefined;
       let dbId: string | null | undefined;
 
       if (user) {
-        const idToken = await user.getIdToken(true);
+        const idToken = await user.getIdToken();
         const decoded = JSON.parse(atob(idToken.split(".")[1]));
         role = decoded.role;
 
         try {
-          const dbUser = await getUser({ data: user.uid });
+          const dbUser = await getUser();
           secretKey = dbUser?.secretKey ?? null;
           dbId = dbUser?.id ?? null;
         } catch (error) {

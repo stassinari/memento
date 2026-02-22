@@ -1,26 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
+import { authMiddleware } from "~/middleware";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
 import { beans, brews, espresso } from "./schema";
 
-export const getUser = createServerFn({
-  method: "GET",
-})
-  .inputValidator((firebaseUid: string) => {
-    if (!firebaseUid) throw new Error("User ID is required");
-    return firebaseUid;
-  })
-  .handler(async ({ data: firebaseUid }) => {
-    try {
-      const user = await db.query.users.findFirst({
-        where: (users, { eq }) => eq(users.fbId, firebaseUid),
-      });
-      return user;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
+export const getUser = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    return db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, context.userId),
+    });
   });
 
 export const getLastBrew = createServerFn({
