@@ -19,11 +19,9 @@ export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
       {espresso.fromDecent && (
         <DetailsCard
           title="Prep"
-          rows={[
-            ...(espresso.fromDecent
+          rows={(espresso.fromDecent
               ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
-              : []),
-          ]}
+              : [])}
         />
       )}
 
