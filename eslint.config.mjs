@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import reactPlugin from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -35,6 +36,7 @@ export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}"],
     ...reactPlugin.configs.flat.recommended,
+    ...reactHooks.configs.flat["recommended-latest"],
     languageOptions: {
       ...reactPlugin.configs.flat.recommended.languageOptions,
       globals: { ...globals.serviceworker, ...globals.browser },
