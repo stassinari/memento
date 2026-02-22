@@ -21,9 +21,9 @@ export interface BeansMethodEquipmentInputs {
   filterType: string | null;
 }
 
-export const beansMethodEquipmentEmptyValues: (
-  copyFrom?: Brew,
-) => BeansMethodEquipmentInputs = (copyFrom) => ({
+export const beansMethodEquipmentEmptyValues: (copyFrom?: Brew) => BeansMethodEquipmentInputs = (
+  copyFrom,
+) => ({
   date: new Date(),
   method: null,
   beans: null,
@@ -66,11 +66,7 @@ export const BeansMethodEquipment = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
         <FormSection
           title="Details"
           subtitle="The essentials — when you made it and what you used."
@@ -98,10 +94,7 @@ export const BeansMethodEquipment = ({
 
         <Divider className="hidden sm:block" />
 
-        <FormSection
-          title="Equipment"
-          subtitle="The gear that went into this brew."
-        >
+        <FormSection title="Equipment" subtitle="The gear that went into this brew.">
           {showEquipmentForm ? (
             <>
               <FormComboboxSingle

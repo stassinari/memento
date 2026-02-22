@@ -7,12 +7,7 @@ import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { navLinks } from "./BottomNav";
 import { MementoLogo } from "./icons/MementoLogo";
 
-const SidebarNavItem = ({
-  Icon,
-  label,
-  linkTo,
-  nested = false,
-}: SidebarNavItemProps) => {
+const SidebarNavItem = ({ Icon, label, linkTo, nested = false }: SidebarNavItemProps) => {
   const isActive = useActiveRoute(linkTo);
 
   return (
@@ -74,9 +69,7 @@ export const SidebarNav = () => {
           "flex flex-col px-4 pb-4 overflow-y-auto bg-white border-r border-gray-200 gap-y-5 grow lg:px-6",
         ])}
         style={{
-          paddingLeft: `calc(env(safe-area-inset-left) + ${
-            isLg ? "1.5rem" : "1rem"
-          })`,
+          paddingLeft: `calc(env(safe-area-inset-left) + ${isLg ? "1.5rem" : "1rem"})`,
         }}
       >
         <div className="flex items-center h-16 shrink-0">
@@ -88,12 +81,7 @@ export const SidebarNav = () => {
               <ul role="list" className="-mx-2 space-y-1 ">
                 {sidebarNavLinks.map(({ Icon, label, linkTo, nested }) => (
                   <li key={label}>
-                    <SidebarNavItem
-                      Icon={Icon}
-                      label={label}
-                      linkTo={linkTo}
-                      nested={nested}
-                    />
+                    <SidebarNavItem Icon={Icon} label={label} linkTo={linkTo} nested={nested} />
                   </li>
                 ))}
               </ul>

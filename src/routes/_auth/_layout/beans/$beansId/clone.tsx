@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { BeansForm, BeansFormInputs } from "~/components/beans/BeansForm";
 import { navLinks } from "~/components/BottomNav";

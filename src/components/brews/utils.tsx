@@ -10,6 +10,6 @@ export const brewToDataListItem = (b: Brew): DataListItem => ({
   },
   bottomRow: {
     date: b.date,
-    tags: [...(b.grinder ? [{ icon: <MapPinIcon />, label: b.grinder }] : [])],
+    tags: b.grinder ? [{ icon: <MapPinIcon />, label: b.grinder }] : [],
   },
 });

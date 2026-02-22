@@ -95,8 +95,7 @@ export const BeansForm = ({
 
   const { data: uniqueRoasters } = useQuery({
     queryKey: ["bean", "roasters"],
-    queryFn: () =>
-      getBeansUniqueRoasters(),
+    queryFn: () => getBeansUniqueRoasters(),
   });
 
   const isSm = useScreenMediaQuery("sm");
@@ -126,23 +125,15 @@ export const BeansForm = ({
 
   // get the top 5 most recent roasters (excludes beans with no roast date)
   const roastersSuggestions = [
-    ...new Set(
-      uniqueRoasters.filter((r) => r.roastDate !== null).map((r) => r.roaster),
-    ),
+    ...new Set(uniqueRoasters.filter((r) => r.roastDate !== null).map((r) => r.roaster)),
   ].slice(0, 5);
 
   // get all unique roasters sorted by name
-  const roastersList = [
-    ...new Set(uniqueRoasters.map((r) => r.roaster)),
-  ].sort();
+  const roastersList = [...new Set(uniqueRoasters.map((r) => r.roaster))].sort();
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="mt-6 space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="mt-6 space-y-6">
         <FormSection
           title="Roast information"
           subtitle="Everything about how the roaster transformed these beans — from the profile they chose to the notes they brought out."
@@ -171,11 +162,7 @@ export const BeansForm = ({
             suggestions={roastersSuggestions}
           />
 
-          <FormInputDate
-            label="Roast date"
-            id="roastDate"
-            placeholder="Select roast date"
-          />
+          <FormInputDate label="Roast date" id="roastDate" placeholder="Select roast date" />
 
           <FormInputRadio
             id="roastStyle"
@@ -215,17 +202,9 @@ export const BeansForm = ({
               title="Storage"
               subtitle="For beans that have taken a trip to the freezer and back."
             >
-              <FormInputDate
-                label="Freeze date"
-                id="freezeDate"
-                placeholder="Select freeze date"
-              />
+              <FormInputDate label="Freeze date" id="freezeDate" placeholder="Select freeze date" />
 
-              <FormInputDate
-                label="Thaw date"
-                id="thawDate"
-                placeholder="Select thaw date"
-              />
+              <FormInputDate label="Thaw date" id="thawDate" placeholder="Select thaw date" />
             </FormSection>
 
             <Divider className="hidden sm:block" />

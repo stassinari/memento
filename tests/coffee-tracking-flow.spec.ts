@@ -2,21 +2,21 @@ import { expect, test } from "@playwright/test";
 
 // Test user credentials - make sure this user exists in your Firebase Auth emulator
 // You can create it via http://localhost:9099/auth when emulators are running
-const TEST_USER = {
-  email: "asd@asd.asd",
-  password: "asdasd",
-};
+// const TEST_USER = {
+//   email: "asd@asd.asd",
+//   password: "asdasd",
+// };
 
-// Helper to login
-async function login(page) {
-  await page.goto("/login");
-  await page.getByLabel("Email").fill(TEST_USER.email);
-  await page.getByLabel("Password").fill(TEST_USER.password);
-  await page.getByRole("button", { name: "Log in" }).click();
+// // Helper to login
+// async function login(page) {
+//   await page.goto("/login");
+//   await page.getByLabel("Email").fill(TEST_USER.email);
+//   await page.getByLabel("Password").fill(TEST_USER.password);
+//   await page.getByRole("button", { name: "Log in" }).click();
 
-  // Wait for navigation to home page
-  await page.waitForURL("/");
-}
+//   // Wait for navigation to home page
+//   await page.waitForURL("/");
+// }
 
 test.describe("Coffee Tracking Happy Path", () => {
   // test.beforeEach(async ({ page }) => {
@@ -37,9 +37,7 @@ test.describe("Coffee Tracking Happy Path", () => {
       await page.goto("/beans/add");
 
       // Wait for the page to load
-      await expect(
-        page.getByRole("heading", { name: "Add beans" }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Add beans" })).toBeVisible();
 
       // Fill in required fields
       await page.getByLabel("Name *").fill(beansName);
@@ -54,9 +52,7 @@ test.describe("Coffee Tracking Happy Path", () => {
 
       // Wait for navigation to beans details page
       await page.waitForURL(/\/beans\/.+/);
-      await expect(
-        page.getByRole("heading", { name: beansName }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: beansName })).toBeVisible();
     });
 
     // Step 2: Add a brew with the beans
@@ -64,9 +60,7 @@ test.describe("Coffee Tracking Happy Path", () => {
       await page.goto("/drinks/brews/add");
 
       // Wait for the page to load
-      await expect(
-        page.getByRole("heading", { name: "Add brew" }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Add brew" })).toBeVisible();
 
       // Select the beans we just created
       await page.getByText(beansName).click();
@@ -93,9 +87,7 @@ test.describe("Coffee Tracking Happy Path", () => {
       ]);
 
       // Verify we're on the brew details page by checking the heading
-      await expect(
-        page.getByRole("heading", { name: brewMethod }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: brewMethod })).toBeVisible();
     });
 
     // Step 3: Add an espresso with the beans
@@ -103,9 +95,7 @@ test.describe("Coffee Tracking Happy Path", () => {
       await page.goto("/drinks/espresso/add");
 
       // Wait for the page to load
-      await expect(
-        page.getByRole("heading", { name: "Add espresso" }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Add espresso" })).toBeVisible();
 
       // Select the beans we created
       await page.getByText(beansName).click();
@@ -141,9 +131,7 @@ test.describe("Coffee Tracking Happy Path", () => {
 
       // Wait for beans details page
       await page.waitForURL(/\/beans\/.+/);
-      await expect(
-        page.getByRole("heading", { name: beansName }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: beansName })).toBeVisible();
 
       // On mobile, we need to click the "Drinks" tab
       // Check if we're in mobile view (tabs visible)
@@ -157,16 +145,12 @@ test.describe("Coffee Tracking Happy Path", () => {
 
       // Verify the espresso is listed (look for beans name in the drinks list)
       // Scope to drink card links to avoid breadcrumb list items
-      const drinkCards = page
-        .locator('a[href^="/drinks/"]')
-        .filter({ hasText: beansName });
+      const drinkCards = page.locator('a[href^="/drinks/"]').filter({ hasText: beansName });
       await expect(drinkCards).toHaveCount(2); // One brew, one espresso
     });
   });
 
-  test.skip("should add beans with minimal required fields only", async ({
-    page,
-  }) => {
+  test.skip("should add beans with minimal required fields only", async ({ page }) => {
     const timestamp = Date.now();
     const beansName = `Minimal Beans ${timestamp}`;
     const roasterName = `Minimal Roaster ${timestamp}`;

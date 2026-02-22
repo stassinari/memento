@@ -1,17 +1,17 @@
 import { Controller, useFormContext } from "react-hook-form";
-import {
-  InputRadioButtonGroup,
-  InputRadioButtonGroupProps,
-} from "../InputRadioButtonGroup";
+import { InputRadioButtonGroup, InputRadioButtonGroupProps } from "../InputRadioButtonGroup";
 
-interface FormInputRadioButtonGroupProps
-  extends Pick<InputRadioButtonGroupProps, "label" | "options" | "variant"> {
+interface FormInputRadioButtonGroupProps extends Pick<
+  InputRadioButtonGroupProps,
+  "label" | "options" | "variant"
+> {
   name: string;
 }
 
-export const FormInputRadioButtonGroup: React.FC<
-  FormInputRadioButtonGroupProps
-> = ({ name, ...rest }) => {
+export const FormInputRadioButtonGroup: React.FC<FormInputRadioButtonGroupProps> = ({
+  name,
+  ...rest
+}) => {
   const { control } = useFormContext();
 
   return (

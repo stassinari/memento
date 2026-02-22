@@ -3,18 +3,13 @@ import { Controller, useFormContext } from "react-hook-form";
 import { Input } from "../Input";
 import { InputSlider, InputSliderProps } from "../InputSlider";
 
-interface FormInputSlider
-  extends Omit<InputSliderProps, "values" | "onChange"> {
+interface FormInputSlider extends Omit<InputSliderProps, "values" | "onChange"> {
   label: string;
   id: string;
   helperText?: string;
 }
 
-export const FormInputSlider = ({
-  label,
-  id,
-  ...rest
-}: FormInputSlider) => {
+export const FormInputSlider = ({ label, id, ...rest }: FormInputSlider) => {
   const { control } = useFormContext();
 
   return (

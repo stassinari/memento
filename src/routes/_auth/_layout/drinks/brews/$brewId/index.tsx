@@ -1,9 +1,5 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import {
-  queryOptions,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
@@ -43,9 +39,7 @@ function BrewDetails() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId),
-  );
+  const { data: brew, isLoading } = useSuspenseQuery(brewQueryOptions(brewId));
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isSm = useScreenMediaQuery("sm");
@@ -68,9 +62,7 @@ function BrewDetails() {
 
   return (
     <>
-      <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.brews, { label: brew.method }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.brews, { label: brew.method }]} />
 
       <Heading
         actionSlot={
@@ -119,17 +111,13 @@ function BrewDetails() {
       {isSm ? (
         <div className="grid grid-cols-2 gap-4 my-6">
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">
-              Brew info
-            </h2>
+            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Brew info</h2>
 
             <BrewDetailsInfo brew={brew} />
           </div>
 
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">
-              Outcome
-            </h2>
+            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Outcome</h2>
 
             <BrewDetailsOutcome brew={brew} />
           </div>
@@ -137,12 +125,8 @@ function BrewDetails() {
       ) : (
         <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
           <TabList className="flex -mb-px">
-            <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
-              Info
-            </Tab>
-            <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
-              Outcome
-            </Tab>
+            <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>Info</Tab>
+            <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>Outcome</Tab>
           </TabList>
           <TabPanels className="mt-4">
             <TabPanel>

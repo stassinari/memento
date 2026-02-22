@@ -5,11 +5,7 @@ interface InputCheckboxProps {
 }
 
 // This is very different from InputRadio, as it's a single element rather than a group of elements.
-export const InputCheckbox = ({
-  label,
-  checked,
-  handleChange,
-}: InputCheckboxProps) => {
+export const InputCheckbox = ({ label, checked, handleChange }: InputCheckboxProps) => {
   return (
     <label className="font-medium text-gray-900">
       <input

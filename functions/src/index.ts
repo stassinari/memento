@@ -74,9 +74,7 @@ async function getFeatureFlags(): Promise<FeatureFlags> {
     }
 
     const baseUrl =
-      process.env.NODE_ENV === "production"
-        ? process.env.MAIN_APP_URL
-        : "http://localhost:3000";
+      process.env.NODE_ENV === "production" ? process.env.MAIN_APP_URL : "http://localhost:3000";
 
     const response = await axios.get(`${baseUrl}/api/feature-flags`, {
       headers: {
@@ -109,9 +107,7 @@ async function forwardToPostgres(
 ): Promise<void> {
   try {
     const baseUrl =
-      process.env.NODE_ENV === "production"
-        ? process.env.MAIN_APP_URL
-        : "http://localhost:3000";
+      process.env.NODE_ENV === "production" ? process.env.MAIN_APP_URL : "http://localhost:3000";
 
     // Determine MIME type from filename
     const mimeType = filename.toLowerCase().endsWith(".json")
@@ -148,9 +144,7 @@ async function forwardToPostgres(
 app.post("/", async (req, res) => {
   // only allow POST
   if (req.method !== "POST") {
-    res
-      .status(405)
-      .json({ error: "HTTP Method " + req.method + " not allowed" });
+    res.status(405).json({ error: "HTTP Method " + req.method + " not allowed" });
     return;
   }
 
@@ -160,9 +154,7 @@ app.post("/", async (req, res) => {
     res.status(401).json({ error: "Auth headers not sent" });
     return;
   }
-  const credentials = Buffer.from(base64Credentials, "base64").toString(
-    "ascii",
-  );
+  const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
   const [email, reqSecretKey] = credentials.split(":");
 
   let uid: string;
@@ -170,7 +162,7 @@ app.post("/", async (req, res) => {
     const user = await admin.auth().getUserByEmail(email);
     uid = user.uid;
   } catch (error) {
-    res.status(401).json({ error: "User not found - code: ADMIN" });
+    res.status(401).json({ error: "User not found - code: ADMIN", details: error });
     return;
   }
 
@@ -221,11 +213,9 @@ app.post("/", async (req, res) => {
 
           // Detect format based on filename extension (more reliable than MIME type)
           const isJson =
-            filename.toLowerCase().endsWith(".json") ||
-            mimeType === "application/json";
+            filename.toLowerCase().endsWith(".json") || mimeType === "application/json";
           const isShot =
-            filename.toLowerCase().endsWith(".shot") ||
-            mimeType === "application/octet-stream";
+            filename.toLowerCase().endsWith(".shot") || mimeType === "application/octet-stream";
 
           fileContent = data.toString();
 
@@ -285,10 +275,7 @@ app.post("/", async (req, res) => {
                 .doc(fbId);
 
               await docRef.set(firestoreEspresso);
-              await docRef
-                .collection("decentReadings")
-                .doc("decentReadings")
-                .set(timeSeries);
+              await docRef.collection("decentReadings").doc("decentReadings").set(timeSeries);
               console.log("Firestore write complete");
             } catch (error) {
               console.error("Firestore write failed:", error);

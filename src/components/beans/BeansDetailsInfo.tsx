@@ -16,9 +16,7 @@ export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
         { label: "Roaster", value: beans.roaster },
         {
           label: "Roast date",
-          value: beans.roastDate
-            ? dayjs(beans.roastDate).format("DD MMM YYYY")
-            : "",
+          value: beans.roastDate ? dayjs(beans.roastDate).format("DD MMM YYYY") : "",
         },
         { label: "Roast style", value: beans.roastStyle ?? "" },
         {
@@ -36,15 +34,11 @@ export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
       rows={[
         {
           label: "Freeze date",
-          value: beans.freezeDate
-            ? dayjs(beans.freezeDate).format("DD MMM YYYY")
-            : "",
+          value: beans.freezeDate ? dayjs(beans.freezeDate).format("DD MMM YYYY") : "",
         },
         {
           label: "Thaw date",
-          value: beans.thawDate
-            ? dayjs(beans.thawDate).format("DD MMM YYYY")
-            : "",
+          value: beans.thawDate ? dayjs(beans.thawDate).format("DD MMM YYYY") : "",
         },
       ]}
     />
@@ -63,9 +57,7 @@ export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
           { label: "Varietal(s)", value: beans.varietals.join(", ") },
           {
             label: "Harvest date",
-            value: beans.harvestDate
-              ? dayjs(beans.harvestDate).format("MMMM YYYY")
-              : "",
+            value: beans.harvestDate ? dayjs(beans.harvestDate).format("MMMM YYYY") : "",
           },
         ]}
       />

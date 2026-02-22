@@ -1,16 +1,7 @@
-import {
-  Outlet,
-  createFileRoute,
-  redirect,
-  useRouter,
-} from "@tanstack/react-router";
+import { Outlet, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { useEffect } from "react";
-import {
-  authInitializedAtom,
-  getAuthInitPromise,
-  userAtom,
-} from "~/hooks/useInitUser";
+import { authInitializedAtom, getAuthInitPromise, userAtom } from "~/hooks/useInitUser";
 
 function AuthLayout() {
   const authInitialized = useAuthInitialized();

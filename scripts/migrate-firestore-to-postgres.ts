@@ -5,12 +5,9 @@ import admin from "firebase-admin";
 import fs from "fs/promises";
 import postgres, { Sql } from "postgres";
 
-type FirestoreTimestamp = admin.firestore.Timestamp;
-
 const DRY_RUN = process.argv.includes("--dry-run");
 const LOG_PATH =
-  process.argv.find((arg) => arg.startsWith("--log="))?.split("=", 2)[1] ??
-  "migration-log.json";
+  process.argv.find((arg) => arg.startsWith("--log="))?.split("=", 2)[1] ?? "migration-log.json";
 
 const requireEnv = (key: string): string => {
   const value = process.env[key];
@@ -27,8 +24,7 @@ const loadServiceAccount = async () => {
   }
 
   const path =
-    process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
-    process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS;
   if (!path) {
     return null;
   }
@@ -107,24 +103,19 @@ const sanitizeForLog = (value: unknown): unknown => {
     return value.toISOString();
   }
   if (typeof value === "object" && value !== null) {
-    if (
-      "path" in (value as { path?: unknown }) &&
-      "id" in (value as { id?: unknown })
-    ) {
+    if ("path" in (value as { path?: unknown }) && "id" in (value as { id?: unknown })) {
       const maybeRef = value as { path?: unknown; id?: unknown };
-      if (
-        typeof maybeRef.path === "string" &&
-        typeof maybeRef.id === "string"
-      ) {
+      if (typeof maybeRef.path === "string" && typeof maybeRef.id === "string") {
         return { path: maybeRef.path, id: maybeRef.id };
       }
     }
     if (Array.isArray(value)) {
       return value.map((item) => sanitizeForLog(item));
     }
-    const entries = Object.entries(value as Record<string, unknown>).map(
-      ([key, val]) => [key, sanitizeForLog(val)],
-    );
+    const entries = Object.entries(value as Record<string, unknown>).map(([key, val]) => [
+      key,
+      sanitizeForLog(val),
+    ]);
     return Object.fromEntries(entries);
   }
   return value;
@@ -459,8 +450,7 @@ const main = async () => {
         const id = randomUUID();
         beansIdMap.set(`${fbUserId}:${beanDoc.id}`, id);
 
-        const origin =
-          typeof data.origin === "string" ? data.origin : "single-origin";
+        const origin = typeof data.origin === "string" ? data.origin : "single-origin";
         const blendParts =
           origin === "single-origin"
             ? null
@@ -475,14 +465,12 @@ const main = async () => {
           name: typeof data.name === "string" ? data.name : "Untitled",
           roaster: typeof data.roaster === "string" ? data.roaster : "Unknown",
           roastDate: toDate(data.roastDate),
-          roastStyle:
-            typeof data.roastStyle === "string" ? data.roastStyle : null,
+          roastStyle: typeof data.roastStyle === "string" ? data.roastStyle : null,
           roastLevel: toNumber(data.roastLevel),
           roastingNotes: toStringArray(data.roastingNotes),
           freezeDate: toDate(data.freezeDate),
           thawDate: toDate(data.thawDate),
-          isFinished:
-            typeof data.isFinished === "boolean" ? data.isFinished : false,
+          isFinished: typeof data.isFinished === "boolean" ? data.isFinished : false,
           origin,
           country: typeof data.country === "string" ? data.country : null,
           region: typeof data.region === "string" ? data.region : null,
@@ -541,16 +529,10 @@ const main = async () => {
           minuteSplit.normalized && minuteSplit.minutes !== null
             ? minuteSplit.minutes
             : toInt(data.timeMinutes);
-        const timeSeconds = minuteSplit.normalized
-          ? minuteSplit.seconds
-          : toInt(data.timeSeconds);
+        const timeSeconds = minuteSplit.normalized ? minuteSplit.seconds : toInt(data.timeSeconds);
         if (
-          (data.timeMinutes !== null &&
-            data.timeMinutes !== undefined &&
-            timeMinutes === null) ||
-          (data.timeSeconds !== null &&
-            data.timeSeconds !== undefined &&
-            timeSeconds === null)
+          (data.timeMinutes !== null && data.timeMinutes !== undefined && timeMinutes === null) ||
+          (data.timeSeconds !== null && data.timeSeconds !== undefined && timeSeconds === null)
         ) {
           log.normalized.brewTimeFields.push({
             id: brewDoc.id,
@@ -579,26 +561,20 @@ const main = async () => {
           date,
           method: typeof data.method === "string" ? data.method : "Unknown",
           grinder: typeof data.grinder === "string" ? data.grinder : null,
-          grinderBurrs:
-            typeof data.grinderBurrs === "string" ? data.grinderBurrs : null,
+          grinderBurrs: typeof data.grinderBurrs === "string" ? data.grinderBurrs : null,
           waterType: typeof data.waterType === "string" ? data.waterType : null,
-          filterType:
-            typeof data.filterType === "string" ? data.filterType : null,
+          filterType: typeof data.filterType === "string" ? data.filterType : null,
           waterWeight: toNumber(data.waterWeight) ?? 0,
           beansWeight: toNumber(data.beansWeight) ?? 0,
           waterTemperature: toNumber(data.waterTemperature),
-          grindSetting:
-            typeof data.grindSetting === "string" ? data.grindSetting : null,
+          grindSetting: typeof data.grindSetting === "string" ? data.grindSetting : null,
           timeMinutes,
           timeSeconds,
           rating: toNumber(data.rating),
           notes: typeof data.notes === "string" ? data.notes : null,
           tds: toNumber(data.tds),
           finalBrewWeight: toNumber(data.finalBrewWeight),
-          extractionType:
-            typeof data.extractionType === "string"
-              ? data.extractionType
-              : null,
+          extractionType: typeof data.extractionType === "string" ? data.extractionType : null,
           aroma: toNumber(tastingScores.aroma),
           acidity: toNumber(tastingScores.acidity),
           sweetness: toNumber(tastingScores.sweetness),
@@ -625,33 +601,24 @@ const main = async () => {
         }
 
         const beansFbId = getDocIdFromRef(data.beans);
-        const beansId = beansFbId
-          ? (beansIdMap.get(`${fbUserId}:${beansFbId}`) ?? null)
-          : null;
+        const beansId = beansFbId ? (beansIdMap.get(`${fbUserId}:${beansFbId}`) ?? null) : null;
 
         const tastingScores = data.tastingScores ?? {};
         const id = randomUUID();
         espressoIdMap.set(`${fbUserId}:${espressoDoc.id}`, id);
 
-        const profileName =
-          typeof data.profileName === "string" ? data.profileName : null;
+        const profileName = typeof data.profileName === "string" ? data.profileName : null;
         const uploadedAt = toDate(data.uploadedAt);
         const actualWeight = toNumber(data.actualWeight);
-        const fromDecentRaw =
-          typeof data.fromDecent === "boolean" ? data.fromDecent : false;
-        const fromDecent =
-          fromDecentRaw &&
-          !!profileName &&
-          !!uploadedAt &&
-          actualWeight !== null;
+        const fromDecentRaw = typeof data.fromDecent === "boolean" ? data.fromDecent : false;
+        const fromDecent = fromDecentRaw && !!profileName && !!uploadedAt && actualWeight !== null;
 
         if (fromDecentRaw && !fromDecent) {
           const message = `Normalizing espresso ${espressoDoc.id}: fromDecent true but missing required fields`;
           console.warn(message);
           log.normalized.espressoFromDecent.push({
             id: espressoDoc.id,
-            reason:
-              "fromDecent true but missing profile_name, uploaded_at, or actual_weight",
+            reason: "fromDecent true but missing profile_name, uploaded_at, or actual_weight",
             data: sanitizeForLog(data),
           });
         }
@@ -662,14 +629,11 @@ const main = async () => {
           userId,
           beansId,
           date,
-          grindSetting:
-            typeof data.grindSetting === "string" ? data.grindSetting : null,
+          grindSetting: typeof data.grindSetting === "string" ? data.grindSetting : null,
           machine: typeof data.machine === "string" ? data.machine : null,
           grinder: typeof data.grinder === "string" ? data.grinder : null,
-          grinderBurrs:
-            typeof data.grinderBurrs === "string" ? data.grinderBurrs : null,
-          portafilter:
-            typeof data.portafilter === "string" ? data.portafilter : null,
+          grinderBurrs: typeof data.grinderBurrs === "string" ? data.grinderBurrs : null,
+          portafilter: typeof data.portafilter === "string" ? data.portafilter : null,
           basket: typeof data.basket === "string" ? data.basket : null,
           actualTime: toNumber(data.actualTime) ?? 0,
           targetWeight: toNumber(data.targetWeight),
@@ -702,22 +666,14 @@ const main = async () => {
             espressoId: id,
             time: Array.isArray(readings.time) ? readings.time : [],
             pressure: Array.isArray(readings.pressure) ? readings.pressure : [],
-            weightTotal: Array.isArray(readings.weightTotal)
-              ? readings.weightTotal
-              : [],
+            weightTotal: Array.isArray(readings.weightTotal) ? readings.weightTotal : [],
             flow: Array.isArray(readings.flow) ? readings.flow : [],
-            weightFlow: Array.isArray(readings.weightFlow)
-              ? readings.weightFlow
-              : [],
+            weightFlow: Array.isArray(readings.weightFlow) ? readings.weightFlow : [],
             temperatureBasket: Array.isArray(readings.temperatureBasket)
               ? readings.temperatureBasket
               : [],
-            temperatureMix: Array.isArray(readings.temperatureMix)
-              ? readings.temperatureMix
-              : [],
-            pressureGoal: Array.isArray(readings.pressureGoal)
-              ? readings.pressureGoal
-              : [],
+            temperatureMix: Array.isArray(readings.temperatureMix) ? readings.temperatureMix : [],
+            pressureGoal: Array.isArray(readings.pressureGoal) ? readings.pressureGoal : [],
             temperatureGoal: Array.isArray(readings.temperatureGoal)
               ? readings.temperatureGoal
               : [],
@@ -732,9 +688,7 @@ const main = async () => {
       for (const tastingDoc of tastingsSnap.docs) {
         const data = tastingDoc.data();
         const beansFbId = getDocIdFromRef(data.beans);
-        const beansId = beansFbId
-          ? (beansIdMap.get(`${fbUserId}:${beansFbId}`) ?? null)
-          : null;
+        const beansId = beansFbId ? (beansIdMap.get(`${fbUserId}:${beansFbId}`) ?? null) : null;
         await insertTasting(sql, {
           id: randomUUID(),
           fbId: tastingDoc.id,

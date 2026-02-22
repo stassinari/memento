@@ -3,13 +3,17 @@
 ## 🚀 Quick Start
 
 ### Step 1: Start Firebase Emulators
+
 In one terminal:
+
 ```bash
 pnpm emulators:start:empty
 ```
 
 ### Step 2: Run Tests
+
 In another terminal:
+
 ```bash
 pnpm test:e2e
 ```
@@ -37,26 +41,33 @@ The main test (`coffee-tracking-flow.spec.ts`) covers the complete user journey:
 ## 🧪 Development Tips
 
 ### Run tests with UI (recommended for development)
+
 ```bash
 pnpm test:e2e:ui
 ```
+
 This opens Playwright's interactive UI where you can:
+
 - Watch tests run step-by-step
 - Debug failures
 - See screenshots and traces
 
 ### Run tests in headed mode
+
 ```bash
 pnpm test:e2e --headed
 ```
+
 See the browser window as tests run.
 
 ### Run a specific test
+
 ```bash
 pnpm test:e2e tests/coffee-tracking-flow.spec.ts
 ```
 
 ### Debug a test
+
 ```bash
 pnpm test:e2e --debug
 ```
@@ -70,34 +81,41 @@ If you find selectors are fragile, you can add `data-testid` attributes to compo
 ```
 
 Then in tests:
+
 ```typescript
-await page.getByTestId('add-beans-button').click();
+await page.getByTestId("add-beans-button").click();
 ```
 
 ## 🔧 Troubleshooting
 
 ### "strict mode violation: locator resolved to 2 elements"
+
 This happens with Headless UI components (comboboxes, etc.). **Solution**: Use `.first()`:
+
 ```typescript
 // ❌ Error
-await page.getByLabel('Roaster *').click();
+await page.getByLabel("Roaster *").click();
 
 // ✅ Fixed
-await page.getByLabel('Roaster *').first().click();
+await page.getByLabel("Roaster *").first().click();
 ```
+
 See [PATTERNS.md](./PATTERNS.md) for more examples.
 
 ### Test user creation fails
+
 - Ensure emulators are running on default ports
 - Check that port 9099 (Auth emulator) is accessible
 - Manually create the user via http://localhost:9099/auth
 
 ### Tests timeout
+
 - Check that the dev server starts successfully on port 5173
 - Ensure Firebase emulators are running
 - Increase timeout in playwright.config.ts if needed
 
 ### Elements not found
+
 - Check if the app requires different interaction patterns
 - Use Playwright UI mode to inspect the page state
 - Add explicit waits if needed: `await page.waitForSelector(...)`

@@ -1,9 +1,4 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -23,8 +18,7 @@ export const Route = createFileRoute("/_auth/_layout/drinks/espresso/add")({
 export const lastEspressoQueryOptions = () =>
   queryOptions({
     queryKey: ["espresso", "last"],
-    queryFn: () =>
-      getLastEspresso(),
+    queryFn: () => getLastEspresso(),
   });
 
 function EspressoAdd() {
@@ -33,9 +27,7 @@ function EspressoAdd() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: lastEspresso } = useSuspenseQuery(
-    lastEspressoQueryOptions(),
-  );
+  const { data: lastEspresso } = useSuspenseQuery(lastEspressoQueryOptions());
 
   const mutation = useMutation({
     mutationFn: async (data: EspressoFormInputs) => {
@@ -65,9 +57,7 @@ function EspressoAdd() {
 
   return (
     <>
-      <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.espresso, { label: "Add" }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.espresso, { label: "Add" }]} />
 
       <Heading className="mb-4">Add espresso</Heading>
 

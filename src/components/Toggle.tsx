@@ -49,12 +49,7 @@ export const Toggle = ({
     </Switch>
     {label && (
       <Switch.Label as="span" className="ml-3">
-        <span
-          className={clsx([
-            "text-sm font-medium text-gray-700",
-            disabled && "text-gray-400",
-          ])}
-        >
+        <span className={clsx(["text-sm font-medium text-gray-700", disabled && "text-gray-400"])}>
           {label}
         </span>
         {/* <span className="text-sm text-gray-500">(Save 10%)</span> */}

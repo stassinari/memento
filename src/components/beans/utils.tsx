@@ -36,9 +36,7 @@ export const beansToDataListItem = (b: Beans): DataListItem =>
         },
       };
 
-export function parseVertexBeansToBeansFormInput(
-  json: any,
-): BeansFormInputs | null {
+export function parseVertexBeansToBeansFormInput(json: any): BeansFormInputs | null {
   try {
     // Basic type checks for required fields
     if (
@@ -55,13 +53,9 @@ export function parseVertexBeansToBeansFormInput(
     }
 
     // Parse dates as JS Date objects (or null)
-    const roastDate =
-      typeof json.roastDate === "number"
-        ? new Date(json.roastDate * 1000)
-        : null;
+    const roastDate = typeof json.roastDate === "number" ? new Date(json.roastDate * 1000) : null;
 
-    const harvestDate =
-      typeof json.harvestDate === "string" ? new Date(json.harvestDate) : null;
+    const harvestDate = typeof json.harvestDate === "string" ? new Date(json.harvestDate) : null;
 
     return {
       name: json.name,
@@ -96,14 +90,12 @@ export const beansVertexSchema = Schema.object({
       example: "Hacienda La Papaya",
     }),
     roaster: Schema.string({
-      description:
-        "The name of the roaster. This is usually the company that roasted the beans.",
+      description: "The name of the roaster. This is usually the company that roasted the beans.",
       example: "La Cabra",
     }),
 
     roastDate: Schema.number({
-      description:
-        "The date the beans were roasted on. The format is a unix timestamp in seconds.",
+      description: "The date the beans were roasted on. The format is a unix timestamp in seconds.",
       example: 1746805164,
       nullable: true,
       default: null,
@@ -158,8 +150,7 @@ export const beansVertexSchema = Schema.object({
       nullable: true,
     }),
     process: Schema.string({
-      description:
-        "The process used to prepare the beans (e.g., washed, natural).",
+      description: "The process used to prepare the beans (e.g., washed, natural).",
       example: "Washed",
       //   nullable: true,
     }),

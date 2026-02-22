@@ -59,9 +59,7 @@ export const BeansAi = ({ onBeansParsed }: BeansAiProps) => {
   return (
     <>
       <div className="mb-6 space-y-4 md:space-y-0 md:flex md:gap-4 md:items-center md:justify-between">
-        <p className="text-sm text-gray-500">
-          Use AI to quickly add the details of your beans ✨.
-        </p>
+        <p className="text-sm text-gray-500">Use AI to quickly add the details of your beans ✨.</p>
 
         <div className="flex gap-2">
           <Button

@@ -97,9 +97,7 @@
     "22.404",
     "22.726"
   ],
-  "timers": {
-    
-  },
+  "timers": {},
   "pressure": {
     "pressure": [
       "0.0",
@@ -961,9 +959,7 @@
       "78.0"
     ]
   },
-  "scale": {
-    
-  },
+  "scale": {},
   "totals": {
     "weight": [
       "0.0",
@@ -1827,9 +1823,7 @@
         "after_flow_complete_delay": "5",
         "drink_weight": "44.7"
       },
-      "machine_state": {
-        
-      }
+      "machine_state": {}
     }
   }
 }

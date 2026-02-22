@@ -1,10 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  BeansForm,
-  BeansFormInputs,
-  beansFormEmptyValues,
-} from "~/components/beans/BeansForm";
+import { BeansForm, BeansFormInputs, beansFormEmptyValues } from "~/components/beans/BeansForm";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";

@@ -8,29 +8,18 @@ type FooterProps = {
 } & HTMLAttributes<HTMLDivElement>;
 
 const Footer = ({ Icon, children, className }: FooterProps) => (
-  <Card.Footer
-    className={clsx(
-      "flex items-center h-8 gap-1 text-xs text-gray-500",
-      className,
-    )}
-  >
+  <Card.Footer className={clsx("flex items-center h-8 gap-1 text-xs text-gray-500", className)}>
     {Icon && <span className="w-4 h-4 mr-1 text-gray-400">{Icon}</span>}
     {children}
   </Card.Footer>
 );
 
-const Title = ({
-  className,
-  ...props
-}: HTMLAttributes<HTMLParagraphElement>) => (
+const Title = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
   <p className={clsx("font-semibold text-gray-900", className)} {...props} />
 );
 
 const Row = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-  <p
-    className={clsx("flex items-center gap-1 text-gray-600", className)}
-    {...props}
-  />
+  <p className={clsx("flex items-center gap-1 text-gray-600", className)} {...props} />
 );
 
 const RowIcon = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (

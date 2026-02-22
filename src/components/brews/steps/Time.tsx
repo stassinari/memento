@@ -54,11 +54,7 @@ export const BrewTime = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
         <FormSection
           title="Time"
           subtitle="How long the brew took — use the timer or enter it manually."
@@ -87,8 +83,7 @@ export const BrewTime = ({
                 ...register("timeMinutes", {
                   min: {
                     value: 0,
-                    message:
-                      "Please don't break space/time, enter a positive number.",
+                    message: "Please don't break space/time, enter a positive number.",
                   },
                   setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),
@@ -105,8 +100,7 @@ export const BrewTime = ({
                 ...register("timeSeconds", {
                   min: {
                     value: 0,
-                    message:
-                      "Please don't break space/time, enter a positive number.",
+                    message: "Please don't break space/time, enter a positive number.",
                   },
                   setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),

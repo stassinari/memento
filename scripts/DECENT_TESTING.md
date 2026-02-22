@@ -130,14 +130,14 @@ pnpm decent:upload shot.json --url http://127.0.0.1:5001/brewlog-dev/europe-west
 
 ## Troubleshooting
 
-| Error | Solution |
-|-------|----------|
-| `Email required` | Set `DECENT_EMAIL` env var or use `--email` |
-| `Secret key required` | Set `DECENT_SECRET_KEY` env var or use `--secret` |
-| `ECONNREFUSED` | Server not running - start with `pnpm dev` |
-| `401 Unauthorized` | Check email/secret key are correct |
-| `409 Conflict` | Shot already uploaded (duplicate detection working) |
-| `500 Internal Server Error` | Check server logs for details |
+| Error                       | Solution                                            |
+| --------------------------- | --------------------------------------------------- |
+| `Email required`            | Set `DECENT_EMAIL` env var or use `--email`         |
+| `Secret key required`       | Set `DECENT_SECRET_KEY` env var or use `--secret`   |
+| `ECONNREFUSED`              | Server not running - start with `pnpm dev`          |
+| `401 Unauthorized`          | Check email/secret key are correct                  |
+| `409 Conflict`              | Shot already uploaded (duplicate detection working) |
+| `500 Internal Server Error` | Check server logs for details                       |
 
 ## Available Test Shots
 

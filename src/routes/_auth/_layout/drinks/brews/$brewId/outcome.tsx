@@ -15,9 +15,7 @@ const brewQueryOptions = (brewId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/brews/$brewId/outcome",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/outcome")({
   component: BrewEditOutcome,
 });
 
@@ -26,9 +24,7 @@ function BrewEditOutcome() {
 
   const { brewId } = Route.useParams();
 
-  const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId),
-  );
+  const { data: brew, isLoading } = useSuspenseQuery(brewQueryOptions(brewId));
 
   if (isLoading) return null;
 

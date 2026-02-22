@@ -4,11 +4,7 @@ import React, { ReactElement, useRef, useState } from "react";
 import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../form/ListOption";
-import {
-  ComboboxButton,
-  ComboboxOption,
-  ComboboxOptions,
-} from "./ComboboxElements";
+import { ComboboxButton, ComboboxOption, ComboboxOptions } from "./ComboboxElements";
 
 export interface ComboboxMultiProps {
   name: string;
@@ -53,9 +49,7 @@ export const ComboboxMulti = ({
       name={name}
       multiple
     >
-      <HuiCombobox.Label className={clsx(labelStyles)}>
-        {label}
-      </HuiCombobox.Label>
+      <HuiCombobox.Label className={clsx(labelStyles)}>{label}</HuiCombobox.Label>
 
       <div className="relative mt-1">
         <div

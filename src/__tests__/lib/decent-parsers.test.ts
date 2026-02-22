@@ -5,11 +5,7 @@ import { parseJsonShot, parseTclShot } from "~/lib/decent-parsers";
 
 // Helper to load fixtures
 const loadFixture = (filename: string): string => {
-  const fixturePath = join(
-    __dirname,
-    "../fixtures/decent-shots",
-    filename
-  );
+  const fixturePath = join(__dirname, "../fixtures/decent-shots", filename);
   return readFileSync(fixturePath, "utf-8");
 };
 
@@ -228,9 +224,7 @@ describe("JSON vs TCL parser consistency", () => {
     const tclResult = parseTclShot(tclContent);
 
     // Date should match
-    expect(jsonResult.espresso.date.getTime()).toBe(
-      tclResult.espresso.date.getTime()
-    );
+    expect(jsonResult.espresso.date.getTime()).toBe(tclResult.espresso.date.getTime());
 
     // Basic fields should match
     expect(jsonResult.espresso.fromDecent).toBe(tclResult.espresso.fromDecent);
@@ -242,10 +236,7 @@ describe("JSON vs TCL parser consistency", () => {
     expect(Math.abs(jsonLength - tclLength)).toBeLessThan(5);
 
     // Target weight should be similar
-    expect(jsonResult.espresso.targetWeight).toBeCloseTo(
-      tclResult.espresso.targetWeight,
-      0
-    );
+    expect(jsonResult.espresso.targetWeight).toBeCloseTo(tclResult.espresso.targetWeight, 0);
   });
 });
 

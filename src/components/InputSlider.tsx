@@ -77,12 +77,7 @@ export const InputSlider = ({
           // remove non-int marks if step is < 1
           // NOTE only works for 0.5 step for now
           if (step < 1 && index % 2 === 1) return null;
-          return (
-            <div
-              {...props}
-              className="top-0 w-0.5 h-1 rounded-full bg-gray-50"
-            />
-          );
+          return <div {...props} className="top-0 w-0.5 h-1 rounded-full bg-gray-50" />;
         }}
       />
 

@@ -45,15 +45,8 @@ export const EspressoRecipe = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
-        <FormSection
-          title="Recipe"
-          subtitle="The numbers that defined this shot."
-        >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
+        <FormSection title="Recipe" subtitle="The numbers that defined this shot.">
           <FormInput
             label="Yield *"
             id="targetWeight"

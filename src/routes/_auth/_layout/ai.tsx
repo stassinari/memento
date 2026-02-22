@@ -26,14 +26,12 @@ const beansSchema = Schema.object({
       example: "Hacienda La Papaya",
     }),
     roaster: Schema.string({
-      description:
-        "The name of the roaster. This is usually the company that roasted the beans.",
+      description: "The name of the roaster. This is usually the company that roasted the beans.",
       example: "La Cabra",
     }),
 
     roastDate: Schema.number({
-      description:
-        "The date the beans were roasted on. The format is a unix timestamp in seconds.",
+      description: "The date the beans were roasted on. The format is a unix timestamp in seconds.",
       example: 1746805164,
       nullable: true,
       default: null,
@@ -88,8 +86,7 @@ const beansSchema = Schema.object({
       nullable: true,
     }),
     process: Schema.string({
-      description:
-        "The process used to prepare the beans (e.g., washed, natural).",
+      description: "The process used to prepare the beans (e.g., washed, natural).",
       example: "Washed",
       //   nullable: true,
     }),
@@ -124,13 +121,9 @@ function parseBeansSingleOrigin(json: any): Beans | null {
     }
 
     // Optional fields with safe parsing
-    const roastDate =
-      typeof json.roastDate === "number"
-        ? new Date(json.roastDate * 1000)
-        : null;
+    const roastDate = typeof json.roastDate === "number" ? new Date(json.roastDate * 1000) : null;
 
-    const harvestDate =
-      typeof json.harvestDate === "string" ? new Date(json.harvestDate) : null;
+    const harvestDate = typeof json.harvestDate === "string" ? new Date(json.harvestDate) : null;
 
     return {
       id: "generated",
@@ -250,11 +243,7 @@ const StructuredOutputText = () => {
           Structured outputs: text
         </h2>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => setText(sampleText)}
-        >
+        <Button variant="secondary" size="sm" onClick={() => setText(sampleText)}>
           Sample text
         </Button>
       </div>
@@ -475,10 +464,7 @@ const StructuredOutputImage = () => {
       <div>
         <div className="flex flex-col items-start gap-6">
           <input type="file" accept="image/*" onChange={handleFileChange} />
-          <Button
-            onClick={generateStructuredOutput}
-            disabled={isLoading || !file}
-          >
+          <Button onClick={generateStructuredOutput} disabled={isLoading || !file}>
             {isLoading ? "Generating..." : "Generate output"}
           </Button>
           {structuredOutput && (

@@ -30,8 +30,6 @@ export const espressoToDataListItem = (e: Espresso): DataListItem =>
         },
         bottomRow: {
           date: e.date,
-          tags: [
-            ...(e.grinder ? [{ icon: <MapPinIcon />, label: e.grinder }] : []),
-          ],
+          tags: e.grinder ? [{ icon: <MapPinIcon />, label: e.grinder }] : [],
         },
       };

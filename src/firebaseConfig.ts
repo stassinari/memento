@@ -29,8 +29,7 @@ export const firebaseConfig = {
 // Initialize Firebase only on client-side
 // On server, these will be undefined but shouldn't be accessed
 // TODO: this is temporary until I get rid of Firebase
-const app =
-  typeof window !== "undefined" ? initializeApp(firebaseConfig) : null;
+const app = typeof window !== "undefined" ? initializeApp(firebaseConfig) : null;
 
 const db = app ? getFirestore(app) : (null as any);
 const auth = app ? getAuth(app) : (null as any);

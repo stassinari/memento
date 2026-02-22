@@ -10,12 +10,7 @@ interface FormTextareaProps {
   textareaProps?: TextareaProps;
 }
 
-export const FormTextarea = ({
-  label,
-  id,
-  helperText,
-  textareaProps,
-}: FormTextareaProps) => {
+export const FormTextarea = ({ label, id, helperText, textareaProps }: FormTextareaProps) => {
   return (
     <div>
       <Input.Label htmlFor={id}>{label}</Input.Label>
@@ -26,9 +21,7 @@ export const FormTextarea = ({
           {...textareaProps}
         />
       </div>
-      {helperText && (
-        <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>
-      )}
+      {helperText && <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>}
     </div>
   );
 };

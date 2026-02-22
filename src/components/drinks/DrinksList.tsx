@@ -110,16 +110,11 @@ export const DrinksList = ({ drinks }: DrinksListProps) => (
     {drinks.map(([date, drinks]) => (
       <div key={date} className="mt-6 sm:mt-8 @container">
         <div className="relative">
-          <div
-            className="absolute inset-0 flex items-center"
-            aria-hidden="true"
-          >
+          <div className="absolute inset-0 flex items-center" aria-hidden="true">
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-start mb-2">
-            <span className="px-2 ml-2 text-sm text-gray-500 bg-gray-50 sm:ml-4">
-              {date}
-            </span>
+            <span className="px-2 ml-2 text-sm text-gray-500 bg-gray-50 sm:ml-4">{date}</span>
           </div>
         </div>
         <ul className="grid gap-4 @xl:grid-cols-2">
@@ -147,16 +142,8 @@ type DrinkItemProps =
 const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
   <li key={drink.id}>
     <RouterLink
-      to={
-        type === "brew"
-          ? "/drinks/brews/$brewId"
-          : "/drinks/espresso/$espressoId"
-      }
-      params={
-        type === "brew"
-          ? { brewId: drink.id ?? "" }
-          : { espressoId: drink.id ?? "" }
-      }
+      to={type === "brew" ? "/drinks/brews/$brewId" : "/drinks/espresso/$espressoId"}
+      params={type === "brew" ? { brewId: drink.id ?? "" } : { espressoId: drink.id ?? "" }}
     >
       <Card.Container className="grow text-sm">
         <Card.Content>
@@ -173,8 +160,7 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
             </>
           ) : (
             <>
-              <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" /> Pulled
-              at
+              <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" /> Pulled at
             </>
           )}
           <span>{dayjs(drink.date).format("HH:mm")}</span>
@@ -194,8 +180,7 @@ const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
     <div className="grow">
       <p className="font-semibold text-gray-900">{brew.method}</p>
       <p className="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" />{" "}
-        {beans?.name}
+        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" /> {beans?.name}
       </p>
       <p className="flex items-center gap-1 text-gray-600">
         <BeanIconSolid className="w-3 h-3 text-gray-400" />
@@ -221,12 +206,9 @@ interface EspressoCardContentProps {
 const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
   <div className="flex">
     <div className="grow">
-      {espresso.fromDecent && (
-        <p className="font-semibold text-gray-900">{espresso.profileName}</p>
-      )}
+      {espresso.fromDecent && <p className="font-semibold text-gray-900">{espresso.profileName}</p>}
       <p className="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" />{" "}
-        {beans?.name}
+        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" /> {beans?.name}
       </p>
       <p className="flex items-center gap-1 text-gray-600">
         <BeanIconSolid className="w-3 h-3 text-gray-400" />

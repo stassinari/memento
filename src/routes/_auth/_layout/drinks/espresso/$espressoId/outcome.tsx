@@ -15,9 +15,7 @@ const espressoQueryOptions = (espressoId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/espresso/$espressoId/outcome",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/espresso/$espressoId/outcome")({
   component: EspressoEditOutcome,
 });
 
@@ -26,9 +24,7 @@ function EspressoEditOutcome() {
 
   const { espressoId } = Route.useParams();
 
-  const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? ""),
-  );
+  const { data: espresso, isLoading } = useSuspenseQuery(espressoQueryOptions(espressoId ?? ""));
 
   if (isLoading) return null;
 

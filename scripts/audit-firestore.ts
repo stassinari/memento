@@ -4,8 +4,7 @@ import admin from "firebase-admin";
 import fs from "fs/promises";
 
 const LOG_PATH =
-  process.argv.find((arg) => arg.startsWith("--log="))?.split("=", 2)[1] ??
-  "firestore-audit.json";
+  process.argv.find((arg) => arg.startsWith("--log="))?.split("=", 2)[1] ?? "firestore-audit.json";
 
 const loadServiceAccount = async () => {
   const jsonEnv = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
@@ -14,8 +13,7 @@ const loadServiceAccount = async () => {
   }
 
   const path =
-    process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
-    process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS;
   if (!path) {
     return null;
   }
@@ -65,9 +63,7 @@ const main = async () => {
   const usersCollection = firestore.collection("users");
   const userDocRefs = await usersCollection.listDocuments();
   const collections = await firestore.listCollections();
-  console.log(
-    `Collections: ${collections.map((col) => col.id).join(", ") || "(none)"}`,
-  );
+  console.log(`Collections: ${collections.map((col) => col.id).join(", ") || "(none)"}`);
   const users: {
     id: string;
     beans: number;
@@ -77,13 +73,12 @@ const main = async () => {
   }[] = [];
 
   for (const userRef of userDocRefs) {
-    const [beansSnap, brewsSnap, espressoSnap, tastingsSnap] =
-      await Promise.all([
-        userRef.collection("beans").get(),
-        userRef.collection("brews").get(),
-        userRef.collection("espresso").get(),
-        userRef.collection("tastings").get(),
-      ]);
+    const [beansSnap, brewsSnap, espressoSnap, tastingsSnap] = await Promise.all([
+      userRef.collection("beans").get(),
+      userRef.collection("brews").get(),
+      userRef.collection("espresso").get(),
+      userRef.collection("tastings").get(),
+    ]);
 
     users.push({
       id: userRef.id,
@@ -108,26 +103,26 @@ const main = async () => {
     ),
   };
 
-  await fs.writeFile(
-    LOG_PATH,
-    JSON.stringify({ summary, users }, null, 2),
-    "utf-8",
-  );
+  await fs.writeFile(LOG_PATH, JSON.stringify({ summary, users }, null, 2), "utf-8");
 
   console.log(`Users (query): ${summary.totalUsers}`);
   console.log(`Users (listDocuments): ${summary.totalUsersByList}`);
   console.log(
-    `First 50 IDs (listDocuments): ${userDocRefs
-      .slice(0, 50)
-      .map((ref) => ref.id)
-      .join(", ") || "(none)"}`,
+    `First 50 IDs (listDocuments): ${
+      userDocRefs
+        .slice(0, 50)
+        .map((ref) => ref.id)
+        .join(", ") || "(none)"
+    }`,
   );
   for (const user of users) {
     console.log(
       `${user.id} -> beans:${user.beans} brews:${user.brews} espresso:${user.espresso} tastings:${user.tastings}`,
     );
   }
-  console.log(`Totals -> beans:${summary.totals.beans} brews:${summary.totals.brews} espresso:${summary.totals.espresso} tastings:${summary.totals.tastings}`);
+  console.log(
+    `Totals -> beans:${summary.totals.beans} brews:${summary.totals.brews} espresso:${summary.totals.espresso} tastings:${summary.totals.tastings}`,
+  );
   console.log(`Log: ${LOG_PATH}`);
 };
 

@@ -1,9 +1,4 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -25,9 +20,7 @@ const espressoQueryOptions = (espressoId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/espresso/$espressoId/clone",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/espresso/$espressoId/clone")({
   component: EspressoClone,
 });
 
@@ -99,11 +92,7 @@ function EspressoClone() {
 
       <Heading className="mb-4">Clone espresso</Heading>
 
-      <EspressoForm
-        defaultValues={defaultValues}
-        buttonLabel="Clone"
-        mutation={handleClone}
-      />
+      <EspressoForm defaultValues={defaultValues} buttonLabel="Clone" mutation={handleClone} />
     </>
   );
 }

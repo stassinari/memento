@@ -39,10 +39,7 @@ interface EspressoOutcomeFormProps {
   espressoId: string;
 }
 
-export const EspressoOutcomeForm = ({
-  espresso,
-  espressoId,
-}: EspressoOutcomeFormProps) => {
+export const EspressoOutcomeForm = ({ espresso, espressoId }: EspressoOutcomeFormProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -84,22 +81,12 @@ export const EspressoOutcomeForm = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="mt-6 space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="mt-6 space-y-6">
         <FormSection
           title="Scores"
           subtitle="Your overall impression and any notes worth remembering."
         >
-          <FormInputSlider
-            label="Overall score"
-            id="rating"
-            min={0}
-            max={10}
-            step={0.5}
-          />
+          <FormInputSlider label="Overall score" id="rating" min={0} max={10} step={0.5} />
 
           <FormTextarea
             label="Notes"
@@ -109,39 +96,15 @@ export const EspressoOutcomeForm = ({
           />
         </FormSection>
 
-        <FormSection
-          title="Tasting notes"
-          subtitle="Break down the cup — from aroma to finish."
-        >
+        <FormSection title="Tasting notes" subtitle="Break down the cup — from aroma to finish.">
           <FormInputSlider label="Aroma" id="aroma" min={0} max={10} step={1} />
-          <FormInputSlider
-            label="Acidity"
-            id="acidity"
-            min={0}
-            max={10}
-            step={1}
-          />
-          <FormInputSlider
-            label="Sweetness"
-            id="sweetness"
-            min={0}
-            max={10}
-            step={1}
-          />
+          <FormInputSlider label="Acidity" id="acidity" min={0} max={10} step={1} />
+          <FormInputSlider label="Sweetness" id="sweetness" min={0} max={10} step={1} />
           <FormInputSlider label="Body" id="body" min={0} max={10} step={1} />
-          <FormInputSlider
-            label="Finish"
-            id="finish"
-            min={0}
-            max={10}
-            step={1}
-          />
+          <FormInputSlider label="Finish" id="finish" min={0} max={10} step={1} />
         </FormSection>
 
-        <FormSection
-          title="Extraction"
-          subtitle="The technical side of how the shot turned out."
-        >
+        <FormSection title="Extraction" subtitle="The technical side of how the shot turned out.">
           <FormInput
             label="TDS (%)"
             id="tds"
@@ -163,10 +126,7 @@ export const EspressoOutcomeForm = ({
 
         <div className="flex justify-end gap-4">
           <Button variant="white" type="button" asChild>
-            <Link
-              to="/drinks/espresso/$espressoId"
-              params={{ espressoId: espresso.id ?? "" }}
-            >
+            <Link to="/drinks/espresso/$espressoId" params={{ espressoId: espresso.id ?? "" }}>
               Back
             </Link>
           </Button>

@@ -16,20 +16,13 @@ export interface InputRadioProps {
   options: RadioOption[];
 }
 
-export const InputRadio = ({
-  label,
-  direction,
-  inputProps,
-  options,
-}: InputRadioProps) => {
+export const InputRadio = ({ label, direction, inputProps, options }: InputRadioProps) => {
   return (
     <fieldset className="mt-3">
       <legend className="sr-only">{label}</legend>
       <div
         className={clsx([
-          direction === "vertical"
-            ? "flex flex-col space-y-4"
-            : "flex space-x-10 items-center",
+          direction === "vertical" ? "flex flex-col space-y-4" : "flex space-x-10 items-center",
         ])}
       >
         {options.map(({ value, label }) => (

@@ -5,10 +5,7 @@ interface EquipmentTableProps {
   onClick: () => void;
 }
 
-export const EquipmentTable = ({
-  rows,
-  onClick,
-}: EquipmentTableProps) => {
+export const EquipmentTable = ({ rows, onClick }: EquipmentTableProps) => {
   return (
     <>
       <dl className="-my-3 divide-y divide-gray-200">

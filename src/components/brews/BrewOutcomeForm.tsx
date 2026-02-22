@@ -86,11 +86,7 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
         <FormSection
           title="Scores"
           subtitle="Your overall impression and any notes worth remembering."
@@ -112,39 +108,15 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
           />
         </FormSection>
 
-        <FormSection
-          title="Tasting notes"
-          subtitle="Break down the cup — from aroma to finish."
-        >
+        <FormSection title="Tasting notes" subtitle="Break down the cup — from aroma to finish.">
           <FormInputSlider label="Aroma" id="aroma" min={0} max={10} step={1} />
-          <FormInputSlider
-            label="Acidity"
-            id="acidity"
-            min={0}
-            max={10}
-            step={1}
-          />
-          <FormInputSlider
-            label="Sweetness"
-            id="sweetness"
-            min={0}
-            max={10}
-            step={1}
-          />
+          <FormInputSlider label="Acidity" id="acidity" min={0} max={10} step={1} />
+          <FormInputSlider label="Sweetness" id="sweetness" min={0} max={10} step={1} />
           <FormInputSlider label="Body" id="body" min={0} max={10} step={1} />
-          <FormInputSlider
-            label="Finish"
-            id="finish"
-            min={0}
-            max={10}
-            step={1}
-          />
+          <FormInputSlider label="Finish" id="finish" min={0} max={10} step={1} />
         </FormSection>
 
-        <FormSection
-          title="Extraction"
-          subtitle="The technical side of how the brew turned out."
-        >
+        <FormSection title="Extraction" subtitle="The technical side of how the brew turned out.">
           <FormInputRadioButtonGroup
             label="Extraction type"
             name="extractionType"

@@ -66,10 +66,7 @@ export const EmailPasswordLogin = () => {
 
         <div className="flex items-center justify-end">
           <div className="text-sm">
-            <a
-              href="#"
-              className="font-medium text-orange-600 hover:text-orange-500"
-            >
+            <a href="#" className="font-medium text-orange-600 hover:text-orange-500">
               Forgot your password?
             </a>
           </div>

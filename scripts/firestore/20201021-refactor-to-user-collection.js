@@ -16,11 +16,7 @@ const createUsersCollection = (collection) => {
         const uid = data.uid;
         delete data.uid;
 
-        db.collection("users")
-          .doc(uid)
-          .collection(collection)
-          .doc(doc.id)
-          .set(data);
+        db.collection("users").doc(uid).collection(collection).doc(doc.id).set(data);
       });
     })
     .then(() => console.log(`Finished moving ${collection}`))

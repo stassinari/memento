@@ -3,10 +3,7 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  getEspressoFormValueSuggestions,
-  getSelectableBeans,
-} from "~/db/queries";
+import { getEspressoFormValueSuggestions, getSelectableBeans } from "~/db/queries";
 import { Beans } from "~/db/types";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
@@ -71,13 +68,11 @@ export const DecentEspressoForm = ({
     queryFn: () => getSelectableBeans(),
   });
 
-  const {
-    data: espressoFormValueSuggestions,
-    isLoading: areEspressoFormValueSuggestionsLoading,
-  } = useQuery({
-    queryKey: ["espressos", "formValueSuggestions"],
-    queryFn: () => getEspressoFormValueSuggestions(),
-  });
+  const { data: espressoFormValueSuggestions, isLoading: areEspressoFormValueSuggestionsLoading } =
+    useQuery({
+      queryKey: ["espressos", "formValueSuggestions"],
+      queryFn: () => getEspressoFormValueSuggestions(),
+    });
 
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
 
@@ -107,11 +102,7 @@ export const DecentEspressoForm = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
         <FormSection
           title="Details"
           subtitle="The essentials — when you made it and what you used."
@@ -124,16 +115,10 @@ export const DecentEspressoForm = ({
             placeholder="Select espresso date"
           />
 
-          <BeansCardsSelect
-            beansList={beansList}
-            existingBeans={existingBeans}
-          />
+          <BeansCardsSelect beansList={beansList} existingBeans={existingBeans} />
         </FormSection>
 
-        <FormSection
-          title="Recipe"
-          subtitle="The numbers that defined this shot."
-        >
+        <FormSection title="Recipe" subtitle="The numbers that defined this shot.">
           <FormInput
             label="Final yield (g)"
             id="actualWeight"
@@ -200,10 +185,7 @@ export const DecentEspressoForm = ({
           />
         </FormSection>
 
-        <FormSection
-          title="Equipment"
-          subtitle="The gear that went into this shot."
-        >
+        <FormSection title="Equipment" subtitle="The gear that went into this shot.">
           {showEquipmentForm ? (
             <>
               <FormComboboxSingle
@@ -227,10 +209,7 @@ export const DecentEspressoForm = ({
                 name="grinderBurrs"
                 placeholder="54mm conical"
                 options={espressoFormValueSuggestions.grinderBurrs.sort()}
-                suggestions={espressoFormValueSuggestions.grinderBurrs.slice(
-                  0,
-                  5,
-                )}
+                suggestions={espressoFormValueSuggestions.grinderBurrs.slice(0, 5)}
               />
 
               <FormInputRadioButtonGroup

@@ -1,17 +1,8 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
-import {
-  BrewForm,
-  brewFormEmptyValues,
-  BrewFormInputs,
-} from "~/components/brews/BrewForm";
+import { BrewForm, brewFormEmptyValues, BrewFormInputs } from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
@@ -25,9 +16,7 @@ const brewQueryOptions = (brewId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/brews/$brewId/clone",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/clone")({
   component: BrewClone,
 });
 
@@ -39,9 +28,7 @@ function BrewClone() {
 
   const queryClient = useQueryClient();
 
-  const { data: brewToClone, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId ?? ""),
-  );
+  const { data: brewToClone, isLoading } = useSuspenseQuery(brewQueryOptions(brewId ?? ""));
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
@@ -103,11 +90,7 @@ function BrewClone() {
 
       <Heading className="mb-4">Clone brew</Heading>
 
-      <BrewForm
-        defaultValues={defaultValues}
-        buttonLabel="Clone"
-        mutation={handleClone}
-      />
+      <BrewForm defaultValues={defaultValues} buttonLabel="Clone" mutation={handleClone} />
     </>
   );
 }

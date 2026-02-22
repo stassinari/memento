@@ -119,9 +119,7 @@ const BottomNavItem = ({ Icon, label, linkTo }: BottomNavItemProps) => {
         <span
           className={clsx([
             "w-6 h-6 mx-auto",
-            isActive
-              ? "text-orange-600"
-              : "text-gray-400 group-hover:text-gray-500",
+            isActive ? "text-orange-600" : "text-gray-400 group-hover:text-gray-500",
           ])}
         >
           {Icon}
@@ -129,9 +127,7 @@ const BottomNavItem = ({ Icon, label, linkTo }: BottomNavItemProps) => {
         <span
           className={clsx([
             "text-xs font-medium",
-            isActive
-              ? "text-orange-600"
-              : "text-gray-600 group-hover:text-gray-900",
+            isActive ? "text-orange-600" : "text-gray-600 group-hover:text-gray-900",
           ])}
         >
           {label}

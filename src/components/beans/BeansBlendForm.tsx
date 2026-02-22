@@ -41,9 +41,7 @@ export const BeansBlendForm = () => {
       {fields.map((field, i) => (
         <div className="border rounded-md" key={field.id}>
           <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b">
-            <span className="text-sm font-semibold text-gray-500">
-              Blend part {i + 1}
-            </span>
+            <span className="text-sm font-semibold text-gray-500">Blend part {i + 1}</span>
             <IconButton
               type="button"
               onClick={handleRemove(i)}
@@ -103,12 +101,7 @@ export const BeansBlendForm = () => {
         </div>
       ))}
       <div className="text-right">
-        <Button
-          variant="secondary"
-          size="sm"
-          type="button"
-          onClick={handleAppend}
-        >
+        <Button variant="secondary" size="sm" type="button" onClick={handleAppend}>
           Add blend part
         </Button>
       </div>
@@ -122,9 +115,7 @@ export const BeansBlendForm = () => {
       <span className="block w-12 h-12 mx-auto text-gray-400">
         <PuzzlePieceIcon />
       </span>
-      <span className="block mt-2 text-sm font-medium text-gray-900">
-        Add a blend part
-      </span>
+      <span className="block mt-2 text-sm font-medium text-gray-900">Add a blend part</span>
     </button>
   );
 };

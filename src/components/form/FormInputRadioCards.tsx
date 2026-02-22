@@ -3,10 +3,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { Input } from "../Input";
 import { InputRadioCards, InputRadioCardsProps } from "../InputRadioCards";
 
-type FormInputRadioCardsProps<T> = Pick<
-  InputRadioCardsProps<T>,
-  "label" | "options"
-> & {
+type FormInputRadioCardsProps<T> = Pick<InputRadioCardsProps<T>, "label" | "options"> & {
   name: string;
   error?: string;
   requiredMsg?: string;
@@ -37,7 +34,9 @@ export const FormInputRadioCards = <T,>({
             handleChange={(newValue) => {
               field.onChange(newValue);
 
-              onChange && onChange();
+              if (onChange) {
+                onChange();
+              }
             }}
           />
         )}

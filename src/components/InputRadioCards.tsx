@@ -39,10 +39,7 @@ export const InputRadioCards = <T,>({
           >
             <span className="flex items-center">
               <span className="flex flex-col text-sm">
-                <RadioGroup.Label
-                  as="span"
-                  className="font-medium text-gray-900"
-                >
+                <RadioGroup.Label as="span" className="font-medium text-gray-900">
                   {option.left.top}
                 </RadioGroup.Label>
                 {option.left.bottom && (
@@ -58,9 +55,7 @@ export const InputRadioCards = <T,>({
                 className="flex flex-col-reverse text-sm sm:mt-0 sm:ml-4 sm:flex-col sm:text-right"
               >
                 <span className="font-medium text-gray-500">
-                  {option.right.top || (
-                    <span className="hidden sm:block">&nbsp;</span>
-                  )}
+                  {option.right.top || <span className="hidden sm:block">&nbsp;</span>}
                 </span>
                 {option.right.bottom && (
                   <span className="text-gray-500">{option.right.bottom}</span>

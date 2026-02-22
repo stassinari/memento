@@ -1,10 +1,4 @@
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Link, LinkProps } from "@tanstack/react-router";
 import clsx from "clsx";
@@ -35,21 +29,14 @@ const dropdownItemStyles =
 const buttonStyles =
   "relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-l-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10";
 
-export const ButtonWithDropdown = ({
-  mainButton,
-  dropdownItems,
-}: ButtonWithDropdownProps) => (
+export const ButtonWithDropdown = ({ mainButton, dropdownItems }: ButtonWithDropdownProps) => (
   <div className="inline-flex rounded-md shadow-xs">
     {mainButton.type === "link" ? (
       <Link {...mainButton.linkProps} className={clsx(buttonStyles)}>
         {mainButton.label}
       </Link>
     ) : (
-      <button
-        type="button"
-        onClick={mainButton.onClick}
-        className={clsx(buttonStyles)}
-      >
+      <button type="button" onClick={mainButton.onClick} className={clsx(buttonStyles)}>
         {mainButton.label}
       </button>
     )}
@@ -73,17 +60,11 @@ export const ButtonWithDropdown = ({
             {dropdownItems.map((item) => (
               <MenuItem key={item.label}>
                 {item.type === "link" ? (
-                  <Link
-                    {...item.linkProps}
-                    className={clsx(dropdownItemStyles)}
-                  >
+                  <Link {...item.linkProps} className={clsx(dropdownItemStyles)}>
                     {item.label}
                   </Link>
                 ) : (
-                  <button
-                    onClick={item.onClick}
-                    className={clsx(dropdownItemStyles)}
-                  >
+                  <button onClick={item.onClick} className={clsx(dropdownItemStyles)}>
                     {item.label}
                   </button>
                 )}

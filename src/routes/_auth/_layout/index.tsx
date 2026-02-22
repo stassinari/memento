@@ -5,10 +5,7 @@ import dayjs from "dayjs";
 import { BeansCard } from "~/components/beans/BeansCard";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
-import {
-  DrinksList,
-  mergeBrewsAndEspressoByUniqueDate,
-} from "~/components/drinks/DrinksList";
+import { DrinksList, mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList";
 import { BeanBagIcon } from "~/components/icons/BeanBagIcon";
 import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
 import { DropIcon } from "~/components/icons/DropIcon";
@@ -26,8 +23,7 @@ const brewsQueryOptions = () =>
 const espressosQueryOptions = () =>
   queryOptions({
     queryKey: ["espressos"],
-    queryFn: () =>
-      getEspressos({ data: { limit: 30, offset: 0 } }),
+    queryFn: () => getEspressos({ data: { limit: 30, offset: 0 } }),
   });
 
 const partialEspressosQueryOptions = () =>
@@ -41,21 +37,12 @@ export const Route = createFileRoute("/_auth/_layout/")({
 });
 
 function Home() {
-  const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(),
-  );
-  const { data: espressoList } = useSuspenseQuery(
-    espressosQueryOptions(),
-  );
-  const { data: partialEspressos } = useSuspenseQuery(
-    partialEspressosQueryOptions(),
-  );
+  const { data: brewsList } = useSuspenseQuery(brewsQueryOptions());
+  const { data: espressoList } = useSuspenseQuery(espressosQueryOptions());
+  const { data: partialEspressos } = useSuspenseQuery(partialEspressosQueryOptions());
 
   // Calculate recently used beans from the already-fetched brew/espresso data
-  const recentlyUsedBeans = getRecentlyUsedBeans(
-    brewsList ?? [],
-    espressoList ?? [],
-  );
+  const recentlyUsedBeans = getRecentlyUsedBeans(brewsList ?? [], espressoList ?? []);
 
   // Get latest drinks (limited to 3 days worth)
   const latestDrinks = mergeBrewsAndEspressoByUniqueDate(
@@ -69,9 +56,7 @@ function Home() {
       {recentlyUsedBeans.length > 0 && (
         <section className="mt-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Recently used beans
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Recently used beans</h2>
             <Button variant="secondary" colour="accent" size="sm" asChild>
               <Link to="/beans/add">
                 <PlusIcon />
@@ -92,9 +77,7 @@ function Home() {
       {/* Partial Espressos Section */}
       {(partialEspressos ?? []).length > 0 && (
         <section className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Espressos pending details
-          </h2>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">Espressos pending details</h2>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {(partialEspressos ?? []).map(({ espresso, beans }) => (
               <li key={espresso.id}>
@@ -109,9 +92,7 @@ function Home() {
       {latestDrinks.length > 0 && (
         <section className="mt-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Latest drinks
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Latest drinks</h2>
             <div className="flex gap-2">
               <Button variant="secondary" colour="main" size="sm" asChild>
                 <Link to="/drinks/brews/add">
@@ -169,13 +150,7 @@ function getRecentlyUsedBeans(
 }
 
 // Partial Espresso Card Component
-function PartialEspressoCard({
-  espresso,
-  beans,
-}: {
-  espresso: Espresso;
-  beans: Beans | null;
-}) {
+function PartialEspressoCard({ espresso, beans }: { espresso: Espresso; beans: Beans | null }) {
   return (
     <ListCard
       linkProps={{
@@ -185,18 +160,13 @@ function PartialEspressoCard({
       footerSlot={
         <Card.Footer className="flex items-center h-8 gap-1 text-xs text-gray-500">
           <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" />
-          Pulled at{" "}
-          <span>
-            {dayjs(espresso.date).format("ddd DD MMM YYYY | HH:mm")}
-          </span>
+          Pulled at <span>{dayjs(espresso.date).format("ddd DD MMM YYYY | HH:mm")}</span>
         </Card.Footer>
       }
     >
       <div className="flex">
         <div className="grow">
-          {espresso.profileName && (
-            <ListCard.Title>{espresso.profileName}</ListCard.Title>
-          )}
+          {espresso.profileName && <ListCard.Title>{espresso.profileName}</ListCard.Title>}
           {beans && (
             <ListCard.Row>
               <ListCard.RowIcon>
@@ -209,8 +179,8 @@ function PartialEspressoCard({
             <ListCard.RowIcon>
               <BeanIconSolid />
             </ListCard.RowIcon>
-            {espresso.beansWeight ?? "?"}g :{" "}
-            {espresso.actualWeight ?? espresso.targetWeight ?? "?"}g
+            {espresso.beansWeight ?? "?"}g : {espresso.actualWeight ?? espresso.targetWeight ?? "?"}
+            g
             <DropIcon className="w-3 h-3 text-gray-400" />
           </ListCard.Row>
         </div>

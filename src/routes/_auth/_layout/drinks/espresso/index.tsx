@@ -16,10 +16,7 @@ type EspressoWithBeans = Awaited<ReturnType<typeof getEspressos>>[number];
 
 const PAGE_SIZE = 15;
 
-const espressosQueryOptions = (
-  limit: number,
-  offset: number,
-) =>
+const espressosQueryOptions = (limit: number, offset: number) =>
   queryOptions({
     queryKey: ["espressos", limit, offset],
     queryFn: () =>
@@ -36,11 +33,9 @@ function EspressoList() {
   const [offset, setOffset] = useState(0);
   const [allEspressos, setAllEspressos] = useState<EspressoWithBeans[]>([]);
 
-  const { data: espressosWithBeans, isLoading } = useQuery<EspressoWithBeans[]>(
-    {
-      ...espressosQueryOptions(PAGE_SIZE, offset),
-    },
-  );
+  const { data: espressosWithBeans, isLoading } = useQuery<EspressoWithBeans[]>({
+    ...espressosQueryOptions(PAGE_SIZE, offset),
+  });
 
   // TODO: i'm not in love with this
   useEffect(() => {
@@ -52,10 +47,7 @@ function EspressoList() {
     }
   }, [espressosWithBeans, offset]);
 
-  const drinks = useMemo(
-    () => mergeBrewsAndEspressoByUniqueDate([], allEspressos),
-    [allEspressos],
-  );
+  const drinks = useMemo(() => mergeBrewsAndEspressoByUniqueDate([], allEspressos), [allEspressos]);
 
   const isSm = useScreenMediaQuery("sm");
 
@@ -71,12 +63,7 @@ function EspressoList() {
 
       <Heading
         actionSlot={
-          <Button
-            variant="primary"
-            colour="accent"
-            size={isSm ? "md" : "sm"}
-            asChild
-          >
+          <Button variant="primary" colour="accent" size={isSm ? "md" : "sm"} asChild>
             <RouterLink to="/drinks/espresso/add">Add espresso</RouterLink>
           </Button>
         }
@@ -89,12 +76,7 @@ function EspressoList() {
       </div>
       <div className="flex justify-center gap-4 mt-4">
         {hasMore && (
-          <Button
-            variant="white"
-            colour="accent"
-            onClick={loadMore}
-            disabled={isLoading}
-          >
+          <Button variant="white" colour="accent" onClick={loadMore} disabled={isLoading}>
             {isLoading ? "Loading..." : "Load more"}
           </Button>
         )}

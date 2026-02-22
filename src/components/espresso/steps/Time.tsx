@@ -54,24 +54,16 @@ export const EspressoTime = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
         <FormSection
           title="Time"
           subtitle="How long the shot took — use the timer or enter it manually."
         >
           <Stopwatch
             atom={espressoStopwatchAtom}
-            initialSeconds={
-              defaultValues.actualTime ? defaultValues.actualTime % 60 : 0
-            }
+            initialSeconds={defaultValues.actualTime ? defaultValues.actualTime % 60 : 0}
             initialMinutes={
-              defaultValues.actualTime
-                ? Math.floor(defaultValues.actualTime / 60)
-                : 0
+              defaultValues.actualTime ? Math.floor(defaultValues.actualTime / 60) : 0
             }
             setFormSeconds={(seconds) => setValue("actualTime", seconds)}
             disabled={manualInput}
@@ -92,8 +84,7 @@ export const EspressoTime = ({
                 ...register("actualTime", {
                   min: {
                     value: 0,
-                    message:
-                      "Please don't break space/time, enter a positive number.",
+                    message: "Please don't break space/time, enter a positive number.",
                   },
                   setValueAs: (v: string) => (v === "" ? null : Number(v)),
                 }),

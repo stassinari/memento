@@ -125,15 +125,12 @@ const properties: TclJsConversion[] = [
 const bracesRegex = /\{(.*?)\}/g;
 
 const parseShotFile = (data: string): string[] =>
-  data
-    .split("\n")
-    .filter((line) => {
-      return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
-    });
+  data.split("\n").filter((line) => {
+    return properties.map((p) => p.tcl).includes(line.trim().split(" ")[0]);
+  });
 
 const extractDate = (lines: string[]): Date => {
-  const stringTs =
-    lines.find((line) => line.startsWith("clock"))?.split(" ")[1] + "000";
+  const stringTs = lines.find((line) => line.startsWith("clock"))?.split(" ")[1] + "000";
   if (!stringTs) {
     throw new Error("parsing error - date");
   }
@@ -146,19 +143,17 @@ const extractProfileName = (lines: string[]): string => {
     const json = JSON.parse("{" + raw! + "}");
     return json.title;
   } catch (error) {
-    throw new Error("parsing error - title");
+    throw new Error("parsing error - title: " + error);
   }
 };
 
 const extractTargetWeight = (lines: string[]): number => {
-  const raw = lines
-    .find((line) => line.includes("target_weight"))
-    ?.slice(0, -1);
+  const raw = lines.find((line) => line.includes("target_weight"))?.slice(0, -1);
   try {
     const json = JSON.parse("{" + raw! + "}");
     return parseFloat(json["target_weight"]);
   } catch (error) {
-    throw new Error("parsing error - target_weight");
+    throw new Error("parsing error - target_weight: " + error);
   }
 };
 

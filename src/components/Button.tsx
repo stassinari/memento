@@ -20,8 +20,7 @@ export const compoundButtonStyles = {
     "bg-linear-to-br from-orange-600 to-rose-600 bg-origin-border hover:from-orange-700 hover:to-rose-700 text-white border-transparent shadow-xs ring-orange-500",
   primaryAccent:
     "bg-blue-600 hover:bg-blue-700 text-white border-transparent shadow-xs ring-blue-500",
-  secondaryAccent:
-    "text-blue-700 bg-blue-100 hover:bg-blue-200 border-transparent ring-blue-500",
+  secondaryAccent: "text-blue-700 bg-blue-100 hover:bg-blue-200 border-transparent ring-blue-500",
   gradientAccent:
     "bg-linear-to-br from-blue-600 to-purple-600 bg-origin-border hover:from-blue-700 hover:to-purple-700 text-white border-transparent shadow-xs ring-blue-500",
 };
@@ -31,8 +30,7 @@ const buttonVariants = cva(baseButtonStyles.join(" "), {
     variant: {
       primary: "",
       secondary: "",
-      white:
-        "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
+      white: "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
       gradient: "",
     },
     colour: {
@@ -101,27 +99,12 @@ type ButtonProps = {
   React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      asChild = false,
-      variant,
-      size,
-      colour,
-      width,
-      className,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
+  ({ asChild = false, variant, size, colour, width, className, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
 
     return (
       <Comp
-        className={clsx(
-          buttonVariants({ variant, size, colour, width }),
-          className,
-        )}
+        className={clsx(buttonVariants({ variant, size, colour, width }), className)}
         ref={ref}
         {...props}
       >

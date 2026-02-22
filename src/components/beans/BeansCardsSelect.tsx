@@ -10,9 +10,7 @@ import { RadixModal } from "../Modal";
 import { Toggle } from "../Toggle";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
 
-type BeansForSelect = NonNullable<
-  Awaited<ReturnType<typeof getSelectableBeans>>
->[0];
+type BeansForSelect = NonNullable<Awaited<ReturnType<typeof getSelectableBeans>>>[0];
 
 const beansRadioOption = (beans: BeansForSelect): InputRadioCardsOption => ({
   value: beans.id,
@@ -35,10 +33,9 @@ interface BeansCardsSelectProps {
   existingBeans?: BeansForSelect;
 }
 
-export const BeansCardsSelect = ({
-  beansList,
-  existingBeans,
-}: BeansCardsSelectProps) => {
+export const BeansCardsSelect = ({ beansList, existingBeans }: BeansCardsSelectProps) => {
+  console.log("BeansCardsSelect with no memos!");
+
   const { watch, formState } = useFormContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,23 +67,19 @@ export const BeansCardsSelect = ({
     return beansList.filter((b) => b.isOpen).slice(0, 3);
   }, [beansList, selectedBeans, existingBeans]);
 
-  const modalBeans = useMemo(() => {
-    return beansList
-      .filter((b) => {
-        if (!searchQuery) return b;
-        return (
-          b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          b.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (b.origin === "single-origin" &&
-            b.country?.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-      })
-      .filter((b) => b.isFrozen === showFrozenBeans);
-  }, [beansList, searchQuery, showFrozenBeans]);
+  const modalBeans = beansList
+    .filter((b) => {
+      if (!searchQuery) return b;
+      return (
+        b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (b.origin === "single-origin" &&
+          b.country?.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    })
+    .filter((b) => b.isFrozen === showFrozenBeans);
 
-  const showMore = useMemo(() => {
-    return quickSelectBeans?.length !== beansList.length;
-  }, [beansList, selectedBeans, modalBeans]);
+  const showMore = quickSelectBeans?.length !== beansList.length;
 
   return (
     <div>
@@ -126,11 +119,7 @@ export const BeansCardsSelect = ({
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
-            <Toggle
-              label="Show frozen"
-              checked={showFrozenBeans}
-              onChange={setShowFrozenBeans}
-            />
+            <Toggle label="Show frozen" checked={showFrozenBeans} onChange={setShowFrozenBeans} />
           </div>
 
           <FormInputRadioCards

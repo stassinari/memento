@@ -19,10 +19,7 @@ interface LayoutProps {
 
 export const Layout = ({ fullWidth = false, children }: LayoutProps) => {
   return (
-    <div
-      className={clsx(layoutContainerTailwindStyles)}
-      style={layoutContainerCssStyles}
-    >
+    <div className={clsx(layoutContainerTailwindStyles)} style={layoutContainerCssStyles}>
       <SidebarNav />
       <div className="md:pl-48 lg:pl-64">
         <BottomNav />

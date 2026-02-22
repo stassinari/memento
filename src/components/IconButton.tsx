@@ -11,8 +11,7 @@ const iconButtonVariants = cva(iconButtonStyles.join(" "), {
     variant: {
       primary: "",
       secondary: "",
-      white:
-        "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
+      white: "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
       gradient: "",
     },
     colour: {
@@ -76,18 +75,12 @@ type IconButtonProps = {
   React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  (
-    { asChild = false, variant, size, colour, className, children, ...props },
-    ref,
-  ) => {
+  ({ asChild = false, variant, size, colour, className, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
 
     return (
       <Comp
-        className={clsx(
-          iconButtonVariants({ variant, size, colour }),
-          className,
-        )}
+        className={clsx(iconButtonVariants({ variant, size, colour }), className)}
         ref={ref}
         {...props}
       >

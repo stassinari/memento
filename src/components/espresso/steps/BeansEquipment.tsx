@@ -22,9 +22,9 @@ export interface BeansEquipmentInputs {
   basket: string | null;
 }
 
-export const beansEquipmentEmptyValues: (
-  copyFrom?: Espresso,
-) => BeansEquipmentInputs = (copyFrom) => ({
+export const beansEquipmentEmptyValues: (copyFrom?: Espresso) => BeansEquipmentInputs = (
+  copyFrom,
+) => ({
   date: new Date(),
   beans: null,
 
@@ -67,11 +67,7 @@ export const BeansEquipment = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
         <FormSection
           title="Details"
           subtitle="The essentials — when you made it and what you used."
@@ -89,10 +85,7 @@ export const BeansEquipment = ({
 
         <Divider className="hidden sm:block" />
 
-        <FormSection
-          title="Equipment"
-          subtitle="The gear that went into this shot."
-        >
+        <FormSection title="Equipment" subtitle="The gear that went into this shot.">
           {showEquipmentForm ? (
             <>
               <FormComboboxSingle
@@ -116,10 +109,7 @@ export const BeansEquipment = ({
                 name="grinderBurrs"
                 placeholder="54mm conical"
                 options={espressoFormValueSuggestions.grinderBurrs.sort()}
-                suggestions={espressoFormValueSuggestions.grinderBurrs.slice(
-                  0,
-                  5,
-                )}
+                suggestions={espressoFormValueSuggestions.grinderBurrs.slice(0, 5)}
               />
 
               <FormInputRadioButtonGroup

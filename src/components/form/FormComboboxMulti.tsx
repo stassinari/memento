@@ -19,8 +19,7 @@ export const FormComboboxMulti = ({
   renderOption,
 }: FormComboboxMultiProps) => {
   const { control, getValues, setValue } = useFormContext();
-  const removeItem = (item: string) =>
-    setValue(name, immutableRemove(getValues(name), item));
+  const removeItem = (item: string) => setValue(name, immutableRemove(getValues(name), item));
 
   return (
     <Controller

@@ -3,10 +3,7 @@ interface GoogleIconProps {
   colour?: "default" | "current";
 }
 
-export const GoogleIcon = ({
-  className,
-  colour = "current",
-}: GoogleIconProps) => (
+export const GoogleIcon = ({ className, colour = "current" }: GoogleIconProps) => (
   <svg aria-label="Google" viewBox="0 0 512 512" className={className}>
     <path
       fill={colour === "default" ? "#4285f4" : "currentColor"}
