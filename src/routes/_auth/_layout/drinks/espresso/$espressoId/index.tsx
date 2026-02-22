@@ -8,7 +8,6 @@ import {
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -24,7 +23,6 @@ import { EspressoDetailsOutcome } from "~/components/espresso/EspressoDetailsOut
 import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
 import { deleteEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { tabStyles } from "../../../beans";
 
@@ -32,12 +30,12 @@ export type EspressoWithBeans = NonNullable<
   Awaited<ReturnType<typeof getEspresso>>
 >;
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -54,10 +52,9 @@ function EspressoDetails() {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId, user?.dbId ?? ""),
+    espressoQueryOptions(espressoId),
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -65,12 +62,12 @@ function EspressoDetails() {
 
   const handleDelete = useCallback(async () => {
     await deleteEspresso({
-      data: { espressoId, userId: user?.dbId ?? "" },
+      data: { espressoId },
     });
 
     queryClient.invalidateQueries({ queryKey: ["espresso"] });
     navigate({ to: "/drinks/espresso" });
-  }, [espressoId, user?.dbId, queryClient, navigate]);
+  }, [espressoId, queryClient, navigate]);
 
   const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
     () => ({

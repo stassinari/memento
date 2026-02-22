@@ -24,13 +24,12 @@ import { IconButton } from "~/components/IconButton";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
 import { getBrews } from "~/db/queries";
 import type { Brew } from "~/db/types";
-import { useCurrentUser } from "~/hooks/useInitUser";
 import { roundToDecimal } from "~/utils";
 
-const brewsQueryOptions = (userId: string) =>
+const brewsQueryOptions = () =>
   queryOptions({
-    queryKey: ["brews", userId],
-    queryFn: () => getBrews({ data: { userId } }),
+    queryKey: ["brews"],
+    queryFn: () => getBrews({ data: {} }),
   });
 
 export const Route = createFileRoute("/_auth/_layoutFull/drinks/brews/table")({
@@ -98,10 +97,8 @@ const columns = [
 ];
 
 function BrewsTableWrapper() {
-  const user = useCurrentUser();
-
   const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(user?.dbId ?? ""),
+    brewsQueryOptions(),
   );
 
   const data: BrewForTable[] = useMemo(

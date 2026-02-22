@@ -1,19 +1,17 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { BrewOutcomeForm } from "~/components/brews/BrewOutcomeForm";
 import { getBrew } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
-const brewQueryOptions = (brewId: string, userId: string) =>
+const brewQueryOptions = (brewId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, userId },
+        data: { brewId },
       }),
   });
 
@@ -26,11 +24,10 @@ export const Route = createFileRoute(
 function BrewEditOutcome() {
   console.log("BrewEditOutcome");
 
-  const user = useAtomValue(userAtom);
   const { brewId } = Route.useParams();
 
   const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId, user?.dbId ?? ""),
+    brewQueryOptions(brewId),
   );
 
   if (isLoading) return null;

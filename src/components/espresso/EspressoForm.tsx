@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
@@ -9,7 +8,6 @@ import {
   getSelectableBeans,
 } from "~/db/queries";
 import { Beans, Espresso } from "~/db/types";
-import { userAtom } from "~/hooks/useInitUser";
 import {
   BeansEquipment,
   BeansEquipmentInputs,
@@ -60,20 +58,18 @@ export const EspressoForm = ({
 }: EspressoFormProps) => {
   console.log("EspressoForm");
 
-  const user = useAtomValue(userAtom);
-
   const [espressoFormInputs, setEspressoFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] =
     useState<EspressoFormStep>("beansEquipment");
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
-    queryKey: ["beans", user?.dbId],
-    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
+    queryKey: ["beans"],
+    queryFn: () => getSelectableBeans(),
   });
 
   const { data: espressoFormValueSuggestions } = useQuery({
     queryKey: ["espressos", "formValueSuggestions"],
-    queryFn: () => getEspressoFormValueSuggestions({ data: user?.dbId ?? "" }),
+    queryFn: () => getEspressoFormValueSuggestions(),
   });
 
   const onSubmit: SubmitHandler<EspressoFormInputs> = (data) => {

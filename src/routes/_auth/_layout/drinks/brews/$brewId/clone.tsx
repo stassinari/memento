@@ -5,7 +5,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
@@ -16,14 +15,13 @@ import {
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
-const brewQueryOptions = (brewId: string, userId: string) =>
+const brewQueryOptions = (brewId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, userId },
+        data: { brewId },
       }),
   });
 
@@ -40,16 +38,15 @@ function BrewClone() {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: brewToClone, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId ?? "", user?.dbId ?? ""),
+    brewQueryOptions(brewId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
       return await addBrew({
-        data: { data, userId: user?.dbId ?? "" },
+        data: { data },
       });
     },
     onSuccess: (result) => {

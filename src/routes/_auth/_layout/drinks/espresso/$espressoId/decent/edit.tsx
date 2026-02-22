@@ -11,12 +11,12 @@ import { updateDecentEspressoDetails } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -35,7 +35,7 @@ function DecentEspressoEditDetails() {
   const navigate = useNavigate();
 
   const { data: decentEspresso } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
+    espressoQueryOptions(espressoId ?? ""),
   );
 
   if (!user) throw new Error("User is not logged in.");
@@ -63,7 +63,6 @@ function DecentEspressoEditDetails() {
           beansWeight: data.beansWeight,
         },
         espressoId,
-        userId: user.dbId,
       },
     });
 

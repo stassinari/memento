@@ -13,12 +13,12 @@ import { getEspresso } from "~/db/queries";
 import { useCurrentUser } from "~/hooks/useInitUser";
 import { lastEspressoQueryOptions } from "../../add";
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -35,11 +35,11 @@ function DecentEspressoAddDetails() {
   const navigate = useNavigate();
 
   const { data: decentEspresso } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
+    espressoQueryOptions(espressoId ?? ""),
   );
 
   const { data: lastEspresso } = useSuspenseQuery(
-    lastEspressoQueryOptions(user?.dbId ?? ""),
+    lastEspressoQueryOptions(),
   );
 
   if (!user) throw new Error("User is not logged in.");
@@ -67,7 +67,6 @@ function DecentEspressoAddDetails() {
           beansWeight: data.beansWeight,
         },
         espressoId,
-        userId: user.dbId,
       },
     });
 

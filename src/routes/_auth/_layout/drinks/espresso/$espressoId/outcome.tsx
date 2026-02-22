@@ -1,19 +1,17 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { EspressoOutcomeForm } from "~/components/espresso/EspressoOutcomeForm";
 import { getEspresso } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -26,11 +24,10 @@ export const Route = createFileRoute(
 function EspressoEditOutcome() {
   console.log("EspressoEditOutcome");
 
-  const user = useAtomValue(userAtom);
   const { espressoId } = Route.useParams();
 
   const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
+    espressoQueryOptions(espressoId ?? ""),
   );
 
   if (isLoading) return null;

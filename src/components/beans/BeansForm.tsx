@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import countries from "~/data/countries";
 import { processes } from "~/data/processes";
@@ -7,7 +6,6 @@ import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { varietals } from "~/data/varietals";
 import { getBeansUniqueRoasters } from "~/db/queries";
 import { BeanOrigin, BeansBlendPart, RoastStyle } from "~/db/schema";
-import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
@@ -95,14 +93,10 @@ export const BeansForm = ({
 }: BeansFormProps) => {
   console.log("BeansForm");
 
-  const user = useAtomValue(userAtom);
-
   const { data: uniqueRoasters } = useQuery({
     queryKey: ["bean", "roasters"],
     queryFn: () =>
-      getBeansUniqueRoasters({
-        data: user?.dbId ?? "",
-      }),
+      getBeansUniqueRoasters(),
   });
 
   const isSm = useScreenMediaQuery("sm");

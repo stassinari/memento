@@ -3,13 +3,11 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import { useQuery } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 import {
   getEspressoFormValueSuggestions,
   getSelectableBeans,
 } from "~/db/queries";
 import { Beans } from "~/db/types";
-import { userAtom } from "~/hooks/useInitUser";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
@@ -68,11 +66,9 @@ export const DecentEspressoForm = ({
   mutation,
   backLinkProps,
 }: DecentEspressoFormProps) => {
-  const user = useAtomValue(userAtom);
-
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
-    queryKey: ["beans", user?.dbId],
-    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
+    queryKey: ["beans"],
+    queryFn: () => getSelectableBeans(),
   });
 
   const {
@@ -80,7 +76,7 @@ export const DecentEspressoForm = ({
     isLoading: areEspressoFormValueSuggestionsLoading,
   } = useQuery({
     queryKey: ["espressos", "formValueSuggestions"],
-    queryFn: () => getEspressoFormValueSuggestions({ data: user?.dbId ?? "" }),
+    queryFn: () => getEspressoFormValueSuggestions(),
   });
 
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);

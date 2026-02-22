@@ -5,7 +5,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
@@ -15,14 +14,13 @@ import {
 import { Heading } from "~/components/Heading";
 import { updateEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -33,14 +31,13 @@ export const Route = createFileRoute(
 });
 
 function EspressoEditDetails() {
-  const user = useAtomValue(userAtom);
   const { espressoId } = Route.useParams();
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
+    espressoQueryOptions(espressoId ?? ""),
   );
 
   const mutation = useMutation({
@@ -49,7 +46,6 @@ function EspressoEditDetails() {
         data: {
           data,
           espressoId,
-          userId: user?.dbId ?? "",
         },
       });
     },

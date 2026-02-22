@@ -2,7 +2,6 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
-import { useAtomValue } from "jotai";
 import { ReactNode, Suspense, useState } from "react";
 import { BeansCard } from "~/components/beans/BeansCard";
 import { navLinks } from "~/components/BottomNav";
@@ -12,7 +11,6 @@ import { CardSkeleton } from "~/components/CardSkeleton";
 import { EmptyState } from "~/components/EmptyState";
 import { Heading } from "~/components/Heading";
 import { getBeans } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({
@@ -139,12 +137,10 @@ export interface BeansTabContentProps {
 }
 
 export const BeansTabContent = ({ name, EmptyState }: BeansTabContentProps) => {
-  const user = useAtomValue(userAtom);
-
   const { data: beansList } = useSuspenseQuery({
     queryKey: ["beans", name.toLowerCase()],
     queryFn: () =>
-      getBeans({ data: { userId: user?.dbId ?? "", state: name } }),
+      getBeans({ data: { state: name } }),
   });
 
   if (beansList.length === 0) return <>{EmptyState}</>;

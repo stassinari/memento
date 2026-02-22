@@ -5,7 +5,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
@@ -16,14 +15,13 @@ import {
 import { Heading } from "~/components/Heading";
 import { addEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId: espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -38,16 +36,15 @@ function EspressoClone() {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: espressoToClone, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
+    espressoQueryOptions(espressoId ?? ""),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: EspressoFormInputs) => {
       return await addEspresso({
-        data: { data, userId: user?.dbId ?? "" },
+        data: { data },
       });
     },
     onSuccess: (result) => {

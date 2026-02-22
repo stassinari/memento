@@ -1,31 +1,24 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
-import { authMiddleware } from "~/middleware";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
 import { beans, brews, espresso } from "./schema";
 
-export const getUser = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .handler(async ({ context }) => {
+export const getUser = createServerFn({ method: "GET" }).handler(
+  async ({ context }) => {
     return db.query.users.findFirst({
       where: (u, { eq }) => eq(u.id, context.userId),
     });
-  });
+  },
+);
 
-export const getLastBrew = createServerFn({
-  method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
+export const getLastBrew = createServerFn({ method: "GET" }).handler(
+  async ({ context }) => {
     try {
       const lastBrew = await db
         .select({ ...getTableColumns(brews) })
         .from(brews)
-        .where(eq(brews.userId, userId))
+        .where(eq(brews.userId, context.userId))
         .orderBy(desc(brews.date))
         .limit(1)
         .then((results) => results[0] || null);
@@ -34,31 +27,24 @@ export const getLastBrew = createServerFn({
       console.error("Database error:", error);
       throw error;
     }
-  });
+  },
+);
 
 // FIXME this is fetching way more data than needed. Beans should just really
 // come as a string (for name) and users are only needed for ownership
 // verification, which can be done in the same query without joining the whole table
-export const getBrews = createServerFn({
-  method: "GET",
-})
-  .inputValidator(
-    (input: { userId: string; limit?: number; offset?: number }) => {
-      if (!input.userId) throw new Error("User ID is required");
-      return {
-        userId: input.userId,
-        limit: input.limit,
-        offset: input.offset ?? 0,
-      };
-    },
-  )
-  .handler(async ({ data: { userId, limit, offset } }) => {
+export const getBrews = createServerFn({ method: "GET" })
+  .inputValidator((input: { limit?: number; offset?: number }) => ({
+    limit: input.limit,
+    offset: input.offset ?? 0,
+  }))
+  .handler(async ({ data: { limit, offset }, context }) => {
     try {
       const query = db
         .select()
         .from(brews)
         .innerJoin(beans, eq(brews.beansId, beans.id))
-        .where(eq(brews.userId, userId))
+        .where(eq(brews.userId, context.userId))
         .orderBy(desc(brews.date))
         .offset(offset)
         .$dynamic();
@@ -81,51 +67,43 @@ const brewFormSuggestionFields = [
 
 export const getBrewFormValueSuggestions = createServerFn({
   method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
-    try {
-      const brewsList = await db
-        .select({
-          method: brews.method,
-          grinder: brews.grinder,
-          grinderBurrs: brews.grinderBurrs,
-          waterType: brews.waterType,
-          filterType: brews.filterType,
-        })
-        .from(brews)
-        .where(eq(brews.userId, userId))
-        .orderBy(desc(brews.date));
+}).handler(async ({ context }) => {
+  try {
+    const brewsList = await db
+      .select({
+        method: brews.method,
+        grinder: brews.grinder,
+        grinderBurrs: brews.grinderBurrs,
+        waterType: brews.waterType,
+        filterType: brews.filterType,
+      })
+      .from(brews)
+      .where(eq(brews.userId, context.userId))
+      .orderBy(desc(brews.date));
 
-      // Extract unique values per field, preserving most-recent-first order
-      return Object.fromEntries(
-        brewFormSuggestionFields.map((field) => [
-          field,
-          [...new Set(brewsList.map((b) => b[field]).filter(Boolean))],
-        ]),
-      ) as Record<(typeof brewFormSuggestionFields)[number], string[]>;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  });
+    // Extract unique values per field, preserving most-recent-first order
+    return Object.fromEntries(
+      brewFormSuggestionFields.map((field) => [
+        field,
+        [...new Set(brewsList.map((b) => b[field]).filter(Boolean))],
+      ]),
+    ) as Record<(typeof brewFormSuggestionFields)[number], string[]>;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
 
-export const getBrew = createServerFn({
-  method: "GET",
-})
-  .inputValidator((input: { brewId: string; userId: string }) => {
+export const getBrew = createServerFn({ method: "GET" })
+  .inputValidator((input: { brewId: string }) => {
     if (!input.brewId) throw new Error("Brew ID is required");
-    if (!input.userId) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { brewId, userId } }) => {
+  .handler(async ({ data: { brewId }, context }) => {
     try {
       const brew = await db.query.brews.findFirst({
         where: (brews, { and, eq }) =>
-          and(eq(brews.id, brewId), eq(brews.userId, userId)),
+          and(eq(brews.id, brewId), eq(brews.userId, context.userId)),
         with: {
           beans: true,
         },
@@ -145,26 +123,18 @@ export const getBrew = createServerFn({
 // FIXME this is fetching way more data than needed. Beans should just really
 // come as a string (for name) and users are only needed for ownership
 // verification, which can be done in the same query without joining the whole table
-export const getEspressos = createServerFn({
-  method: "GET",
-})
-  .inputValidator(
-    (input: { userId: string; limit?: number; offset?: number }) => {
-      if (!input.userId) throw new Error("User ID is required");
-      return {
-        userId: input.userId,
-        limit: input.limit ?? 50,
-        offset: input.offset ?? 0,
-      };
-    },
-  )
-  .handler(async ({ data: { userId, limit, offset } }) => {
+export const getEspressos = createServerFn({ method: "GET" })
+  .inputValidator((input: { limit?: number; offset?: number }) => ({
+    limit: input.limit ?? 50,
+    offset: input.offset ?? 0,
+  }))
+  .handler(async ({ data: { limit, offset }, context }) => {
     try {
       const espressoList = await db
         .select()
         .from(espresso)
         .leftJoin(beans, eq(espresso.beansId, beans.id))
-        .where(eq(espresso.userId, userId))
+        .where(eq(espresso.userId, context.userId))
         .orderBy(desc(espresso.date))
         .limit(limit)
         .offset(offset);
@@ -177,51 +147,43 @@ export const getEspressos = createServerFn({
 
 export const getEspressoFormValueSuggestions = createServerFn({
   method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
-    try {
-      const espressoList = await db
-        .select({
-          machine: espresso.machine,
-          grinder: espresso.grinder,
-          grinderBurrs: espresso.grinderBurrs,
-          basket: espresso.basket,
-        })
-        .from(espresso)
-        .where(eq(espresso.userId, userId))
-        .orderBy(desc(espresso.date));
+}).handler(async ({ context }) => {
+  try {
+    const espressoList = await db
+      .select({
+        machine: espresso.machine,
+        grinder: espresso.grinder,
+        grinderBurrs: espresso.grinderBurrs,
+        basket: espresso.basket,
+      })
+      .from(espresso)
+      .where(eq(espresso.userId, context.userId))
+      .orderBy(desc(espresso.date));
 
-      // Extract unique values per field, preserving most-recent-first order
-      const fields = ["machine", "grinder", "grinderBurrs", "basket"] as const;
-      return Object.fromEntries(
-        fields.map((field) => [
-          field,
-          [...new Set(espressoList.map((e) => e[field]).filter(Boolean))],
-        ]),
-      ) as Record<(typeof fields)[number], string[]>;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  });
+    // Extract unique values per field, preserving most-recent-first order
+    const fields = ["machine", "grinder", "grinderBurrs", "basket"] as const;
+    return Object.fromEntries(
+      fields.map((field) => [
+        field,
+        [...new Set(espressoList.map((e) => e[field]).filter(Boolean))],
+      ]),
+    ) as Record<(typeof fields)[number], string[]>;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
 
-export const getEspresso = createServerFn({
-  method: "GET",
-})
-  .inputValidator((input: { espressoId: string; userId: string }) => {
+export const getEspresso = createServerFn({ method: "GET" })
+  .inputValidator((input: { espressoId: string }) => {
     if (!input.espressoId) throw new Error("Espresso ID is required");
-    if (!input.userId) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { espressoId, userId } }) => {
+  .handler(async ({ data: { espressoId }, context }) => {
     try {
       const result = await db.query.espresso.findFirst({
         where: (espresso, { and, eq }) =>
-          and(eq(espresso.id, espressoId), eq(espresso.userId, userId)),
+          and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)),
         with: {
           beans: true,
           decentReadings: true,
@@ -239,20 +201,16 @@ export const getEspresso = createServerFn({
     }
   });
 
-export const getPartialEspressos = createServerFn({
-  method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
+export const getPartialEspressos = createServerFn({ method: "GET" }).handler(
+  async ({ context }) => {
     try {
       const espressoList = await db
         .select()
         .from(espresso)
         .leftJoin(beans, eq(espresso.beansId, beans.id))
-        .where(and(eq(espresso.userId, userId), eq(espresso.partial, true)))
+        .where(
+          and(eq(espresso.userId, context.userId), eq(espresso.partial, true)),
+        )
         .orderBy(desc(espresso.date))
         .limit(5);
       return espressoList;
@@ -260,23 +218,18 @@ export const getPartialEspressos = createServerFn({
       console.error("Database error:", error);
       throw error;
     }
-  });
+  },
+);
 
-export const getLastEspresso = createServerFn({
-  method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
+export const getLastEspresso = createServerFn({ method: "GET" }).handler(
+  async ({ context }) => {
     try {
       const lastEspresso = await db
         .select({ ...getTableColumns(espresso) })
         .from(espresso)
         .where(
           and(
-            eq(espresso.userId, userId),
+            eq(espresso.userId, context.userId),
             or(isNull(espresso.partial), eq(espresso.partial, false)),
           ),
         ) // not partial excludes Decent shots that haven't had details added yet
@@ -288,11 +241,10 @@ export const getLastEspresso = createServerFn({
       console.error("Database error:", error);
       throw error;
     }
-  });
+  },
+);
 
-export const getDecentReadings = createServerFn({
-  method: "GET",
-})
+export const getDecentReadings = createServerFn({ method: "GET" })
   .inputValidator((input: { espressoId: string }) => {
     if (!input.espressoId) throw new Error("Espresso ID is required");
     return input;
@@ -311,14 +263,9 @@ export const getDecentReadings = createServerFn({
     }
   });
 
-export const getBeans = createServerFn({
-  method: "GET",
-})
-  .inputValidator((input: { state: BeansStateName; userId: string }) => {
-    if (!input.userId) throw new Error("User ID is required");
-    return input;
-  })
-  .handler(async ({ data: { state, userId } }) => {
+export const getBeans = createServerFn({ method: "GET" })
+  .inputValidator((input: { state: BeansStateName }) => input)
+  .handler(async ({ data: { state }, context }) => {
     try {
       const stateFilter =
         state === "Open"
@@ -330,8 +277,8 @@ export const getBeans = createServerFn({
               : undefined;
 
       const whereClause = stateFilter
-        ? and(eq(beans.userId, userId), stateFilter)
-        : eq(beans.userId, userId);
+        ? and(eq(beans.userId, context.userId), stateFilter)
+        : eq(beans.userId, context.userId);
 
       const beansList = await db
         .select({ ...getTableColumns(beans) })
@@ -346,14 +293,8 @@ export const getBeans = createServerFn({
     }
   });
 
-export const getSelectableBeans = createServerFn({
-  method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
+export const getSelectableBeans = createServerFn({ method: "GET" }).handler(
+  async ({ context }) => {
     try {
       // Non-archived beans: not marked as finished
       const beansList = await db
@@ -369,28 +310,28 @@ export const getSelectableBeans = createServerFn({
           isOpen: beans.isOpen,
         })
         .from(beans)
-        .where(and(eq(beans.userId, userId), eq(beans.isArchived, false)))
+        .where(
+          and(eq(beans.userId, context.userId), eq(beans.isArchived, false)),
+        )
         .orderBy(desc(beans.roastDate));
       return beansList;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
     }
-  });
+  },
+);
 
-export const getBean = createServerFn({
-  method: "GET",
-})
-  .inputValidator((input: { beanId: string; userId: string }) => {
+export const getBean = createServerFn({ method: "GET" })
+  .inputValidator((input: { beanId: string }) => {
     if (!input.beanId) throw new Error("Bean ID is required");
-    if (!input.userId) throw new Error("User ID is required");
     return input;
   })
-  .handler(async ({ data: { beanId, userId } }) => {
+  .handler(async ({ data: { beanId }, context }) => {
     try {
       const bean = await db.query.beans.findFirst({
         where: (beans, { and, eq }) =>
-          and(eq(beans.id, beanId), eq(beans.userId, userId)),
+          and(eq(beans.id, beanId), eq(beans.userId, context.userId)),
         with: {
           brews: {
             orderBy: (brews, { desc }) => [desc(brews.date)],
@@ -416,14 +357,8 @@ export const getBean = createServerFn({
     }
   });
 
-export const getBeansUniqueRoasters = createServerFn({
-  method: "GET",
-})
-  .inputValidator((userId: string) => {
-    if (!userId) throw new Error("User ID is required");
-    return userId;
-  })
-  .handler(async ({ data: userId }) => {
+export const getBeansUniqueRoasters = createServerFn({ method: "GET" }).handler(
+  async ({ context }) => {
     try {
       const beansList = await db
         .select({
@@ -431,7 +366,7 @@ export const getBeansUniqueRoasters = createServerFn({
           roastDate: beans.roastDate,
         })
         .from(beans)
-        .where(eq(beans.userId, userId))
+        .where(eq(beans.userId, context.userId))
         .orderBy(desc(beans.roastDate));
 
       return beansList;
@@ -439,4 +374,5 @@ export const getBeansUniqueRoasters = createServerFn({
       console.error("Database error:", error);
       throw error;
     }
-  });
+  },
+);

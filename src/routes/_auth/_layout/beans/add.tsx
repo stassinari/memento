@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import {
   BeansForm,
   BeansFormInputs,
@@ -10,7 +9,6 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { addBeans } from "~/db/mutations";
-import { userAtom } from "~/hooks/useInitUser";
 
 export const Route = createFileRoute("/_auth/_layout/beans/add")({
   component: BeansAdd,
@@ -19,13 +17,12 @@ export const Route = createFileRoute("/_auth/_layout/beans/add")({
 function BeansAdd() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const mutation = useMutation({
     mutationFn: async (data: BeansFormInputs) => {
       // 1. Call server function (handles PostgreSQL write)
       return await addBeans({
-        data: { data, userId: user?.dbId ?? "" },
+        data: { data },
       });
     },
     onSuccess: (result) => {

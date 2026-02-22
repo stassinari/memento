@@ -7,11 +7,9 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { useAtomValue } from "jotai";
 import { useCallback, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
-import { userAtom } from "~/hooks/useInitUser";
 
 import { BrewDetailsInfo } from "~/components/brews/BrewDetailsInfo";
 import { BrewDetailsOutcome } from "~/components/brews/BrewDetailsOutcome";
@@ -25,12 +23,12 @@ import { tabStyles } from "../../../beans";
 
 export type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
 
-const brewQueryOptions = (brewId: string, userId: string) =>
+const brewQueryOptions = (brewId: string) =>
   queryOptions({
     queryKey: ["brews", brewId],
     queryFn: () =>
       getBrew({
-        data: { brewId, userId },
+        data: { brewId },
       }),
   });
 
@@ -44,10 +42,9 @@ function BrewDetails() {
   const { brewId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId, user?.dbId ?? ""),
+    brewQueryOptions(brewId),
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -55,13 +52,13 @@ function BrewDetails() {
 
   const handleDelete = useCallback(async () => {
     await deleteBrew({
-      data: { brewId, userId: user?.dbId ?? "" },
+      data: { brewId },
     });
 
     // 3. Invalidate and navigate
     queryClient.invalidateQueries({ queryKey: ["brews"] });
     navigate({ to: "/drinks/brews" });
-  }, [brewId, user?.dbId, queryClient, navigate]);
+  }, [brewId, queryClient, navigate]);
 
   if (isLoading) return null;
 

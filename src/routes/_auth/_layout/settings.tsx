@@ -47,7 +47,7 @@ function Settings() {
 
       try {
         await generateSecretKey({
-          data: { userId: user.dbId ?? "", secretKey: newSecretKey },
+          data: { secretKey: newSecretKey },
         });
         console.log("Secret key written to PostgreSQL");
       } catch (error) {
@@ -66,9 +66,8 @@ function Settings() {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       try {
-        await deleteSecretKey({
-          data: { userId: user.dbId ?? "" },
-        });
+        await deleteSecretKey();
+
         console.log("Secret key deleted from PostgreSQL");
       } catch (error) {
         console.error("Failed to delete secret key from PostgreSQL:", error);

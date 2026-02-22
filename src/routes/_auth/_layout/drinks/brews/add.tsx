@@ -5,7 +5,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
@@ -16,19 +15,16 @@ import {
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
 import { getLastBrew } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/add")({
   component: BrewsAdd,
 });
 
-const lastBrewQueryOptions = (userId: string) =>
+const lastBrewQueryOptions = () =>
   queryOptions({
     queryKey: ["brews", "last"],
     queryFn: () =>
-      getLastBrew({
-        data: userId,
-      }),
+      getLastBrew(),
   });
 
 function BrewsAdd() {
@@ -36,16 +32,15 @@ function BrewsAdd() {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: lastBrew } = useSuspenseQuery(
-    lastBrewQueryOptions(user?.dbId ?? ""),
+    lastBrewQueryOptions(),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
       return await addBrew({
-        data: { data, userId: user?.dbId ?? "" },
+        data: { data },
       });
     },
     onSuccess: (result) => {
