@@ -93,6 +93,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^16.1.0",
     "nitro": "npm:nitro-nightly@latest",
+    "oxfmt": "^0.34.0",
     "oxlint": "^1.49.0",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18",

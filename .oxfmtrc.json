@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": false,
+  "printWidth": 100,
+  "experimentalSortPackageJson": false,
+  "ignorePatterns": [
+    "build/",
+    "dist/",
+    "coverage",
+    "backups/",
+    "external/decent/shots",
+    "srcOld/",
+    "routeTree.gen.ts"
+  ]
+}
