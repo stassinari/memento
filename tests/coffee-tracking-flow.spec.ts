@@ -2,21 +2,21 @@ import { expect, test } from "@playwright/test";
 
 // Test user credentials - make sure this user exists in your Firebase Auth emulator
 // You can create it via http://localhost:9099/auth when emulators are running
-const TEST_USER = {
-  email: "asd@asd.asd",
-  password: "asdasd",
-};
+// const TEST_USER = {
+//   email: "asd@asd.asd",
+//   password: "asdasd",
+// };
 
-// Helper to login
-async function login(page) {
-  await page.goto("/login");
-  await page.getByLabel("Email").fill(TEST_USER.email);
-  await page.getByLabel("Password").fill(TEST_USER.password);
-  await page.getByRole("button", { name: "Log in" }).click();
+// // Helper to login
+// async function login(page) {
+//   await page.goto("/login");
+//   await page.getByLabel("Email").fill(TEST_USER.email);
+//   await page.getByLabel("Password").fill(TEST_USER.password);
+//   await page.getByRole("button", { name: "Log in" }).click();
 
-  // Wait for navigation to home page
-  await page.waitForURL("/");
-}
+//   // Wait for navigation to home page
+//   await page.waitForURL("/");
+// }
 
 test.describe("Coffee Tracking Happy Path", () => {
   // test.beforeEach(async ({ page }) => {

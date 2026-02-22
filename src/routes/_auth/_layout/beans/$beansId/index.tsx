@@ -143,58 +143,48 @@ function BeansDetails() {
     }
   }, [beansId, queryClient, navigate]);
 
-  const dropdownButtons: ButtonWithDropdownProps = useMemo(
-    () => ({
-      mainButton: {
+  const dropdownButtons: ButtonWithDropdownProps = {
+    mainButton: {
+      type: "link",
+      label: "Clone",
+      linkProps: { to: "/beans/$beansId/clone", params: { beansId } },
+    },
+    dropdownItems: [
+      {
         type: "link",
-        label: "Clone",
-        linkProps: { to: "/beans/$beansId/clone", params: { beansId } },
+        label: "Edit details",
+        linkProps: { to: "/beans/$beansId/edit", params: { beansId } },
       },
-      dropdownItems: [
-        {
-          type: "link",
-          label: "Edit details",
-          linkProps: { to: "/beans/$beansId/edit", params: { beansId } },
-        },
-        ...(beanForDropdown?.isArchived
-          ? [
-              {
-                type: "button" as const,
-                label: "Unarchive",
-                onClick: handleUnarchive,
-              },
-            ]
-          : [
-              {
-                type: "button" as const,
-                label: "Archive",
-                onClick: handleArchive,
-              },
-            ]),
-        ...(areBeansFresh(beanForDropdown)
-          ? [
-              {
-                type: "button" as const,
-                label: "Freeze",
-                onClick: handleFreeze,
-              },
-            ]
-          : areBeansFrozen(beanForDropdown)
-            ? [{ type: "button" as const, label: "Thaw", onClick: handleThaw }]
-            : []),
+      ...(beanForDropdown?.isArchived
+        ? [
+            {
+              type: "button" as const,
+              label: "Unarchive",
+              onClick: handleUnarchive,
+            },
+          ]
+        : [
+            {
+              type: "button" as const,
+              label: "Archive",
+              onClick: handleArchive,
+            },
+          ]),
+      ...(areBeansFresh(beanForDropdown)
+        ? [
+            {
+              type: "button" as const,
+              label: "Freeze",
+              onClick: handleFreeze,
+            },
+          ]
+        : areBeansFrozen(beanForDropdown)
+          ? [{ type: "button" as const, label: "Thaw", onClick: handleThaw }]
+          : []),
 
-        { type: "button", label: "Delete", onClick: handleDelete },
-      ],
-    }),
-    [
-      beansWithDrinks,
-      handleArchive,
-      handleDelete,
-      handleFreeze,
-      handleThaw,
-      handleUnarchive,
+      { type: "button", label: "Delete", onClick: handleDelete },
     ],
-  );
+  };
 
   if (!beansWithDrinks) {
     return <NotFound />;

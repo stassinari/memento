@@ -5,8 +5,6 @@ import admin from "firebase-admin";
 import fs from "fs/promises";
 import postgres, { Sql } from "postgres";
 
-type FirestoreTimestamp = admin.firestore.Timestamp;
-
 const DRY_RUN = process.argv.includes("--dry-run");
 const LOG_PATH =
   process.argv.find((arg) => arg.startsWith("--log="))?.split("=", 2)[1] ??

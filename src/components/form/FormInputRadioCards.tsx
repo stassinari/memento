@@ -37,7 +37,9 @@ export const FormInputRadioCards = <T,>({
             handleChange={(newValue) => {
               field.onChange(newValue);
 
-              onChange && onChange();
+              if (onChange) {
+                onChange();
+              }
             }}
           />
         )}

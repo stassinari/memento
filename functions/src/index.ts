@@ -170,7 +170,9 @@ app.post("/", async (req, res) => {
     const user = await admin.auth().getUserByEmail(email);
     uid = user.uid;
   } catch (error) {
-    res.status(401).json({ error: "User not found - code: ADMIN" });
+    res
+      .status(401)
+      .json({ error: "User not found - code: ADMIN", details: error });
     return;
   }
 

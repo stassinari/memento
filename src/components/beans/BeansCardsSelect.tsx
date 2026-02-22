@@ -39,6 +39,8 @@ export const BeansCardsSelect = ({
   beansList,
   existingBeans,
 }: BeansCardsSelectProps) => {
+  console.log("BeansCardsSelect with no memos!");
+
   const { watch, formState } = useFormContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,23 +72,19 @@ export const BeansCardsSelect = ({
     return beansList.filter((b) => b.isOpen).slice(0, 3);
   }, [beansList, selectedBeans, existingBeans]);
 
-  const modalBeans = useMemo(() => {
-    return beansList
-      .filter((b) => {
-        if (!searchQuery) return b;
-        return (
-          b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          b.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (b.origin === "single-origin" &&
-            b.country?.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-      })
-      .filter((b) => b.isFrozen === showFrozenBeans);
-  }, [beansList, searchQuery, showFrozenBeans]);
+  const modalBeans = beansList
+    .filter((b) => {
+      if (!searchQuery) return b;
+      return (
+        b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (b.origin === "single-origin" &&
+          b.country?.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    })
+    .filter((b) => b.isFrozen === showFrozenBeans);
 
-  const showMore = useMemo(() => {
-    return quickSelectBeans?.length !== beansList.length;
-  }, [beansList, selectedBeans, modalBeans]);
+  const showMore = quickSelectBeans?.length !== beansList.length;
 
   return (
     <div>

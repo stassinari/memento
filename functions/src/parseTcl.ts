@@ -45,7 +45,7 @@ export const extractProfileName = (lines: string[]): string => {
     const json = JSON.parse("{" + raw! + "}");
     return json.title;
   } catch (error) {
-    throw new Error("parsing error - title");
+    throw new Error("parsing error - title" + error);
   }
 };
 
@@ -57,7 +57,7 @@ const extractTargetWeight = (lines: string[]): number => {
     const json = JSON.parse("{" + raw! + "}");
     return json["target_weight"];
   } catch (error) {
-    throw new Error("parsing error - target_weight");
+    throw new Error("parsing error - target_weight: " + error);
   }
 };
 

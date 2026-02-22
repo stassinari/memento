@@ -8,7 +8,7 @@ import {
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
@@ -69,9 +69,47 @@ function EspressoDetails() {
     navigate({ to: "/drinks/espresso" });
   }, [espressoId, queryClient, navigate]);
 
-  const decentEspressoButtons: ButtonWithDropdownProps = useMemo(
-    () => ({
-      mainButton: {
+  const decentEspressoButtons: ButtonWithDropdownProps = {
+    mainButton: {
+      type: "link",
+      label: "Edit outcome",
+      linkProps: {
+        to: "/drinks/espresso/$espressoId/outcome",
+        params: { espressoId },
+      },
+    },
+    dropdownItems: [
+      {
+        type: "link",
+        label: "Edit details",
+        linkProps: {
+          to: "/drinks/espresso/$espressoId/decent/edit",
+          params: { espressoId },
+        },
+      },
+      { type: "button", label: "Delete", onClick: handleDelete },
+    ],
+  };
+
+  const normalEspressoButtons: ButtonWithDropdownProps = {
+    mainButton: {
+      type: "link",
+      label: "Clone",
+      linkProps: {
+        to: "/drinks/espresso/$espressoId/clone",
+        params: { espressoId },
+      },
+    },
+    dropdownItems: [
+      {
+        type: "link",
+        label: "Edit details",
+        linkProps: {
+          to: "/drinks/espresso/$espressoId/edit",
+          params: { espressoId },
+        },
+      },
+      {
         type: "link",
         label: "Edit outcome",
         linkProps: {
@@ -79,53 +117,9 @@ function EspressoDetails() {
           params: { espressoId },
         },
       },
-      dropdownItems: [
-        {
-          type: "link",
-          label: "Edit details",
-          linkProps: {
-            to: "/drinks/espresso/$espressoId/decent/edit",
-            params: { espressoId },
-          },
-        },
-        { type: "button", label: "Delete", onClick: handleDelete },
-      ],
-    }),
-    [handleDelete],
-  );
-
-  const normalEspressoButtons: ButtonWithDropdownProps = useMemo(
-    () => ({
-      mainButton: {
-        type: "link",
-        label: "Clone",
-        linkProps: {
-          to: "/drinks/espresso/$espressoId/clone",
-          params: { espressoId },
-        },
-      },
-      dropdownItems: [
-        {
-          type: "link",
-          label: "Edit details",
-          linkProps: {
-            to: "/drinks/espresso/$espressoId/edit",
-            params: { espressoId },
-          },
-        },
-        {
-          type: "link",
-          label: "Edit outcome",
-          linkProps: {
-            to: "/drinks/espresso/$espressoId/outcome",
-            params: { espressoId },
-          },
-        },
-        { type: "button", label: "Delete", onClick: handleDelete },
-      ],
-    }),
-    [handleDelete],
-  );
+      { type: "button", label: "Delete", onClick: handleDelete },
+    ],
+  };
 
   if (isLoading) return null;
 
