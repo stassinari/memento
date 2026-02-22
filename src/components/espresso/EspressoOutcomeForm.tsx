@@ -1,11 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import { updateEspressoOutcome } from "~/db/mutations";
 import { Espresso } from "~/db/types";
-import { userAtom } from "~/hooks/useInitUser";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { PoweredByMarkdown } from "../PoweredByMarkdown";
@@ -47,7 +45,6 @@ export const EspressoOutcomeForm = ({
 }: EspressoOutcomeFormProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const methods = useForm<EspressoOutcomeInputs>({
     defaultValues: {
@@ -68,7 +65,6 @@ export const EspressoOutcomeForm = ({
         data: {
           data,
           espressoId,
-          userId: user?.dbId ?? "",
         },
       });
     },

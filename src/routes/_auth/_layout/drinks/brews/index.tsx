@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { queryOptions } from "node_modules/@tanstack/react-query/build/modern/queryOptions";
 import { useEffect, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
@@ -12,7 +11,6 @@ import {
 } from "~/components/drinks/DrinksList";
 import { Heading } from "~/components/Heading";
 import { getBrews } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
 type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
@@ -20,13 +18,12 @@ type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
 const PAGE_SIZE = 15;
 
 const brewsQueryOptions = (
-  userId: string,
   limit: number,
   offset: number,
 ) =>
   queryOptions({
-    queryKey: ["brews", userId, limit, offset],
-    queryFn: () => getBrews({ data: { userId, limit, offset } }),
+    queryKey: ["brews", limit, offset],
+    queryFn: () => getBrews({ data: { limit, offset } }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
@@ -34,13 +31,11 @@ export const Route = createFileRoute("/_auth/_layout/drinks/brews/")({
 });
 
 function BrewsList() {
-  const user = useAtomValue(userAtom);
-
   const [offset, setOffset] = useState(0);
   const [allBrews, setAllBrews] = useState<BrewWithBeans[]>([]);
 
   const { data: brewsWithBeans, isLoading } = useQuery<BrewWithBeans[]>({
-    ...brewsQueryOptions(user?.dbId ?? "", PAGE_SIZE, offset),
+    ...brewsQueryOptions(PAGE_SIZE, offset),
   });
 
   // TODO: i'm not in love with this

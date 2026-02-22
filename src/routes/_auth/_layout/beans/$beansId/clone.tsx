@@ -4,13 +4,11 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { BeansForm, BeansFormInputs } from "~/components/beans/BeansForm";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { addBeans } from "~/db/mutations";
-import { userAtom } from "~/hooks/useInitUser";
 import { BeanWithDrinks, beansQueryOptions } from ".";
 
 export const Route = createFileRoute("/_auth/_layout/beans/$beansId/clone")({
@@ -24,16 +22,15 @@ function BeansClone() {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: beansWithDrinks } = useSuspenseQuery<BeanWithDrinks | null>(
-    beansQueryOptions(beansId, user?.dbId ?? ""),
+    beansQueryOptions(beansId),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: BeansFormInputs) => {
       return await addBeans({
-        data: { data, userId: user?.dbId ?? "" },
+        data: { data },
       });
     },
     onSuccess: (result) => {

@@ -10,15 +10,14 @@ import {
 import { Heading } from "~/components/Heading";
 import { updateDecentEspressoDetails } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
-import { useCurrentUser } from "~/hooks/useInitUser";
 import { lastEspressoQueryOptions } from "../../add";
 
-const espressoQueryOptions = (espressoId: string, userId: string) =>
+const espressoQueryOptions = (espressoId: string) =>
   queryOptions({
     queryKey: ["espresso", espressoId],
     queryFn: () =>
       getEspresso({
-        data: { espressoId, userId },
+        data: { espressoId },
       }),
   });
 
@@ -29,26 +28,20 @@ export const Route = createFileRoute(
 });
 
 function DecentEspressoAddDetails() {
-  const user = useCurrentUser();
-
   const { espressoId } = Route.useParams();
   const navigate = useNavigate();
 
   const { data: decentEspresso } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? "", user?.dbId ?? ""),
+    espressoQueryOptions(espressoId ?? ""),
   );
 
-  const { data: lastEspresso } = useSuspenseQuery(
-    lastEspressoQueryOptions(user?.dbId ?? ""),
-  );
-
-  if (!user) throw new Error("User is not logged in.");
+  const { data: lastEspresso } = useSuspenseQuery(lastEspressoQueryOptions());
 
   if (!decentEspresso) return null;
 
   const editDecentEspresso = async (data: DecentEspressoFormInputs) => {
-    if (!user?.dbId || !espressoId) {
-      throw new Error("User or espresso ID missing");
+    if (!espressoId) {
+      throw new Error("Espresso ID missing");
     }
 
     await updateDecentEspressoDetails({
@@ -67,7 +60,6 @@ function DecentEspressoAddDetails() {
           beansWeight: data.beansWeight,
         },
         espressoId,
-        userId: user.dbId,
       },
     });
 

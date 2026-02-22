@@ -5,7 +5,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import {
@@ -16,19 +15,16 @@ import {
 import { Heading } from "~/components/Heading";
 import { addEspresso } from "~/db/mutations";
 import { getLastEspresso } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/espresso/add")({
   component: EspressoAdd,
 });
 
-export const lastEspressoQueryOptions = (userId: string) =>
+export const lastEspressoQueryOptions = () =>
   queryOptions({
     queryKey: ["espresso", "last"],
     queryFn: () =>
-      getLastEspresso({
-        data: userId,
-      }),
+      getLastEspresso(),
   });
 
 function EspressoAdd() {
@@ -36,16 +32,15 @@ function EspressoAdd() {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
 
   const { data: lastEspresso } = useSuspenseQuery(
-    lastEspressoQueryOptions(user?.dbId ?? ""),
+    lastEspressoQueryOptions(),
   );
 
   const mutation = useMutation({
     mutationFn: async (data: EspressoFormInputs) => {
       return await addEspresso({
-        data: { data, userId: user?.dbId ?? "" },
+        data: { data },
       });
     },
     onSuccess: (result) => {

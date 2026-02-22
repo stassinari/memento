@@ -4,13 +4,11 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { BeansForm, BeansFormInputs } from "~/components/beans/BeansForm";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { updateBeans } from "~/db/mutations";
-import { userAtom } from "~/hooks/useInitUser";
 import { beansQueryOptions, BeanWithDrinks } from ".";
 
 export const Route = createFileRoute("/_auth/_layout/beans/$beansId/edit")({
@@ -24,10 +22,8 @@ function BeansEdit() {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAtomValue(userAtom);
-
   const { data: beansWithDrinks } = useSuspenseQuery<BeanWithDrinks | null>(
-    beansQueryOptions(beansId, user?.dbId ?? ""),
+    beansQueryOptions(beansId),
   );
 
   const mutation = useMutation({
@@ -36,7 +32,6 @@ function BeansEdit() {
         data: {
           data,
           beansId,
-          userId: user?.dbId ?? "",
         },
       });
     },

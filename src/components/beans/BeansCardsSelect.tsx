@@ -1,10 +1,8 @@
-import { useAtomValue } from "jotai";
 import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import clsx from "clsx";
 import { getSelectableBeans } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 import { getTimeAgo } from "~/util";
 import { Input, labelStyles } from "../Input";
 import { InputRadioCardsOption } from "../InputRadioCards";
@@ -42,7 +40,6 @@ export const BeansCardsSelect = ({
   existingBeans,
 }: BeansCardsSelectProps) => {
   const { watch, formState } = useFormContext();
-  const user = useAtomValue(userAtom);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showFrozenBeans, setShowFrozenBeans] = useState(false);
@@ -90,8 +87,6 @@ export const BeansCardsSelect = ({
   const showMore = useMemo(() => {
     return quickSelectBeans?.length !== beansList.length;
   }, [beansList, selectedBeans, modalBeans]);
-
-  if (!user?.dbId) return null;
 
   return (
     <div>

@@ -1,6 +1,5 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -11,7 +10,6 @@ import {
 } from "~/components/drinks/DrinksList";
 import { Heading } from "~/components/Heading";
 import { getEspressos } from "~/db/queries";
-import { userAtom } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
 type EspressoWithBeans = Awaited<ReturnType<typeof getEspressos>>[number];
@@ -19,15 +17,14 @@ type EspressoWithBeans = Awaited<ReturnType<typeof getEspressos>>[number];
 const PAGE_SIZE = 15;
 
 const espressosQueryOptions = (
-  userId: string,
   limit: number,
   offset: number,
 ) =>
   queryOptions({
-    queryKey: ["espressos", userId, limit, offset],
+    queryKey: ["espressos", limit, offset],
     queryFn: () =>
       getEspressos({
-        data: { userId, limit, offset },
+        data: { limit, offset },
       }),
   });
 
@@ -36,14 +33,12 @@ export const Route = createFileRoute("/_auth/_layout/drinks/espresso/")({
 });
 
 function EspressoList() {
-  const user = useAtomValue(userAtom);
-
   const [offset, setOffset] = useState(0);
   const [allEspressos, setAllEspressos] = useState<EspressoWithBeans[]>([]);
 
   const { data: espressosWithBeans, isLoading } = useQuery<EspressoWithBeans[]>(
     {
-      ...espressosQueryOptions(user?.dbId ?? "", PAGE_SIZE, offset),
+      ...espressosQueryOptions(PAGE_SIZE, offset),
     },
   );
 

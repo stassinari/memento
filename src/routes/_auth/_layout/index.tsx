@@ -16,25 +16,24 @@ import { PortafilterIcon } from "~/components/icons/PortafilterIcon";
 import { ListCard } from "~/components/ListCard";
 import { getBrews, getEspressos, getPartialEspressos } from "~/db/queries";
 import type { Beans, Espresso } from "~/db/types";
-import { useCurrentUser } from "~/hooks/useInitUser";
 
-const brewsQueryOptions = (userId: string) =>
+const brewsQueryOptions = () =>
   queryOptions({
-    queryKey: ["brews", userId],
-    queryFn: () => getBrews({ data: { userId, limit: 30, offset: 0 } }),
+    queryKey: ["brews"],
+    queryFn: () => getBrews({ data: { limit: 30, offset: 0 } }),
   });
 
-const espressosQueryOptions = (userId: string) =>
+const espressosQueryOptions = () =>
   queryOptions({
-    queryKey: ["espressos", userId],
+    queryKey: ["espressos"],
     queryFn: () =>
-      getEspressos({ data: { userId, limit: 30, offset: 0 } }),
+      getEspressos({ data: { limit: 30, offset: 0 } }),
   });
 
-const partialEspressosQueryOptions = (userId: string) =>
+const partialEspressosQueryOptions = () =>
   queryOptions({
-    queryKey: ["espressos", "partial", userId],
-    queryFn: () => getPartialEspressos({ data: userId }),
+    queryKey: ["espressos", "partial"],
+    queryFn: () => getPartialEspressos(),
   });
 
 export const Route = createFileRoute("/_auth/_layout/")({
@@ -42,16 +41,14 @@ export const Route = createFileRoute("/_auth/_layout/")({
 });
 
 function Home() {
-  const user = useCurrentUser();
-
   const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(user?.dbId ?? ""),
+    brewsQueryOptions(),
   );
   const { data: espressoList } = useSuspenseQuery(
-    espressosQueryOptions(user?.dbId ?? ""),
+    espressosQueryOptions(),
   );
   const { data: partialEspressos } = useSuspenseQuery(
-    partialEspressosQueryOptions(user?.dbId ?? ""),
+    partialEspressosQueryOptions(),
   );
 
   // Calculate recently used beans from the already-fetched brew/espresso data

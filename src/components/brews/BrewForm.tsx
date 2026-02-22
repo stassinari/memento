@@ -1,12 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 import { BeansCardsSelect } from "~/components/beans/BeansCardsSelect";
 import { getBrewFormValueSuggestions, getSelectableBeans } from "~/db/queries";
 import { Beans, Brew } from "~/db/types";
-import { userAtom } from "~/hooks/useInitUser";
 import {
   BeansMethodEquipment,
   BeansMethodEquipmentInputs,
@@ -53,8 +51,6 @@ export const BrewForm = ({
 }: BrewFormProps) => {
   console.log("BrewForm");
 
-  const user = useAtomValue(userAtom);
-
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
   const [activeStep, setActiveStep] = useState<BrewFormStep>(
     "beansMethodEquipment",
@@ -62,12 +58,12 @@ export const BrewForm = ({
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans", "notArchived"],
-    queryFn: () => getSelectableBeans({ data: user?.dbId ?? "" }),
+    queryFn: () => getSelectableBeans(),
   });
 
   const { data: brewFormValueSuggestions } = useQuery({
     queryKey: ["brews", "formValueSuggestions"],
-    queryFn: () => getBrewFormValueSuggestions({ data: user?.dbId ?? "" }),
+    queryFn: () => getBrewFormValueSuggestions(),
   });
 
   const onSubmit: SubmitHandler<BrewFormInputs> = (data) => {

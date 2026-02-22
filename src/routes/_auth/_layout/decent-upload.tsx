@@ -20,19 +20,17 @@ import { Link } from "~/components/Link";
 import { notification } from "~/components/Notification";
 import { Spinner } from "~/components/Spinner";
 import { getUser } from "~/db/queries";
-import { useCurrentUser } from "~/hooks/useInitUser";
 
 export const Route = createFileRoute("/_auth/_layout/decent-upload")({
   component: DecentUpload,
 });
 
 function DecentUpload() {
-  const user = useCurrentUser();
   const navigate = useNavigate();
 
   const { data: dbUser } = useSuspenseQuery({
-    queryKey: ["user", user?.uid],
-    queryFn: () => getUser({ data: user?.uid ?? "" }),
+    queryKey: ["user"],
+    queryFn: () => getUser(),
   });
 
   const secretKey = dbUser?.secretKey;
@@ -55,7 +53,7 @@ function DecentUpload() {
 
         await axios.post(url, formData, {
           auth: {
-            username: user.uid, // API expects Firebase UID, not email
+            username: dbUser.fbId ?? "", // API expects Firebase UID, not email
             password: secretKey,
           },
         });
