@@ -4,10 +4,7 @@ import { HTMLAttributes, type ReactNode } from "react";
 import { Action } from "./ButtonWithDropdown";
 
 const Container = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={clsx("bg-white rounded-lg shadow-sm", className)}
-    {...props}
-  />
+  <div className={clsx("bg-white rounded-lg shadow-sm", className)} {...props} />
 );
 
 const Content = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
@@ -30,8 +27,7 @@ interface HeaderProps {
   action?: Action;
 }
 
-const actionStyles =
-  "font-medium text-sm text-orange-600 hover:text-orange-500 hover:underline";
+const actionStyles = "font-medium text-sm text-orange-600 hover:text-orange-500 hover:underline";
 
 const Header = ({ title, action }: HeaderProps) => (
   <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50 sm:px-6">
@@ -42,11 +38,7 @@ const Header = ({ title, action }: HeaderProps) => (
           {action.label}
         </Link>
       ) : (
-        <button
-          type="button"
-          onClick={action.onClick}
-          className={clsx(actionStyles)}
-        >
+        <button type="button" onClick={action.onClick} className={clsx(actionStyles)}>
           {action.label}
         </button>
       ))}
@@ -55,10 +47,7 @@ const Header = ({ title, action }: HeaderProps) => (
 
 const Footer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={clsx(
-      "px-4 py-2 border-t border-gray-100 bg-gray-50/50 sm:px-6",
-      className,
-    )}
+    className={clsx("px-4 py-2 border-t border-gray-100 bg-gray-50/50 sm:px-6", className)}
     {...props}
   />
 );

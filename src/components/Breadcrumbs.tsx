@@ -26,15 +26,10 @@ export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
                   {item.label}
                 </Link>
               ) : (
-                <p className="mr-4 text-sm font-medium text-gray-500">
-                  {item.label}
-                </p>
+                <p className="mr-4 text-sm font-medium text-gray-500">{item.label}</p>
               )}
               {i !== items.length - 1 && (
-                <ChevronRightIcon
-                  className="shrink-0 w-5 h-5 text-gray-400"
-                  aria-hidden="true"
-                />
+                <ChevronRightIcon className="shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
               )}
             </div>
           </li>
@@ -47,10 +42,7 @@ export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
 export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
   return (
     <nav className="flex mb-2 overflow-hidden" aria-label="Breadcrumb">
-      <ol
-        role="list"
-        className="flex items-center space-x-2 overflow-x-scroll sm:space-x-4"
-      >
+      <ol role="list" className="flex items-center space-x-2 overflow-x-scroll sm:space-x-4">
         <li>
           <div>
             <Link to="/" className="text-gray-400 hover:text-gray-500">
@@ -62,10 +54,7 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
         {items.map((item) => (
           <li key={item.label}>
             <div className="flex items-center">
-              <ChevronRightIcon
-                className="shrink-0 w-5 h-5 text-gray-400"
-                aria-hidden="true"
-              />
+              <ChevronRightIcon className="shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
               {item.linkTo ? (
                 <Link
                   to={item.linkTo}

@@ -19,8 +19,7 @@ const brewsQueryOptions = () =>
 const espressosQueryOptions = () =>
   queryOptions({
     queryKey: ["espressos"],
-    queryFn: () =>
-      getEspressos({ data: { limit: 30, offset: 0 } }),
+    queryFn: () => getEspressos({ data: { limit: 30, offset: 0 } }),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/")({
@@ -30,12 +29,8 @@ export const Route = createFileRoute("/_auth/_layout/drinks/")({
 function DrinksPage() {
   console.log("DrinksPage");
 
-  const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(),
-  );
-  const { data: espressosList } = useSuspenseQuery(
-    espressosQueryOptions(),
-  );
+  const { data: brewsList } = useSuspenseQuery(brewsQueryOptions());
+  const { data: espressosList } = useSuspenseQuery(espressosQueryOptions());
 
   if (!brewsList || !espressosList) {
     return null;
@@ -65,9 +60,7 @@ function DrinksPage() {
         </li>
       </ul>
 
-      <DrinksListPostgres
-        drinks={mergePostgres(brewsList ?? [], espressosList ?? [])}
-      />
+      <DrinksListPostgres drinks={mergePostgres(brewsList ?? [], espressosList ?? [])} />
     </>
   );
 }

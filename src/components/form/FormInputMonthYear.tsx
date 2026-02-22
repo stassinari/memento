@@ -57,9 +57,7 @@ export const FormInputMonthYear = ({
           )}
         />
       </div>
-      {helperText && !error && (
-        <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>
-      )}
+      {helperText && !error && <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>}
       {error && <Input.Error id={`${id}-error`}>{error}</Input.Error>}
     </div>
   );

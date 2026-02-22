@@ -9,8 +9,7 @@ async function seedFlags() {
     {
       name: "read_from_postgres",
       enabled: false,
-      description:
-        "Controls whether to read data from Postgres instead of Firestore",
+      description: "Controls whether to read data from Postgres instead of Firestore",
     },
     {
       name: "write_to_postgres",

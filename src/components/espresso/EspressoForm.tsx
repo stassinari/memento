@@ -3,26 +3,15 @@ import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 import { BeansCardsSelect } from "~/components/beans/BeansCardsSelect";
-import {
-  getEspressoFormValueSuggestions,
-  getSelectableBeans,
-} from "~/db/queries";
+import { getEspressoFormValueSuggestions, getSelectableBeans } from "~/db/queries";
 import { Beans, Espresso } from "~/db/types";
 import {
   BeansEquipment,
   BeansEquipmentInputs,
   beansEquipmentEmptyValues,
 } from "./steps/BeansEquipment";
-import {
-  EspressoRecipe,
-  EspressoRecipeInputs,
-  espressoRecipeEmptyValues,
-} from "./steps/Recipe";
-import {
-  EspressoTime,
-  EspressoTimeInputs,
-  espressoTimeEmptyValues,
-} from "./steps/Time";
+import { EspressoRecipe, EspressoRecipeInputs, espressoRecipeEmptyValues } from "./steps/Recipe";
+import { EspressoTime, EspressoTimeInputs, espressoTimeEmptyValues } from "./steps/Time";
 
 export interface EspressoFormInputs
   extends BeansEquipmentInputs, EspressoRecipeInputs, EspressoTimeInputs {}
@@ -31,9 +20,7 @@ export type EspressoFormValueSuggestions = Awaited<
   ReturnType<typeof getEspressoFormValueSuggestions>
 >;
 
-export const espressoFormEmptyValues: (
-  copyFrom?: Espresso,
-) => EspressoFormInputs = (copyFrom) => ({
+export const espressoFormEmptyValues: (copyFrom?: Espresso) => EspressoFormInputs = (copyFrom) => ({
   ...beansEquipmentEmptyValues(copyFrom),
 
   ...espressoRecipeEmptyValues(),
@@ -59,8 +46,7 @@ export const EspressoForm = ({
   console.log("EspressoForm");
 
   const [espressoFormInputs, setEspressoFormInputs] = useState(defaultValues);
-  const [activeStep, setActiveStep] =
-    useState<EspressoFormStep>("beansEquipment");
+  const [activeStep, setActiveStep] = useState<EspressoFormStep>("beansEquipment");
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans"],
@@ -77,8 +63,7 @@ export const EspressoForm = ({
   };
 
   // FIXME can display the page as this is loading
-  if (areBeansLoading || !espressoFormValueSuggestions || !beansList)
-    return null;
+  if (areBeansLoading || !espressoFormValueSuggestions || !beansList) return null;
 
   return (
     <>
@@ -86,10 +71,7 @@ export const EspressoForm = ({
         <BeansEquipment
           espressoFormValueSuggestions={espressoFormValueSuggestions}
           beansCardsSelectComponent={
-            <BeansCardsSelect
-              beansList={beansList}
-              existingBeans={existingBeans}
-            />
+            <BeansCardsSelect beansList={beansList} existingBeans={existingBeans} />
           }
           defaultValues={espressoFormInputs}
           handleNestedSubmit={(data) => {

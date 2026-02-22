@@ -1,17 +1,8 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
-import {
-  BrewForm,
-  brewFormEmptyValues,
-  BrewFormInputs,
-} from "~/components/brews/BrewForm";
+import { BrewForm, brewFormEmptyValues, BrewFormInputs } from "~/components/brews/BrewForm";
 import { Heading } from "~/components/Heading";
 import { addBrew } from "~/db/mutations";
 import { getLastBrew } from "~/db/queries";
@@ -23,8 +14,7 @@ export const Route = createFileRoute("/_auth/_layout/drinks/brews/add")({
 const lastBrewQueryOptions = () =>
   queryOptions({
     queryKey: ["brews", "last"],
-    queryFn: () =>
-      getLastBrew(),
+    queryFn: () => getLastBrew(),
   });
 
 function BrewsAdd() {
@@ -33,9 +23,7 @@ function BrewsAdd() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: lastBrew } = useSuspenseQuery(
-    lastBrewQueryOptions(),
-  );
+  const { data: lastBrew } = useSuspenseQuery(lastBrewQueryOptions());
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {
@@ -64,9 +52,7 @@ function BrewsAdd() {
 
   return (
     <>
-      <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.brews, { label: "Add" }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.brews, { label: "Add" }]} />
 
       <Heading className="mb-4">Add brew</Heading>
 

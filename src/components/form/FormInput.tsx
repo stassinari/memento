@@ -31,9 +31,7 @@ export const FormInput = ({
           type="text"
           id={id}
           aria-invalid={error ? "true" : "false"}
-          aria-describedby={
-            error ? `${id}-error` : helperText ? `${id}-description` : undefined
-          }
+          aria-describedby={error ? `${id}-error` : helperText ? `${id}-description` : undefined}
           {...inputProps}
         />
       </div>
@@ -45,9 +43,7 @@ export const FormInput = ({
           }))}
         />
       )}
-      {helperText && !error && (
-        <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>
-      )}
+      {helperText && !error && <Input.Helper id={`${id}-description`}>{helperText}</Input.Helper>}
       {error && <Input.Error id={`${id}-error`}>{error}</Input.Error>}
     </div>
   );

@@ -24,11 +24,7 @@ interface BrewRecipeProps {
   handleBack: () => void;
 }
 
-export const BrewRecipe = ({
-  defaultValues,
-  handleNestedSubmit,
-  handleBack,
-}: BrewRecipeProps) => {
+export const BrewRecipe = ({ defaultValues, handleNestedSubmit, handleBack }: BrewRecipeProps) => {
   const methods = useForm<BrewRecipeInputs>({
     defaultValues,
   });
@@ -45,15 +41,8 @@ export const BrewRecipe = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="off"
-        className="space-y-6"
-      >
-        <FormSection
-          title="Recipe"
-          subtitle="The numbers that defined this brew."
-        >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
+        <FormSection title="Recipe" subtitle="The numbers that defined this brew.">
           <FormInput
             label="Water weight (ml) *"
             id="waterWeight"

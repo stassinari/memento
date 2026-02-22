@@ -40,7 +40,7 @@ db.collection("beans")
             break;
         }
         console.log(
-          `${doc.id} - no roast style set. Roaster: ${roaster} will be backfilled with: ${styleToFill}`
+          `${doc.id} - no roast style set. Roaster: ${roaster} will be backfilled with: ${styleToFill}`,
         );
         // db.collection("beans").doc(doc.id).update({ roastStyle: styleToFill });
       }

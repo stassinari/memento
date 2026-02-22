@@ -7,11 +7,7 @@ export const tastingNotes = [
       },
       {
         name: "Floral",
-        children: [
-          { name: "Chamomile" },
-          { name: "Rose" },
-          { name: "Jasmine" },
-        ],
+        children: [{ name: "Chamomile" }, { name: "Rose" }, { name: "Jasmine" }],
       },
     ],
   },
@@ -46,12 +42,7 @@ export const tastingNotes = [
       },
       {
         name: "Citrus Fruit",
-        children: [
-          { name: "Grapefruit" },
-          { name: "Orange" },
-          { name: "Lemon" },
-          { name: "Lime" },
-        ],
+        children: [{ name: "Grapefruit" }, { name: "Orange" }, { name: "Lemon" }, { name: "Lime" }],
       },
     ],
   },
@@ -164,12 +155,7 @@ export const tastingNotes = [
       { name: "Pepper" },
       {
         name: "Brown Spice",
-        children: [
-          { name: "Anise" },
-          { name: "Nutmeg" },
-          { name: "Cinnamon" },
-          { name: "Clove" },
-        ],
+        children: [{ name: "Anise" }, { name: "Nutmeg" }, { name: "Cinnamon" }, { name: "Clove" }],
       },
     ],
   },
@@ -178,11 +164,7 @@ export const tastingNotes = [
     children: [
       {
         name: "Nutty",
-        children: [
-          { name: "Peanuts" },
-          { name: "Hazelnut" },
-          { name: "Almond" },
-        ],
+        children: [{ name: "Peanuts" }, { name: "Hazelnut" }, { name: "Almond" }],
       },
       {
         name: "Cocoa",
@@ -222,7 +204,7 @@ interface TastingNoteOption {
 
 export const notesToOptions = (
   children: ITastingNotes[],
-  parentName?: string
+  parentName?: string,
 ): TastingNoteOption[] =>
   children.reduce(
     (accumulator, currentValue) =>
@@ -233,10 +215,8 @@ export const notesToOptions = (
             ...accumulator,
             ...notesToOptions(
               currentValue.children,
-              parentName
-                ? `${parentName} > ${currentValue.name}`
-                : currentValue.name
+              parentName ? `${parentName} > ${currentValue.name}` : currentValue.name,
             ),
           ],
-    [] as TastingNoteOption[]
+    [] as TastingNoteOption[],
   );

@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { Auth } from "firebase/auth";
 import { useSetAtom } from "jotai";
@@ -90,43 +86,31 @@ function Settings() {
             <Toggle
               checked={!!secretKey}
               disabled={generateMutation.isPending || deleteMutation.isPending}
-              onChange={() =>
-                secretKey ? deleteMutation.mutate() : generateMutation.mutate()
-              }
+              onChange={() => (secretKey ? deleteMutation.mutate() : generateMutation.mutate())}
             />
           </div>
           {secretKey ? (
             <>
               <div className="flex items-center justify-between">
                 <p className="text-sm">
-                  User ID:{" "}
-                  <strong className="font-mono font-semibold">
-                    {dbUser.fbId}
-                  </strong>
+                  User ID: <strong className="font-mono font-semibold">{dbUser.fbId}</strong>
                 </p>
                 <Button
                   variant="white"
                   size="xs"
-                  onClick={async () =>
-                    await navigator.clipboard.writeText(dbUser.fbId)
-                  }
+                  onClick={async () => await navigator.clipboard.writeText(dbUser.fbId)}
                 >
                   Copy
                 </Button>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm">
-                  Secret key:{" "}
-                  <strong className="font-mono font-semibold">
-                    {secretKey}
-                  </strong>
+                  Secret key: <strong className="font-mono font-semibold">{secretKey}</strong>
                 </p>
                 <Button
                   variant="white"
                   size="xs"
-                  onClick={async () =>
-                    await navigator.clipboard.writeText(secretKey)
-                  }
+                  onClick={async () => await navigator.clipboard.writeText(secretKey)}
                 >
                   Copy
                 </Button>
@@ -134,9 +118,7 @@ function Settings() {
               <p className="text-sm text-gray-600">
                 You can{" "}
                 <Link asChild>
-                  <RouterLink to="/decent-upload">
-                    upload shots from here
-                  </RouterLink>
+                  <RouterLink to="/decent-upload">upload shots from here</RouterLink>
                 </Link>
                 , or follow{" "}
                 <Link
@@ -147,16 +129,13 @@ function Settings() {
                   this guide
                 </Link>{" "}
                 to enable automatic uploads from your machine.{" "}
-                <strong>
-                  Use your User ID (not email) when configuring your Decent
-                  machine.
-                </strong>
+                <strong>Use your User ID (not email) when configuring your Decent machine.</strong>
               </p>
             </>
           ) : (
             <p className="mt-2 mb-4 text-sm text-gray-600">
-              If you have a Decent Espresso machine, and would like to enable
-              uploading shots from it, start by enabling the integration here.
+              If you have a Decent Espresso machine, and would like to enable uploading shots from
+              it, start by enabling the integration here.
             </p>
           )}
         </FormSection>

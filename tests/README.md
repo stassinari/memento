@@ -12,6 +12,7 @@
 The easiest way to run tests is:
 
 1. In one terminal, start the Firebase emulators:
+
    ```bash
    pnpm emulators:start:empty
    ```
@@ -28,11 +29,13 @@ The global setup script (`tests/global-setup.ts`) will automatically create the 
 If you prefer to create the test user manually:
 
 1. Start the Firebase emulators:
+
    ```bash
    pnpm emulators:start:empty
    ```
 
 2. Open the Firebase Auth Emulator UI in your browser:
+
    ```
    http://localhost:9099/auth
    ```
@@ -44,21 +47,25 @@ If you prefer to create the test user manually:
 ## Running Tests
 
 ### Run all tests
+
 ```bash
 pnpm test:e2e
 ```
 
 ### Run tests with UI mode (recommended for development)
+
 ```bash
 pnpm test:e2e:ui
 ```
 
 ### Run tests in headed mode
+
 ```bash
 pnpm test:e2e --headed
 ```
 
 ### Run a specific test file
+
 ```bash
 pnpm test:e2e tests/coffee-tracking-flow.spec.ts
 ```
@@ -66,7 +73,9 @@ pnpm test:e2e tests/coffee-tracking-flow.spec.ts
 ## Test Structure
 
 ### `coffee-tracking-flow.spec.ts`
+
 Tests the main happy path flow:
+
 1. Add beans
 2. Add a brew using those beans
 3. Add an espresso using those beans

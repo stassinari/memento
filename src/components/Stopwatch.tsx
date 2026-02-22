@@ -67,30 +67,15 @@ export const Stopwatch = ({
 
   return (
     <div className="flex items-center gap-2">
-      <IconButton
-        variant="secondary"
-        type="button"
-        onClick={toggle}
-        disabled={disabled}
-      >
+      <IconButton variant="secondary" type="button" onClick={toggle} disabled={disabled}>
         {isRunning ? <PauseIcon /> : <PlayIcon />}
       </IconButton>
 
-      <span
-        className={clsx([
-          "w-20 text-2xl text-gray-900",
-          disabled && "text-gray-400",
-        ])}
-      >
+      <span className={clsx(["w-20 text-2xl text-gray-900", disabled && "text-gray-400"])}>
         {displayMinutes}:{displaySeconds}
       </span>
 
-      <IconButton
-        variant="white"
-        type="button"
-        onClick={reset}
-        disabled={disabled}
-      >
+      <IconButton variant="white" type="button" onClick={reset} disabled={disabled}>
         <XMarkIcon />
       </IconButton>
     </div>

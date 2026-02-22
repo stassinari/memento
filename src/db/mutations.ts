@@ -48,17 +48,15 @@ export const generateSecretKey = createServerFn({ method: "POST" })
 /**
  * Delete the secretKey for a user
  */
-export const deleteSecretKey = createServerFn({ method: "POST" })
-  .handler(async ({ context }): Promise<void> => {
+export const deleteSecretKey = createServerFn({ method: "POST" }).handler(
+  async ({ context }): Promise<void> => {
     try {
-      await db
-        .update(users)
-        .set({ secretKey: null })
-        .where(eq(users.id, context.userId));
+      await db.update(users).set({ secretKey: null }).where(eq(users.id, context.userId));
     } catch (error) {
       console.error("Failed to delete secret key:", error);
     }
-  });
+  },
+);
 
 /**
  * Add new beans
@@ -95,10 +93,7 @@ export const addBeans = createServerFn({ method: "POST" })
         blendParts: data.origin === "blend" ? data.blendParts : null,
       };
 
-      const [inserted] = await db
-        .insert(beans)
-        .values(pgData)
-        .returning({ id: beans.id });
+      const [inserted] = await db.insert(beans).values(pgData).returning({ id: beans.id });
 
       return { id: inserted.id };
     } catch (error) {
@@ -198,21 +193,14 @@ export const deleteBeans = createServerFn({ method: "POST" })
         .select({ id: brews.id })
         .from(brews)
         .where(eq(brews.beansId, beansId))
-        .union(
-          db
-            .select({ id: espresso.id })
-            .from(espresso)
-            .where(eq(espresso.beansId, beansId)),
-        )
+        .union(db.select({ id: espresso.id }).from(espresso).where(eq(espresso.beansId, beansId)))
         .limit(1);
 
       if (hasDrinks.length > 0) {
         return false; // Cannot delete beans with associated brews or espressos
       }
 
-      await db
-        .delete(beans)
-        .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
+      await db.delete(beans).where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
 
       return true; // Deletion successful
     } catch (error) {
@@ -224,13 +212,11 @@ export const deleteBeans = createServerFn({ method: "POST" })
  * Update existing beans
  */
 export const updateBeans = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: BeansFormInputs; beansId: string }) => {
-      if (!input.beansId) throw new Error("Beans ID is required");
-      validateBeansInput(input.data);
-      return input;
-    },
-  )
+  .inputValidator((input: { data: BeansFormInputs; beansId: string }) => {
+    if (!input.beansId) throw new Error("Beans ID is required");
+    validateBeansInput(input.data);
+    return input;
+  })
   .handler(async ({ data: { data, beansId }, context }): Promise<void> => {
     const pgData = {
       name: data.name!,
@@ -325,10 +311,7 @@ export const addBrew = createServerFn({ method: "POST" })
         finish: null,
       };
 
-      const [inserted] = await db
-        .insert(brews)
-        .values(pgData)
-        .returning({ id: brews.id });
+      const [inserted] = await db.insert(brews).values(pgData).returning({ id: brews.id });
 
       return { id: inserted.id };
     } catch (error) {
@@ -338,13 +321,11 @@ export const addBrew = createServerFn({ method: "POST" })
   });
 
 export const updateBrew = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: BrewFormInputs; brewId: string }) => {
-      if (!input.brewId) throw new Error("Brew ID is required");
-      validateBrewInput(input.data);
-      return input;
-    },
-  )
+  .inputValidator((input: { data: BrewFormInputs; brewId: string }) => {
+    if (!input.brewId) throw new Error("Brew ID is required");
+    validateBrewInput(input.data);
+    return input;
+  })
   .handler(async ({ data: { data, brewId }, context }) => {
     try {
       const beansId = data.beans;
@@ -368,12 +349,10 @@ export const updateBrew = createServerFn({ method: "POST" })
  * Update brew outcome fields (partial update)
  */
 export const updateBrewOutcome = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: BrewOutcomeInputs; brewId: string }) => {
-      if (!input.brewId) throw new Error("Brew ID is required");
-      return input;
-    },
-  )
+  .inputValidator((input: { data: BrewOutcomeInputs; brewId: string }) => {
+    if (!input.brewId) throw new Error("Brew ID is required");
+    return input;
+  })
   .handler(async ({ data: { data, brewId }, context }): Promise<void> => {
     try {
       await db
@@ -396,9 +375,7 @@ export const deleteBrew = createServerFn({ method: "POST" })
   })
   .handler(async ({ data: { brewId }, context }): Promise<void> => {
     try {
-      await db
-        .delete(brews)
-        .where(and(eq(brews.id, brewId), eq(brews.userId, context.userId)));
+      await db.delete(brews).where(and(eq(brews.id, brewId), eq(brews.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
     }
@@ -465,10 +442,7 @@ export const addEspresso = createServerFn({ method: "POST" })
         finish: null,
       };
 
-      const [inserted] = await db
-        .insert(espresso)
-        .values(pgData)
-        .returning({ id: espresso.id });
+      const [inserted] = await db.insert(espresso).values(pgData).returning({ id: espresso.id });
 
       return { id: inserted.id };
     } catch (error) {
@@ -478,16 +452,11 @@ export const addEspresso = createServerFn({ method: "POST" })
   });
 
 export const updateEspresso = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: {
-      data: EspressoFormInputs;
-      espressoId: string;
-    }) => {
-      if (!input.espressoId) throw new Error("Espresso ID is required");
-      validateEspressoInput(input.data);
-      return input;
-    },
-  )
+  .inputValidator((input: { data: EspressoFormInputs; espressoId: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
+    validateEspressoInput(input.data);
+    return input;
+  })
   .handler(async ({ data: { data, espressoId }, context }) => {
     try {
       const beansId = data.beans;
@@ -511,15 +480,10 @@ export const updateEspresso = createServerFn({ method: "POST" })
  * Update espresso outcome fields (partial update)
  */
 export const updateEspressoOutcome = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: {
-      data: EspressoOutcomeInputs;
-      espressoId: string;
-    }) => {
-      if (!input.espressoId) throw new Error("Espresso ID is required");
-      return input;
-    },
-  )
+  .inputValidator((input: { data: EspressoOutcomeInputs; espressoId: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
+    return input;
+  })
   .handler(async ({ data: { data, espressoId }, context }) => {
     try {
       await db
@@ -554,15 +518,10 @@ export const deleteEspresso = createServerFn({ method: "POST" })
  * Sets partial=false and adds beans + equipment details
  */
 export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: {
-      data: DecentEspressoFormInputs;
-      espressoId: string;
-    }) => {
-      if (!input.espressoId) throw new Error("Espresso ID is required");
-      return input;
-    },
-  )
+  .inputValidator((input: { data: DecentEspressoFormInputs; espressoId: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
+    return input;
+  })
   .handler(async ({ data: { data, espressoId }, context }): Promise<void> => {
     try {
       const beansId = data.beans;

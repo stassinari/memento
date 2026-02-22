@@ -31,8 +31,7 @@ import { ReactElement, ReactNode } from "react";
 export const comboboxButtonStyles =
   "absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-hidden";
 
-export const comboboxButtonIconStyles =
-  "w-5 h-5 text-gray-400 hover:text-gray-600";
+export const comboboxButtonIconStyles = "w-5 h-5 text-gray-400 hover:text-gray-600";
 
 export const ComboboxButton = () => (
   <HuiCombobox.Button className={clsx(comboboxButtonStyles)}>
@@ -56,11 +55,7 @@ interface ComboboxOptionProps {
   handleClick?: () => void;
 }
 
-export const ComboboxOption = ({
-  option,
-  renderOption,
-  handleClick,
-}: ComboboxOptionProps) => (
+export const ComboboxOption = ({ option, renderOption, handleClick }: ComboboxOptionProps) => (
   <HuiCombobox.Option
     key={option}
     value={option}
@@ -73,10 +68,7 @@ export const ComboboxOption = ({
 
         {selected && (
           <span className="absolute inset-y-0 right-0 flex items-center pr-4 ui-not-active:text-orange-600">
-            <CheckIcon
-              className="w-5 h-5 ui-active:text-white"
-              aria-hidden="true"
-            />
+            <CheckIcon className="w-5 h-5 ui-active:text-white" aria-hidden="true" />
           </span>
         )}
       </>

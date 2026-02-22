@@ -10,9 +10,7 @@ import { RadixModal } from "../Modal";
 import { Toggle } from "../Toggle";
 import { FormInputRadioCards } from "../form/FormInputRadioCards";
 
-type BeansForSelect = NonNullable<
-  Awaited<ReturnType<typeof getSelectableBeans>>
->[0];
+type BeansForSelect = NonNullable<Awaited<ReturnType<typeof getSelectableBeans>>>[0];
 
 const beansRadioOption = (beans: BeansForSelect): InputRadioCardsOption => ({
   value: beans.id,
@@ -35,10 +33,7 @@ interface BeansCardsSelectProps {
   existingBeans?: BeansForSelect;
 }
 
-export const BeansCardsSelect = ({
-  beansList,
-  existingBeans,
-}: BeansCardsSelectProps) => {
+export const BeansCardsSelect = ({ beansList, existingBeans }: BeansCardsSelectProps) => {
   console.log("BeansCardsSelect with no memos!");
 
   const { watch, formState } = useFormContext();
@@ -124,11 +119,7 @@ export const BeansCardsSelect = ({
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
-            <Toggle
-              label="Show frozen"
-              checked={showFrozenBeans}
-              onChange={setShowFrozenBeans}
-            />
+            <Toggle label="Show frozen" checked={showFrozenBeans} onChange={setShowFrozenBeans} />
           </div>
 
           <FormInputRadioCards

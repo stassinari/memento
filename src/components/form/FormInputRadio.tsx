@@ -31,12 +31,7 @@ export const FormInputRadio = ({
         </Input.Helper>
       )}
 
-      <InputRadio
-        label={label}
-        inputProps={inputProps}
-        options={options}
-        direction={direction}
-      />
+      <InputRadio label={label} inputProps={inputProps} options={options} direction={direction} />
 
       {error && <Input.Error id={`${id}-error`}>{error}</Input.Error>}
     </div>

@@ -8,10 +8,7 @@ import {
   PlusCircleIcon,
   PlusIcon as PlusIconMini,
 } from "@heroicons/react/20/solid";
-import {
-  ArrowPathIcon,
-  PlusIcon as PlusIconOutline,
-} from "@heroicons/react/24/outline";
+import { ArrowPathIcon, PlusIcon as PlusIconOutline } from "@heroicons/react/24/outline";
 import { createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
 import { atom } from "jotai";
@@ -20,10 +17,7 @@ import toast from "react-hot-toast";
 
 import { Badge, BadgePlusIcon, BadgeTimesIcon } from "~/components/Badge";
 import { navLinks } from "~/components/BottomNav";
-import {
-  BreadcrumbsWithHome,
-  BreadcrumbsWithoutHome,
-} from "~/components/Breadcrumbs";
+import { BreadcrumbsWithHome, BreadcrumbsWithoutHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { ButtonWithDropdown } from "~/components/ButtonWithDropdown";
 import { Card } from "~/components/Card";
@@ -33,17 +27,9 @@ import { Heading } from "~/components/Heading";
 import { IconButton } from "~/components/IconButton";
 import { InputRadio } from "~/components/InputRadio";
 import { InputRadioButtonGroup } from "~/components/InputRadioButtonGroup";
-import {
-  InputRadioCards,
-  InputRadioCardsOption,
-} from "~/components/InputRadioCards";
+import { InputRadioCards, InputRadioCardsOption } from "~/components/InputRadioCards";
 import { ListCard } from "~/components/ListCard";
-import {
-  ExampleDialogContent,
-  LoremIpsum,
-  Modal,
-  RadixModal,
-} from "~/components/Modal";
+import { ExampleDialogContent, LoremIpsum, Modal, RadixModal } from "~/components/Modal";
 import { notification } from "~/components/Notification";
 import { Stopwatch } from "~/components/Stopwatch";
 import { Textarea } from "~/components/Textarea";
@@ -119,9 +105,7 @@ function DesignLibrary() {
 
   const [switchEnabled, setSwitchEnabled] = useState(false);
 
-  const [formRadioCardValue, setFormRadioCardValue] = useState(
-    radioCardOptions[1],
-  );
+  const [formRadioCardValue, setFormRadioCardValue] = useState(radioCardOptions[1]);
 
   const [radioButtonGroupValue, setRadioButtonGroupValue] = useState<string>();
 
@@ -168,11 +152,7 @@ function DesignLibrary() {
             {/* Example ListCard */}
             <ListCard
               linkProps={{ to: "/" }}
-              footerSlot={
-                <ListCard.Footer Icon={<AcademicCapIcon />}>
-                  Fake footer
-                </ListCard.Footer>
-              }
+              footerSlot={<ListCard.Footer Icon={<AcademicCapIcon />}>Fake footer</ListCard.Footer>}
             >
               <div className="flex">
                 <div className="grow">
@@ -202,11 +182,7 @@ function DesignLibrary() {
             {/* Brew ListCard */}
             <ListCard
               linkProps={{ to: "/" }}
-              footerSlot={
-                <ListCard.Footer Icon={<DripperIcon />}>
-                  Brewed at 08:10
-                </ListCard.Footer>
-              }
+              footerSlot={<ListCard.Footer Icon={<DripperIcon />}>Brewed at 08:10</ListCard.Footer>}
             >
               <div className="flex">
                 <div className="grow">
@@ -237,9 +213,7 @@ function DesignLibrary() {
             <ListCard
               linkProps={{ to: "/" }}
               footerSlot={
-                <ListCard.Footer Icon={<PortafilterIcon />}>
-                  Pulled at 17:56
-                </ListCard.Footer>
+                <ListCard.Footer Icon={<PortafilterIcon />}>Pulled at 17:56</ListCard.Footer>
               }
             >
               <div className="flex">
@@ -271,9 +245,7 @@ function DesignLibrary() {
             <ListCard
               linkProps={{ to: "/" }}
               footerSlot={
-                <ListCard.Footer Icon={<BeanIconSolid />}>
-                  Roasted 18 days ago
-                </ListCard.Footer>
+                <ListCard.Footer Icon={<BeanIconSolid />}>Roasted 18 days ago</ListCard.Footer>
               }
             >
               <div className="flex">
@@ -326,43 +298,28 @@ function DesignLibrary() {
         <div>
           <p>Modals</p>
           <div>
-            <Button
-              variant="primary"
-              onClick={() => setIsExampleModalOpen(true)}
-            >
+            <Button variant="primary" onClick={() => setIsExampleModalOpen(true)}>
               Open example modal
             </Button>
-            <Modal
-              open={isExampleModalOpen}
-              handleClose={() => setIsExampleModalOpen(false)}
-            >
-              <ExampleDialogContent
-                handleClose={() => setIsExampleModalOpen(false)}
-              />
+            <Modal open={isExampleModalOpen} handleClose={() => setIsExampleModalOpen(false)}>
+              <ExampleDialogContent handleClose={() => setIsExampleModalOpen(false)} />
             </Modal>
           </div>
           <div>
             <Button variant="primary" onClick={() => setIsBasicModalOpen(true)}>
               Open basic modal
             </Button>
-            <Modal
-              open={isBasicModalOpen}
-              handleClose={() => setIsBasicModalOpen(false)}
-            >
+            <Modal open={isBasicModalOpen} handleClose={() => setIsBasicModalOpen(false)}>
               This is the basic-est modal
             </Modal>
           </div>
           <div>
             <RadixModal
-              triggerSlot={
-                <Button variant="primary">Tailwind Radix modal</Button>
-              }
+              triggerSlot={<Button variant="primary">Tailwind Radix modal</Button>}
               open={isTwRadixModalOpen}
               setOpen={setIsTwRadixModalOpen}
             >
-              <ExampleDialogContent
-                handleClose={() => setIsExampleModalOpen(false)}
-              />
+              <ExampleDialogContent handleClose={() => setIsExampleModalOpen(false)} />
             </RadixModal>
           </div>
           <div>
@@ -395,11 +352,7 @@ function DesignLibrary() {
         </div>
         <div className="flex gap-4">
           <Toggle checked={switchEnabled} onChange={setSwitchEnabled} />
-          <Toggle
-            checked={switchEnabled}
-            onChange={setSwitchEnabled}
-            colour="accent"
-          />
+          <Toggle checked={switchEnabled} onChange={setSwitchEnabled} colour="accent" />
         </div>
         <div className="space-y-4">
           <InputRadio
@@ -447,10 +400,7 @@ function DesignLibrary() {
         </div>
         <div>
           Toast notifications
-          <Button
-            variant="primary"
-            onClick={() => notification({ title: "Minimal notification" })}
-          >
+          <Button variant="primary" onClick={() => notification({ title: "Minimal notification" })}>
             Minimal
           </Button>
           <Button
@@ -920,45 +870,23 @@ function DesignLibrary() {
               <ColourShade className="bg-tw-brown-300">300</ColourShade>
               <ColourShade className="bg-tw-brown-400">400</ColourShade>
               <ColourShade className="bg-tw-brown-500">500</ColourShade>
-              <ColourShade className="text-white bg-tw-brown-600">
-                600
-              </ColourShade>
-              <ColourShade className="text-white bg-tw-brown-700">
-                700
-              </ColourShade>
-              <ColourShade className="text-white bg-tw-brown-800">
-                800
-              </ColourShade>
-              <ColourShade className="text-white bg-tw-brown-900">
-                900
-              </ColourShade>
+              <ColourShade className="text-white bg-tw-brown-600">600</ColourShade>
+              <ColourShade className="text-white bg-tw-brown-700">700</ColourShade>
+              <ColourShade className="text-white bg-tw-brown-800">800</ColourShade>
+              <ColourShade className="text-white bg-tw-brown-900">900</ColourShade>
             </div>
             <div>
               Brown - Material
               <ColourShade className="bg-mui-brown-50">50</ColourShade>
               <ColourShade className="bg-mui-brown-100">100</ColourShade>
               <ColourShade className="bg-mui-brown-200">200</ColourShade>
-              <ColourShade className="text-white bg-mui-brown-300">
-                300
-              </ColourShade>
-              <ColourShade className="text-white bg-mui-brown-400">
-                400
-              </ColourShade>
-              <ColourShade className="text-white bg-mui-brown-500">
-                500
-              </ColourShade>
-              <ColourShade className="text-white bg-mui-brown-600">
-                600
-              </ColourShade>
-              <ColourShade className="text-white bg-mui-brown-700">
-                700
-              </ColourShade>
-              <ColourShade className="text-white bg-mui-brown-800">
-                800
-              </ColourShade>
-              <ColourShade className="text-white bg-mui-brown-900">
-                900
-              </ColourShade>
+              <ColourShade className="text-white bg-mui-brown-300">300</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-400">400</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-500">500</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-600">600</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-700">700</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-800">800</ColourShade>
+              <ColourShade className="text-white bg-mui-brown-900">900</ColourShade>
             </div>
           </div>
         </div>
@@ -967,16 +895,8 @@ function DesignLibrary() {
   );
 }
 
-const ColourShade = ({
-  className,
-  children,
-}: HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={clsx(
-      "flex items-center justify-center w-32 h-8 text-sm",
-      className,
-    )}
-  >
+const ColourShade = ({ className, children }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={clsx("flex items-center justify-center w-32 h-8 text-sm", className)}>
     {children}
   </div>
 );

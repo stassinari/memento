@@ -53,11 +53,7 @@ export const Badge = ({
     <span
       className={clsx([
         "relative inline-flex items-center rounded-full py-0.5 text-xs font-medium",
-        size === "small"
-          ? "px-2.5 text-xs"
-          : size === "large"
-            ? "px-3 text-sm"
-            : null,
+        size === "small" ? "px-2.5 text-xs" : size === "large" ? "px-3 text-sm" : null,
         colour === "grey"
           ? "text-gray-800 bg-gray-100"
           : colour === "orange"
@@ -90,16 +86,9 @@ interface BadgeTimesIconProps {
 }
 
 export const BadgeTimesIcon = ({ className }: BadgeTimesIconProps) => (
-  <svg
-    className={className}
-    stroke="currentColor"
-    fill="none"
-    viewBox="0 0 8 8"
-  >
+  <svg className={className} stroke="currentColor" fill="none" viewBox="0 0 8 8">
     <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
   </svg>
 );
 
-export const BadgePlusIcon = () => (
-  <BadgeTimesIcon className="transform rotate-45" />
-);
+export const BadgePlusIcon = () => <BadgeTimesIcon className="transform rotate-45" />;

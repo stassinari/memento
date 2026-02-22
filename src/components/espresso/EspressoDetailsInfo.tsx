@@ -19,15 +19,15 @@ export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
       {espresso.fromDecent && (
         <DetailsCard
           title="Prep"
-          rows={(espresso.fromDecent
+          rows={
+            espresso.fromDecent
               ? [{ label: "Profile name", value: espresso.profileName ?? "" }]
-              : [])}
+              : []
+          }
         />
       )}
 
-      {espresso.beans && (
-        <BeansShortInfo beans={espresso.beans} drinkDate={espresso.date} />
-      )}
+      {espresso.beans && <BeansShortInfo beans={espresso.beans} drinkDate={espresso.date} />}
 
       <DetailsCard
         title="Equipment"
@@ -59,9 +59,7 @@ export const EspressoDetailsInfo = ({ espresso }: EspressoDetailsInfoProps) => {
             ? [
                 {
                   label: "Water temperature",
-                  value: espresso.waterTemperature
-                    ? `${espresso.waterTemperature} °C`
-                    : "",
+                  value: espresso.waterTemperature ? `${espresso.waterTemperature} °C` : "",
                 },
               ]
             : []),

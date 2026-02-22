@@ -45,16 +45,8 @@ export const ComboboxSingle = ({
         });
 
   return (
-    <HuiCombobox
-      as="div"
-      value={value}
-      onChange={onChange}
-      name={name}
-      nullable
-    >
-      <HuiCombobox.Label className={clsx(labelStyles)}>
-        {label}
-      </HuiCombobox.Label>
+    <HuiCombobox as="div" value={value} onChange={onChange} name={name} nullable>
+      <HuiCombobox.Label className={clsx(labelStyles)}>{label}</HuiCombobox.Label>
 
       <div className="relative mt-1">
         <HuiCombobox.Input

@@ -86,12 +86,7 @@ export const MementoLogo = ({ className }: MementoLogoProps) => (
       transform="translate(1343.55 78.458)scale(.20945)"
     />
     <g transform="translate(1349.999 85.484)scale(.1956)">
-      <circle
-        cx="465.658"
-        cy="507.377"
-        r="312.34"
-        style={{ fill: "#804019" }}
-      />
+      <circle cx="465.658" cy="507.377" r="312.34" style={{ fill: "#804019" }} />
       <clipPath id="a">
         <circle cx="465.658" cy="507.377" r="312.34" />
       </clipPath>

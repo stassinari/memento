@@ -24,9 +24,7 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
     goal: decentReadings.temperatureGoal[i],
   }));
 
-  const totalTime = Math.floor(
-    decentReadings.time[decentReadings.time.length - 1],
-  );
+  const totalTime = Math.floor(decentReadings.time[decentReadings.time.length - 1]);
   const roundedTime = Math.ceil(totalTime / 5.0) * 5;
   const xAxisTickCount = Math.round(roundedTime / 5) + 1;
 
@@ -80,9 +78,7 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
             animationDuration={100}
             animationEasing="ease-out"
             content={(props) => {
-              return (
-                <ChartTooltip title={props.label} payload={props.payload} />
-              );
+              return <ChartTooltip title={props.label} payload={props.payload} />;
             }}
           />
           <Legend content={ChartLegend} />

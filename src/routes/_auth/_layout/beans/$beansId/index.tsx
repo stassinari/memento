@@ -1,9 +1,5 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import {
-  queryOptions,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
@@ -11,24 +7,12 @@ import { BeansDetailsInfo } from "~/components/beans/BeansDetailsInfo";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
-import {
-  ButtonWithDropdown,
-  ButtonWithDropdownProps,
-} from "~/components/ButtonWithDropdown";
-import {
-  DrinksList,
-  mergeBrewsAndEspressoByUniqueDate,
-} from "~/components/drinks/DrinksList";
+import { ButtonWithDropdown, ButtonWithDropdownProps } from "~/components/ButtonWithDropdown";
+import { DrinksList, mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { Modal } from "~/components/Modal";
-import {
-  archiveBeans,
-  deleteBeans,
-  freezeBeans,
-  thawBeans,
-  unarchiveBeans,
-} from "~/db/mutations";
+import { archiveBeans, deleteBeans, freezeBeans, thawBeans, unarchiveBeans } from "~/db/mutations";
 import { getBean } from "~/db/queries";
 import { Beans } from "~/db/types";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -192,13 +176,9 @@ function BeansDetails() {
 
   return (
     <>
-      <Modal
-        open={isDeleteErrorModalOpen}
-        handleClose={() => setIsDeleteErrorModalOpen(false)}
-      >
+      <Modal open={isDeleteErrorModalOpen} handleClose={() => setIsDeleteErrorModalOpen(false)}>
         <p className="text-sm text-gray-700">
-          Cannot delete beans that have associated drinks. Please delete the
-          drinks first.
+          Cannot delete beans that have associated drinks. Please delete the drinks first.
         </p>
         <div className="mt-4 flex justify-end">
           <Button
@@ -212,9 +192,7 @@ function BeansDetails() {
         </div>
       </Modal>
 
-      <BreadcrumbsWithHome
-        items={[navLinks.beans, { label: beansWithDrinks.name }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.beans, { label: beansWithDrinks.name }]} />
 
       <Heading actionSlot={<ButtonWithDropdown {...dropdownButtons} />}>
         {beansWithDrinks.name}
@@ -223,17 +201,13 @@ function BeansDetails() {
       {isSm ? (
         <div className="grid grid-cols-[40%_60%] gap-4 my-6">
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">
-              Beans info
-            </h2>
+            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Beans info</h2>
 
             <BeansDetailsInfo beans={beansWithDrinks} />
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-center text-gray-900">
-              Drinks
-            </h2>
+            <h2 className="text-lg font-semibold text-center text-gray-900">Drinks</h2>
 
             <DrinksList drinks={sqlDrinks} />
           </div>
@@ -241,12 +215,8 @@ function BeansDetails() {
       ) : (
         <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
           <TabList className="flex -mb-px">
-            <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>
-              Info
-            </Tab>
-            <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>
-              Drinks
-            </Tab>
+            <Tab className={clsx([tabStyles(selectedIndex === 0), "w-1/2"])}>Info</Tab>
+            <Tab className={clsx([tabStyles(selectedIndex === 1), "w-1/2"])}>Drinks</Tab>
           </TabList>
           <TabPanels className="mt-4">
             <TabPanel>

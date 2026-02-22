@@ -1,13 +1,6 @@
-import {
-  ArrowUpTrayIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-  Link as RouterLink,
-  createFileRoute,
-  useNavigate,
-} from "@tanstack/react-router";
+import { Link as RouterLink, createFileRoute, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import clsx from "clsx";
 import { useState } from "react";
@@ -117,9 +110,9 @@ function DecentUpload() {
       {!secretKey && (
         <>
           <div>
-            It looks like you haven't uploaded any shot files yet. For security
-            reasons, we require you to generate a secret token (the same used
-            used by auto-upload feature). Click the button below or head over to{" "}
+            It looks like you haven't uploaded any shot files yet. For security reasons, we require
+            you to generate a secret token (the same used used by auto-upload feature). Click the
+            button below or head over to{" "}
             <Link asChild>
               <RouterLink to="/settings">your Account page</RouterLink>
             </Link>{" "}
@@ -142,23 +135,18 @@ function DecentUpload() {
             <div
               className={clsx([
                 "group flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-600/75 focus-visible:outline-hidden",
-                isFileUploading &&
-                  "after:content after:absolute after:inset-0 after:bg-gray-50/50",
+                isFileUploading && "after:content after:absolute after:inset-0 after:bg-gray-50/50",
               ])}
               {...getRootProps()}
             >
               <div className="text-center">
-                <ArrowUpTrayIcon
-                  className="w-12 h-12 mx-auto text-gray-300"
-                  aria-hidden="true"
-                />
+                <ArrowUpTrayIcon className="w-12 h-12 mx-auto text-gray-300" aria-hidden="true" />
                 <div className="flex justify-center mt-4 text-sm leading-6 text-gray-600">
                   <label
                     htmlFor="file-upload"
                     className={clsx([
                       "relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-hidden focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2",
-                      !isFileUploading &&
-                        "group-hover:text-orange-500 group-hover:underline",
+                      !isFileUploading && "group-hover:text-orange-500 group-hover:underline",
                     ])}
                   >
                     <span>Upload a file</span>

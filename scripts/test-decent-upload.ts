@@ -54,8 +54,7 @@ function parseArgs(): UploadOptions | null {
   }
 
   const filePath = args[0];
-  let url =
-    process.env.DECENT_ENDPOINT || "http://localhost:3000/api/decent-shots";
+  let url = process.env.DECENT_ENDPOINT || "http://localhost:3000/api/decent-shots";
   let email = process.env.DECENT_EMAIL || "";
   let secretKey = process.env.DECENT_SECRET_KEY || "";
 
@@ -74,16 +73,14 @@ function parseArgs(): UploadOptions | null {
   }
 
   if (!email) {
-    console.error(
-      "❌ Error: Email required (use --email or set DECENT_EMAIL env var)\n"
-    );
+    console.error("❌ Error: Email required (use --email or set DECENT_EMAIL env var)\n");
     showHelp();
     process.exit(1);
   }
 
   if (!secretKey) {
     console.error(
-      "❌ Error: Secret key required (use --secret or set DECENT_SECRET_KEY env var)\n"
+      "❌ Error: Secret key required (use --secret or set DECENT_SECRET_KEY env var)\n",
     );
     showHelp();
     process.exit(1);
@@ -148,9 +145,7 @@ async function uploadShot(options: UploadOptions) {
 
   // Determine MIME type
   const filename = basename(filePath);
-  const mimeType = filename.endsWith(".json")
-    ? "application/json"
-    : "application/octet-stream";
+  const mimeType = filename.endsWith(".json") ? "application/json" : "application/octet-stream";
   console.log(`📝 Type: ${mimeType}`);
 
   // Create multipart/form-data boundary (matches TCL plugin behavior)
@@ -199,9 +194,7 @@ async function uploadShot(options: UploadOptions) {
 
         if (data.id) {
           console.log(`\n🎯 Shot ID: ${data.id}`);
-          console.log(
-            `🔗 View at: ${url.replace(/\/api\/.*$/, "")}/drinks/espresso/${data.id}`
-          );
+          console.log(`🔗 View at: ${url.replace(/\/api\/.*$/, "")}/drinks/espresso/${data.id}`);
         }
       } catch {
         console.log(`📋 Response: ${responseText}`);
@@ -213,15 +206,11 @@ async function uploadShot(options: UploadOptions) {
 
       // Helpful error messages
       if (response.status === 401) {
-        console.log(
-          "\n💡 Tip: Check that your email and secret key are correct"
-        );
+        console.log("\n💡 Tip: Check that your email and secret key are correct");
       } else if (response.status === 409) {
         console.log("\n💡 Tip: This shot was already uploaded (duplicate)");
       } else if (response.status === 500) {
-        console.log(
-          "\n💡 Tip: Check server logs for errors (database connection, etc.)"
-        );
+        console.log("\n💡 Tip: Check server logs for errors (database connection, etc.)");
       }
 
       process.exit(1);
@@ -234,10 +223,7 @@ async function uploadShot(options: UploadOptions) {
 
     if (error instanceof Error && error.message.includes("ECONNREFUSED")) {
       console.log("\n💡 Tip: Is the server running? Try: pnpm dev");
-    } else if (
-      error instanceof Error &&
-      error.message.includes("fetch is not defined")
-    ) {
+    } else if (error instanceof Error && error.message.includes("fetch is not defined")) {
       console.log("\n💡 Tip: Node.js 18+ required for fetch API");
     }
 

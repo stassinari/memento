@@ -11,11 +11,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-export const Modal = ({
-  open,
-  handleClose,
-  children,
-}: ModalProps) => {
+export const Modal = ({ open, handleClose, children }: ModalProps) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={handleClose}>
@@ -68,22 +64,14 @@ interface RadixProps {
   setOpen: (open: boolean) => void;
 }
 
-export const RadixModal = ({
-  children,
-  triggerSlot,
-  open,
-  setOpen,
-}: RadixProps) => {
+export const RadixModal = ({ children, triggerSlot, open, setOpen }: RadixProps) => {
   return (
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>{triggerSlot}</RadixDialog.Trigger>
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 sm:place-items-center">
           <RadixDialog.Content
-            className={clsx([
-              "p-4 mx-4 bg-white rounded-sm",
-              "sm:w-auto sm:max-w-md",
-            ])}
+            className={clsx(["p-4 mx-4 bg-white rounded-sm", "sm:w-auto sm:max-w-md"])}
             style={{
               width: `calc(100vw - 2rem)`,
               marginTop: `calc(env(safe-area-inset-top) + 1rem)`,
@@ -102,9 +90,7 @@ interface ExampleDialogContentProps {
   handleClose: () => void;
 }
 
-export const ExampleDialogContent = ({
-  handleClose,
-}: ExampleDialogContentProps) => (
+export const ExampleDialogContent = ({ handleClose }: ExampleDialogContentProps) => (
   <>
     <div>
       <div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full">
@@ -115,24 +101,16 @@ export const ExampleDialogContent = ({
         {/* <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
           Payment successful
         </Dialog.Title> */}
-        <h2 className="text-lg font-medium leading-6 text-gray-900">
-          Payment successful
-        </h2>
+        <h2 className="text-lg font-medium leading-6 text-gray-900">Payment successful</h2>
         <div className="mt-2">
           <p className="text-sm text-gray-500">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-            amet labore.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
           </p>
         </div>
       </div>
     </div>
     <div className="mt-5 sm:mt-6">
-      <Button
-        variant="primary"
-        width="full"
-        onClick={handleClose}
-        type="button"
-      >
+      <Button variant="primary" width="full" onClick={handleClose} type="button">
         Go back to dashboard
       </Button>
     </div>
@@ -141,39 +119,32 @@ export const ExampleDialogContent = ({
 
 export const LoremIpsum = () => (
   <p>
-    Proin lacinia quis dui vel sagittis. Suspendisse in risus massa. Donec
-    porttitor magna vitae elit consequat, ac varius nibh placerat. Cras sit amet
-    augue sed urna dictum varius. Aenean neque felis, auctor sit amet nibh eget,
-    consectetur egestas tellus. Nunc congue mauris risus, at lobortis leo tempus
-    at. Pellentesque eu dui vel purus ultricies dictum. Mauris scelerisque
-    pellentesque nisl, ut sodales est commodo cursus. Phasellus tellus ante,
-    porttitor a ex ac, viverra venenatis risus. Vestibulum consectetur mauris
-    vel velit semper sagittis. Nam a auctor orci, sit amet tincidunt tellus.
-    Aliquam ac nulla et arcu molestie pharetra. Sed cursus aliquet sem eu
-    mattis. Sed cursus quam vel leo malesuada laoreet. Vivamus quis luctus
-    augue. Sed nisi dui, volutpat ac malesuada sed, mattis non ligula. Curabitur
-    suscipit ornare dapibus. Quisque id urna sed nulla bibendum varius. Duis
-    posuere felis tellus, eu facilisis felis bibendum vitae. Duis vitae mollis
-    nisl, ut fermentum nulla. Praesent in ligula vehicula, luctus eros porta,
-    pharetra diam. Suspendisse vitae justo mi. Duis condimentum ex lacus, a
-    finibus metus euismod sed. Proin dictum rutrum orci quis sodales. Donec
-    aliquam diam eros, sagittis sagittis risus euismod at. Proin sit amet erat
-    ut dolor feugiat vulputate sed et lorem. Vivamus aliquam risus ac quam
-    viverra fermentum. Donec tellus diam, molestie ut ante ac, laoreet molestie
-    urna. Duis sed consectetur felis, non hendrerit orci. Mauris tincidunt
-    tincidunt fermentum. Integer finibus ac dui nec auctor. Vivamus a velit
-    diam. Vestibulum quis blandit nisl, nec euismod turpis. Donec quis massa
-    faucibus, congue augue eu, blandit dui. Suspendisse potenti. Curabitur
-    vestibulum purus mauris, sed cursus mauris mattis in. Suspendisse vestibulum
-    lobortis sem eget fermentum. Phasellus sit amet sollicitudin dolor. Proin
-    lobortis diam quis nunc interdum commodo. Maecenas ut lectus ut felis
-    euismod aliquam. Sed lorem purus, condimentum sit amet eleifend at, placerat
-    condimentum nulla. Ut ut consectetur nisl. Duis tincidunt ornare libero eget
-    sollicitudin. Ut ut risus at ligula ullamcorper auctor sed eu nisl.
-    Phasellus dolor leo, maximus non rhoncus non, tristique vitae nisl. Maecenas
-    et cursus metus, ac porta nunc. In tincidunt, urna in rutrum ultrices, dolor
-    purus finibus metus, sed tincidunt est nisi eu velit. Morbi feugiat egestas
-    pulvinar. Integer a neque ornare, placerat leo in, sodales odio. Mauris nec
-    sem ac ipsum volutpat dignissim.
+    Proin lacinia quis dui vel sagittis. Suspendisse in risus massa. Donec porttitor magna vitae
+    elit consequat, ac varius nibh placerat. Cras sit amet augue sed urna dictum varius. Aenean
+    neque felis, auctor sit amet nibh eget, consectetur egestas tellus. Nunc congue mauris risus, at
+    lobortis leo tempus at. Pellentesque eu dui vel purus ultricies dictum. Mauris scelerisque
+    pellentesque nisl, ut sodales est commodo cursus. Phasellus tellus ante, porttitor a ex ac,
+    viverra venenatis risus. Vestibulum consectetur mauris vel velit semper sagittis. Nam a auctor
+    orci, sit amet tincidunt tellus. Aliquam ac nulla et arcu molestie pharetra. Sed cursus aliquet
+    sem eu mattis. Sed cursus quam vel leo malesuada laoreet. Vivamus quis luctus augue. Sed nisi
+    dui, volutpat ac malesuada sed, mattis non ligula. Curabitur suscipit ornare dapibus. Quisque id
+    urna sed nulla bibendum varius. Duis posuere felis tellus, eu facilisis felis bibendum vitae.
+    Duis vitae mollis nisl, ut fermentum nulla. Praesent in ligula vehicula, luctus eros porta,
+    pharetra diam. Suspendisse vitae justo mi. Duis condimentum ex lacus, a finibus metus euismod
+    sed. Proin dictum rutrum orci quis sodales. Donec aliquam diam eros, sagittis sagittis risus
+    euismod at. Proin sit amet erat ut dolor feugiat vulputate sed et lorem. Vivamus aliquam risus
+    ac quam viverra fermentum. Donec tellus diam, molestie ut ante ac, laoreet molestie urna. Duis
+    sed consectetur felis, non hendrerit orci. Mauris tincidunt tincidunt fermentum. Integer finibus
+    ac dui nec auctor. Vivamus a velit diam. Vestibulum quis blandit nisl, nec euismod turpis. Donec
+    quis massa faucibus, congue augue eu, blandit dui. Suspendisse potenti. Curabitur vestibulum
+    purus mauris, sed cursus mauris mattis in. Suspendisse vestibulum lobortis sem eget fermentum.
+    Phasellus sit amet sollicitudin dolor. Proin lobortis diam quis nunc interdum commodo. Maecenas
+    ut lectus ut felis euismod aliquam. Sed lorem purus, condimentum sit amet eleifend at, placerat
+    condimentum nulla. Ut ut consectetur nisl. Duis tincidunt ornare libero eget sollicitudin. Ut ut
+    risus at ligula ullamcorper auctor sed eu nisl. Phasellus dolor leo, maximus non rhoncus non,
+    tristique vitae nisl. Maecenas et cursus metus, ac porta nunc. In tincidunt, urna in rutrum
+    ultrices, dolor purus finibus metus, sed tincidunt est nisi eu velit. Morbi feugiat egestas
+    pulvinar. Integer a neque ornare, placerat leo in, sodales odio. Mauris nec sem ac ipsum
+    volutpat dignissim.
   </p>
 );

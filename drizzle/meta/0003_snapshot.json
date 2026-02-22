@@ -195,12 +195,8 @@
           "name": "beans_user_id_users_id_fk",
           "tableFrom": "beans",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -433,12 +429,8 @@
           "name": "brews_user_id_users_id_fk",
           "tableFrom": "brews",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -446,12 +438,8 @@
           "name": "brews_beans_id_beans_id_fk",
           "tableFrom": "brews",
           "tableTo": "beans",
-          "columnsFrom": [
-            "beans_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["beans_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -688,12 +676,8 @@
           "name": "espresso_user_id_users_id_fk",
           "tableFrom": "espresso",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -701,12 +685,8 @@
           "name": "espresso_beans_id_beans_id_fk",
           "tableFrom": "espresso",
           "tableTo": "beans",
-          "columnsFrom": [
-            "beans_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["beans_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -817,12 +797,8 @@
           "name": "espresso_decent_readings_espresso_id_espresso_id_fk",
           "tableFrom": "espresso_decent_readings",
           "tableTo": "espresso",
-          "columnsFrom": [
-            "espresso_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["espresso_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -905,12 +881,8 @@
           "name": "tastings_user_id_users_id_fk",
           "tableFrom": "tastings",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -918,12 +890,8 @@
           "name": "tastings_beans_id_beans_id_fk",
           "tableFrom": "tastings",
           "tableTo": "beans",
-          "columnsFrom": [
-            "beans_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["beans_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1001,27 +969,17 @@
     "public.bean_origin": {
       "name": "bean_origin",
       "schema": "public",
-      "values": [
-        "single-origin",
-        "blend"
-      ]
+      "values": ["single-origin", "blend"]
     },
     "public.extraction_type": {
       "name": "extraction_type",
       "schema": "public",
-      "values": [
-        "percolation",
-        "immersion"
-      ]
+      "values": ["percolation", "immersion"]
     },
     "public.roast_style": {
       "name": "roast_style",
       "schema": "public",
-      "values": [
-        "filter",
-        "espresso",
-        "omni-roast"
-      ]
+      "values": ["filter", "espresso", "omni-roast"]
     }
   },
   "schemas": {},

@@ -35,9 +35,7 @@ export const propertyToValues: Record<string, DataValues> = {
   goal: { label: "T. goal", unit: "℃" },
 };
 
-export const PressureFlowWeightChart = ({
-  readings,
-}: PressureFlowWeightChartProps) => {
+export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartProps) => {
   // TODO improve performance of this chart
   const data = readings.time.map((t, i) => ({
     time: t,
@@ -96,9 +94,7 @@ export const PressureFlowWeightChart = ({
             animationDuration={100}
             animationEasing="ease-out"
             content={(props) => {
-              return (
-                <ChartTooltip title={props.label} payload={props.payload} />
-              );
+              return <ChartTooltip title={props.label} payload={props.payload} />;
             }}
           />
           <Legend content={ChartLegend} />
@@ -116,9 +112,7 @@ export const PressureFlowWeightChart = ({
             stroke={"#22c55e"} // FIXME better tw theme theme`colors.green.500`
             strokeWidth={2}
             strokeDasharray="5 5"
-            activeDot={(props) =>
-              props.value >= 0 ? <Dot {...props} /> : <Dot />
-            }
+            activeDot={(props) => (props.value >= 0 ? <Dot {...props} /> : <Dot />)}
           />
           <Line
             type="basis"
@@ -134,9 +128,7 @@ export const PressureFlowWeightChart = ({
             stroke={"#7dd3fc"} // FIXME better tw theme theme`colors.blue.300`
             strokeWidth={2}
             strokeDasharray="5 5"
-            activeDot={(props) =>
-              props.value >= 0 ? <Dot {...props} /> : <Dot />
-            }
+            activeDot={(props) => (props.value >= 0 ? <Dot {...props} /> : <Dot />)}
           />
           <Line
             type="basis"

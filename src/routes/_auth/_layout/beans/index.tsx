@@ -41,20 +41,14 @@ const tabs: BeansTab[] = [
     name: "Frozen",
     numberOfLoadingCards: 3,
     EmptyState: (
-      <EmptyState
-        title="No frozen beans"
-        description="Freeze beans for them to appear here."
-      />
+      <EmptyState title="No frozen beans" description="Freeze beans for them to appear here." />
     ),
   },
   {
     name: "Archived",
     numberOfLoadingCards: 13,
     EmptyState: (
-      <EmptyState
-        title="No archived beans"
-        description="Beans you archive will appear here."
-      />
+      <EmptyState title="No archived beans" description="Beans you archive will appear here." />
     ),
   },
 ];
@@ -77,12 +71,7 @@ export function BeansList() {
 
       <Heading
         actionSlot={
-          <Button
-            variant="primary"
-            colour="accent"
-            size={isSm ? "md" : "sm"}
-            asChild
-          >
+          <Button variant="primary" colour="accent" size={isSm ? "md" : "sm"} asChild>
             <Link to="/beans/add">Add beans </Link>
           </Button>
         }
@@ -106,20 +95,15 @@ export function BeansList() {
                 <Suspense
                   fallback={
                     <ul className="grid gap-4 sm:grid-cols-2">
-                      {Array.from({ length: t.numberOfLoadingCards }).map(
-                        (_, index) => (
-                          <li key={index}>
-                            <CardSkeleton />
-                          </li>
-                        ),
-                      )}
+                      {Array.from({ length: t.numberOfLoadingCards }).map((_, index) => (
+                        <li key={index}>
+                          <CardSkeleton />
+                        </li>
+                      ))}
                     </ul>
                   }
                 >
-                  <BeansTabContent
-                    name={t.name}
-                    EmptyState={tabs[i].EmptyState}
-                  />
+                  <BeansTabContent name={t.name} EmptyState={tabs[i].EmptyState} />
                 </Suspense>
               </TabPanel>
             ))}
@@ -139,8 +123,7 @@ export interface BeansTabContentProps {
 export const BeansTabContent = ({ name, EmptyState }: BeansTabContentProps) => {
   const { data: beansList } = useSuspenseQuery({
     queryKey: ["beans", name.toLowerCase()],
-    queryFn: () =>
-      getBeans({ data: { state: name } }),
+    queryFn: () => getBeans({ data: { state: name } }),
   });
 
   if (beansList.length === 0) return <>{EmptyState}</>;

@@ -21,9 +21,7 @@ const espressoQueryOptions = (espressoId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/espresso/$espressoId/decent/add",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/espresso/$espressoId/decent/add")({
   component: DecentEspressoAddDetails,
 });
 
@@ -31,9 +29,7 @@ function DecentEspressoAddDetails() {
   const { espressoId } = Route.useParams();
   const navigate = useNavigate();
 
-  const { data: decentEspresso } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? ""),
-  );
+  const { data: decentEspresso } = useSuspenseQuery(espressoQueryOptions(espressoId ?? ""));
 
   const { data: lastEspresso } = useSuspenseQuery(lastEspressoQueryOptions());
 
@@ -80,9 +76,7 @@ function DecentEspressoAddDetails() {
         ]}
       />
 
-      <Heading className="mb-4">
-        Add info ({decentEspresso.profileName})
-      </Heading>
+      <Heading className="mb-4">Add info ({decentEspresso.profileName})</Heading>
 
       <DecentEspressoForm
         defaultValues={decentEspressoFormEmptyValues(

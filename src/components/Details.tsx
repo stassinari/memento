@@ -9,11 +9,7 @@ interface DetailsCardProps {
   rows: DescriptionListRow[];
 }
 
-export const DetailsCard = ({
-  title,
-  action,
-  rows,
-}: DetailsCardProps) => (
+export const DetailsCard = ({ title, action, rows }: DetailsCardProps) => (
   <Card.Container>
     <Card.Header title={title} action={action} />
     <Card.Content>

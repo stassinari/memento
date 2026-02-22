@@ -1,11 +1,7 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { DecentReadings } from ".";
 
-export const extractJsonShot = async (
-  data: string,
-  admin: any,
-  uid: string,
-) => {
+export const extractJsonShot = async (data: string, admin: any, uid: string) => {
   const jsonShot = JSON.parse(data);
 
   const date = new Date(parseInt(`${jsonShot.timestamp}000`));

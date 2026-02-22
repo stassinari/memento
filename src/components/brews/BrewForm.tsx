@@ -10,23 +10,15 @@ import {
   BeansMethodEquipmentInputs,
   beansMethodEquipmentEmptyValues,
 } from "./steps/BeansMethodEquipment";
-import {
-  BrewRecipe,
-  BrewRecipeInputs,
-  brewRecipeEmptyValues,
-} from "./steps/Recipe";
+import { BrewRecipe, BrewRecipeInputs, brewRecipeEmptyValues } from "./steps/Recipe";
 import { BrewTime, BrewTimeInputs, brewTimeEmptyValues } from "./steps/Time";
 
 export interface BrewFormInputs
   extends BeansMethodEquipmentInputs, BrewRecipeInputs, BrewTimeInputs {}
 
-export type BrewFormValuesSuggestions = Awaited<
-  ReturnType<typeof getBrewFormValueSuggestions>
->;
+export type BrewFormValuesSuggestions = Awaited<ReturnType<typeof getBrewFormValueSuggestions>>;
 
-export const brewFormEmptyValues: (copyFrom?: Brew) => BrewFormInputs = (
-  copyFrom,
-) => ({
+export const brewFormEmptyValues: (copyFrom?: Brew) => BrewFormInputs = (copyFrom) => ({
   ...beansMethodEquipmentEmptyValues(copyFrom),
 
   ...brewRecipeEmptyValues(),
@@ -52,9 +44,7 @@ export const BrewForm = ({
   console.log("BrewForm");
 
   const [brewFormInputs, setBrewFormInputs] = useState(defaultValues);
-  const [activeStep, setActiveStep] = useState<BrewFormStep>(
-    "beansMethodEquipment",
-  );
+  const [activeStep, setActiveStep] = useState<BrewFormStep>("beansMethodEquipment");
 
   const { data: beansList, isLoading: areBeansLoading } = useQuery({
     queryKey: ["beans", "notArchived"],
@@ -79,10 +69,7 @@ export const BrewForm = ({
         <BeansMethodEquipment
           brewFormValueSuggestions={brewFormValueSuggestions}
           beansCardsSelectComponent={
-            <BeansCardsSelect
-              beansList={beansList}
-              existingBeans={existingBeans}
-            />
+            <BeansCardsSelect beansList={beansList} existingBeans={existingBeans} />
           }
           defaultValues={brewFormInputs}
           handleNestedSubmit={(data) => {

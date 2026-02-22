@@ -2,11 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { and, eq } from "drizzle-orm";
 import { db } from "~/db/db";
 import { espresso, espressoDecentReadings, users } from "~/db/schema";
-import {
-  AlreadyExistsError,
-  parseJsonShot,
-  parseTclShot,
-} from "~/lib/decent-parsers";
+import { AlreadyExistsError, parseJsonShot, parseTclShot } from "~/lib/decent-parsers";
 
 // No Firebase Admin initialization needed!
 // The Cloud Function already authenticates users and passes the UID
@@ -25,23 +21,21 @@ export const Route = createFileRoute("/api/decent-shots")({
         // Parse Basic auth
         const authHeader = request.headers.get("Authorization");
         if (!authHeader || !authHeader.startsWith("Basic ")) {
-          return new Response(
-            JSON.stringify({ error: "Auth headers not sent" }),
-            { status: 401, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "Auth headers not sent" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         const base64Credentials = authHeader.split(" ")[1];
-        const credentials = Buffer.from(base64Credentials, "base64").toString(
-          "ascii",
-        );
+        const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
         const [firebaseUid, reqSecretKey] = credentials.split(":");
 
         if (!firebaseUid || !reqSecretKey) {
-          return new Response(
-            JSON.stringify({ error: "Invalid auth format" }),
-            { status: 401, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "Invalid auth format" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         console.log("Call with Firebase UID:", firebaseUid);
@@ -56,26 +50,26 @@ export const Route = createFileRoute("/api/decent-shots")({
             .limit(1);
 
           if (!user) {
-            return new Response(
-              JSON.stringify({ error: "User not found in database" }),
-              { status: 401, headers: { "Content-Type": "application/json" } },
-            );
+            return new Response(JSON.stringify({ error: "User not found in database" }), {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            });
           }
 
           if (!user.secretKey || user.secretKey !== reqSecretKey) {
-            return new Response(
-              JSON.stringify({ error: "Invalid secret key" }),
-              { status: 401, headers: { "Content-Type": "application/json" } },
-            );
+            return new Response(JSON.stringify({ error: "Invalid secret key" }), {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            });
           }
 
           userId = user.id;
         } catch (error) {
           console.error("Database error during auth:", error);
-          return new Response(
-            JSON.stringify({ error: "Authentication failed" }),
-            { status: 401, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "Authentication failed" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         console.log("User authenticated, PostgreSQL user ID:", userId);
@@ -84,10 +78,10 @@ export const Route = createFileRoute("/api/decent-shots")({
         try {
           const contentType = request.headers.get("content-type");
           if (!contentType?.includes("multipart/form-data")) {
-            return new Response(
-              JSON.stringify({ error: "Expected multipart/form-data" }),
-              { status: 400, headers: { "Content-Type": "application/json" } },
-            );
+            return new Response(JSON.stringify({ error: "Expected multipart/form-data" }), {
+              status: 400,
+              headers: { "Content-Type": "application/json" },
+            });
           }
 
           const formData = await request.formData();
@@ -107,8 +101,7 @@ export const Route = createFileRoute("/api/decent-shots")({
 
           // Parse based on filename extension (more reliable than MIME type)
           const isJson =
-            filename.toLowerCase().endsWith(".json") ||
-            mimeType === "application/json";
+            filename.toLowerCase().endsWith(".json") || mimeType === "application/json";
           const isShot = filename.toLowerCase().endsWith(".shot");
 
           let parsed;
@@ -117,10 +110,10 @@ export const Route = createFileRoute("/api/decent-shots")({
           } else if (isShot || mimeType === "application/octet-stream") {
             parsed = parseTclShot(fileContent);
           } else {
-            return new Response(
-              JSON.stringify({ error: "Unsupported file type" }),
-              { status: 415, headers: { "Content-Type": "application/json" } },
-            );
+            return new Response(JSON.stringify({ error: "Unsupported file type" }), {
+              status: 415,
+              headers: { "Content-Type": "application/json" },
+            });
           }
 
           const { espresso: shotData, timeSeries } = parsed;
@@ -196,9 +189,7 @@ export const Route = createFileRoute("/api/decent-shots")({
             flowGoal: timeSeries.flowGoal,
           });
 
-          console.log(
-            `Decent shot ${insertedEspresso.id} written to PostgreSQL`,
-          );
+          console.log(`Decent shot ${insertedEspresso.id} written to PostgreSQL`);
 
           return new Response(JSON.stringify({ id: insertedEspresso.id }), {
             status: 200,

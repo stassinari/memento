@@ -31,8 +31,7 @@ const parseShotFile = (data: string): string[] =>
   });
 
 const extractDate = (lines: string[]): Date => {
-  const stringTs =
-    lines.find((line) => line.startsWith("clock"))?.split(" ")[1] + "000";
+  const stringTs = lines.find((line) => line.startsWith("clock"))?.split(" ")[1] + "000";
   if (!stringTs) {
     throw new Error("parsing error - date");
   }
@@ -50,9 +49,7 @@ export const extractProfileName = (lines: string[]): string => {
 };
 
 const extractTargetWeight = (lines: string[]): number => {
-  const raw = lines
-    .find((line) => line.includes("target_weight"))
-    ?.slice(0, -1);
+  const raw = lines.find((line) => line.includes("target_weight"))?.slice(0, -1);
   try {
     const json = JSON.parse("{" + raw! + "}");
     return json["target_weight"];

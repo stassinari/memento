@@ -1,9 +1,6 @@
 import clsx from "clsx";
 import { Button } from "./Button";
-import {
-  layoutContainerCssStyles,
-  layoutContainerTailwindStyles,
-} from "./Layout";
+import { layoutContainerCssStyles, layoutContainerTailwindStyles } from "./Layout";
 
 interface ErrorPageProps {
   title: string;
@@ -12,12 +9,7 @@ interface ErrorPageProps {
   retry?: () => void;
 }
 
-export const ErrorPage = ({
-  title,
-  description,
-  errorMessage,
-  retry,
-}: ErrorPageProps) => (
+export const ErrorPage = ({ title, description, errorMessage, retry }: ErrorPageProps) => (
   <div
     className={clsx("pt-16 pb-12", layoutContainerTailwindStyles)}
     style={layoutContainerCssStyles}
@@ -54,8 +46,5 @@ export const ErrorPage = ({
 );
 
 export const NotFound = () => (
-  <ErrorPage
-    title="404"
-    description="Sorry, we couldn’t find the page you’re looking for."
-  />
+  <ErrorPage title="404" description="Sorry, we couldn’t find the page you’re looking for." />
 );

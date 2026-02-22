@@ -1,9 +1,5 @@
 import { Popover, Transition } from "@headlessui/react";
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  ViewColumnsIcon,
-} from "@heroicons/react/20/solid";
+import { ChevronDownIcon, ChevronUpIcon, ViewColumnsIcon } from "@heroicons/react/20/solid";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -82,10 +78,7 @@ const columns = [
     header: "Grind setting",
   }),
   columnHelper.accessor(
-    (row) =>
-      row.timeMinutes && row.timeSeconds
-        ? `${row.timeMinutes}:${row.timeSeconds}`
-        : "",
+    (row) => (row.timeMinutes && row.timeSeconds ? `${row.timeMinutes}:${row.timeSeconds}` : ""),
     {
       id: "time",
       header: "Time",
@@ -97,9 +90,7 @@ const columns = [
 ];
 
 function BrewsTableWrapper() {
-  const { data: brewsList } = useSuspenseQuery(
-    brewsQueryOptions(),
-  );
+  const { data: brewsList } = useSuspenseQuery(brewsQueryOptions());
 
   const data: BrewForTable[] = useMemo(
     () =>
@@ -145,8 +136,7 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
     };
 
     const methodOccurrences = countBy(data.map((b) => b.method));
-    const mostUsedMethod =
-      maxBy(Object.keys(methodOccurrences), (o) => methodOccurrences[o]) ?? "";
+    const mostUsedMethod = maxBy(Object.keys(methodOccurrences), (o) => methodOccurrences[o]) ?? "";
     const correspondingNumber = methodOccurrences[mostUsedMethod];
 
     const mostUsedMethodStat = {
@@ -160,9 +150,7 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
 
   return (
     <div className="relative">
-      <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.brews, { label: "Table" }]}
-      />
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.brews, { label: "Table" }]} />
 
       <Stats title="Brew stats" stats={totalStats} />
 
@@ -214,25 +202,15 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
                                     : "group",
                                 )}
                                 {...{
-                                  onClick:
-                                    header.column.getToggleSortingHandler(),
+                                  onClick: header.column.getToggleSortingHandler(),
                                 }}
                               >
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
+                                {flexRender(header.column.columnDef.header, header.getContext())}
                                 <span className="flex-none ml-2 text-gray-900 bg-gray-200 rounded-sm group-hover:bg-gray-300">
                                   {header.column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon
-                                      className="w-5 h-5"
-                                      aria-hidden="true"
-                                    />
+                                    <ChevronUpIcon className="w-5 h-5" aria-hidden="true" />
                                   ) : header.column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon
-                                      className="w-5 h-5"
-                                      aria-hidden="true"
-                                    />
+                                    <ChevronDownIcon className="w-5 h-5" aria-hidden="true" />
                                   ) : null}
                                 </span>
                               </div>
@@ -251,10 +229,7 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
                           key={cell.id}
                           className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap first-of-type:pl-4 first-of-type:pr-3 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       ))}
                     </tr>
@@ -283,23 +258,17 @@ interface StatProps {
 const Stats = ({ title, stats }: StatProps) => {
   return (
     <div>
-      <h3 className="text-base font-semibold leading-6 text-gray-900">
-        {title}
-      </h3>
+      <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
       <dl className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-3">
         {stats.map((item) => (
           <div
             key={item.name}
             className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow-sm sm:p-6"
           >
-            <dt className="text-sm font-medium text-gray-500 truncate">
-              {item.name}
-            </dt>
+            <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
             <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
               {item.stat}
-              {item.statSmall && (
-                <span className="pl-1 text-xl ">{item.statSmall}</span>
-              )}
+              {item.statSmall && <span className="pl-1 text-xl ">{item.statSmall}</span>}
             </dd>
           </div>
         ))}

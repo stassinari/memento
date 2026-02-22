@@ -1,16 +1,8 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
-import {
-  EspressoForm,
-  EspressoFormInputs,
-} from "~/components/espresso/EspressoForm";
+import { EspressoForm, EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { Heading } from "~/components/Heading";
 import { updateEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
@@ -24,9 +16,7 @@ const espressoQueryOptions = (espressoId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/espresso/$espressoId/edit",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/espresso/$espressoId/edit")({
   component: EspressoEditDetails,
 });
 
@@ -36,9 +26,7 @@ function EspressoEditDetails() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: espresso, isLoading } = useSuspenseQuery(
-    espressoQueryOptions(espressoId ?? ""),
-  );
+  const { data: espresso, isLoading } = useSuspenseQuery(espressoQueryOptions(espressoId ?? ""));
 
   const mutation = useMutation({
     mutationFn: async (data: EspressoFormInputs) => {

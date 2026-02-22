@@ -1,9 +1,6 @@
 import clsx from "clsx";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
-import {
-  NameType,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
+import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { roundToDecimal } from "~/utils";
 import { propertyToValues } from "./PressureFlowWeightChart";
 
@@ -53,9 +50,7 @@ export const ChartTooltip = ({ title, payload }: CustomTooltipProps) => {
                 <td className="pr-2">{property.label}:</td>
                 <td>
                   <Circle color={p.color} />
-                  <strong className="text-gray-700">
-                    {roundToDecimal(p.value as number)}
-                  </strong>
+                  <strong className="text-gray-700">{roundToDecimal(p.value as number)}</strong>
                   {property.unit}
                 </td>
               </tr>

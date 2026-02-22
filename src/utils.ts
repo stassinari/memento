@@ -10,10 +10,7 @@ interface BrewEyData {
 
 export const getEyFromBrew = (data: BrewEyData) => {
   const tds = data.tds;
-  const weight =
-    data.extractionType === "immersion"
-      ? data.waterWeight
-      : data.finalBrewWeight;
+  const weight = data.extractionType === "immersion" ? data.waterWeight : data.finalBrewWeight;
   const dose = data.beansWeight;
 
   return calculateEy({ tds, weight: weight || 0, dose });

@@ -1,9 +1,4 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -21,9 +16,7 @@ const brewQueryOptions = (brewId: string) =>
       }),
   });
 
-export const Route = createFileRoute(
-  "/_auth/_layout/drinks/brews/$brewId/edit",
-)({
+export const Route = createFileRoute("/_auth/_layout/drinks/brews/$brewId/edit")({
   component: BrewEditDetails,
 });
 
@@ -35,9 +28,7 @@ function BrewEditDetails() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: brew, isLoading } = useSuspenseQuery(
-    brewQueryOptions(brewId ?? ""),
-  );
+  const { data: brew, isLoading } = useSuspenseQuery(brewQueryOptions(brewId ?? ""));
 
   const mutation = useMutation({
     mutationFn: async (data: BrewFormInputs) => {

@@ -32,9 +32,7 @@ const ADMIN_USER_IDS = [process.env.USER_ID];
 
 // Initialise the Admin SDK using your service account key
 admin.initializeApp({
-  credential: admin.credential.cert(
-    resolve(__dirname, process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
-  ),
+  credential: admin.credential.cert(resolve(__dirname, process.env.FIREBASE_SERVICE_ACCOUNT_PATH)),
 });
 
 async function setAdminClaims() {

@@ -5,10 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
-import {
-  DrinksList,
-  mergeBrewsAndEspressoByUniqueDate,
-} from "~/components/drinks/DrinksList";
+import { DrinksList, mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList";
 import { Heading } from "~/components/Heading";
 import { getBrews } from "~/db/queries";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -17,10 +14,7 @@ type BrewWithBeans = Awaited<ReturnType<typeof getBrews>>[number];
 
 const PAGE_SIZE = 15;
 
-const brewsQueryOptions = (
-  limit: number,
-  offset: number,
-) =>
+const brewsQueryOptions = (limit: number, offset: number) =>
   queryOptions({
     queryKey: ["brews", limit, offset],
     queryFn: () => getBrews({ data: { limit, offset } }),
@@ -48,10 +42,7 @@ function BrewsList() {
     }
   }, [brewsWithBeans, offset]);
 
-  const drinks = useMemo(
-    () => mergeBrewsAndEspressoByUniqueDate(allBrews, []),
-    [allBrews],
-  );
+  const drinks = useMemo(() => mergeBrewsAndEspressoByUniqueDate(allBrews, []), [allBrews]);
 
   const isSm = useScreenMediaQuery("sm");
 
@@ -67,12 +58,7 @@ function BrewsList() {
 
       <Heading
         actionSlot={
-          <Button
-            variant="primary"
-            colour="accent"
-            size={isSm ? "md" : "sm"}
-            asChild
-          >
+          <Button variant="primary" colour="accent" size={isSm ? "md" : "sm"} asChild>
             <RouterLink to="/drinks/brews/add">Add brew</RouterLink>
           </Button>
         }
@@ -85,12 +71,7 @@ function BrewsList() {
       </div>
       <div className="flex justify-center gap-4 mt-4">
         {hasMore && (
-          <Button
-            variant="white"
-            colour="accent"
-            onClick={loadMore}
-            disabled={isLoading}
-          >
+          <Button variant="white" colour="accent" onClick={loadMore} disabled={isLoading}>
             {isLoading ? "Loading..." : "Load more"}
           </Button>
         )}

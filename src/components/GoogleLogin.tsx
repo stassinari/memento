@@ -1,10 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import {
-  Auth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-} from "firebase/auth";
+import { Auth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth";
 
 import { auth } from "~/firebaseConfig";
 import { useRedirectTo } from "~/hooks/useRedirectTo";
