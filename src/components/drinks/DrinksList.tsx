@@ -111,10 +111,12 @@ export const DrinksList = ({ drinks }: DrinksListProps) => (
       <div key={date} className="mt-6 sm:mt-8 @container">
         <div className="relative">
           <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-gray-300" />
+            <div className="w-full border-t border-gray-300 dark:border-white/15" />
           </div>
           <div className="relative flex justify-start mb-2">
-            <span className="px-2 ml-2 text-sm text-gray-500 bg-gray-50 sm:ml-4">{date}</span>
+            <span className="ml-2 bg-gray-50 px-2 text-sm text-gray-500 dark:bg-gray-950 dark:text-gray-400 sm:ml-4">
+              {date}
+            </span>
           </div>
         </div>
         <ul className="grid gap-4 @xl:grid-cols-2">
@@ -153,14 +155,15 @@ const DrinkItem = ({ drink, type, beans }: DrinkItemProps) => (
             <EspressoCardContent espresso={drink} beans={beans} />
           )}
         </Card.Content>
-        <Card.Footer className="flex items-center h-8 gap-1 text-xs text-gray-500">
+        <Card.Footer className="flex h-8 items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
           {type === "brew" ? (
             <>
-              <DripperIcon className="w-4 h-4 mr-1 text-gray-400" /> Brewed at
+              <DripperIcon className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" /> Brewed at
             </>
           ) : (
             <>
-              <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" /> Pulled at
+              <PortafilterIcon className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" /> Pulled
+              at
             </>
           )}
           <span>{dayjs(drink.date).format("HH:mm")}</span>
@@ -178,19 +181,20 @@ interface BrewCardContentProps {
 const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
   <div className="flex">
     <div className="grow">
-      <p className="font-semibold text-gray-900">{brew.method}</p>
-      <p className="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" /> {beans?.name}
+      <p className="font-semibold text-gray-900 dark:text-gray-100">{brew.method}</p>
+      <p className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
+        <BeanBagIcon variant="solid" className="h-3 w-3 text-gray-400 dark:text-gray-500" />{" "}
+        {beans?.name}
       </p>
-      <p className="flex items-center gap-1 text-gray-600">
-        <BeanIconSolid className="w-3 h-3 text-gray-400" />
+      <p className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
+        <BeanIconSolid className="h-3 w-3 text-gray-400 dark:text-gray-500" />
         {brew.beansWeight}g : {brew.waterWeight}ml
-        <DropIcon className="w-3 h-3 text-gray-400" />
+        <DropIcon className="h-3 w-3 text-gray-400 dark:text-gray-500" />
       </p>
     </div>
     {brew.rating && (
       <div>
-        <span className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded-sm">
+        <span className="-mt-0.5 rounded-sm bg-orange-50 px-1 py-0.5 font-medium text-orange-600 dark:bg-orange-500/15 dark:text-orange-300">
           {brew.rating}
         </span>
       </div>
@@ -206,18 +210,21 @@ interface EspressoCardContentProps {
 const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
   <div className="flex">
     <div className="grow">
-      {espresso.fromDecent && <p className="font-semibold text-gray-900">{espresso.profileName}</p>}
-      <p className="flex items-center gap-1 text-gray-600">
-        <BeanBagIcon variant="solid" className="w-3 h-3 text-gray-400" /> {beans?.name}
+      {espresso.fromDecent && (
+        <p className="font-semibold text-gray-900 dark:text-gray-100">{espresso.profileName}</p>
+      )}
+      <p className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
+        <BeanBagIcon variant="solid" className="h-3 w-3 text-gray-400 dark:text-gray-500" />{" "}
+        {beans?.name}
       </p>
-      <p className="flex items-center gap-1 text-gray-600">
-        <BeanIconSolid className="w-3 h-3 text-gray-400" />
+      <p className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
+        <BeanIconSolid className="h-3 w-3 text-gray-400 dark:text-gray-500" />
         {espresso.beansWeight ?? ""}g : {espresso.targetWeight ?? ""}g
-        <DropIcon className="w-3 h-3 text-gray-400" />
+        <DropIcon className="h-3 w-3 text-gray-400 dark:text-gray-500" />
       </p>
     </div>
     <div>
-      <p className="px-1 py-0.5 -mt-0.5 font-medium text-orange-600 bg-orange-50 rounded-sm">
+      <p className="-mt-0.5 rounded-sm bg-orange-50 px-1 py-0.5 font-medium text-orange-600 dark:bg-orange-500/15 dark:text-orange-300">
         {espresso.rating}
       </p>
     </div>

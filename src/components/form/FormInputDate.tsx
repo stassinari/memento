@@ -88,7 +88,7 @@ export const CalendarHeader = ({
 }: CalendarHeaderProps) => {
   return (
     <div className="flex items-center justify-between px-2 py-2">
-      <span className="flex-auto font-semibold text-gray-900">
+      <span className="flex-auto font-semibold text-gray-900 dark:text-gray-100">
         {dayjs(date).format(dateFormat)}
       </span>
 
@@ -97,7 +97,7 @@ export const CalendarHeader = ({
         disabled={prevButtonDisabled}
         type="button"
         className={clsx([
-          "-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500",
+          "-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300",
           prevButtonDisabled && "opacity-50 cursor-not-allowed",
         ])}
       >
@@ -109,8 +109,8 @@ export const CalendarHeader = ({
         disabled={nextButtonDisabled}
         type="button"
         className={clsx([
-          "-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500",
-          nextButtonDisabled && "text-gray-300! cursor-not-allowed",
+          "-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300",
+          nextButtonDisabled && "text-gray-300! cursor-not-allowed dark:text-gray-600!",
         ])}
       >
         <span className="sr-only">Next month</span>

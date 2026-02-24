@@ -97,7 +97,7 @@ export const BeansCardsSelect = ({ beansList, existingBeans }: BeansCardsSelectP
             {showMore && (
               <button
                 type="button"
-                className="mt-2 text-sm font-medium text-orange-500 hover:underline"
+                className="mt-2 text-sm font-medium text-orange-500 hover:underline dark:text-orange-300"
                 onClick={() => setIsModalOpen(true)}
               >
                 More...

@@ -39,9 +39,11 @@ export const BeansBlendForm = () => {
   return fields.length > 0 ? (
     <div className="space-y-4">
       {fields.map((field, i) => (
-        <div className="border rounded-md" key={field.id}>
-          <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b">
-            <span className="text-sm font-semibold text-gray-500">Blend part {i + 1}</span>
+        <div className="rounded-md border dark:border-white/15" key={field.id}>
+          <div className="flex items-center justify-between border-b bg-gray-100 px-4 py-2 dark:border-white/10 dark:bg-white/5">
+            <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+              Blend part {i + 1}
+            </span>
             <IconButton
               type="button"
               onClick={handleRemove(i)}
@@ -110,12 +112,14 @@ export const BeansBlendForm = () => {
     <button
       type="button"
       onClick={handleAppend}
-      className="relative block w-full p-8 text-center border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      className="relative block w-full rounded-lg border-2 border-gray-300 border-dashed p-8 text-center hover:border-gray-400 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:border-white/15 dark:hover:border-white/30 dark:focus:ring-orange-400 dark:focus:ring-offset-gray-950"
     >
-      <span className="block w-12 h-12 mx-auto text-gray-400">
+      <span className="mx-auto block h-12 w-12 text-gray-400 dark:text-gray-500">
         <PuzzlePieceIcon />
       </span>
-      <span className="block mt-2 text-sm font-medium text-gray-900">Add a blend part</span>
+      <span className="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-100">
+        Add a blend part
+      </span>
     </button>
   );
 };

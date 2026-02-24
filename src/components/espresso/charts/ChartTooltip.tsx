@@ -32,10 +32,10 @@ export const ChartTooltip = ({ title, payload }: CustomTooltipProps) => {
   }
 
   return (
-    <div className="p-2 bg-white rounded-sm shadow-md opacity-75">
+    <div className="rounded-sm bg-white p-2 opacity-90 shadow-md dark:bg-gray-900 dark:ring-1 dark:ring-white/10">
       <table>
         <thead>
-          <tr className="p-0 text-sm text-left text-gray-700">
+          <tr className="p-0 text-left text-sm text-gray-700 dark:text-gray-200">
             <th colSpan={2}>t={roundToDecimal(title)}s</th>
           </tr>
         </thead>
@@ -46,11 +46,13 @@ export const ChartTooltip = ({ title, payload }: CustomTooltipProps) => {
               return null;
             }
             return (
-              <tr key={p.name} className="p-0 text-sm leading-4 text-gray-600">
+              <tr key={p.name} className="p-0 text-sm leading-4 text-gray-600 dark:text-gray-300">
                 <td className="pr-2">{property.label}:</td>
                 <td>
                   <Circle color={p.color} />
-                  <strong className="text-gray-700">{roundToDecimal(p.value as number)}</strong>
+                  <strong className="text-gray-700 dark:text-gray-200">
+                    {roundToDecimal(p.value as number)}
+                  </strong>
                   {property.unit}
                 </td>
               </tr>

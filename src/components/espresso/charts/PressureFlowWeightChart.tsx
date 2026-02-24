@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTheme } from "~/hooks/useTheme";
 import { DecentReadings } from "~/lib/decent-parsers";
 import { ChartLegend } from "./ChartLegend";
 import { ChartTooltip } from "./ChartTooltip";
@@ -36,6 +37,9 @@ export const propertyToValues: Record<string, DataValues> = {
 };
 
 export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartProps) => {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   // TODO improve performance of this chart
   const data = readings.time.map((t, i) => ({
     time: t,
@@ -60,6 +64,14 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
       ),
     ) + 1;
 
+  const gridStroke = isDark ? "#4b5563" : "#d1d5db";
+  const tickColor = isDark ? "#d1d5db" : "#1f2937";
+  const pressureColor = isDark ? "#22c55e" : "#15803d";
+  const pressureGoalColor = isDark ? "#4ade80" : "#22c55e";
+  const flowColor = isDark ? "#60a5fa" : "#3b82f6";
+  const flowGoalColor = isDark ? "#93c5fd" : "#7dd3fc";
+  const weightColor = isDark ? "#a1887f" : "#795548";
+
   return (
     <div className="h-56 md:h-[248px]">
       {/* FIXME find a way to better define height (of the legend in particular) */}
@@ -67,7 +79,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
         <LineChart data={data} syncId="decentChart">
           <CartesianGrid
             vertical={false}
-            stroke={"#d1d5db"} // FIXME better tw theme theme`colors.gray.300`
+            stroke={gridStroke}
             strokeDasharray="3 3"
           />
           <XAxis
@@ -76,7 +88,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
             unit="s"
             domain={[0, roundedTime]}
             minTickGap={48}
-            tick={{ fill: "#1f2937" }} // FIXME better tw theme theme`colors.gray.800`
+            tick={{ fill: tickColor }}
             tickCount={xAxisTickCount}
             tickSize={4}
             interval="preserveStart"
@@ -84,7 +96,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
           <YAxis
             type="number"
             domain={[0, maxYAxis]}
-            tick={{ fill: "#1f2937" }} // FIXME better tw theme theme`colors.gray.800`
+            tick={{ fill: tickColor }}
             tickCount={maxYAxis + 1}
             tickSize={4}
             allowDataOverflow={true}
@@ -102,14 +114,14 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
             type="basis"
             dot={false}
             dataKey="pressure"
-            stroke={"#15803d"} // FIXME better tw theme theme`colors.green.700`
+            stroke={pressureColor}
             strokeWidth={2}
           />
           <Line
             type="basis"
             dot={false}
             dataKey="pressureGoal"
-            stroke={"#22c55e"} // FIXME better tw theme theme`colors.green.500`
+            stroke={pressureGoalColor}
             strokeWidth={2}
             strokeDasharray="5 5"
             activeDot={(props) => (props.value >= 0 ? <Dot {...props} /> : <Dot />)}
@@ -118,14 +130,14 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
             type="basis"
             dot={false}
             dataKey="flow"
-            stroke={"#3b82f6"} // FIXME better tw theme theme`colors.blue.500`
+            stroke={flowColor}
             strokeWidth={2}
           />
           <Line
             type="basis"
             dot={false}
             dataKey="flowGoal"
-            stroke={"#7dd3fc"} // FIXME better tw theme theme`colors.blue.300`
+            stroke={flowGoalColor}
             strokeWidth={2}
             strokeDasharray="5 5"
             activeDot={(props) => (props.value >= 0 ? <Dot {...props} /> : <Dot />)}
@@ -135,7 +147,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
             dot={false}
             dataKey="weight"
             strokeWidth={2}
-            stroke={"#795548"} // FIXME better tw theme theme`colors.mui-brown.500`
+            stroke={weightColor}
           />
         </LineChart>
       </ResponsiveContainer>

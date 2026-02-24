@@ -16,9 +16,9 @@ export const FormSuggestions = ({ suggestions }: FormSuggestionsProps) => {
   const isSm = useScreenMediaQuery("sm");
   if (suggestions?.length === 0) return null;
   return (
-    <div className="flex items-baseline mt-2 text-xs text-gray-600">
+    <div className="mt-2 flex items-baseline text-xs text-gray-600 dark:text-gray-300">
       Recent:
-      <ul className="flex flex-wrap items-center gap-2 ml-2">
+      <ul className="ml-2 flex flex-wrap items-center gap-2">
         {suggestions?.map(({ label, onClick }) => (
           <li key={label}>
             <Badge
