@@ -83,7 +83,7 @@ const bottomNavLinks: NavLink[] = [
 
 export const BottomNav = () => (
   <nav
-    className="fixed inset-x-0 bottom-0 z-10 bg-white shadow-2xl md:hidden"
+    className="fixed inset-x-0 bottom-0 z-10 bg-white shadow-2xl dark:bg-gray-900 dark:shadow-black/40 md:hidden"
     style={{
       paddingBottom: `calc(env(safe-area-inset-bottom) + 3.5rem)`,
       height: `calc(env(safe-area-inset-bottom) + 3.5rem)`,
@@ -112,14 +112,16 @@ const BottomNavItem = ({ Icon, label, linkTo }: BottomNavItemProps) => {
         to={linkTo}
         className={clsx([
           "group",
-          "flex flex-col gap-0.5 w-full h-full justify-center rounded-md hover:bg-gray-100",
-          isActive ? "bg-gray-50" : "",
+          "flex h-full w-full flex-col justify-center gap-0.5 rounded-md hover:bg-gray-100 dark:hover:bg-white/10",
+          isActive ? "bg-gray-50 dark:bg-white/10" : "",
         ])}
       >
         <span
           className={clsx([
             "w-6 h-6 mx-auto",
-            isActive ? "text-orange-600" : "text-gray-400 group-hover:text-gray-500",
+            isActive
+              ? "text-orange-600 dark:text-orange-400"
+              : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300",
           ])}
         >
           {Icon}
@@ -127,7 +129,9 @@ const BottomNavItem = ({ Icon, label, linkTo }: BottomNavItemProps) => {
         <span
           className={clsx([
             "text-xs font-medium",
-            isActive ? "text-orange-600" : "text-gray-600 group-hover:text-gray-900",
+            isActive
+              ? "text-orange-600 dark:text-orange-400"
+              : "text-gray-600 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-gray-100",
           ])}
         >
           {label}

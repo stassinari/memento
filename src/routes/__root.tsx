@@ -18,8 +18,10 @@ import { ErrorFallback } from "~/components/ErrorFallback";
 import { NotFound } from "~/components/ErrorPage";
 import { NotificationContainer } from "~/components/NotificationContainer";
 import { useInitUser } from "~/hooks/useInitUser";
+import { ThemeProvider } from "~/hooks/useTheme";
 import { RouterContext } from "~/router";
 import "~/styles/config.css";
+import { themeInitScript } from "~/theme/theme";
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   // Initialize auth state listener (client-side only, non-blocking)
@@ -28,6 +30,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <HeadContent />
       </head>
       <body>
@@ -57,12 +60,14 @@ const RootComponent = () => {
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <QueryClientProvider client={queryClient}>
           <JotaiProvider>
-            <RootDocument>
-              <Suspense fallback={<div>Initializing...</div>}>
-                <NotificationContainer />
-                <Outlet />
-              </Suspense>
-            </RootDocument>
+            <ThemeProvider>
+              <RootDocument>
+                <Suspense fallback={<div>Initializing...</div>}>
+                  <NotificationContainer />
+                  <Outlet />
+                </Suspense>
+              </RootDocument>
+            </ThemeProvider>
           </JotaiProvider>
         </QueryClientProvider>
       </ErrorBoundary>
@@ -81,7 +86,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content:
           "minimum-scale=1, maximum-scale=1, initial-scale=1, width=device-width, viewport-fit=cover",
       },
-      { name: "theme-color", content: "#f9fafb" },
+      { name: "theme-color", media: "(prefers-color-scheme: light)", content: "#f9fafb" },
+      { name: "theme-color", media: "(prefers-color-scheme: dark)", content: "#030712" },
       {
         name: "description",
         content: "Memento helps you keep track of everything coffee.",

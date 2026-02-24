@@ -6,6 +6,7 @@ import { useCurrentUser } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { navLinks } from "./BottomNav";
 import { MementoLogo } from "./icons/MementoLogo";
+import { ThemePicker } from "./ThemePicker";
 
 const SidebarNavItem = ({ Icon, label, linkTo, nested = false }: SidebarNavItemProps) => {
   const isActive = useActiveRoute(linkTo);
@@ -14,15 +15,15 @@ const SidebarNavItem = ({ Icon, label, linkTo, nested = false }: SidebarNavItemP
     <Link
       to={linkTo}
       className={clsx([
-        "group flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-50 hover:text-orange-600 ",
+        "group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-600 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-orange-400",
         nested && "ml-4",
-        isActive && "text-orange-600 bg-gray-50",
+        isActive && "bg-gray-50 text-orange-600 dark:bg-white/5 dark:text-orange-400",
       ])}
     >
       <span
         className={clsx([
-          "shrink-0 w-6 h-6 mr-3 text-gray-400 group-hover:text-orange-600",
-          isActive && "text-orange-600",
+          "mr-3 h-6 w-6 shrink-0 text-gray-400 group-hover:text-orange-600 dark:text-gray-500 dark:group-hover:text-orange-400",
+          isActive && "text-orange-600 dark:text-orange-400",
         ])}
         aria-hidden="true"
       >
@@ -66,14 +67,14 @@ export const SidebarNav = () => {
     <div className="hidden md:flex md:w-48 md:flex-col md:fixed md:inset-y-0 lg:w-64">
       <div
         className={clsx([
-          "flex flex-col px-4 pb-4 overflow-y-auto bg-white border-r border-gray-200 gap-y-5 grow lg:px-6",
+          "grow gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-4 pb-4 dark:border-white/10 dark:bg-gray-900 lg:px-6",
         ])}
         style={{
           paddingLeft: `calc(env(safe-area-inset-left) + ${isLg ? "1.5rem" : "1rem"})`,
         }}
       >
-        <div className="flex items-center h-16 shrink-0">
-          <MementoLogo />
+        <div className="flex h-16 shrink-0 items-center">
+          <MementoLogo className="max-h-8 w-auto dark:brightness-0 dark:invert" />
         </div>
         <nav className="flex flex-col flex-1">
           <ul role="list" className="flex flex-col flex-1 gap-y-7">
@@ -86,12 +87,13 @@ export const SidebarNav = () => {
                 ))}
               </ul>
             </li>
-            <li className="mt-auto">
+            <li className="mt-auto space-y-4">
               <SidebarNavItem
                 Icon={navLinks.settings.Icon}
                 label={navLinks.settings.label}
                 linkTo={navLinks.settings.linkTo}
               />
+              <ThemePicker />
             </li>
           </ul>
         </nav>
