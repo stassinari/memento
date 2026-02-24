@@ -6,23 +6,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 export const baseButtonStyles = [
   "inline-flex items-center justify-center font-medium border",
-  "focus:outline-hidden focus:ring-2 focus:ring-offset-2", // focus
-  "disabled:cursor-not-allowed disabled:bg-gray-100! disabled:from-gray-100 disabled:to-gray-100 disabled:text-gray-500! disabled:hover:from-gray-100", // disabled
+  "focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-950", // focus
+  "disabled:cursor-not-allowed disabled:bg-gray-100! disabled:from-gray-100 disabled:to-gray-100 disabled:text-gray-500! disabled:hover:from-gray-100 dark:disabled:bg-white/10! dark:disabled:from-white/10 dark:disabled:to-white/10 dark:disabled:text-gray-400!", // disabled
   "[&_svg]:pointer-events-none [&_svg]:shrink-0", // svg icons handling
 ];
 
 export const compoundButtonStyles = {
   primaryMain:
-    "bg-orange-600 hover:bg-orange-700 text-white border-transparent shadow-xs ring-orange-500",
+    "bg-orange-600 hover:bg-orange-700 text-white border-transparent shadow-xs ring-orange-500 dark:bg-orange-500 dark:hover:bg-orange-400",
   secondaryMain:
-    "text-orange-700 bg-orange-100 hover:bg-orange-200 border-transparent ring-orange-500",
+    "text-orange-700 bg-orange-100 hover:bg-orange-200 border-transparent ring-orange-500 dark:text-orange-200 dark:bg-orange-500/15 dark:hover:bg-orange-500/25",
   gradientMain:
-    "bg-linear-to-br from-orange-600 to-rose-600 bg-origin-border hover:from-orange-700 hover:to-rose-700 text-white border-transparent shadow-xs ring-orange-500",
+    "bg-linear-to-br from-orange-600 to-rose-600 bg-origin-border hover:from-orange-700 hover:to-rose-700 text-white border-transparent shadow-xs ring-orange-500 dark:from-orange-500 dark:to-rose-500 dark:hover:from-orange-400 dark:hover:to-rose-400",
   primaryAccent:
-    "bg-blue-600 hover:bg-blue-700 text-white border-transparent shadow-xs ring-blue-500",
-  secondaryAccent: "text-blue-700 bg-blue-100 hover:bg-blue-200 border-transparent ring-blue-500",
+    "bg-blue-600 hover:bg-blue-700 text-white border-transparent shadow-xs ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400",
+  secondaryAccent:
+    "text-blue-700 bg-blue-100 hover:bg-blue-200 border-transparent ring-blue-500 dark:text-blue-200 dark:bg-blue-500/15 dark:hover:bg-blue-500/25",
   gradientAccent:
-    "bg-linear-to-br from-blue-600 to-purple-600 bg-origin-border hover:from-blue-700 hover:to-purple-700 text-white border-transparent shadow-xs ring-blue-500",
+    "bg-linear-to-br from-blue-600 to-purple-600 bg-origin-border hover:from-blue-700 hover:to-purple-700 text-white border-transparent shadow-xs ring-blue-500 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-400 dark:hover:to-purple-400",
 };
 
 const buttonVariants = cva(baseButtonStyles.join(" "), {
@@ -30,7 +31,8 @@ const buttonVariants = cva(baseButtonStyles.join(" "), {
     variant: {
       primary: "",
       secondary: "",
-      white: "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
+      white:
+        "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50 dark:text-gray-100 dark:bg-white/10 dark:border-white/15 dark:hover:bg-white/20",
       gradient: "",
     },
     colour: {

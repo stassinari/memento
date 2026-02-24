@@ -32,9 +32,9 @@ export const InputRadio = ({ label, direction, inputProps, options }: InputRadio
               id={value}
               value={value}
               type="radio"
-              className="w-4 h-4 text-orange-600 border-gray-300 focus:ring-orange-500"
+              className="h-4 w-4 border-gray-300 text-orange-600 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-orange-400 dark:focus:ring-orange-400"
             />
-            <label htmlFor={value} className="block ml-3 text-sm text-gray-900">
+            <label htmlFor={value} className="ml-3 block text-sm text-gray-900 dark:text-gray-100">
               {label}
             </label>
           </div>

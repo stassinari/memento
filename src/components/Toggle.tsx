@@ -23,33 +23,38 @@ export const Toggle = ({
       disabled={disabled}
       className={clsx([
         "group relative inline-flex shrink-0 h-6 transition-colors duration-200 ease-in-out border-2 border-transparent rounded-full cursor-pointer w-11",
-        "disabled:bg-gray-100 disabled:cursor-not-allowed",
-        "focus:outline-hidden focus:ring-2 focus:ring-offset-2",
+        "disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-white/10",
+        "focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900",
         colour === "main"
-          ? "focus:ring-orange-500"
+          ? "focus:ring-orange-500 dark:focus:ring-orange-400"
           : colour === "accent"
-            ? "focus:ring-blue-500"
+            ? "focus:ring-blue-500 dark:focus:ring-blue-400"
             : null,
         checked
           ? colour === "main"
-            ? "bg-orange-600"
+            ? "bg-orange-600 dark:bg-orange-500"
             : colour === "accent"
-              ? "bg-blue-600"
+              ? "bg-blue-600 dark:bg-blue-500"
               : null
-          : "bg-gray-200",
+          : "bg-gray-200 dark:bg-white/20",
       ])}
     >
       <span
         aria-hidden="true"
         className={clsx([
-          "inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-sm pointer-events-none ring-0 group-disabled:bg-gray-50",
+          "inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-sm pointer-events-none ring-0 group-disabled:bg-gray-50 dark:group-disabled:bg-white/30",
           checked ? "translate-x-5" : "translate-x-0",
         ])}
       />
     </Switch>
     {label && (
       <Switch.Label as="span" className="ml-3">
-        <span className={clsx(["text-sm font-medium text-gray-700", disabled && "text-gray-400"])}>
+        <span
+          className={clsx([
+            "text-sm font-medium text-gray-700 dark:text-gray-300",
+            disabled && "text-gray-400 dark:text-gray-500",
+          ])}
+        >
           {label}
         </span>
         {/* <span className="text-sm text-gray-500">(Save 10%)</span> */}

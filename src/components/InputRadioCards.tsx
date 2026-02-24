@@ -35,15 +35,15 @@ export const InputRadioCards = <T,>({
           <RadioGroup.Option
             key={option.value}
             value={option.value}
-            className="relative block px-6 py-4 bg-white border rounded-lg shadow-xs cursor-pointer focus:outline-hidden sm:flex sm:justify-between ui-checked:border-orange-500 ui-checked:ring-2 ui-checked:ring-orange-500 ui-not-checked:border-gray-300"
+            className="relative block cursor-pointer rounded-lg border bg-white px-6 py-4 shadow-xs focus:outline-hidden dark:bg-gray-900 dark:ui-checked:border-orange-400 dark:ui-checked:ring-orange-400 dark:ui-not-checked:border-white/15 sm:flex sm:justify-between ui-checked:border-orange-500 ui-checked:ring-2 ui-checked:ring-orange-500 ui-not-checked:border-gray-300"
           >
             <span className="flex items-center">
               <span className="flex flex-col text-sm">
-                <RadioGroup.Label as="span" className="font-medium text-gray-900">
+                <RadioGroup.Label as="span" className="font-medium text-gray-900 dark:text-gray-100">
                   {option.left.top}
                 </RadioGroup.Label>
                 {option.left.bottom && (
-                  <RadioGroup.Description as="span" className="text-gray-500">
+                  <RadioGroup.Description as="span" className="text-gray-500 dark:text-gray-400">
                     {option.left.bottom}
                   </RadioGroup.Description>
                 )}
@@ -54,16 +54,16 @@ export const InputRadioCards = <T,>({
                 as="span"
                 className="flex flex-col-reverse text-sm sm:mt-0 sm:ml-4 sm:flex-col sm:text-right"
               >
-                <span className="font-medium text-gray-500">
+                <span className="font-medium text-gray-500 dark:text-gray-300">
                   {option.right.top || <span className="hidden sm:block">&nbsp;</span>}
                 </span>
                 {option.right.bottom && (
-                  <span className="text-gray-500">{option.right.bottom}</span>
+                  <span className="text-gray-500 dark:text-gray-400">{option.right.bottom}</span>
                 )}
               </RadioGroup.Description>
             )}
             <span
-              className="absolute rounded-lg pointer-events-none -inset-px ui-active:border ui-not-active:border-2 ui-checked:border-orange-500 ui-not-checked:border-transparent"
+              className="pointer-events-none absolute -inset-px rounded-lg ui-active:border ui-not-active:border-2 ui-checked:border-orange-500 ui-not-checked:border-transparent dark:ui-checked:border-orange-400"
               aria-hidden="true"
             />
           </RadioGroup.Option>

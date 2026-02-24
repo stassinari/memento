@@ -37,9 +37,9 @@ export const Badge = ({
                 ? "ml-0.5 after:right-0"
                 : null,
             colour === "grey"
-              ? "text-gray-400 bg-gray-100 hover:text-gray-500 hover:bg-gray-200 focus:bg-gray-500 focus:text-white"
+              ? "text-gray-400 bg-gray-100 hover:text-gray-500 hover:bg-gray-200 focus:bg-gray-500 focus:text-white dark:text-gray-300 dark:bg-white/10 dark:hover:bg-white/20 dark:hover:text-gray-200 dark:focus:bg-gray-300 dark:focus:text-gray-900"
               : colour === "orange"
-                ? "text-orange-400 bg-orange-100 hover:text-orange-500 hover:bg-orange-200 focus:bg-orange-500 focus:text-white"
+                ? "text-orange-400 bg-orange-100 hover:text-orange-500 hover:bg-orange-200 focus:bg-orange-500 focus:text-white dark:text-orange-300 dark:bg-orange-500/15 dark:hover:bg-orange-500/25 dark:hover:text-orange-200 dark:focus:bg-orange-400 dark:focus:text-gray-950"
                 : null,
           ])}
         >
@@ -55,9 +55,9 @@ export const Badge = ({
         "relative inline-flex items-center rounded-full py-0.5 text-xs font-medium",
         size === "small" ? "px-2.5 text-xs" : size === "large" ? "px-3 text-sm" : null,
         colour === "grey"
-          ? "text-gray-800 bg-gray-100"
+          ? "text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-white/10"
           : colour === "orange"
-            ? "text-orange-800 bg-orange-100"
+            ? "text-orange-800 bg-orange-100 dark:text-orange-200 dark:bg-orange-500/15"
             : null,
         icon
           ? icon.position === "left"
