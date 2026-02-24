@@ -71,7 +71,12 @@ export const Stopwatch = ({
         {isRunning ? <PauseIcon /> : <PlayIcon />}
       </IconButton>
 
-      <span className={clsx(["w-20 text-2xl text-gray-900", disabled && "text-gray-400"])}>
+      <span
+        className={clsx([
+          "w-20 text-2xl text-gray-900 dark:text-gray-100",
+          disabled && "text-gray-400 dark:text-gray-500",
+        ])}
+      >
         {displayMinutes}:{displaySeconds}
       </span>
 

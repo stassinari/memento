@@ -95,8 +95,10 @@ function DecentUpload() {
 
       <Heading>Decent Upload</Heading>
 
-      <p className="mt-4">Manually upload your Decent Espresso shot files.</p>
-      <p>
+      <p className="mt-4 text-gray-700 dark:text-gray-300">
+        Manually upload your Decent Espresso shot files.
+      </p>
+      <p className="text-gray-700 dark:text-gray-300">
         If you'd like to enable automatic uploads,{" "}
         <Link
           target="_blank"
@@ -109,7 +111,7 @@ function DecentUpload() {
       </p>
       {!secretKey && (
         <>
-          <div>
+          <div className="text-gray-700 dark:text-gray-300">
             It looks like you haven't uploaded any shot files yet. For security reasons, we require
             you to generate a secret token (the same used used by auto-upload feature). Click the
             button below or head over to{" "}
@@ -134,19 +136,23 @@ function DecentUpload() {
           <div className="relative">
             <div
               className={clsx([
-                "group flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg bg-white border-gray-900/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-600/75 focus-visible:outline-hidden",
-                isFileUploading && "after:content after:absolute after:inset-0 after:bg-gray-50/50",
+                "group mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 bg-white px-6 py-10 focus-visible:ring-2 focus-visible:ring-orange-600/75 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-hidden dark:border-white/20 dark:bg-gray-900 dark:focus-visible:ring-orange-400 dark:focus-visible:ring-offset-gray-950",
+                isFileUploading && "after:content after:absolute after:inset-0 after:bg-gray-50/50 dark:after:bg-gray-900/50",
               ])}
               {...getRootProps()}
             >
               <div className="text-center">
-                <ArrowUpTrayIcon className="w-12 h-12 mx-auto text-gray-300" aria-hidden="true" />
-                <div className="flex justify-center mt-4 text-sm leading-6 text-gray-600">
+                <ArrowUpTrayIcon
+                  className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-500"
+                  aria-hidden="true"
+                />
+                <div className="mt-4 flex justify-center text-sm leading-6 text-gray-600 dark:text-gray-300">
                   <label
                     htmlFor="file-upload"
                     className={clsx([
-                      "relative font-semibold text-orange-600 rounded-md cursor-pointer focus-within:outline-hidden focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2",
-                      !isFileUploading && "group-hover:text-orange-500 group-hover:underline",
+                      "relative cursor-pointer rounded-md font-semibold text-orange-600 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-orange-600 focus-within:ring-offset-2 focus-within:ring-offset-white dark:text-orange-300 dark:focus-within:ring-orange-400 dark:focus-within:ring-offset-gray-900",
+                      !isFileUploading &&
+                        "group-hover:text-orange-500 group-hover:underline dark:group-hover:text-orange-200",
                     ])}
                   >
                     <span>Upload a file</span>
@@ -154,7 +160,7 @@ function DecentUpload() {
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs leading-5 text-gray-600">
+                <p className="text-xs leading-5 text-gray-600 dark:text-gray-400">
                   SHOT or JSON files, maximum of 20 files
                 </p>
               </div>

@@ -80,7 +80,7 @@ export const ComboboxMulti = ({
                 type="text"
                 placeholder={placeholder}
                 displayValue={() => query}
-                className="grow border-none p-0 text-sm text-gray-900 placeholder:text-gray-400 focus:border-none focus:border-transparent focus:outline-hidden focus:ring-0 dark:text-gray-100 dark:placeholder:text-gray-500"
+                className="grow border-none bg-transparent p-0 text-sm text-gray-900 placeholder:text-gray-400 focus:border-none focus:border-transparent focus:outline-hidden focus:ring-0 dark:text-gray-100 dark:placeholder:text-gray-400"
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}

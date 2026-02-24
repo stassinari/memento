@@ -320,6 +320,30 @@ h6 {
   @apply bg-orange-500! text-white! font-semibold! dark:bg-orange-400!;
 }
 
+.react-datepicker__month-text,
+.react-datepicker__quarter-text,
+.react-datepicker__year-text {
+  @apply m-1 inline-flex h-8 w-20 items-center justify-center rounded-md text-sm text-gray-900 dark:text-gray-100;
+}
+
+.react-datepicker__month-text:hover,
+.react-datepicker__quarter-text:hover,
+.react-datepicker__year-text:hover {
+  @apply bg-gray-200 dark:bg-white/10;
+}
+
+.react-datepicker__month-text--selected,
+.react-datepicker__quarter-text--selected,
+.react-datepicker__year-text--selected {
+  @apply bg-orange-500 text-white dark:bg-orange-400;
+}
+
+.react-datepicker__month-text--today,
+.react-datepicker__quarter-text--today,
+.react-datepicker__year-text--today {
+  @apply font-semibold text-orange-600 dark:text-orange-300;
+}
+
 .react-datepicker__day--range-start {
   @apply bg-orange-500 text-white hover:text-gray-700 hover:bg-white;
 }

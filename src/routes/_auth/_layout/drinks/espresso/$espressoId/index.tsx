@@ -128,7 +128,7 @@ function EspressoDetails() {
         Espresso detail
       </Heading>
 
-      <div className="mb-2 text-sm text-gray-500">
+      <div className="mb-2 text-sm text-gray-500 dark:text-gray-400">
         {dayjs(espresso.date).format("DD MMM YYYY @ H:m")}
       </div>
 
@@ -142,7 +142,7 @@ function EspressoDetails() {
               <PuzzlePieceIcon /> Add shot info
             </Link>
           </Button>
-          <span>This shot is missing some information!</span>
+          <span className="text-gray-700 dark:text-gray-300">This shot is missing some information!</span>
         </div>
       )}
 
@@ -151,13 +151,17 @@ function EspressoDetails() {
       {isSm ? (
         <div className="grid grid-cols-2 gap-4 my-6">
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Espresso info</h2>
+            <h2 className="mb-5 text-center text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Espresso info
+            </h2>
 
             <EspressoDetailsInfo espresso={espresso} />
           </div>
 
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Outcome</h2>
+            <h2 className="mb-5 text-center text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Outcome
+            </h2>
 
             <EspressoDetailsOutcome espresso={espresso} />
           </div>

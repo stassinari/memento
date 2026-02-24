@@ -87,13 +87,15 @@ export const SidebarNav = () => {
                 ))}
               </ul>
             </li>
-            <li className="mt-auto space-y-4">
+            <li>
+              <ThemePicker />
+            </li>
+            <li className="mt-auto">
               <SidebarNavItem
                 Icon={navLinks.settings.Icon}
                 label={navLinks.settings.label}
                 linkTo={navLinks.settings.linkTo}
               />
-              <ThemePicker />
             </li>
           </ul>
         </nav>

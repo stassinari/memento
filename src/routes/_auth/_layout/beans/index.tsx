@@ -54,10 +54,10 @@ const tabs: BeansTab[] = [
 ];
 
 export const tabStyles = (isSelected: boolean) => [
-  "w-1/3 px-1 py-4 text-sm font-medium text-center border-b-2",
+  "w-1/3 border-b-2 px-1 py-4 text-center text-sm font-medium transition-colors",
   isSelected
-    ? "text-orange-600 border-orange-500"
-    : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300",
+    ? "text-orange-600 border-orange-500 dark:text-orange-400 dark:border-orange-400"
+    : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-400 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500",
 ];
 
 export function BeansList() {

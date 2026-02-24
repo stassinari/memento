@@ -171,7 +171,7 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
           leaveTo="opacity-0 translate-y-1"
         >
           <Popover.Panel className="absolute right-0 z-10 mt-2">
-            <div className="p-4 text-sm leading-6 text-gray-900 bg-white shadow-lg shrink rounded-xl ring-1 ring-gray-900/5">
+            <div className="shrink rounded-xl bg-white p-4 text-sm leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-900 dark:text-gray-100 dark:ring-white/10">
               <ColumnVisibility table={table} />
             </div>
           </Popover.Panel>
@@ -181,9 +181,9 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
       <div className="flow-root mt-4">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div className="overflow-hidden shadow-sm ring-1 ring-black/5 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
+            <div className="overflow-hidden shadow-sm ring-1 ring-black/5 dark:ring-white/10 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300 dark:divide-white/15">
+                <thead className="bg-gray-50 dark:bg-white/5">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => {
@@ -191,7 +191,7 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
                           <th
                             key={header.id}
                             scope="col"
-                            className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 first-of-type:pl-4 first-of-type:pr-3 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
+                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 first-of-type:pl-4 first-of-type:pr-3 dark:text-gray-100 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
                           >
                             {header.isPlaceholder ? null : (
                               <div
@@ -206,7 +206,7 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
                                 }}
                               >
                                 {flexRender(header.column.columnDef.header, header.getContext())}
-                                <span className="flex-none ml-2 text-gray-900 bg-gray-200 rounded-sm group-hover:bg-gray-300">
+                                <span className="ml-2 flex-none rounded-sm bg-gray-200 text-gray-900 group-hover:bg-gray-300 dark:bg-white/15 dark:text-gray-100 dark:group-hover:bg-white/20">
                                   {header.column.getIsSorted() === "asc" ? (
                                     <ChevronUpIcon className="w-5 h-5" aria-hidden="true" />
                                   ) : header.column.getIsSorted() === "desc" ? (
@@ -221,13 +221,13 @@ const BrewsTable = ({ data }: { data: BrewForTable[] }) => {
                     </tr>
                   ))}
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
                   {table.getRowModel().rows.map((row) => (
                     <tr key={row.id}>
                       {row.getVisibleCells().map((cell) => (
                         <td
                           key={cell.id}
-                          className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap first-of-type:pl-4 first-of-type:pr-3 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
+                          className="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-300 first-of-type:pl-4 first-of-type:pr-3 sm:first-of-type:pl-6 last-of-type:pl-3 last-of-type:pr-4 sm:last-of-type:pr-6"
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
@@ -258,17 +258,17 @@ interface StatProps {
 const Stats = ({ title, stats }: StatProps) => {
   return (
     <div>
-      <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
+      <h3 className="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
       <dl className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-3">
         {stats.map((item) => (
           <div
             key={item.name}
-            className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow-sm sm:p-6"
+            className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm dark:bg-gray-900 dark:ring-1 dark:ring-white/10 sm:p-6"
           >
-            <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-            <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+            <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">{item.name}</dt>
+            <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
               {item.stat}
-              {item.statSmall && <span className="pl-1 text-xl ">{item.statSmall}</span>}
+              {item.statSmall && <span className="pl-1 text-xl text-gray-500 dark:text-gray-400">{item.statSmall}</span>}
             </dd>
           </div>
         ))}
