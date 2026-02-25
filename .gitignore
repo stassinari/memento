@@ -4,8 +4,11 @@ build/
 dist/
 .output/
 .env
-.env.development
-.env.production
+.env.local
+.env.*.local
+.env.netlify
+!.env.example
+!.env.*.example
 tailwind-plus
 
 # Logs

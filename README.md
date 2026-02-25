@@ -31,6 +31,45 @@ A list of some of the features:
 
 Want to make a suggestion for a new feature or have your say on a planned one? Found a nasty bug that is driving you crazy? Head over to the [issues section](https://github.com/stassinari/memento/issues)!
 
+## Environment setup
+
+Use this model:
+
+- `.env.local` for local development values only (ignored by git)
+- Netlify environment variables for deployed environments (`dev` and `production`)
+- `.env.example` as the complete template (no secrets)
+
+Notes:
+
+- `VITE_*` variables are injected at build time. Changing them requires a rebuild.
+- `DATABASE_URL` is read at server runtime.
+- `nitro.config.ts` uses `preset: "netlify"`, so use Netlify commands for local serverless preview.
+
+Useful commands:
+
+```bash
+# Local dev (Netlify functions + app)
+pnpm dev:netlify
+
+# Build and serve built output through Netlify (default profile)
+pnpm build
+pnpm build:preview
+
+# Build + serve with local DB + dev Firebase config
+pnpm build:preview:dev
+
+# Build + serve with prod DB + prod Firebase config
+pnpm build:preview:prod
+
+# Optional standalone node preview
+pnpm preview:node
+```
+
+The two preview scripts use dedicated Vite modes:
+
+- `preview-dev` reads `.env.preview-dev.local`
+- `preview-prod` reads `.env.preview-prod.local`
+
 ## Decent Espresso integration
 
 If you're lucky enough to own a Decent Espresso machine, there is a handy plugin that lets you automatically upload your shots as soon as they finish.

@@ -25,7 +25,15 @@ export default defineConfig({
       },
     }),
     VitePWA({
-      includeAssets: ["favicon.svg", "favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: [
+        "favicon.svg",
+        "robots.txt",
+        "apple-touch-icon.png",
+      ],
+      workbox: {
+        // SSR build does not have a static SPA index.html fallback
+        navigateFallbackDenylist: [/^\/.*/],
+      },
       manifest: {
         name: "Memento Coffee",
         short_name: "Memento",
@@ -53,17 +61,4 @@ export default defineConfig({
       },
     }),
   ],
-  // resolve: {
-  //   alias: {
-  //     "@": fileURLToPath(new URL("./src", import.meta.url)),
-  //   },
-  // },
-  // esbuild: {
-  //   logOverride: { "this-is-undefined-in-esm": "silent" },
-  // },
-  // optimizeDeps: {
-  //   esbuildOptions: {
-  //     target: "es2020",
-  //   },
-  // },
 });
