@@ -25,7 +25,12 @@ export default defineConfig({
       },
     }),
     VitePWA({
-      includeAssets: ["favicon.svg", "favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: [
+        "favicon.svg",
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+      ],
       manifest: {
         name: "Memento Coffee",
         short_name: "Memento",
@@ -53,17 +58,4 @@ export default defineConfig({
       },
     }),
   ],
-  // resolve: {
-  //   alias: {
-  //     "@": fileURLToPath(new URL("./src", import.meta.url)),
-  //   },
-  // },
-  // esbuild: {
-  //   logOverride: { "this-is-undefined-in-esm": "silent" },
-  // },
-  // optimizeDeps: {
-  //   esbuildOptions: {
-  //     target: "es2020",
-  //   },
-  // },
 });
