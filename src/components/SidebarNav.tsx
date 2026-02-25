@@ -5,7 +5,8 @@ import { useActiveRoute } from "~/hooks/useActiveRoute";
 import { useCurrentUser } from "~/hooks/useInitUser";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { navLinks } from "./BottomNav";
-import { MementoLogo } from "./icons/MementoLogo";
+import { MementoLogoDark } from "./icons/MementoLogoDark";
+import { MementoLogoLight } from "./icons/MementoLogoLight";
 import { ThemePicker } from "./ThemePicker";
 
 const SidebarNavItem = ({ Icon, label, linkTo, nested = false }: SidebarNavItemProps) => {
@@ -67,19 +68,20 @@ export const SidebarNav = () => {
     <div className="hidden md:flex md:w-48 md:flex-col md:fixed md:inset-y-0 lg:w-64">
       <div
         className={clsx([
-          "grow gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-4 pb-4 dark:border-white/10 dark:bg-gray-900 lg:px-6",
+          "flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-4 pb-4 dark:border-white/10 dark:bg-gray-900 lg:px-6",
         ])}
         style={{
           paddingLeft: `calc(env(safe-area-inset-left) + ${isLg ? "1.5rem" : "1rem"})`,
         }}
       >
         <div className="flex h-16 shrink-0 items-center">
-          <MementoLogo className="max-h-8 w-auto dark:brightness-0 dark:invert" />
+          <MementoLogoLight className="max-h-8 w-auto dark:hidden" />
+          <MementoLogoDark className="max-h-8 w-auto hidden dark:block" />
         </div>
         <nav className="flex flex-col flex-1">
           <ul role="list" className="flex flex-col flex-1 gap-y-7">
             <li>
-              <ul role="list" className="-mx-2 space-y-1 ">
+              <ul role="list" className="-mx-2 space-y-1">
                 {sidebarNavLinks.map(({ Icon, label, linkTo, nested }) => (
                   <li key={label}>
                     <SidebarNavItem Icon={Icon} label={label} linkTo={linkTo} nested={nested} />
@@ -87,10 +89,8 @@ export const SidebarNav = () => {
                 ))}
               </ul>
             </li>
-            <li>
+            <li className="mt-auto -mx-2 space-y-1">
               <ThemePicker />
-            </li>
-            <li className="mt-auto">
               <SidebarNavItem
                 Icon={navLinks.settings.Icon}
                 label={navLinks.settings.label}
