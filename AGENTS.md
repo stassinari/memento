@@ -1,105 +1,153 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for agentic coding tools working in this repo.
 
 ## Project Overview
 
-Memento is a coffee brewing tracker web app built with React, TypeScript, and PostgreSQL. It tracks coffee beans, filter/brew coffee, espresso shots, and tastings. The app is designed as a PWA for native-like experience on mobile devices.
+Memento is a coffee brewing tracker web app built with React, TypeScript, and PostgreSQL. It tracks coffee beans, filter/brew coffee, espresso shots, and tastings. The app is designed as a PWA for a native-like mobile experience.
 
 ## Branch Strategy
 
-- **`master`** - Main development branch. All new work happens here.
+- `main` is the main development branch.
 
-**Note:** There's a `srcOld/` folder (gitignored) containing legacy source for reference. Ignore it unless explicitly mentioned.
+## Repo Notes
 
-## Development Commands
+- `srcOld/` is gitignored legacy source for reference only.
+- File-based routing lives in `src/routes/` (TanStack Start).
+- Generated file: `src/routeTree.gen.ts` (do not edit by hand).
+
+## Commands
 
 ```bash
-# Development server (TanStack Start / Nitro)
+# Dev server
 pnpm dev
 
-# Build and type checking
+# Build and preview
 pnpm build
+pnpm serve
+pnpm build:preview
+
+# Type check
 pnpm type-check
+pnpm type-watch
+
+# Lint
+pnpm lint
+pnpm lint:fix
+
+# Tests (Vitest)
+pnpm test            # watch mode
+pnpm test:run        # single run
+pnpm test:ui         # UI runner
+pnpm test:coverage   # coverage
+
+# Tests (Playwright)
+pnpm test:e2e
+pnpm test:e2e:ui
 
 # Database (Drizzle)
-pnpm db:generate  # Generate migrations from schema changes
-pnpm db:migrate   # Run pending migrations
-pnpm db:push      # Push schema directly (dev only)
-
-# Tests
-pnpm test           # Vitest watch mode
-pnpm test:run       # Single test run
-pnpm test:coverage  # Coverage report
-pnpm test:e2e       # Playwright end-to-end tests
+pnpm db:generate     # generate migrations
+pnpm db:migrate      # apply migrations
+pnpm db:push         # push schema (dev only)
 
 # Firebase emulators (Auth only)
-pnpm emulators:start          # With auth seed data
-pnpm emulators:start:empty    # Fresh emulators
+pnpm emulators:start
+pnpm emulators:start:empty
 ```
 
-## Architecture
+### Run a single test
 
-### Frontend Stack
+```bash
+# Vitest: by file
+pnpm test -- src/__tests__/lib/decent-parsers.test.ts
+pnpm test:run -- src/__tests__/lib/decent-parsers.test.ts
 
-- **React 19** with TypeScript, **Vite** bundler, **Tailwind CSS 4** for styling
-- **TanStack Start** for full-stack routing and SSR (file-based routes in `src/routes/`)
-- **TanStack Query** for data fetching and caching (`useSuspenseQuery`, `useMutation`)
-- **Jotai** for minimal global state (user auth atom in `src/hooks/useInitUser.tsx`)
-- **react-hook-form** for form handling
-- **Recharts** for Decent Espresso shot visualization
+# Vitest: by test name
+pnpm test -- -t "parses tcl"
+pnpm test:run -- -t "parses tcl"
 
-### Backend
+# Playwright: by file
+pnpm test:e2e -- tests/espresso.spec.ts
 
-- **PostgreSQL** as the primary database
-- **Drizzle ORM** (`src/db/schema.ts`) for type-safe queries and migrations
-- **TanStack Start server functions** (`createServerFn`) for type-safe RPC — defined in `src/db/queries.ts` and `src/db/mutations.ts`
-- **Nitro** as the server runtime (Netlify preset for deployment)
-- **Firebase Auth** for authentication (Google login + email/password + guest access)
+# Playwright: by title grep
+pnpm test:e2e -- -g "uploads decent shot"
+```
 
-### Data Model
+## Code Style Guidelines
 
-Schema defined in `src/db/schema.ts`. Core tables:
+### Imports and module boundaries
 
-- `users` — `id` (UUID), `fbId` (Firebase UID), `secretKey` (Decent machine auth)
-- `beans` — Coffee bean bags; single-origin or blend, with freeze/thaw dates, computed `isFrozen` / `isOpen` columns
-- `brews` — Filter/brew coffee entries with grinder settings and tasting scores
-- `espresso` — Espresso shots; manual or from Decent machine (`fromDecent` flag)
-- `espressoDecentReadings` — Time-series JSONB arrays (pressure, flow, weight, temperature) for Decent shots
-- `tastings` — Per-bean tasting notes
+- Import order: external packages, then `~` alias imports, then relative imports.
+- Keep side-effect imports (fonts, CSS) near the top of the file.
+- Use the `~` alias for `src` (`~/...`) instead of long relative paths.
+- Do not access the database from client code; use server functions or API routes.
 
-Inferred TypeScript types live in `src/db/types.ts`.
+### Formatting and layout
 
-### Key Patterns
+- No explicit formatter is configured; match the surrounding file style.
+- Prefer two-space indentation (current files are 2 spaces).
+- Keep JSX props aligned and wrapped the same way as neighbors.
+- Favor `const` for bindings and immutable arrays/objects; use `as const` for literals.
 
-**Server Functions** (`src/db/queries.ts`, `src/db/mutations.ts`):
+### TypeScript and types
 
-- All data access goes through `createServerFn()` — no direct DB calls from the client
-- Server functions resolve Firebase UID → PostgreSQL UUID and verify ownership before returning data
+- `strictNullChecks` is enabled; treat nullable DB fields as `T | null`.
+- Prefer explicit return types on exported functions and server handlers.
+- Use `interface` or `type` for props and input data (see `BeansFormInputs`).
+- For discriminated unions (e.g. `origin`), validate in `inputValidator` or helpers.
+- Use `Record<...>` and `Readonly<...>` when it improves clarity.
 
-**Auth Flow**:
+### Naming conventions
 
-- Firebase Auth client-side listener managed by `useInitUser()` (Jotai atoms)
-- Route `beforeLoad` hooks call `getAuthInitPromise()` to gate protected routes
-- Server functions receive the Firebase UID token and look up the corresponding PostgreSQL user
+- Components: `PascalCase` (`BeansForm`, `ErrorFallback`).
+- Hooks: `useCamelCase` (`useInitUser`, `useScreenMediaQuery`).
+- Server functions: `get*`, `add*`, `update*`, `delete*` in `src/db/*`.
+- Route params use TanStack Start conventions (`$espressoId`, `$brewId`).
+- Constants and variables: `camelCase`; enum-like values in `PascalCase` or `SCREAMING_SNAKE` only when already established.
 
-**Query Pattern**:
+### Error handling
 
-- Routes define `queryOptions()` for reusable query definitions
-- Components use `useSuspenseQuery()` for data, wrapped in `<Suspense>` boundaries
-- Mutations use `useMutation()` with query invalidation on success
+- Server functions: validate inputs with `inputValidator`, `throw` meaningful `Error`s on invalid data.
+- Wrap DB work in `try/catch`, log with `console.error`, and rethrow when callers should see failures.
+- API routes return `Response` objects with JSON and proper status codes.
+- UI errors are surfaced via `ErrorBoundary` + `ErrorFallback`.
 
-**Form Components** (`src/components/form/`):
+### Data access patterns
 
-- Wrapped react-hook-form components with suggestion support
-- `FormSuggestions` provides one-tap autosuggestions from previous entries
+- Use `createServerFn` for all DB reads/writes.
+- Enforce ownership: always filter by `context.userId` for user data.
+- Prefer `db.query.*` helpers and `drizzle-orm` composables (`eq`, `and`, `desc`).
+- Normalize output: if returning nested data, spread `beans`, `brews`, `espressos` like existing handlers.
 
-### Decent Espresso Integration
+### React + TanStack conventions
 
-The `/api/decent-shots` route (server function) receives shot files (TCL or JSON format) from Decent Espresso machines, authenticated via the user's `secretKey`. Shot time-series data is stored in `espressoDecentReadings`.
+- Use TanStack Router file routes under `src/routes/`.
+- Use `useSuspenseQuery` and `useMutation` with invalidation (see existing routes/components).
+- Wrap async screens in `<Suspense>` and show fallback UI.
+
+### Styling
+
+- Tailwind CSS 4 is the primary styling system.
+- Prefer existing components in `src/components/` over ad-hoc markup.
+- Keep class strings readable and consistent with neighboring code.
+
+## Tests and fixtures
+
+- Unit tests live in `src/__tests__` and use Vitest.
+- Test filenames end with `.test.ts`.
 
 ## Environment Variables
 
 - `DATABASE_URL` — PostgreSQL connection string
 - `VITE_FB_*` — Firebase client config (Auth only)
 - `SENTRY_DSN` — Error tracking
+
+## Tooling and versions
+
+- Package manager: `pnpm@10.28.2`
+- Node: `>=22` (see `package.json` engines)
+- Linting: `oxlint` (see `.oxlintrc.json`)
+
+## Cursor/Copilot rules
+
+- No `.cursor/rules/`, `.cursorrules`, or `.github/copilot-instructions.md` found in this repo.
