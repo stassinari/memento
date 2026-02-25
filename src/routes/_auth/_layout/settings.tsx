@@ -81,6 +81,11 @@ function Settings() {
       <Heading>Settings</Heading>
 
       <div className="mt-4 space-y-6">
+        <div className="md:hidden">
+          <FormSection title="Appearance">
+            <ThemePicker />
+          </FormSection>
+        </div>
         <FormSection title="Decent setup">
           <div className="flex items-center justify-between">
             <span className="font-medium">Enable Decent integration</span>
@@ -145,11 +150,7 @@ function Settings() {
             Sign out
           </Button>
         </FormSection>
-        <div className="md:hidden">
-          <FormSection title="Appearance">
-            <ThemePicker />
-          </FormSection>
-        </div>
+
         <Button variant="white" className="sm:hidden" asChild>
           <RouterLink to="/design-library">Design Library</RouterLink>
         </Button>
