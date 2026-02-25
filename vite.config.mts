@@ -31,6 +31,10 @@ export default defineConfig({
         "robots.txt",
         "apple-touch-icon.png",
       ],
+      workbox: {
+        // SSR build does not have a static SPA index.html fallback
+        navigateFallbackDenylist: [/^\/.*/],
+      },
       manifest: {
         name: "Memento Coffee",
         short_name: "Memento",
