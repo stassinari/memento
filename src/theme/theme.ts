@@ -29,7 +29,9 @@ export const getSystemTheme = (): ResolvedTheme => {
     return "light";
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 };
 
 export const resolveTheme = (preference: ThemePreference): ResolvedTheme => {
@@ -52,6 +54,7 @@ export const applyResolvedTheme = (resolvedTheme: ResolvedTheme) => {
   root.style.colorScheme = resolvedTheme;
 };
 
+// this dodgy-looking script is meant to be inlined in the HTML to prevent a flash of incorrect theme on page load
 export const themeInitScript = `(() => {
   try {
     const THEME_STORAGE_KEY = "${THEME_STORAGE_KEY}";
