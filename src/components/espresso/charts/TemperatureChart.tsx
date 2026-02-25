@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTheme } from "~/hooks/useTheme";
 import { DecentReadings } from "~/lib/decent-parsers";
 import { ChartLegend } from "./ChartLegend";
 import { ChartTooltip } from "./ChartTooltip";
@@ -17,6 +18,9 @@ interface TemperatureChartProps {
 }
 
 export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   const data = decentReadings.time.map((t, i) => ({
     time: t,
     mix: decentReadings.temperatureMix[i],
@@ -45,13 +49,19 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
       ),
     ) - 1;
 
+  const gridStroke = isDark ? "#4b5563" : "#d1d5db";
+  const tickColor = isDark ? "#d1d5db" : "#1f2937";
+  const basketColor = isDark ? "#f87171" : "#b91c1c";
+  const mixColor = isDark ? "#fbbf24" : "#f59e0b";
+  const goalColor = isDark ? "#fb7185" : "#ef4444";
+
   return (
     <div className="h-44 md:h-56">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} syncId="decentChart">
           <CartesianGrid
             vertical={false}
-            stroke={"#d1d5db"} // FIXME better tw theme theme`colors.gray.300`
+            stroke={gridStroke}
             strokeDasharray="3 3"
           />
           <XAxis
@@ -60,7 +70,7 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
             unit="s"
             domain={[0, roundedTime]}
             minTickGap={48}
-            tick={{ fill: "#1f2937" }} // FIXME better tw theme theme`colors.gray.800`
+            tick={{ fill: tickColor }}
             tickCount={xAxisTickCount}
             tickSize={4}
             interval="preserveStart"
@@ -68,7 +78,7 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
           <YAxis
             type="number"
             domain={[minYAxis, maxYAxis]}
-            tick={{ fill: "#1f2937" }} // FIXME better tw theme theme`colors.gray.800`
+            tick={{ fill: tickColor }}
             tickCount={maxYAxis - minYAxis + 1}
             tickSize={4}
             allowDataOverflow={true}
@@ -86,21 +96,21 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
             type="basis"
             dot={false}
             dataKey="basket"
-            stroke={"#b91c1c"} // FIXME better tw theme theme`colors.red.700`
+            stroke={basketColor}
             strokeWidth={2}
           />
           <Line
             type="basis"
             dot={false}
             dataKey="mix"
-            stroke={"#f59e0b"} // FIXME better tw theme theme`colors.amber.500`
+            stroke={mixColor}
             strokeWidth={1}
           />
           <Line
             type="basis"
             dot={false}
             dataKey="goal"
-            stroke={"#ef4444"} // FIXME better tw theme theme`colors.red.500`
+            stroke={goalColor}
             strokeWidth={1.5}
             strokeDasharray="5 5"
             //   activeDot={(props) =>

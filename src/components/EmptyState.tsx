@@ -14,9 +14,9 @@ interface EmptyStateProps {
 export const EmptyState = ({ title, description, button }: EmptyStateProps) => {
   return (
     <div className="mt-32 text-center">
-      <CubeTransparentIcon className="w-12 h-12 mx-auto text-gray-400" />
-      <h3 className="mt-2 text-sm font-medium text-gray-900">{title}</h3>
-      <p className="mt-1 text-sm text-gray-500">{description}</p>
+      <CubeTransparentIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+      <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{title}</h3>
+      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{description}</p>
       {button && (
         <div className="mt-6">
           <Button variant="primary" asChild>

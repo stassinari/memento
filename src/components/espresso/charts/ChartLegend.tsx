@@ -22,7 +22,7 @@ export const ChartLegend = ({ payload }: any) => {
       {payload.map((entry: any, index: any) => (
         <li
           key={`item-${index}`}
-          className="inline-flex items-center mr-8 text-xs text-gray-500 list-none"
+          className="mr-8 inline-flex list-none items-center text-xs text-gray-500 dark:text-gray-400"
         >
           <LegendRectangle color={entry.color} />
           {propertyToValues[entry.value].label}

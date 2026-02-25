@@ -52,7 +52,7 @@ export const ComboboxSingle = ({
         <HuiCombobox.Input
           className={clsx([
             inputStyles,
-            "relative py-2 pl-3 bg-white border focus:outline-hidden focus:ring-1",
+            "relative border bg-white py-2 pl-3 focus:outline-hidden focus:ring-1 dark:bg-gray-900 dark:focus:ring-orange-400",
             showResetButton ? "pr-16" : "pr-10",
           ])}
           onChange={(event) => {
@@ -67,7 +67,7 @@ export const ComboboxSingle = ({
           <button
             onClick={reset}
             type="button"
-            className={clsx([comboboxButtonStyles, "right-6"])}
+              className={clsx([comboboxButtonStyles, "right-6"])}
             tabIndex={-1}
           >
             <XMarkIcon className={clsx(comboboxButtonIconStyles)} />

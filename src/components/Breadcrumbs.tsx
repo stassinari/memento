@@ -20,16 +20,21 @@ export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
               {item.linkTo ? (
                 <Link
                   to={item.linkTo}
-                  className="mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  className="mr-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                   // aria-current={item.current ? "page" : undefined}
                 >
                   {item.label}
                 </Link>
               ) : (
-                <p className="mr-4 text-sm font-medium text-gray-500">{item.label}</p>
+                <p className="mr-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  {item.label}
+                </p>
               )}
               {i !== items.length - 1 && (
-                <ChevronRightIcon className="shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
+                <ChevronRightIcon
+                  className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
+                  aria-hidden="true"
+                />
               )}
             </div>
           </li>
@@ -45,8 +50,8 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
       <ol role="list" className="flex items-center space-x-2 overflow-x-scroll sm:space-x-4">
         <li>
           <div>
-            <Link to="/" className="text-gray-400 hover:text-gray-500">
-              <HomeIcon className="shrink-0 w-5 h-5" aria-hidden="true" />
+            <Link to="/" className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300">
+              <HomeIcon className="h-5 w-5 shrink-0" aria-hidden="true" />
               <span className="sr-only">Home</span>
             </Link>
           </div>
@@ -54,17 +59,20 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
         {items.map((item) => (
           <li key={item.label}>
             <div className="flex items-center">
-              <ChevronRightIcon className="shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
+              <ChevronRightIcon
+                className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
+                aria-hidden="true"
+              />
               {item.linkTo ? (
                 <Link
                   to={item.linkTo}
-                  className="ml-2 text-sm font-medium text-gray-500 sm:ml-4 hover:text-gray-700 whitespace-nowrap"
+                  className="ml-2 whitespace-nowrap text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sm:ml-4"
                   // aria-current={item.current ? "page" : undefined}
                 >
                   {item.label}
                 </Link>
               ) : (
-                <p className="ml-2 text-sm font-medium text-gray-500 sm:ml-4 whitespace-nowrap">
+                <p className="ml-2 whitespace-nowrap text-sm font-medium text-gray-500 dark:text-gray-400 sm:ml-4">
                   {item.label}
                 </p>
               )}

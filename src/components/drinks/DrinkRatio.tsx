@@ -12,9 +12,9 @@ export const DrinkRatio = ({ beans, water, waterMeasurementUnit = "ml" }: DrinkR
   const { beansByWater, waterByBeans } = useDrinkRatio(beans, water);
 
   return (
-    <div className="text-gray-900 grid grid-cols-[30%_40%_30%]">
+    <div className="grid grid-cols-[30%_40%_30%] text-gray-900 dark:text-gray-100">
       <span className="flex items-center gap-2 text-left">
-        <BeanIconSolid className="w-4 h-4 text-gray-400" />
+        <BeanIconSolid className="h-4 w-4 text-gray-400 dark:text-gray-500" />
         {beans}g
       </span>
       <div className="flex flex-col text-center">
@@ -24,7 +24,7 @@ export const DrinkRatio = ({ beans, water, waterMeasurementUnit = "ml" }: DrinkR
       <span className="flex items-center justify-end gap-2">
         {water}
         {waterMeasurementUnit}
-        <DropIcon className="w-4 h-4 text-gray-400" />
+        <DropIcon className="h-4 w-4 text-gray-400 dark:text-gray-500" />
       </span>
     </div>
   );

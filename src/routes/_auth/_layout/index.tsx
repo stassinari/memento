@@ -56,7 +56,9 @@ function Home() {
       {recentlyUsedBeans.length > 0 && (
         <section className="mt-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recently used beans</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Recently used beans
+            </h2>
             <Button variant="secondary" colour="accent" size="sm" asChild>
               <Link to="/beans/add">
                 <PlusIcon />
@@ -77,7 +79,9 @@ function Home() {
       {/* Partial Espressos Section */}
       {(partialEspressos ?? []).length > 0 && (
         <section className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">Espressos pending details</h2>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Espressos pending details
+          </h2>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {(partialEspressos ?? []).map(({ espresso, beans }) => (
               <li key={espresso.id}>
@@ -92,7 +96,9 @@ function Home() {
       {latestDrinks.length > 0 && (
         <section className="mt-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Latest drinks</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Latest drinks
+            </h2>
             <div className="flex gap-2">
               <Button variant="secondary" colour="main" size="sm" asChild>
                 <Link to="/drinks/brews/add">
@@ -158,8 +164,8 @@ function PartialEspressoCard({ espresso, beans }: { espresso: Espresso; beans: B
         params: { espressoId: espresso.id },
       }}
       footerSlot={
-        <Card.Footer className="flex items-center h-8 gap-1 text-xs text-gray-500">
-          <PortafilterIcon className="w-4 h-4 mr-1 text-gray-400" />
+        <Card.Footer className="flex h-8 items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+          <PortafilterIcon className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
           Pulled at <span>{dayjs(espresso.date).format("ddd DD MMM YYYY | HH:mm")}</span>
         </Card.Footer>
       }
@@ -181,11 +187,11 @@ function PartialEspressoCard({ espresso, beans }: { espresso: Espresso; beans: B
             </ListCard.RowIcon>
             {espresso.beansWeight ?? "?"}g : {espresso.actualWeight ?? espresso.targetWeight ?? "?"}
             g
-            <DropIcon className="w-3 h-3 text-gray-400" />
+            <DropIcon className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </ListCard.Row>
         </div>
         <div>
-          <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-orange-800 bg-orange-100 rounded-full">
+          <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800 dark:bg-orange-500/15 dark:text-orange-200">
             Pending
           </span>
         </div>

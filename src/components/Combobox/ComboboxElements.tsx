@@ -29,9 +29,9 @@ import { ReactElement, ReactNode } from "react";
 // );
 
 export const comboboxButtonStyles =
-  "absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-hidden";
+  "absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden";
 
-export const comboboxButtonIconStyles = "w-5 h-5 text-gray-400 hover:text-gray-600";
+export const comboboxButtonIconStyles = "h-5 w-5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300";
 
 export const ComboboxButton = () => (
   <HuiCombobox.Button className={clsx(comboboxButtonStyles)}>
@@ -44,7 +44,7 @@ interface ComboboxOptionsProps {
 }
 
 export const ComboboxOptions = ({ children }: ComboboxOptionsProps) => (
-  <HuiCombobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black/5 focus:outline-hidden sm:text-sm">
+  <HuiCombobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-900 dark:ring-white/10 sm:text-sm">
     {children}
   </HuiCombobox.Options>
 );
@@ -59,7 +59,7 @@ export const ComboboxOption = ({ option, renderOption, handleClick }: ComboboxOp
   <HuiCombobox.Option
     key={option}
     value={option}
-    className="relative py-2 pl-3 cursor-default select-none pr-9 ui-active:bg-orange-600 ui-active:text-white ui-not-active:text-gray-900"
+    className="relative cursor-default select-none py-2 pl-3 pr-9 ui-active:bg-orange-600 ui-active:text-white ui-not-active:text-gray-900 dark:ui-active:bg-orange-500 dark:ui-not-active:text-gray-100"
     onClick={handleClick}
   >
     {({ selected }) => (
@@ -67,7 +67,7 @@ export const ComboboxOption = ({ option, renderOption, handleClick }: ComboboxOp
         <div className="flex items-center">{renderOption(option)}</div>
 
         {selected && (
-          <span className="absolute inset-y-0 right-0 flex items-center pr-4 ui-not-active:text-orange-600">
+          <span className="absolute inset-y-0 right-0 flex items-center pr-4 ui-not-active:text-orange-600 dark:ui-not-active:text-orange-300">
             <CheckIcon className="w-5 h-5 ui-active:text-white" aria-hidden="true" />
           </span>
         )}

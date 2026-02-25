@@ -4,7 +4,7 @@ import { BeanIconSolid } from "./icons/BeanIconSolid";
 import { ListCard } from "./ListCard";
 
 const skeletonStyles =
-  "animate-pulse bg-gray-300 rounded-sm text-transparent text-xs py-0.5 bg-clip-content";
+  "animate-pulse rounded-sm bg-gray-300 py-0.5 text-xs text-transparent bg-clip-content dark:bg-white/20";
 
 const randomChars = (min: number, max: number) =>
   "x".repeat(Math.floor(Math.random() * (max - min + 1)) + min);

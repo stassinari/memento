@@ -24,7 +24,7 @@ export const Modal = ({ open, handleClose, children }: ModalProps) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 transition-opacity bg-gray-500/75" />
+          <div className="fixed inset-0 bg-gray-500/75 transition-opacity dark:bg-gray-900/60" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -46,7 +46,7 @@ export const Modal = ({ open, handleClose, children }: ModalProps) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative w-full px-4 pt-5 pb-4 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative w-full overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all transform dark:bg-gray-900 dark:ring-1 dark:ring-white/10 sm:my-8 sm:max-w-lg sm:p-6">
                 {children}
               </Dialog.Panel>
             </Transition.Child>
@@ -69,9 +69,12 @@ export const RadixModal = ({ children, triggerSlot, open, setOpen }: RadixProps)
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>{triggerSlot}</RadixDialog.Trigger>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 sm:place-items-center">
+        <RadixDialog.Overlay className="fixed inset-0 z-10 grid overflow-y-auto place-items-center bg-gray-500/75 dark:bg-gray-900/60 sm:place-items-center">
           <RadixDialog.Content
-            className={clsx(["p-4 mx-4 bg-white rounded-sm", "sm:w-auto sm:max-w-md"])}
+            className={clsx([
+              "mx-4 rounded-sm bg-white p-4 dark:bg-gray-900 dark:ring-1 dark:ring-white/10",
+              "sm:w-auto sm:max-w-md",
+            ])}
             style={{
               width: `calc(100vw - 2rem)`,
               marginTop: `calc(env(safe-area-inset-top) + 1rem)`,
@@ -101,9 +104,11 @@ export const ExampleDialogContent = ({ handleClose }: ExampleDialogContentProps)
         {/* <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
           Payment successful
         </Dialog.Title> */}
-        <h2 className="text-lg font-medium leading-6 text-gray-900">Payment successful</h2>
+        <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+          Payment successful
+        </h2>
         <div className="mt-2">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
           </p>
         </div>

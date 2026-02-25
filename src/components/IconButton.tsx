@@ -11,7 +11,8 @@ const iconButtonVariants = cva(iconButtonStyles.join(" "), {
     variant: {
       primary: "",
       secondary: "",
-      white: "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50",
+      white:
+        "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50 dark:text-gray-100 dark:bg-white/10 dark:border-white/15 dark:hover:bg-white/20",
       gradient: "",
     },
     colour: {

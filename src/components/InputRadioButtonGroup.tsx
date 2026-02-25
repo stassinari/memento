@@ -28,12 +28,12 @@ export const InputRadioButtonGroup = ({
             value={option.value}
             className={clsx([
               "flex items-center justify-center px-5 py-2 text-sm font-medium border focus:z-10 first-of-type:rounded-l-md last-of-type:rounded-r-md not-first-of-type:-ml-px",
-              "ui-active:ring-orange-500",
-              "ui-not-checked:bg-white ui-not-checked:border-gray-200 ui-not-checked:text-gray-700 hover:ui-not-checked:bg-gray-50",
+              "ui-active:ring-orange-500 dark:ui-active:ring-orange-400 dark:ui-active:ring-offset-gray-950",
+              "ui-not-checked:bg-white ui-not-checked:border-gray-200 ui-not-checked:text-gray-700 hover:ui-not-checked:bg-gray-50 dark:ui-not-checked:bg-gray-900 dark:ui-not-checked:border-white/15 dark:ui-not-checked:text-gray-200 dark:hover:ui-not-checked:bg-white/10",
               variant === "primary"
-                ? "ui-checked:bg-orange-600 ui-checked:border-transparent ui-checked:text-white hover:ui-checked:bg-orange-700 ui-active:ring-2 ui-active:ring-offset-2"
+                ? "ui-checked:bg-orange-600 ui-checked:border-transparent ui-checked:text-white hover:ui-checked:bg-orange-700 ui-active:ring-2 ui-active:ring-offset-2 dark:ui-checked:bg-orange-500 dark:hover:ui-checked:bg-orange-400"
                 : variant === "secondary"
-                  ? "ui-checked:text-orange-700 ui-checked:bg-orange-100 ui-checked:border-transparent hover:ui-checked:bg-orange-200 focus:ui-not-checked:border-orange-500 ui-active:ring-1 ui-active:border-orange-500"
+                  ? "ui-checked:text-orange-700 ui-checked:bg-orange-100 ui-checked:border-transparent hover:ui-checked:bg-orange-200 focus:ui-not-checked:border-orange-500 ui-active:ring-1 ui-active:border-orange-500 dark:ui-checked:text-orange-200 dark:ui-checked:bg-orange-500/20 dark:hover:ui-checked:bg-orange-500/30 dark:focus:ui-not-checked:border-orange-400 dark:ui-active:border-orange-400"
                   : null,
               option.disabled
                 ? "opacity-25 cursor-not-allowed"

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { getTrackBackground, Range } from "react-range";
+import { useTheme } from "~/hooks/useTheme";
 
 export interface InputSliderProps {
   onChange: (values: number[]) => void;
@@ -20,6 +21,9 @@ export const InputSlider = ({
   overrideLabels,
   hideThumbMarker = false,
 }: InputSliderProps) => {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div className="mx-2">
       <Range
@@ -36,7 +40,7 @@ export const InputSlider = ({
               ...props.style,
               background: getTrackBackground({
                 values,
-                colors: ["#f97316", "#e5e7eb"], // FIXME better tw theme
+                colors: isDark ? ["#fb923c", "#4b5563"] : ["#f97316", "#e5e7eb"],
                 min,
                 max,
               }),
@@ -49,9 +53,10 @@ export const InputSlider = ({
           <div
             {...props}
             className={clsx([
-              "relative w-4 h-4 bg-white border border-gray-300 rounded-full shadow-sm",
+              "relative h-4 w-4 rounded-full border shadow-sm",
+              isDark ? "bg-gray-100 border-gray-500" : "bg-white border-gray-300",
               "before:content before:rounded-full before:opacity-20 before:w-12 before:h-12 before:block before:-top-5/4 before:-left-5/4 before:absolute",
-              "focus:outline-hidden focus:ring-orange-500 focus:border-orange-500",
+              "focus:outline-hidden focus:ring-orange-500 focus:border-orange-500 dark:focus:ring-orange-400 dark:focus:border-orange-400",
             ])}
             style={{
               transform: "translate(-8px, -4px)",
@@ -77,11 +82,16 @@ export const InputSlider = ({
           // remove non-int marks if step is < 1
           // NOTE only works for 0.5 step for now
           if (step < 1 && index % 2 === 1) return null;
-          return <div {...props} className="top-0 w-0.5 h-1 rounded-full bg-gray-50" />;
+          return (
+            <div
+              {...props}
+              className={clsx("top-0 h-1 w-0.5 rounded-full", isDark ? "bg-gray-500" : "bg-gray-300")}
+            />
+          );
         }}
       />
 
-      <div className="flex justify-between mt-2 -mx-2 text-sm text-gray-700 px-1 sm:text-xs">
+      <div className="mt-2 -mx-2 flex justify-between px-1 text-sm text-gray-700 dark:text-gray-300 sm:text-xs">
         {overrideLabels ? (
           <>
             {overrideLabels.map((l) => (

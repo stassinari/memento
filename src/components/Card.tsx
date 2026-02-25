@@ -4,7 +4,13 @@ import { HTMLAttributes, type ReactNode } from "react";
 import { Action } from "./ButtonWithDropdown";
 
 const Container = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div className={clsx("bg-white rounded-lg shadow-sm", className)} {...props} />
+  <div
+    className={clsx(
+      "rounded-lg bg-white shadow-sm dark:bg-gray-900 dark:shadow-black/20 dark:ring-1 dark:ring-white/10",
+      className,
+    )}
+    {...props}
+  />
 );
 
 const Content = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
@@ -27,11 +33,12 @@ interface HeaderProps {
   action?: Action;
 }
 
-const actionStyles = "font-medium text-sm text-orange-600 hover:text-orange-500 hover:underline";
+const actionStyles =
+  "text-sm font-medium text-orange-600 hover:text-orange-500 hover:underline dark:text-orange-300 dark:hover:text-orange-200";
 
 const Header = ({ title, action }: HeaderProps) => (
-  <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50 sm:px-6">
-    <h3 className="text-sm font-bold leading-6 text-gray-900">{title}</h3>
+  <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/50 px-4 py-2 dark:border-white/10 dark:bg-white/5 sm:px-6">
+    <h3 className="text-sm font-bold leading-6 text-gray-900 dark:text-gray-100">{title}</h3>
     {action &&
       (action.type === "link" ? (
         <Link {...action.linkProps} className={clsx(actionStyles)}>
@@ -47,7 +54,10 @@ const Header = ({ title, action }: HeaderProps) => (
 
 const Footer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={clsx("px-4 py-2 border-t border-gray-100 bg-gray-50/50 sm:px-6", className)}
+    className={clsx(
+      "border-t border-gray-100 bg-gray-50/50 px-4 py-2 dark:border-white/10 dark:bg-white/5 sm:px-6",
+      className,
+    )}
     {...props}
   />
 );
@@ -62,14 +72,14 @@ interface DescriptionListProps {
 }
 
 const DescriptionList = ({ rows }: DescriptionListProps) => (
-  <div className="divide-y divide-gray-100">
+  <div className="divide-y divide-gray-100 dark:divide-white/10">
     {rows.map(({ label, value }) => (
       <dl
         key={label}
         className="flex items-center justify-between py-1 gap-x-4 first-of-type:pt-0 last-of-type:pb-0 sm:py-2"
       >
-        <dt className="text-sm font-normal text-gray-500">{label}</dt>
-        <dd className="mt-1 text-sm font-medium text-gray-800 ">{value}</dd>
+        <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">{label}</dt>
+        <dd className="mt-1 text-sm font-medium text-gray-800 dark:text-gray-200">{value}</dd>
       </dl>
     ))}
   </div>

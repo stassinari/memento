@@ -104,20 +104,24 @@ function BrewDetails() {
         {brew.method}
       </Heading>
 
-      <div className="mb-2 text-sm text-gray-500">
+      <div className="mb-2 text-sm text-gray-500 dark:text-gray-400">
         {dayjs(brew.date).format("DD MMM YYYY @ H:m")}
       </div>
 
       {isSm ? (
         <div className="grid grid-cols-2 gap-4 my-6">
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Brew info</h2>
+            <h2 className="mb-5 text-center text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Brew info
+            </h2>
 
             <BrewDetailsInfo brew={brew} />
           </div>
 
           <div>
-            <h2 className="mb-5 text-lg font-semibold text-center text-gray-900">Outcome</h2>
+            <h2 className="mb-5 text-center text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Outcome
+            </h2>
 
             <BrewDetailsOutcome brew={brew} />
           </div>

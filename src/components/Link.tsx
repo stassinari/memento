@@ -8,7 +8,8 @@ type LinkProps = {
   children: React.ReactNode;
 } & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-const linkStyles = "text-orange-600 underline hover:text-orange-500 hover:no-underline";
+const linkStyles =
+  "text-orange-600 underline hover:text-orange-500 hover:no-underline dark:text-orange-300 dark:hover:text-orange-200";
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ asChild = false, className, children, ...props }, ref) => {
