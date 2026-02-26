@@ -327,15 +327,22 @@ export const hasMeaningfulRating = (rating: TastingRatingData): boolean =>
   rating.finishQuality > 0 ||
   rating.finishNotes !== "";
 
-export const buildBeansLookup = (beansList: Pick<Beans, "id" | "name" | "roaster">[]) => {
-  const byId = new Map<string, Pick<Beans, "id" | "name" | "roaster">>();
+type BeansLookupValue = Pick<Beans, "id" | "fbId" | "name" | "roaster">;
+
+export const buildBeansLookup = (beansList: BeansLookupValue[]) => {
+  const byId = new Map<string, BeansLookupValue>();
+  const byFbId = new Map<string, BeansLookupValue>();
 
   beansList.forEach((bean) => {
     byId.set(bean.id, bean);
+    if (bean.fbId) {
+      byFbId.set(bean.fbId, bean);
+    }
   });
 
   return {
     byId,
+    byFbId,
   };
 };
 
@@ -353,7 +360,7 @@ export const getTastingSampleLabel = (
   const refLikeId = getRefLikeId(rawValue);
 
   if (refLikeId) {
-    const bean = lookup.byId.get(refLikeId);
+    const bean = lookup.byId.get(refLikeId) ?? lookup.byFbId.get(refLikeId);
     if (bean) {
       return `${bean.name} (${bean.roaster})`;
     }

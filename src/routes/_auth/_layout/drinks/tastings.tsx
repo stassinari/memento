@@ -18,7 +18,7 @@ import {
   hasMeaningfulRating,
   parseTastingData,
 } from "~/components/tastings/utils";
-import { getSelectableBeans, getTasting, getTastings } from "~/db/queries";
+import { getBeansLookup, getTasting, getTastings } from "~/db/queries";
 import type { Beans, Tasting } from "~/db/types";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
@@ -34,10 +34,10 @@ const tastingsQueryOptions = (limit: number, offset: number) =>
       (await getTastings({ data: { limit, offset } })) as TastingWithBeans[],
   });
 
-const selectableBeansQueryOptions = () =>
+const beansLookupQueryOptions = () =>
   queryOptions({
-    queryKey: ["beans", "selectable"],
-    queryFn: () => getSelectableBeans(),
+    queryKey: ["beans", "lookup"],
+    queryFn: () => getBeansLookup(),
   });
 
 const tastingQueryOptions = (tastingId: string) =>
@@ -75,7 +75,7 @@ function TastingsPage() {
     enabled: Boolean(tastingId),
   });
 
-  const { data: beans = [] } = useQuery(selectableBeansQueryOptions());
+  const { data: beans = [] } = useQuery(beansLookupQueryOptions());
 
   useEffect(() => {
     if (!tastings) {

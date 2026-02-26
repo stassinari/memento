@@ -343,6 +343,7 @@ export const getSelectableBeans = createServerFn({ method: "GET" }).handler(asyn
     const beansList = await db
       .select({
         id: beans.id,
+        fbId: beans.fbId,
         name: beans.name,
         roaster: beans.roaster,
         roastDate: beans.roastDate,
@@ -355,6 +356,24 @@ export const getSelectableBeans = createServerFn({ method: "GET" }).handler(asyn
       .from(beans)
       .where(and(eq(beans.userId, context.userId), eq(beans.isArchived, false)))
       .orderBy(desc(beans.roastDate));
+    return beansList;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
+
+export const getBeansLookup = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  try {
+    const beansList = await db
+      .select({
+        id: beans.id,
+        fbId: beans.fbId,
+        name: beans.name,
+        roaster: beans.roaster,
+      })
+      .from(beans)
+      .where(eq(beans.userId, context.userId));
     return beansList;
   } catch (error) {
     console.error("Database error:", error);
