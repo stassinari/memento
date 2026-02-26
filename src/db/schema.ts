@@ -36,6 +36,16 @@ export enum ExtractionType {
 
 export const extractionTypeEnum = pgEnum("extraction_type", ExtractionType);
 
+export enum TastingVariable {
+  Beans = "beans",
+  Method = "method",
+  WaterType = "waterType",
+  FilterType = "filterType",
+  Grinder = "grinder",
+}
+
+export const tastingVariableEnum = pgEnum("tasting_variable", TastingVariable);
+
 export type BeansBlendPart = {
   name: string | null;
   country: string | null;
@@ -45,8 +55,12 @@ export type BeansBlendPart = {
 };
 
 export const timestamps = {
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 };
 
 export const users = pgTable(
@@ -99,7 +113,8 @@ export const beans = pgTable(
     isArchived: boolean("is_archived").notNull().default(false),
 
     isFrozen: boolean("is_frozen").generatedAlwaysAs(
-      (): SQL => sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,
+      (): SQL =>
+        sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,
     ),
     isOpen: boolean("is_open").generatedAlwaysAs(
       (): SQL =>
@@ -254,14 +269,95 @@ export const tastings = pgTable(
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+
+    // Normalized tasting fields (migration target)
+    date: timestamp("date", { withTimezone: true, mode: "date" }),
+    variable: tastingVariableEnum("variable"),
+    note: text("note"),
     beansId: uuid("beans_id").references(() => beans.id, {
-      onDelete: "set null",
+      onDelete: "restrict",
     }),
+    method: text("method"),
+    waterWeight: numeric("water_weight", { mode: "number" }),
+    beansWeight: numeric("beans_weight", { mode: "number" }),
+    waterTemperature: numeric("water_temperature", { mode: "number" }),
+    grinder: text("grinder"),
+    grindSetting: text("grind_setting"),
+    waterType: text("water_type"),
+    filterType: text("filter_type"),
+    targetTimeMinutes: integer("target_time_minutes"),
+    targetTimeSeconds: integer("target_time_seconds"),
+
+    // Legacy payload kept temporarily during transition
     data: jsonb("data").$type<Record<string, {}>>().notNull(),
 
     ...timestamps,
   },
-  (table) => [index("tastings_user_created_at_idx").on(table.userId, table.createdAt)],
+  (table) => [
+    index("tastings_user_created_at_idx").on(table.userId, table.createdAt),
+    index("tastings_user_date_idx").on(table.userId, table.date),
+  ],
+);
+
+export const tastingSamples = pgTable(
+  "tasting_samples",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tastingId: uuid("tasting_id")
+      .notNull()
+      .references(() => tastings.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+
+    variableValueText: text("variable_value_text"),
+    variableValueBeansId: uuid("variable_value_beans_id").references(
+      () => beans.id,
+      {
+        onDelete: "restrict",
+      },
+    ),
+    note: text("note"),
+    actualTimeMinutes: integer("actual_time_minutes"),
+    actualTimeSeconds: integer("actual_time_seconds"),
+
+    overall: numeric("overall", { precision: 3, scale: 1, mode: "number" }),
+    flavours: text("flavours")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
+
+    aromaQuantity: numeric("aroma_quantity", { mode: "number" }),
+    aromaQuality: numeric("aroma_quality", { mode: "number" }),
+    aromaNotes: text("aroma_notes"),
+
+    acidityQuantity: numeric("acidity_quantity", { mode: "number" }),
+    acidityQuality: numeric("acidity_quality", { mode: "number" }),
+    acidityNotes: text("acidity_notes"),
+
+    sweetnessQuantity: numeric("sweetness_quantity", { mode: "number" }),
+    sweetnessQuality: numeric("sweetness_quality", { mode: "number" }),
+    sweetnessNotes: text("sweetness_notes"),
+
+    bodyQuantity: numeric("body_quantity", { mode: "number" }),
+    bodyQuality: numeric("body_quality", { mode: "number" }),
+    bodyNotes: text("body_notes"),
+
+    finishQuantity: numeric("finish_quantity", { mode: "number" }),
+    finishQuality: numeric("finish_quality", { mode: "number" }),
+    finishNotes: text("finish_notes"),
+
+    ...timestamps,
+  },
+  (table) => [
+    index("tasting_samples_tasting_idx").on(table.tastingId),
+    uniqueIndex("tasting_samples_tasting_position_unique").on(
+      table.tastingId,
+      table.position,
+    ),
+    check(
+      "tasting_samples_variable_value_xor_check",
+      sql`(${table.variableValueText} is null) <> (${table.variableValueBeansId} is null)`,
+    ),
+  ],
 );
 
 // Relations
@@ -280,6 +376,7 @@ export const beansRelations = relations(beans, ({ one, many }) => ({
   brews: many(brews),
   espressos: many(espresso),
   tastings: many(tastings),
+  tastingSamples: many(tastingSamples),
 }));
 
 export const brewsRelations = relations(brews, ({ one }) => ({
@@ -308,20 +405,35 @@ export const espressoRelations = relations(espresso, ({ one }) => ({
   }),
 }));
 
-export const espressoDecentReadingsRelations = relations(espressoDecentReadings, ({ one }) => ({
-  espresso: one(espresso, {
-    fields: [espressoDecentReadings.espressoId],
-    references: [espresso.id],
+export const espressoDecentReadingsRelations = relations(
+  espressoDecentReadings,
+  ({ one }) => ({
+    espresso: one(espresso, {
+      fields: [espressoDecentReadings.espressoId],
+      references: [espresso.id],
+    }),
   }),
-}));
+);
 
-export const tastingsRelations = relations(tastings, ({ one }) => ({
+export const tastingsRelations = relations(tastings, ({ one, many }) => ({
   user: one(users, {
     fields: [tastings.userId],
     references: [users.id],
   }),
   beans: one(beans, {
     fields: [tastings.beansId],
+    references: [beans.id],
+  }),
+  samples: many(tastingSamples),
+}));
+
+export const tastingSamplesRelations = relations(tastingSamples, ({ one }) => ({
+  tasting: one(tastings, {
+    fields: [tastingSamples.tastingId],
+    references: [tastings.id],
+  }),
+  variableValueBeans: one(beans, {
+    fields: [tastingSamples.variableValueBeansId],
     references: [beans.id],
   }),
 }));

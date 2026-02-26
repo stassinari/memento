@@ -209,14 +209,13 @@ export const getTastings = createServerFn({ method: "GET" })
   .handler(async ({ data: { limit, offset }, context }) => {
     try {
       const tastingList = await db
-        .select()
+        .select({ ...getTableColumns(tastings) })
         .from(tastings)
-        .leftJoin(beans, eq(tastings.beansId, beans.id))
         .where(eq(tastings.userId, context.userId))
         .orderBy(desc(tastings.createdAt))
         .limit(limit)
         .offset(offset);
-      return tastingList as TastingWithBeans[];
+      return tastingList.map((tasting) => ({ tastings: tasting, beans: null })) as TastingWithBeans[];
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -233,16 +232,13 @@ export const getTasting = createServerFn({ method: "GET" })
       const result = await db.query.tastings.findFirst({
         where: (tastings, { and, eq }) =>
           and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)),
-        with: {
-          beans: true,
-        },
       });
 
       if (!result) {
         return null;
       }
 
-      return { ...result, beans: result.beans } as TastingWithOptionalBeans;
+      return { ...result, beans: null } as TastingWithOptionalBeans;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
