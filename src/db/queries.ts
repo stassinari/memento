@@ -2,7 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
-import { beans, brews, espresso } from "./schema";
+import { beans, brews, espresso, tastings } from "./schema";
+
+type BeansRow = typeof beans.$inferSelect;
+type TastingRow = typeof tastings.$inferSelect;
+type TastingWithBeans = { tastings: TastingRow; beans: BeansRow | null };
+type TastingWithOptionalBeans = TastingRow & { beans: BeansRow | null };
 
 export const getUser = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   return db.query.users.findFirst({
@@ -190,6 +195,54 @@ export const getEspresso = createServerFn({ method: "GET" })
       }
 
       return { ...result, beans: result.beans };
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
+export const getTastings = createServerFn({ method: "GET" })
+  .inputValidator((input: { limit?: number; offset?: number }) => ({
+    limit: input.limit ?? 50,
+    offset: input.offset ?? 0,
+  }))
+  .handler(async ({ data: { limit, offset }, context }) => {
+    try {
+      const tastingList = await db
+        .select()
+        .from(tastings)
+        .leftJoin(beans, eq(tastings.beansId, beans.id))
+        .where(eq(tastings.userId, context.userId))
+        .orderBy(desc(tastings.createdAt))
+        .limit(limit)
+        .offset(offset);
+      return tastingList as TastingWithBeans[];
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  });
+
+export const getTasting = createServerFn({ method: "GET" })
+  .inputValidator((input: { tastingId: string }) => {
+    if (!input.tastingId) throw new Error("Tasting ID is required");
+    return input;
+  })
+  .handler(async ({ data: { tastingId }, context }) => {
+    try {
+      const result = await db.query.tastings.findFirst({
+        where: (tastings, { and, eq }) =>
+          and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)),
+        with: {
+          beans: true,
+        },
+      });
+
+      if (!result) {
+        return null;
+      }
+
+      return { ...result, beans: result.beans } as TastingWithOptionalBeans;
     } catch (error) {
       console.error("Database error:", error);
       throw error;

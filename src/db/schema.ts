@@ -253,7 +253,7 @@ export const tastings = pgTable(
     beansId: uuid("beans_id").references(() => beans.id, {
       onDelete: "set null",
     }),
-    data: jsonb("data").notNull(),
+    data: jsonb("data").$type<Record<string, {}>>().notNull(),
 
     ...timestamps,
   },
