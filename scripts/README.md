@@ -4,6 +4,7 @@ This folder contains useful scripts, including:
 
 - `test-decent-upload` to locally test the Decent Espresso machine's TCL plugin upload functionality.
 - `migrate-firestore-to-postgres` to migrate data from Firestore to Postgres.
+- `backfill:beans-fb-id` to reconnect Postgres beans to original Firestore bean IDs using tasting references.
 - `set-admin-claims` to set the "admin" custom claim on Firebase user accounts.
 - `seed-flags` to seed feature flags in the SQL database.
 
@@ -40,6 +41,28 @@ pnpm migrate:firestore -- --dry-run
 ```bash
 pnpm migrate:firestore
 ```
+
+### Backfill beans `fb_id` from tasting references
+
+**Note**: This is a one-time script to backfill `fb_id` for beans that are missing it, by matching tasting references to the original Firestore data. It generates SQL update statements that should be reviewed before applying.
+
+Dry-run (recommended first):
+
+```bash
+pnpm backfill:beans-fb-id -- --log=beans-fb-id-backfill-log.json --sql=beans-fb-id-backfill-updates.sql
+```
+
+Apply only high-confidence matches (`AUTO`):
+
+```bash
+pnpm backfill:beans-fb-id -- --apply
+```
+
+Flags:
+
+- `--include-existing` includes beans that already have `fb_id` set (default only considers null `fb_id`).
+- `--log=<path>` path for JSON result log.
+- `--sql=<path>` path for generated SQL updates.
 
 ### Test Decent Upload
 
