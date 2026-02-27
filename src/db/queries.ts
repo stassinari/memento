@@ -2,12 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
-import { beans, brews, espresso, tastings } from "./schema";
+import { beans, brews, espresso, tastingSamples, tastings } from "./schema";
 
-type BeansRow = typeof beans.$inferSelect;
 type TastingRow = typeof tastings.$inferSelect;
-type TastingWithBeans = { tastings: TastingRow; beans: BeansRow | null };
-type TastingWithOptionalBeans = TastingRow & { beans: BeansRow | null };
+type TastingSampleRow = typeof tastingSamples.$inferSelect;
+type TastingWithSamples = TastingRow & { samples: TastingSampleRow[] };
 
 export const getUser = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   return db.query.users.findFirst({
@@ -208,14 +207,19 @@ export const getTastings = createServerFn({ method: "GET" })
   }))
   .handler(async ({ data: { limit, offset }, context }) => {
     try {
-      const tastingList = await db
-        .select({ ...getTableColumns(tastings) })
-        .from(tastings)
-        .where(eq(tastings.userId, context.userId))
-        .orderBy(desc(tastings.createdAt))
-        .limit(limit)
-        .offset(offset);
-      return tastingList.map((tasting) => ({ tastings: tasting, beans: null })) as TastingWithBeans[];
+      const tastingList = await db.query.tastings.findMany({
+        where: (tastings, { eq }) => eq(tastings.userId, context.userId),
+        orderBy: (tastings, { desc }) => [desc(tastings.createdAt)],
+        limit,
+        offset,
+        with: {
+          samples: {
+            orderBy: (samples, { asc }) => [asc(samples.position)],
+          },
+        },
+      });
+
+      return tastingList as TastingWithSamples[];
     } catch (error) {
       console.error("Database error:", error);
       throw error;
@@ -232,13 +236,18 @@ export const getTasting = createServerFn({ method: "GET" })
       const result = await db.query.tastings.findFirst({
         where: (tastings, { and, eq }) =>
           and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)),
+        with: {
+          samples: {
+            orderBy: (samples, { asc }) => [asc(samples.position)],
+          },
+        },
       });
 
       if (!result) {
         return null;
       }
 
-      return { ...result, beans: null } as TastingWithOptionalBeans;
+      return result as TastingWithSamples;
     } catch (error) {
       console.error("Database error:", error);
       throw error;
