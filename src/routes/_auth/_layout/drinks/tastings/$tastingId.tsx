@@ -1,4 +1,3 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
 import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -11,23 +10,8 @@ import {
   formatTastingDate,
   getTastingVariableLabel,
 } from "~/components/tastings/utils";
-import { getBeansLookup, getTasting } from "~/db/queries";
+import { useTastingDetailData } from "~/hooks/queries/tastings";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-
-const tastingQueryOptions = (tastingId: string) =>
-  queryOptions({
-    queryKey: ["tastings", tastingId],
-    queryFn: () =>
-      getTasting({
-        data: { tastingId },
-      }),
-  });
-
-const beansLookupQueryOptions = () =>
-  queryOptions({
-    queryKey: ["beans", "lookup"],
-    queryFn: () => getBeansLookup(),
-  });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/tastings/$tastingId")({
   component: TastingLayoutPage,
@@ -38,13 +22,10 @@ function TastingLayoutPage() {
   const isSm = useScreenMediaQuery("sm");
   const pathname = useRouterState({ select: (state) => state.location.pathname });
 
-  const { data: tasting, isLoading: isLoadingTasting } = useQuery({
-    ...tastingQueryOptions(tastingId),
-    enabled: isSm,
-  });
-  const { data: beans = [] } = useQuery({
-    ...beansLookupQueryOptions(),
-    enabled: isSm,
+  const { tasting, beans, isLoadingTasting } = useTastingDetailData({
+    tastingId,
+    enabledTasting: isSm,
+    enabledBeans: isSm,
   });
 
   if (!isSm) {

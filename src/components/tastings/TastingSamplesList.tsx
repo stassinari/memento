@@ -33,6 +33,7 @@ export const TastingSamplesList = ({
         <RouterLink
           to="/drinks/tastings/$tastingId/samples/$sampleId"
           params={{ tastingId, sampleId: sample.id }}
+          resetScroll={false}
           className={clsx(
             "block rounded-md border px-3 py-2 text-sm transition-colors",
             variant === "inbox" &&

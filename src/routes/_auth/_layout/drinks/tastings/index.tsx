@@ -13,7 +13,8 @@ import {
   getNormalizedTastingSampleLabel,
   getTastingVariableLabel,
 } from "~/components/tastings/utils";
-import { getBeansLookup, getTastings } from "~/db/queries";
+import { getTastings } from "~/db/queries";
+import { beansLookupQueryOptions } from "~/hooks/queries/tastings";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 
 type TastingWithSamples = Awaited<ReturnType<typeof getTastings>>[number];
@@ -24,12 +25,6 @@ const tastingsQueryOptions = (limit: number, offset: number) =>
   queryOptions({
     queryKey: ["tastings", limit, offset],
     queryFn: () => getTastings({ data: { limit, offset } }),
-  });
-
-const beansLookupQueryOptions = () =>
-  queryOptions({
-    queryKey: ["beans", "lookup"],
-    queryFn: () => getBeansLookup(),
   });
 
 export const Route = createFileRoute("/_auth/_layout/drinks/tastings/")({
@@ -102,7 +97,9 @@ function TastingsListPage() {
                       </ListCard.Row>
                     </div>
                     {tasting.samples.length > 0 && (
-                      <ListCard.Rating className="shrink-0">{tasting.samples.length}</ListCard.Rating>
+                      <ListCard.Rating className="shrink-0">
+                        {tasting.samples.length}
+                      </ListCard.Rating>
                     )}
                   </div>
                 </ListCard>
@@ -124,7 +121,6 @@ function TastingsListPage() {
           </Button>
         )}
       </div>
-
     </>
   );
 }
