@@ -29,6 +29,20 @@
       "when": 1771695009957,
       "tag": "0003_silent_shard",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1772128976062,
+      "tag": "0004_brief_nightmare",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1772147490914,
+      "tag": "0005_careless_sister_grimm",
+      "breakpoints": true
     }
   ]
 }

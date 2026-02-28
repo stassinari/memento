@@ -8,7 +8,11 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { ButtonWithDropdown, ButtonWithDropdownProps } from "~/components/ButtonWithDropdown";
-import { DrinksList, mergeBrewsAndEspressoByUniqueDate } from "~/components/drinks/DrinksList";
+import {
+  DrinksList,
+  mergeBrewsAndEspressoByUniqueDate,
+  TastingTimelineItem,
+} from "~/components/drinks/DrinksList";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { Modal } from "~/components/Modal";
@@ -64,6 +68,19 @@ function BeansDetails() {
 
   // FIXME: this is stupid, it needs refactoring now we're in a SQL world
   const sqlDrinks = useMemo(() => {
+    const tastingTimeline: TastingTimelineItem[] = beansWithDrinks.sampledInTastings.map(
+      (sample) => ({
+        id: sample.id,
+        date: sample.tasting.date ?? sample.tasting.createdAt,
+        method: sample.tasting.method,
+        samplePosition: sample.position,
+        sampleOverall: sample.overall,
+        sampleFlavours: sample.flavours,
+        tastingId: sample.tasting.id,
+        sampleId: sample.id,
+      }),
+    );
+
     return mergeBrewsAndEspressoByUniqueDate(
       beansWithDrinks.brews.map((brew) => ({
         brews: brew,
@@ -73,6 +90,7 @@ function BeansDetails() {
         espresso,
         beans: beansWithDrinks,
       })),
+      tastingTimeline,
     );
   }, [beansWithDrinks]);
 
@@ -220,7 +238,7 @@ function BeansDetails() {
           </TabList>
           <TabPanels className="mt-4">
             <TabPanel>
-              <BeansDetailsInfo beans={beansWithDrinks!} />
+              <BeansDetailsInfo beans={beansWithDrinks} />
             </TabPanel>
             <TabPanel>
               <DrinksList drinks={sqlDrinks} />

@@ -6,6 +6,8 @@
   "scripts": {
     "migrate:firestore": "tsx migrate-firestore-to-postgres.ts",
     "audit:firestore": "tsx audit-firestore.ts",
+    "backfill:beans-fb-id": "tsx backfill-beans-fb-id.ts",
+    "backfill:tastings-normalized": "tsx backfill-tastings-normalized.ts",
     "set-admin-claims": "tsx set-admin-claims.ts",
     "seed:flags": "tsx seed-flags.ts",
     "decent:upload": "tsx test-decent-upload.ts"

@@ -4,6 +4,8 @@ This folder contains useful scripts, including:
 
 - `test-decent-upload` to locally test the Decent Espresso machine's TCL plugin upload functionality.
 - `migrate-firestore-to-postgres` to migrate data from Firestore to Postgres.
+- `backfill:beans-fb-id` to reconnect Postgres beans to original Firestore bean IDs using tasting references.
+- `backfill:tastings-normalized` to migrate legacy tasting JSONB into normalized tasting columns/tables.
 - `set-admin-claims` to set the "admin" custom claim on Firebase user accounts.
 - `seed-flags` to seed feature flags in the SQL database.
 
@@ -40,6 +42,47 @@ pnpm migrate:firestore -- --dry-run
 ```bash
 pnpm migrate:firestore
 ```
+
+### Backfill beans `fb_id` from tasting references
+
+**Note**: This is a one-time script to backfill `fb_id` for beans that are missing it, by matching tasting references to the original Firestore data. It generates SQL update statements that should be reviewed before applying.
+
+Dry-run (recommended first):
+
+```bash
+pnpm backfill:beans-fb-id -- --log=beans-fb-id-backfill-log.json --sql=beans-fb-id-backfill-updates.sql
+```
+
+Apply only high-confidence matches (`AUTO`):
+
+```bash
+pnpm backfill:beans-fb-id -- --apply
+```
+
+Flags:
+
+- `--include-existing` includes beans that already have `fb_id` set (default only considers null `fb_id`).
+- `--log=<path>` path for JSON result log.
+- `--sql=<path>` path for generated SQL updates.
+
+### Backfill normalized tasting schema from JSONB
+
+Dry-run (default):
+
+```bash
+pnpm backfill:tastings-normalized -- --log=tastings-normalization-log.json
+```
+
+Apply updates/inserts:
+
+```bash
+pnpm backfill:tastings-normalized -- --apply --log=tastings-normalization-log.json
+```
+
+Notes:
+- Script updates normalized columns on `tastings`, rewrites `tasting_samples` per tasting (idempotent).
+- Legacy `tastings.data` is preserved.
+- Mixed prep across samples is flagged in the log and currently resolved by using the first sample prep.
 
 ### Test Decent Upload
 
