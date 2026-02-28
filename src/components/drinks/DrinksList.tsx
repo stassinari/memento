@@ -2,6 +2,7 @@ import { Link as RouterLink } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { chain, entries } from "lodash";
 
+import { TagIcon } from "@heroicons/react/16/solid";
 import type { Beans, Brew, Espresso } from "~/db/types";
 import { Card } from "../Card";
 import { BeanBagIcon } from "../icons/BeanBagIcon";
@@ -9,7 +10,7 @@ import { BeanIconSolid } from "../icons/BeanIconSolid";
 import { DripperIcon } from "../icons/DripperIcon";
 import { DropIcon } from "../icons/DropIcon";
 import { PortafilterIcon } from "../icons/PortafilterIcon";
-import { SpoonIcon } from "../icons/SpoonIcon";
+import { SpoonSolidIcon } from "../icons/SpoonIconSolid";
 
 const dateFormat = "ddd DD MMM YYYY";
 
@@ -223,7 +224,8 @@ const DrinkItem = (item: DrinkItemProps) => {
               </>
             ) : (
               <>
-                <SpoonIcon className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" /> Tasted at
+                <SpoonSolidIcon className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" /> Tasted
+                at
               </>
             )}
             <span>{dayjs(drink.date).format("HH:mm")}</span>
@@ -305,7 +307,7 @@ const TastingCardContent = ({ tasting }: TastingCardContentProps) => {
       <div className="grow">
         <p className="font-semibold text-gray-900 dark:text-gray-100">{sampleName}</p>
         <p className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-          <SpoonIcon className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+          <TagIcon className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           {tasting.sampleFlavours.length > 0 ? tasting.sampleFlavours.join(", ") : "No flavours"}
         </p>
       </div>

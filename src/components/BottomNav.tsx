@@ -10,10 +10,10 @@ import clsx from "clsx";
 import { ReactNode } from "react";
 import { useActiveRoute } from "~/hooks/useActiveRoute";
 import { BeansIconOutline } from "./icons/BeansIconOutline";
+import { BowlIcon } from "./icons/BowlIcon";
 import { DrinkIcon } from "./icons/DrinkIcon";
 import { EspressoIcon } from "./icons/EspressoIcon";
 import { FrenchPressIcon } from "./icons/FrenchPressIcon";
-import { SpoonIcon } from "./icons/SpoonIcon";
 
 type NavLink = {
   label: string;
@@ -50,7 +50,7 @@ export const navLinks: Record<string, NavLink> = {
   tastings: {
     label: "Tastings",
     linkTo: "/drinks/tastings",
-    Icon: <SpoonIcon />,
+    Icon: <BowlIcon />,
   },
   decentUpload: {
     label: "Decent upload",
