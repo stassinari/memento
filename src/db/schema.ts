@@ -81,7 +81,6 @@ export const beans = pgTable(
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    fbId: text("fb_id"),
 
     name: text("name").notNull(),
     roaster: text("roaster").notNull(),
@@ -125,9 +124,6 @@ export const beans = pgTable(
   },
   (table) => [
     index("beans_user_roast_date_idx").on(table.userId, table.roastDate),
-    uniqueIndex("beans_user_fb_id_unique")
-      .on(table.userId, table.fbId)
-      .where(sql`${table.fbId} is not null`),
     check(
       "beans_blend_parts_check",
       sql`${table.origin} <> 'blend' or (${table.blendParts} is not null and jsonb_typeof(${table.blendParts}) = 'array')`,
@@ -287,9 +283,6 @@ export const tastings = pgTable(
     filterType: text("filter_type"),
     targetTimeMinutes: integer("target_time_minutes"),
     targetTimeSeconds: integer("target_time_seconds"),
-
-    // Legacy payload kept temporarily during transition
-    data: jsonb("data").$type<Record<string, {}>>().notNull(),
 
     ...timestamps,
   },
