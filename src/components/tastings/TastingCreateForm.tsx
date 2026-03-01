@@ -1,7 +1,23 @@
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
@@ -13,6 +29,7 @@ import { FormInput } from "~/components/form/FormInput";
 import { FormInputDate } from "~/components/form/FormInputDate";
 import { FormInputSlider } from "~/components/form/FormInputSlider";
 import { FormTextarea } from "~/components/form/FormTextarea";
+import { DragHandleDots2Icon } from "~/components/icons/DragHandleDots2Icon";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { TastingVariable } from "~/db/schema";
 import { Beans } from "~/db/types";
@@ -87,6 +104,70 @@ const getEmptySample = (position: number): TastingSampleFormInputs => ({
   finishNotes: "",
 });
 
+interface SortableSampleCardProps {
+  id: string;
+  index: number;
+  canRemove: boolean;
+  onRemove: () => void;
+  children: ReactNode;
+}
+
+const SortableSampleCard = ({
+  id,
+  index,
+  canRemove,
+  onRemove,
+  children,
+}: SortableSampleCardProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={clsx(
+        "rounded-lg border border-gray-200 p-4 dark:border-white/10",
+        isDragging && "shadow-lg ring-2 ring-orange-200 dark:ring-orange-500/20",
+      )}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+    >
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            ref={setActivatorNodeRef}
+            type="button"
+            className="h-8 inline-flex cursor-grab items-center rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:cursor-grabbing dark:text-gray-500 dark:hover:bg-white/10 dark:hover:text-gray-300"
+            aria-label={`Reorder sample ${index + 1}`}
+            {...attributes}
+            {...listeners}
+          >
+            <DragHandleDots2Icon className="size-4" />
+          </button>
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Sample #{index + 1}
+          </p>
+        </div>
+
+        <Button type="button" variant="white" size="xs" disabled={!canRemove} onClick={onRemove}>
+          <TrashIcon /> Remove
+        </Button>
+      </div>
+
+      {children}
+    </div>
+  );
+};
+
 export const tastingFormEmptyValues: TastingFormInputs = {
   date: new Date(),
   variable: TastingVariable.Beans,
@@ -136,6 +217,16 @@ export const TastingCreateForm = ({
     control,
     name: "samples",
   });
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 6,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   const variable = watch("variable");
   const beansId = watch("beansId");
@@ -267,15 +358,19 @@ export const TastingCreateForm = ({
     });
   };
 
-  const moveSample = (index: number, direction: "up" | "down") => {
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= fields.length) return;
-    move(index, targetIndex);
+  const handleSamplesDragEnd = ({ active, over }: DragEndEvent) => {
+    if (!over || active.id === over.id) return;
 
-    if (activeSampleIndex === index) {
-      setActiveSampleIndex(targetIndex);
-    } else if (activeSampleIndex === targetIndex) {
-      setActiveSampleIndex(index);
+    const oldIndex = fields.findIndex((field) => field.id === active.id);
+    const newIndex = fields.findIndex((field) => field.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+
+    move(oldIndex, newIndex);
+
+    if (activeSampleIndex === oldIndex) {
+      setActiveSampleIndex(newIndex);
+    } else if (activeSampleIndex === newIndex) {
+      setActiveSampleIndex(oldIndex);
     }
   };
 
@@ -685,100 +780,79 @@ export const TastingCreateForm = ({
                 </div>
               </div>
 
-              <div className="space-y-4">
-                {fields.map((field, index) => {
-                  const currentSample = samples[index];
-                  return (
-                    <div
-                      key={field.id}
-                      className="rounded-lg border border-gray-200 p-4 dark:border-white/10"
-                    >
-                      <div className="mb-3 flex items-center justify-between gap-2">
-                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          Sample #{index + 1}
-                        </p>
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="white"
-                            size="xs"
-                            disabled={index === 0}
-                            onClick={() => moveSample(index, "up")}
-                          >
-                            Up
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="white"
-                            size="xs"
-                            disabled={index === fields.length - 1}
-                            onClick={() => moveSample(index, "down")}
-                          >
-                            Down
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="white"
-                            size="xs"
-                            disabled={fields.length <= 2}
-                            onClick={() => removeSample(index)}
-                          >
-                            <TrashIcon /> Remove
-                          </Button>
-                        </div>
-                      </div>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleSamplesDragEnd}
+              >
+                <SortableContext
+                  items={fields.map((field) => field.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-4">
+                    {fields.map((field, index) => {
+                      const currentSample = samples[index];
+                      return (
+                        <SortableSampleCard
+                          key={field.id}
+                          id={field.id}
+                          index={index}
+                          canRemove={fields.length > 2}
+                          onRemove={() => removeSample(index)}
+                        >
+                          {variable === TastingVariable.Beans ? (
+                            <div>
+                              <Input.Label htmlFor={`samples.${index}.variableValueBeansId`}>
+                                Beans *
+                              </Input.Label>
+                              <div className="mt-1">
+                                <select
+                                  id={`samples.${index}.variableValueBeansId`}
+                                  {...register(`samples.${index}.variableValueBeansId` as const)}
+                                  className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
+                                >
+                                  <option value="">Select beans</option>
+                                  {beansList.map((bean) => {
+                                    const alreadySelectedElsewhere =
+                                      selectedBeanIds.includes(bean.id) &&
+                                      currentSample?.variableValueBeansId !== bean.id;
 
-                      {variable === TastingVariable.Beans ? (
-                        <div>
-                          <Input.Label htmlFor={`samples.${index}.variableValueBeansId`}>
-                            Beans *
-                          </Input.Label>
-                          <div className="mt-1">
-                            <select
-                              id={`samples.${index}.variableValueBeansId`}
-                              {...register(`samples.${index}.variableValueBeansId` as const)}
-                              className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
-                            >
-                              <option value="">Select beans</option>
-                              {beansList.map((bean) => {
-                                const alreadySelectedElsewhere =
-                                  selectedBeanIds.includes(bean.id) &&
-                                  currentSample?.variableValueBeansId !== bean.id;
+                                    return (
+                                      <option
+                                        key={bean.id}
+                                        value={bean.id}
+                                        disabled={alreadySelectedElsewhere}
+                                      >
+                                        {bean.name} ({bean.roaster})
+                                      </option>
+                                    );
+                                  })}
+                                </select>
+                              </div>
+                            </div>
+                          ) : (
+                            <FormInput
+                              label="Variable value *"
+                              id={`samples.${index}.variableValueText`}
+                              inputProps={{
+                                ...register(`samples.${index}.variableValueText` as const),
+                              }}
+                            />
+                          )}
 
-                                return (
-                                  <option
-                                    key={bean.id}
-                                    value={bean.id}
-                                    disabled={alreadySelectedElsewhere}
-                                  >
-                                    {bean.name} ({bean.roaster})
-                                  </option>
-                                );
-                              })}
-                            </select>
+                          <div className="mt-3">
+                            <FormTextarea
+                              label="Sample note"
+                              id={`samples.${index}.note`}
+                              textareaProps={{ ...register(`samples.${index}.note` as const) }}
+                            />
                           </div>
-                        </div>
-                      ) : (
-                        <FormInput
-                          label="Variable value *"
-                          id={`samples.${index}.variableValueText`}
-                          inputProps={{
-                            ...register(`samples.${index}.variableValueText` as const),
-                          }}
-                        />
-                      )}
-
-                      <div className="mt-3">
-                        <FormTextarea
-                          label="Sample note"
-                          id={`samples.${index}.note`}
-                          textareaProps={{ ...register(`samples.${index}.note` as const) }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                        </SortableSampleCard>
+                      );
+                    })}
+                  </div>
+                </SortableContext>
+              </DndContext>
             </FormSection>
 
             {stepError && <Input.Error>{stepError}</Input.Error>}
