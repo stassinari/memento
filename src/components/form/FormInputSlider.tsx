@@ -21,7 +21,7 @@ export const FormInputSlider = ({ label, id, ...rest }: FormInputSlider) => {
           name={id}
           render={({ field }) => (
             <InputSlider
-              values={[field.value]}
+              values={[typeof field.value === "number" ? field.value : rest.min]}
               onChange={(values) => field.onChange(values[0])}
               {...rest}
             />

@@ -6,8 +6,9 @@ import { BrewOutcomeInputs } from "~/components/brews/BrewOutcomeForm";
 import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { EspressoOutcomeInputs } from "~/components/espresso/EspressoOutcomeForm";
 import { DecentEspressoFormInputs } from "~/components/espresso/steps/DecentEspressoForm";
+import { TastingFormInputs } from "~/components/tastings/form-types";
 import { db } from "./db";
-import { beans, brews, espresso, users } from "./schema";
+import { beans, brews, espresso, tastingSamples, tastings, TastingVariable, users } from "./schema";
 
 /**
  * Validate beans input data
@@ -552,4 +553,120 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
       console.error("PostgreSQL update failed:", error);
       throw error;
     }
+  });
+
+// ============================================================================
+// TASTINGS MUTATIONS
+// ============================================================================
+
+function validateTastingInput(data: TastingFormInputs): void {
+  if (!data.date) {
+    throw new Error("Tasting date is required");
+  }
+  if (!data.variable) {
+    throw new Error("Tasting variable is required");
+  }
+  if (data.samples.length < 2) {
+    throw new Error("At least two samples are required");
+  }
+
+  data.samples.forEach((sample, index) => {
+    const isBeansVariable = data.variable === TastingVariable.Beans;
+    if (isBeansVariable && !sample.variableValueBeansId) {
+      throw new Error(`Sample #${index + 1} must have beans selected`);
+    }
+    if (!isBeansVariable && !sample.variableValueText?.trim()) {
+      throw new Error(`Sample #${index + 1} must have a variable value`);
+    }
+  });
+}
+
+const nullableText = (value: string | null): string | null => {
+  if (!value) return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+const sanitizeNullableNumber = (value: number | null): number | null =>
+  value === null || Number.isNaN(value) ? null : value;
+
+export const addTasting = createServerFn({ method: "POST" })
+  .inputValidator((input: { data: TastingFormInputs }) => {
+    validateTastingInput(input.data);
+    return input;
+  })
+  .handler(async ({ data: { data }, context }): Promise<{ id: string }> => {
+    const variable = data.variable;
+    const allBeansIds = [
+      ...(data.beansId ? [data.beansId] : []),
+      ...data.samples.map((sample) => sample.variableValueBeansId).filter(Boolean),
+    ] as string[];
+
+    if (allBeansIds.length > 0) {
+      const ownedBeans = await db.query.beans.findMany({
+        where: (b, { and, eq, inArray }) =>
+          and(eq(b.userId, context.userId), inArray(b.id, allBeansIds)),
+        columns: { id: true },
+      });
+      const ownedIds = new Set(ownedBeans.map((bean) => bean.id));
+      if (allBeansIds.some((beansId) => !ownedIds.has(beansId))) {
+        throw new Error("One or more selected beans do not belong to the current user");
+      }
+    }
+
+    return db.transaction(async (tx) => {
+      const [insertedTasting] = await tx
+        .insert(tastings)
+        .values({
+          userId: context.userId,
+          date: data.date,
+          variable,
+          note: nullableText(data.note),
+          beansId: variable === TastingVariable.Beans ? null : data.beansId,
+          method: variable === TastingVariable.Method ? null : nullableText(data.method),
+          waterWeight: sanitizeNullableNumber(data.waterWeight),
+          beansWeight: sanitizeNullableNumber(data.beansWeight),
+          waterTemperature: sanitizeNullableNumber(data.waterTemperature),
+          grinder: variable === TastingVariable.Grinder ? null : nullableText(data.grinder),
+          grindSetting: nullableText(data.grindSetting),
+          waterType: variable === TastingVariable.WaterType ? null : nullableText(data.waterType),
+          filterType:
+            variable === TastingVariable.FilterType ? null : nullableText(data.filterType),
+          targetTimeMinutes: sanitizeNullableNumber(data.targetTimeMinutes),
+          targetTimeSeconds: sanitizeNullableNumber(data.targetTimeSeconds),
+        })
+        .returning({ id: tastings.id });
+
+      await tx.insert(tastingSamples).values(
+        data.samples.map((sample, index) => ({
+          tastingId: insertedTasting.id,
+          position: index,
+          variableValueBeansId:
+            variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
+          variableValueText: variable === TastingVariable.Beans ? null : nullableText(sample.variableValueText),
+          note: nullableText(sample.note),
+          actualTimeMinutes: sanitizeNullableNumber(sample.actualTimeMinutes),
+          actualTimeSeconds: sanitizeNullableNumber(sample.actualTimeSeconds),
+          overall: sanitizeNullableNumber(sample.overall),
+          flavours: sample.flavours ?? [],
+          aromaQuantity: sanitizeNullableNumber(sample.aromaQuantity),
+          aromaQuality: sanitizeNullableNumber(sample.aromaQuality),
+          aromaNotes: nullableText(sample.aromaNotes),
+          acidityQuantity: sanitizeNullableNumber(sample.acidityQuantity),
+          acidityQuality: sanitizeNullableNumber(sample.acidityQuality),
+          acidityNotes: nullableText(sample.acidityNotes),
+          sweetnessQuantity: sanitizeNullableNumber(sample.sweetnessQuantity),
+          sweetnessQuality: sanitizeNullableNumber(sample.sweetnessQuality),
+          sweetnessNotes: nullableText(sample.sweetnessNotes),
+          bodyQuantity: sanitizeNullableNumber(sample.bodyQuantity),
+          bodyQuality: sanitizeNullableNumber(sample.bodyQuality),
+          bodyNotes: nullableText(sample.bodyNotes),
+          finishQuantity: sanitizeNullableNumber(sample.finishQuantity),
+          finishQuality: sanitizeNullableNumber(sample.finishQuality),
+          finishNotes: nullableText(sample.finishNotes),
+        })),
+      );
+
+      return { id: insertedTasting.id };
+    });
   });

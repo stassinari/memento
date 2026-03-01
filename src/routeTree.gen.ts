@@ -29,6 +29,7 @@ import { Route as AuthLayoutDrinksEspressoIndexRouteImport } from './routes/_aut
 import { Route as AuthLayoutDrinksBrewsIndexRouteImport } from './routes/_auth/_layout/drinks/brews/index'
 import { Route as AuthLayoutBeansBeansIdIndexRouteImport } from './routes/_auth/_layout/beans/$beansId/index'
 import { Route as AuthLayoutFullDrinksBrewsTableRouteImport } from './routes/_auth/_layoutFull/drinks/brews/table'
+import { Route as AuthLayoutDrinksTastingsAddRouteImport } from './routes/_auth/_layout/drinks/tastings/add'
 import { Route as AuthLayoutDrinksTastingsTastingIdRouteImport } from './routes/_auth/_layout/drinks/tastings/$tastingId'
 import { Route as AuthLayoutDrinksEspressoAddRouteImport } from './routes/_auth/_layout/drinks/espresso/add'
 import { Route as AuthLayoutDrinksBrewsAddRouteImport } from './routes/_auth/_layout/drinks/brews/add'
@@ -147,6 +148,12 @@ const AuthLayoutFullDrinksBrewsTableRoute =
     id: '/drinks/brews/table',
     path: '/drinks/brews/table',
     getParentRoute: () => AuthLayoutFullRoute,
+  } as any)
+const AuthLayoutDrinksTastingsAddRoute =
+  AuthLayoutDrinksTastingsAddRouteImport.update({
+    id: '/drinks/tastings/add',
+    path: '/drinks/tastings/add',
+    getParentRoute: () => AuthLayoutRoute,
   } as any)
 const AuthLayoutDrinksTastingsTastingIdRoute =
   AuthLayoutDrinksTastingsTastingIdRouteImport.update({
@@ -268,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/drinks/brews/add': typeof AuthLayoutDrinksBrewsAddRoute
   '/drinks/espresso/add': typeof AuthLayoutDrinksEspressoAddRoute
   '/drinks/tastings/$tastingId': typeof AuthLayoutDrinksTastingsTastingIdRouteWithChildren
+  '/drinks/tastings/add': typeof AuthLayoutDrinksTastingsAddRoute
   '/drinks/brews/table': typeof AuthLayoutFullDrinksBrewsTableRoute
   '/beans/$beansId/': typeof AuthLayoutBeansBeansIdIndexRoute
   '/drinks/brews/': typeof AuthLayoutDrinksBrewsIndexRoute
@@ -302,6 +310,7 @@ export interface FileRoutesByTo {
   '/beans/$beansId/edit': typeof AuthLayoutBeansBeansIdEditRoute
   '/drinks/brews/add': typeof AuthLayoutDrinksBrewsAddRoute
   '/drinks/espresso/add': typeof AuthLayoutDrinksEspressoAddRoute
+  '/drinks/tastings/add': typeof AuthLayoutDrinksTastingsAddRoute
   '/drinks/brews/table': typeof AuthLayoutFullDrinksBrewsTableRoute
   '/beans/$beansId': typeof AuthLayoutBeansBeansIdIndexRoute
   '/drinks/brews': typeof AuthLayoutDrinksBrewsIndexRoute
@@ -342,6 +351,7 @@ export interface FileRoutesById {
   '/_auth/_layout/drinks/brews/add': typeof AuthLayoutDrinksBrewsAddRoute
   '/_auth/_layout/drinks/espresso/add': typeof AuthLayoutDrinksEspressoAddRoute
   '/_auth/_layout/drinks/tastings/$tastingId': typeof AuthLayoutDrinksTastingsTastingIdRouteWithChildren
+  '/_auth/_layout/drinks/tastings/add': typeof AuthLayoutDrinksTastingsAddRoute
   '/_auth/_layoutFull/drinks/brews/table': typeof AuthLayoutFullDrinksBrewsTableRoute
   '/_auth/_layout/beans/$beansId/': typeof AuthLayoutBeansBeansIdIndexRoute
   '/_auth/_layout/drinks/brews/': typeof AuthLayoutDrinksBrewsIndexRoute
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/drinks/brews/add'
     | '/drinks/espresso/add'
     | '/drinks/tastings/$tastingId'
+    | '/drinks/tastings/add'
     | '/drinks/brews/table'
     | '/beans/$beansId/'
     | '/drinks/brews/'
@@ -413,6 +424,7 @@ export interface FileRouteTypes {
     | '/beans/$beansId/edit'
     | '/drinks/brews/add'
     | '/drinks/espresso/add'
+    | '/drinks/tastings/add'
     | '/drinks/brews/table'
     | '/beans/$beansId'
     | '/drinks/brews'
@@ -452,6 +464,7 @@ export interface FileRouteTypes {
     | '/_auth/_layout/drinks/brews/add'
     | '/_auth/_layout/drinks/espresso/add'
     | '/_auth/_layout/drinks/tastings/$tastingId'
+    | '/_auth/_layout/drinks/tastings/add'
     | '/_auth/_layoutFull/drinks/brews/table'
     | '/_auth/_layout/beans/$beansId/'
     | '/_auth/_layout/drinks/brews/'
@@ -620,6 +633,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutFullDrinksBrewsTableRouteImport
       parentRoute: typeof AuthLayoutFullRoute
     }
+    '/_auth/_layout/drinks/tastings/add': {
+      id: '/_auth/_layout/drinks/tastings/add'
+      path: '/drinks/tastings/add'
+      fullPath: '/drinks/tastings/add'
+      preLoaderRoute: typeof AuthLayoutDrinksTastingsAddRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/drinks/tastings/$tastingId': {
       id: '/_auth/_layout/drinks/tastings/$tastingId'
       path: '/drinks/tastings/$tastingId'
@@ -774,6 +794,7 @@ interface AuthLayoutRouteChildren {
   AuthLayoutDrinksBrewsAddRoute: typeof AuthLayoutDrinksBrewsAddRoute
   AuthLayoutDrinksEspressoAddRoute: typeof AuthLayoutDrinksEspressoAddRoute
   AuthLayoutDrinksTastingsTastingIdRoute: typeof AuthLayoutDrinksTastingsTastingIdRouteWithChildren
+  AuthLayoutDrinksTastingsAddRoute: typeof AuthLayoutDrinksTastingsAddRoute
   AuthLayoutBeansBeansIdIndexRoute: typeof AuthLayoutBeansBeansIdIndexRoute
   AuthLayoutDrinksBrewsIndexRoute: typeof AuthLayoutDrinksBrewsIndexRoute
   AuthLayoutDrinksEspressoIndexRoute: typeof AuthLayoutDrinksEspressoIndexRoute
@@ -805,6 +826,7 @@ const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutDrinksEspressoAddRoute: AuthLayoutDrinksEspressoAddRoute,
   AuthLayoutDrinksTastingsTastingIdRoute:
     AuthLayoutDrinksTastingsTastingIdRouteWithChildren,
+  AuthLayoutDrinksTastingsAddRoute: AuthLayoutDrinksTastingsAddRoute,
   AuthLayoutBeansBeansIdIndexRoute: AuthLayoutBeansBeansIdIndexRoute,
   AuthLayoutDrinksBrewsIndexRoute: AuthLayoutDrinksBrewsIndexRoute,
   AuthLayoutDrinksEspressoIndexRoute: AuthLayoutDrinksEspressoIndexRoute,

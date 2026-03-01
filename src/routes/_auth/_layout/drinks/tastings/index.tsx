@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -54,12 +54,20 @@ function TastingsListPage() {
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings]} />
-      <Heading>Tastings</Heading>
+      <Heading
+        actionSlot={
+          <Button variant="primary" colour="accent" size={isSm ? "md" : "sm"} asChild>
+            <RouterLink to="/drinks/tastings/add">Add tasting</RouterLink>
+          </Button>
+        }
+      >
+        Tastings
+      </Heading>
 
       {allTastings.length === 0 && !isLoadingTastings ? (
         <EmptyState
           title="No tastings yet"
-          description="Imported tastings will appear here. Creation/editing is coming in a later step."
+          description="Start with your first tasting session."
         />
       ) : (
         <ul className="mt-4 space-y-4">
