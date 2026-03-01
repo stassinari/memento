@@ -2,6 +2,7 @@ import {
   closestCenter,
   DndContext,
   KeyboardSensor,
+  MeasuringStrategy,
   PointerSensor,
   useSensor,
   useSensors,
@@ -10,14 +11,12 @@ import {
 import {
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import { ArrowLeftIcon, ArrowRightIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
@@ -25,11 +24,11 @@ import { EquipmentTable } from "~/components/EquipmentTable";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
+import { SortableFormCard } from "~/components/form/SortableFormCard";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputDate } from "~/components/form/FormInputDate";
 import { FormInputSlider } from "~/components/form/FormInputSlider";
 import { FormTextarea } from "~/components/form/FormTextarea";
-import { DragHandleDots2Icon } from "~/components/icons/DragHandleDots2Icon";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { TastingVariable } from "~/db/schema";
 import { Beans } from "~/db/types";
@@ -104,70 +103,6 @@ const getEmptySample = (position: number): TastingSampleFormInputs => ({
   finishNotes: "",
 });
 
-interface SortableSampleCardProps {
-  id: string;
-  index: number;
-  canRemove: boolean;
-  onRemove: () => void;
-  children: ReactNode;
-}
-
-const SortableSampleCard = ({
-  id,
-  index,
-  canRemove,
-  onRemove,
-  children,
-}: SortableSampleCardProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={clsx(
-        "rounded-lg border border-gray-200 p-4 dark:border-white/10",
-        isDragging && "shadow-lg ring-2 ring-orange-200 dark:ring-orange-500/20",
-      )}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-      }}
-    >
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <button
-            ref={setActivatorNodeRef}
-            type="button"
-            className="h-8 inline-flex cursor-grab items-center rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:cursor-grabbing dark:text-gray-500 dark:hover:bg-white/10 dark:hover:text-gray-300"
-            aria-label={`Reorder sample ${index + 1}`}
-            {...attributes}
-            {...listeners}
-          >
-            <DragHandleDots2Icon className="size-4" />
-          </button>
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            Sample #{index + 1}
-          </p>
-        </div>
-
-        <Button type="button" variant="white" size="xs" disabled={!canRemove} onClick={onRemove}>
-          <TrashIcon /> Remove
-        </Button>
-      </div>
-
-      {children}
-    </div>
-  );
-};
-
 export const tastingFormEmptyValues: TastingFormInputs = {
   date: new Date(),
   variable: TastingVariable.Beans,
@@ -197,6 +132,9 @@ export const TastingCreateForm = ({
   const [stepError, setStepError] = useState<string | null>(null);
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
   const [showSetupForm, setShowSetupForm] = useState(false);
+  const [collapsedSampleIds, setCollapsedSampleIds] = useState<Record<string, boolean>>({});
+  const fallbackSampleOrderByIdRef = useRef<Record<string, number>>({});
+  const nextFallbackSampleOrderRef = useRef(1);
   const isSm = useScreenMediaQuery("sm");
 
   const methods = useForm<TastingFormInputs>({
@@ -259,6 +197,32 @@ export const TastingCreateForm = ({
     targetTimeMinutes !== null || targetTimeSeconds !== null
       ? `${targetTimeMinutes ?? 0}:${String(targetTimeSeconds ?? 0).padStart(2, "0")}`
       : null;
+
+  useEffect(() => {
+    fields.forEach((field) => {
+      if (!fallbackSampleOrderByIdRef.current[field.id]) {
+        fallbackSampleOrderByIdRef.current[field.id] = nextFallbackSampleOrderRef.current++;
+      }
+    });
+  }, [fields]);
+
+  const getSampleDisplayTitle = (index: number, fieldId?: string): string => {
+    const sample = samples[index];
+    if (sample) {
+      if (variable === TastingVariable.Beans) {
+        if (sample.variableValueBeansId) {
+          const beanLabel = beansById.get(sample.variableValueBeansId);
+          if (beanLabel) return beanLabel;
+        }
+      } else {
+        const variableValue = toNullableString(sample.variableValueText);
+        if (variableValue) return variableValue;
+      }
+    }
+
+    const stableOrder = fieldId ? fallbackSampleOrderByIdRef.current[fieldId] : undefined;
+    return `Sample #${stableOrder ?? index + 1}`;
+  };
 
   const updateVariable = (nextVariable: TastingVariable) => {
     setValue("variable", nextVariable, { shouldDirty: true });
@@ -349,7 +313,15 @@ export const TastingCreateForm = ({
 
   const removeSample = (index: number) => {
     if (fields.length <= 2) return;
+    const removedId = fields[index]?.id;
     remove(index);
+    if (removedId) {
+      setCollapsedSampleIds((current) => {
+        const next = { ...current };
+        delete next[removedId];
+        return next;
+      });
+    }
 
     setActiveSampleIndex((currentIndex) => {
       if (currentIndex === index) return Math.max(0, index - 1);
@@ -372,6 +344,13 @@ export const TastingCreateForm = ({
     } else if (activeSampleIndex === newIndex) {
       setActiveSampleIndex(oldIndex);
     }
+  };
+
+  const toggleSampleCollapse = (id: string) => {
+    setCollapsedSampleIds((current) => ({
+      ...current,
+      [id]: !current[id],
+    }));
   };
 
   const onFormSubmit = (data: TastingFormInputs) => {
@@ -783,6 +762,11 @@ export const TastingCreateForm = ({
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                measuring={{
+                  droppable: {
+                    strategy: MeasuringStrategy.Always,
+                  },
+                }}
                 onDragEnd={handleSamplesDragEnd}
               >
                 <SortableContext
@@ -793,12 +777,14 @@ export const TastingCreateForm = ({
                     {fields.map((field, index) => {
                       const currentSample = samples[index];
                       return (
-                        <SortableSampleCard
+                        <SortableFormCard
                           key={field.id}
                           id={field.id}
-                          index={index}
+                          title={getSampleDisplayTitle(index, field.id)}
                           canRemove={fields.length > 2}
                           onRemove={() => removeSample(index)}
+                          isCollapsed={collapsedSampleIds[field.id] ?? false}
+                          onToggleCollapse={() => toggleSampleCollapse(field.id)}
                         >
                           {variable === TastingVariable.Beans ? (
                             <div>
@@ -847,7 +833,7 @@ export const TastingCreateForm = ({
                               textareaProps={{ ...register(`samples.${index}.note` as const) }}
                             />
                           </div>
-                        </SortableSampleCard>
+                        </SortableFormCard>
                       );
                     })}
                   </div>
@@ -900,7 +886,7 @@ export const TastingCreateForm = ({
                       )}
                     >
                       <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        Sample #{index + 1}
+                        {getSampleDisplayTitle(index, fields[index]?.id)}
                       </p>
                       <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
                         {label}
@@ -940,7 +926,9 @@ export const TastingCreateForm = ({
                 )}
 
                 <Card.Container>
-                  <Card.Header title={`Sample #${activeSampleIndex + 1}`} />
+                  <Card.Header
+                    title={getSampleDisplayTitle(activeSampleIndex, fields[activeSampleIndex]?.id)}
+                  />
                   <Card.Content className="space-y-4">
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {variable === TastingVariable.Beans
