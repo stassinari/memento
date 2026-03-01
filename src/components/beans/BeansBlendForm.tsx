@@ -6,6 +6,7 @@ import countries from "~/data/countries";
 import { processes } from "~/data/processes";
 import { varietals } from "~/data/varietals";
 import { BeansBlendPart } from "~/db/schema";
+import { parseNullableNumberInput } from "~/util";
 import { Button } from "../Button";
 import { IconButton } from "../IconButton";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
@@ -69,7 +70,7 @@ export const BeansBlendForm = () => {
               id={`blendParts.${i}.percentage`}
               inputProps={{
                 ...register(`blendParts.${i}.percentage`, {
-                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                  setValueAs: parseNullableNumberInput,
                 }),
                 type: "number",
                 placeholder: "34",

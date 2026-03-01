@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
+import { EquipmentTable } from "~/components/EquipmentTable";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
@@ -16,6 +17,8 @@ import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { TastingVariable } from "~/db/schema";
 import { Beans } from "~/db/types";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
+import { parseNullableNumberInput } from "~/util";
+import { Divider } from "../Divider";
 import { TastingFormInputs, TastingSampleFormInputs } from "./form-types";
 import { tastingVariablesList } from "./utils";
 
@@ -112,6 +115,7 @@ export const TastingCreateForm = ({
   const [step, setStep] = useState<FormStep>(1);
   const [stepError, setStepError] = useState<string | null>(null);
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
+  const [showSetupForm, setShowSetupForm] = useState(false);
   const isSm = useScreenMediaQuery("sm");
 
   const methods = useForm<TastingFormInputs>({
@@ -134,6 +138,18 @@ export const TastingCreateForm = ({
   });
 
   const variable = watch("variable");
+  const beansId = watch("beansId");
+  const method = watch("method");
+  const waterType = watch("waterType");
+  const filterType = watch("filterType");
+  const grinder = watch("grinder");
+  const grindSetting = watch("grindSetting");
+  const beansWeight = watch("beansWeight");
+  const waterWeight = watch("waterWeight");
+  const waterTemperature = watch("waterTemperature");
+  const targetTimeMinutes = watch("targetTimeMinutes");
+  const targetTimeSeconds = watch("targetTimeSeconds");
+  const note = watch("note");
   const samples = watch("samples");
 
   const beansById = useMemo(() => {
@@ -147,6 +163,11 @@ export const TastingCreateForm = ({
   const selectedBeanIds = samples
     .map((sample) => sample.variableValueBeansId)
     .filter((value): value is string => Boolean(value));
+
+  const targetTimeSummary =
+    targetTimeMinutes !== null || targetTimeSeconds !== null
+      ? `${targetTimeMinutes ?? 0}:${String(targetTimeSeconds ?? 0).padStart(2, "0")}`
+      : null;
 
   const updateVariable = (nextVariable: TastingVariable) => {
     setValue("variable", nextVariable, { shouldDirty: true });
@@ -318,7 +339,7 @@ export const TastingCreateForm = ({
       <form onSubmit={handleSubmit(onFormSubmit)} autoComplete="off" className="space-y-6">
         {step === 1 && (
           <>
-            <FormSection title="Setup" subtitle="Define the tasting session and shared setup.">
+            <FormSection title="Details" subtitle="Define the tasting session and variable.">
               <FormInputDate
                 label="Date *"
                 id="date"
@@ -428,139 +449,209 @@ export const TastingCreateForm = ({
                   )}
                 />
               </fieldset>
+            </FormSection>
 
-              <div>
-                <Input.Label htmlFor="beansId">Shared beans</Input.Label>
-                <div className="mt-1">
-                  <select
-                    id="beansId"
-                    {...register("beansId")}
-                    disabled={variable === TastingVariable.Beans}
-                    className={clsx(
-                      "block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100 dark:disabled:border-white/10 dark:disabled:bg-white/10 dark:disabled:text-gray-400",
-                    )}
-                  >
-                    <option value="">No shared beans</option>
-                    {beansList.map((bean) => (
-                      <option key={bean.id} value={bean.id}>
-                        {bean.name} ({bean.roaster})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+            <Divider className="hidden sm:block" />
 
-              <FormInput
-                label="Method"
-                id="method"
-                inputProps={{
-                  ...register("method"),
-                  placeholder: "V60",
-                  disabled: variable === TastingVariable.Method,
-                }}
-              />
+            <FormSection
+              title="Setup"
+              subtitle="Shared setup applied across samples unless that field is the variable."
+            >
+              {showSetupForm ? (
+                <>
+                  <div>
+                    <Input.Label htmlFor="beansId">Shared beans</Input.Label>
+                    <div className="mt-1">
+                      <select
+                        id="beansId"
+                        {...register("beansId")}
+                        disabled={variable === TastingVariable.Beans}
+                        className={clsx(
+                          "block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100 dark:disabled:border-white/10 dark:disabled:bg-white/10 dark:disabled:text-gray-400",
+                        )}
+                      >
+                        <option value="">No shared beans</option>
+                        {beansList.map((bean) => (
+                          <option key={bean.id} value={bean.id}>
+                            {bean.name} ({bean.roaster})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
 
-              <FormInput
-                label="Water type"
-                id="waterType"
-                inputProps={{
-                  ...register("waterType"),
-                  disabled: variable === TastingVariable.WaterType,
-                }}
-              />
+                  <FormInput
+                    label="Method"
+                    id="method"
+                    inputProps={{
+                      ...register("method"),
+                      placeholder: "V60",
+                      disabled: variable === TastingVariable.Method,
+                    }}
+                  />
 
-              <FormInput
-                label="Filter type"
-                id="filterType"
-                inputProps={{
-                  ...register("filterType"),
-                  disabled: variable === TastingVariable.FilterType,
-                }}
-              />
+                  <FormInput
+                    label="Water type"
+                    id="waterType"
+                    inputProps={{
+                      ...register("waterType"),
+                      disabled: variable === TastingVariable.WaterType,
+                    }}
+                  />
 
-              <FormInput
-                label="Grinder"
-                id="grinder"
-                inputProps={{
-                  ...register("grinder"),
-                  disabled: variable === TastingVariable.Grinder,
-                }}
-              />
+                  <FormInput
+                    label="Filter type"
+                    id="filterType"
+                    inputProps={{
+                      ...register("filterType"),
+                      disabled: variable === TastingVariable.FilterType,
+                    }}
+                  />
 
-              <FormInput
-                label="Grind setting"
-                id="grindSetting"
-                inputProps={{
-                  ...register("grindSetting"),
-                }}
-              />
+                  <FormInput
+                    label="Grinder"
+                    id="grinder"
+                    inputProps={{
+                      ...register("grinder"),
+                      disabled: variable === TastingVariable.Grinder,
+                    }}
+                  />
 
-              <FormInput
-                label="Beans weight (g)"
-                id="beansWeight"
-                inputProps={{
-                  ...register("beansWeight", {
-                    setValueAs: (value: string) => (value === "" ? null : Number(value)),
-                  }),
-                  type: "number",
-                  step: "0.1",
-                }}
-              />
+                  <FormInput
+                    label="Grind setting"
+                    id="grindSetting"
+                    inputProps={{
+                      ...register("grindSetting"),
+                    }}
+                  />
 
-              <FormInput
-                label="Water weight (g)"
-                id="waterWeight"
-                inputProps={{
-                  ...register("waterWeight", {
-                    setValueAs: (value: string) => (value === "" ? null : Number(value)),
-                  }),
-                  type: "number",
-                  step: "0.1",
-                }}
-              />
+                  <FormInput
+                    label="Beans weight (g)"
+                    id="beansWeight"
+                    inputProps={{
+                      ...register("beansWeight", {
+                        setValueAs: parseNullableNumberInput,
+                      }),
+                      type: "number",
+                      step: "0.1",
+                    }}
+                  />
 
-              <FormInput
-                label="Water temperature (°C)"
-                id="waterTemperature"
-                inputProps={{
-                  ...register("waterTemperature", {
-                    setValueAs: (value: string) => (value === "" ? null : Number(value)),
-                  }),
-                  type: "number",
-                  step: "0.1",
-                }}
-              />
+                  <FormInput
+                    label="Water weight (g)"
+                    id="waterWeight"
+                    inputProps={{
+                      ...register("waterWeight", {
+                        setValueAs: parseNullableNumberInput,
+                      }),
+                      type: "number",
+                      step: "0.1",
+                    }}
+                  />
 
-              <FormInput
-                label="Target time minutes"
-                id="targetTimeMinutes"
-                inputProps={{
-                  ...register("targetTimeMinutes", {
-                    setValueAs: (value: string) => (value === "" ? null : Number(value)),
-                  }),
-                  type: "number",
-                }}
-              />
+                  <FormInput
+                    label="Water temperature (°C)"
+                    id="waterTemperature"
+                    inputProps={{
+                      ...register("waterTemperature", {
+                        setValueAs: parseNullableNumberInput,
+                      }),
+                      type: "number",
+                      step: "0.1",
+                    }}
+                  />
 
-              <FormInput
-                label="Target time seconds"
-                id="targetTimeSeconds"
-                inputProps={{
-                  ...register("targetTimeSeconds", {
-                    setValueAs: (value: string) => (value === "" ? null : Number(value)),
-                  }),
-                  type: "number",
-                }}
-              />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormInput
+                      label="Target time minutes"
+                      id="targetTimeMinutes"
+                      inputProps={{
+                        ...register("targetTimeMinutes", {
+                          setValueAs: parseNullableNumberInput,
+                        }),
+                        type: "number",
+                      }}
+                    />
 
-              <FormTextarea
-                label="Session note"
-                id="note"
-                textareaProps={{
-                  ...register("note"),
-                  placeholder: "Markdown supported",
-                }}
-              />
+                    <FormInput
+                      label="Target time seconds"
+                      id="targetTimeSeconds"
+                      inputProps={{
+                        ...register("targetTimeSeconds", {
+                          setValueAs: parseNullableNumberInput,
+                        }),
+                        type: "number",
+                      }}
+                    />
+                  </div>
+
+                  <FormTextarea
+                    label="Session note"
+                    id="note"
+                    textareaProps={{
+                      ...register("note"),
+                      placeholder: "Markdown supported",
+                    }}
+                  />
+                </>
+              ) : (
+                <EquipmentTable
+                  rows={[
+                    {
+                      label: "Shared beans",
+                      value: beansId ? (beansById.get(beansId) ?? "Unknown beans") : null,
+                    },
+                    {
+                      label: "Method",
+                      value:
+                        variable === TastingVariable.Method ? "Variable" : toNullableString(method),
+                    },
+                    {
+                      label: "Water type",
+                      value:
+                        variable === TastingVariable.WaterType
+                          ? "Variable"
+                          : toNullableString(waterType),
+                    },
+                    {
+                      label: "Filter type",
+                      value:
+                        variable === TastingVariable.FilterType
+                          ? "Variable"
+                          : toNullableString(filterType),
+                    },
+                    {
+                      label: "Grinder",
+                      value:
+                        variable === TastingVariable.Grinder
+                          ? "Variable"
+                          : toNullableString(grinder),
+                    },
+                    { label: "Grind setting", value: toNullableString(grindSetting) },
+                    {
+                      label: "Beans weight",
+                      value: beansWeight !== null ? `${beansWeight} g` : null,
+                    },
+                    {
+                      label: "Water weight",
+                      value: waterWeight !== null ? `${waterWeight} g` : null,
+                    },
+                    {
+                      label: "Water temperature",
+                      value: waterTemperature !== null ? `${waterTemperature} °C` : null,
+                    },
+                    {
+                      label: "Target time",
+                      value: targetTimeSummary,
+                    },
+                    {
+                      label: "Notes",
+                      value: toNullableString(note),
+                    },
+                  ]}
+                  onClick={() => setShowSetupForm(true)}
+                />
+              )}
             </FormSection>
 
             {stepError && <Input.Error>{stepError}</Input.Error>}
@@ -575,18 +666,24 @@ export const TastingCreateForm = ({
 
         {step === 2 && (
           <>
-            <FormSection title="Samples" subtitle="Define samples and what changes between them.">
+            <FormSection
+              title="Samples"
+              subtitle="Define samples and what changes between them. Note: a tasting needs at least two samples."
+            >
               <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  A tasting needs at least two samples.
-                </p>
-                <Button type="button" variant="white" colour="accent" size="sm" onClick={addSample}>
-                  <PlusIcon /> Add sample
-                </Button>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{fields.length} samples</p>
+                <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="white"
+                    colour="accent"
+                    size="sm"
+                    onClick={addSample}
+                  >
+                    <PlusIcon /> Add sample
+                  </Button>
+                </div>
               </div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {fields.length} sample{fields.length === 1 ? "" : "s"}
-              </p>
 
               <div className="space-y-4">
                 {fields.map((field, index) => {
@@ -838,7 +935,7 @@ export const TastingCreateForm = ({
                       id={`samples.${activeSampleIndex}.actualTimeMinutes`}
                       inputProps={{
                         ...register(`samples.${activeSampleIndex}.actualTimeMinutes` as const, {
-                          setValueAs: (value: string) => (value === "" ? null : Number(value)),
+                          setValueAs: parseNullableNumberInput,
                         }),
                         type: "number",
                       }}
@@ -849,7 +946,7 @@ export const TastingCreateForm = ({
                       id={`samples.${activeSampleIndex}.actualTimeSeconds`}
                       inputProps={{
                         ...register(`samples.${activeSampleIndex}.actualTimeSeconds` as const, {
-                          setValueAs: (value: string) => (value === "" ? null : Number(value)),
+                          setValueAs: parseNullableNumberInput,
                         }),
                         type: "number",
                       }}

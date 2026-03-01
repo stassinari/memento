@@ -7,6 +7,7 @@ import { varietals } from "~/data/varietals";
 import { getBeansUniqueRoasters } from "~/db/queries";
 import { BeanOrigin, BeansBlendPart, RoastStyle } from "~/db/schema";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
+import { parseNullableNumberInput } from "~/util";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
@@ -274,7 +275,7 @@ export const BeansForm = ({
                 id="altitude"
                 inputProps={{
                   ...register("altitude", {
-                    setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                    setValueAs: parseNullableNumberInput,
                   }),
                   type: "number",
                   placeholder: "1200",

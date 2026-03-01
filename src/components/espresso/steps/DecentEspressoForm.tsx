@@ -5,6 +5,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { getEspressoFormValueSuggestions, getSelectableBeans } from "~/db/queries";
 import { Beans } from "~/db/types";
+import { parseNullableNumberInput } from "~/util";
 import { Button } from "../../Button";
 import { EquipmentTable } from "../../EquipmentTable";
 import { FormSection } from "../../Form";
@@ -128,7 +129,7 @@ export const DecentEspressoForm = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",
@@ -147,7 +148,7 @@ export const DecentEspressoForm = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",
@@ -165,7 +166,7 @@ export const DecentEspressoForm = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",

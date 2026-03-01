@@ -5,6 +5,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { updateBrewOutcome } from "~/db/mutations";
 import { ExtractionType } from "~/db/schema";
 import { Brew } from "~/db/types";
+import { parseNullableNumberInput } from "~/util";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { PoweredByMarkdown } from "../PoweredByMarkdown";
@@ -136,7 +137,7 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",
@@ -154,7 +155,7 @@ export const BrewOutcomeForm = ({ brew, brewId }: BrewOutcomeFormProps) => {
                   value: 0,
                   message: "Please enter a positive TDS.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",

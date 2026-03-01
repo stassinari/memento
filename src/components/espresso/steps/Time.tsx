@@ -1,6 +1,7 @@
 import { atom, useAtomValue } from "jotai";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { parseNullableNumberInput } from "~/util";
 
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
@@ -86,7 +87,7 @@ export const EspressoTime = ({
                     value: 0,
                     message: "Please don't break space/time, enter a positive number.",
                   },
-                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                  setValueAs: parseNullableNumberInput,
                 }),
                 type: "number",
                 disabled: !manualInput,
@@ -104,7 +105,7 @@ export const EspressoTime = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",
