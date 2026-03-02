@@ -14,7 +14,14 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
@@ -24,12 +31,14 @@ import { EquipmentTable } from "~/components/EquipmentTable";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
-import { SortableFormCard } from "~/components/form/SortableFormCard";
+import { FormComboboxSingle } from "~/components/form/FormComboboxSingle";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputDate } from "~/components/form/FormInputDate";
 import { FormInputSlider } from "~/components/form/FormInputSlider";
 import { FormTextarea } from "~/components/form/FormTextarea";
+import { SortableFormCard } from "~/components/form/SortableFormCard";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
+import { getBrewFormValueSuggestions } from "~/db/queries";
 import { TastingVariable } from "~/db/schema";
 import { Beans } from "~/db/types";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
@@ -39,7 +48,7 @@ import { TastingFormInputs, TastingSampleFormInputs } from "./form-types";
 import { tastingVariablesList } from "./utils";
 
 interface TastingCreateFormProps {
-  beansList: Pick<Beans, "id" | "name" | "roaster">[];
+  beansList: Pick<Beans, "id" | "name" | "roaster" | "isFrozen" | "roastDate">[];
   onSubmit: (data: TastingFormInputs) => void;
   isSubmitting?: boolean;
 }
@@ -103,6 +112,8 @@ const getEmptySample = (position: number): TastingSampleFormInputs => ({
   finishNotes: "",
 });
 
+type BeansSelectOption = { value: string; label: string; disabled?: boolean };
+
 export const tastingFormEmptyValues: TastingFormInputs = {
   date: new Date(),
   variable: TastingVariable.Beans,
@@ -128,6 +139,8 @@ export const TastingCreateForm = ({
   onSubmit,
   isSubmitting = false,
 }: TastingCreateFormProps) => {
+  console.log("TastingCreateForm");
+
   const [step, setStep] = useState<FormStep>(1);
   const [stepError, setStepError] = useState<string | null>(null);
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
@@ -139,6 +152,10 @@ export const TastingCreateForm = ({
 
   const methods = useForm<TastingFormInputs>({
     defaultValues: tastingFormEmptyValues,
+  });
+  const { data: brewFormValueSuggestions } = useQuery({
+    queryKey: ["brews", "formValueSuggestions"],
+    queryFn: () => getBrewFormValueSuggestions(),
   });
 
   const {
@@ -188,6 +205,20 @@ export const TastingCreateForm = ({
     });
     return map;
   }, [beansList]);
+  const groupedBeansOptions = useMemo(() => {
+    const sorted = [...beansList].sort((a, b) => {
+      const aTime = a.roastDate ? new Date(a.roastDate).getTime() : 0;
+      const bTime = b.roastDate ? new Date(b.roastDate).getTime() : 0;
+      return bTime - aTime;
+    });
+    const open = sorted.filter((bean) => !bean.isFrozen);
+    const frozen = sorted.filter((bean) => bean.isFrozen);
+
+    return {
+      open,
+      frozen,
+    };
+  }, [beansList]);
 
   const selectedBeanIds = samples
     .map((sample) => sample.variableValueBeansId)
@@ -197,6 +228,7 @@ export const TastingCreateForm = ({
     targetTimeMinutes !== null || targetTimeSeconds !== null
       ? `${targetTimeMinutes ?? 0}:${String(targetTimeSeconds ?? 0).padStart(2, "0")}`
       : null;
+  const shouldShowCollapseAll = fields.some((field) => collapsedSampleIds[field.id] !== true);
 
   useEffect(() => {
     fields.forEach((field) => {
@@ -223,6 +255,24 @@ export const TastingCreateForm = ({
     const stableOrder = fieldId ? fallbackSampleOrderByIdRef.current[fieldId] : undefined;
     return `Sample #${stableOrder ?? index + 1}`;
   };
+  const step1VariableError = step === 1 && stepError?.includes("variable") ? stepError : undefined;
+  const step2SamplesError = step === 2 ? stepError : undefined;
+  const getSampleBeansOptions = (currentBeansId: string | null): BeansSelectOption[] => [
+    { value: "", label: "Select beans" },
+    ...groupedBeansOptions.open.map((bean) => ({
+      value: bean.id,
+      label: `${bean.name} (${bean.roaster})`,
+      disabled: selectedBeanIds.includes(bean.id) && currentBeansId !== bean.id,
+    })),
+    ...(groupedBeansOptions.frozen.length > 0
+      ? [{ value: "__frozen_separator__", label: "----- Frozen -----", disabled: true }]
+      : []),
+    ...groupedBeansOptions.frozen.map((bean) => ({
+      value: bean.id,
+      label: `${bean.name} (${bean.roaster})`,
+      disabled: selectedBeanIds.includes(bean.id) && currentBeansId !== bean.id,
+    })),
+  ];
 
   const updateVariable = (nextVariable: TastingVariable) => {
     setValue("variable", nextVariable, { shouldDirty: true });
@@ -254,6 +304,11 @@ export const TastingCreateForm = ({
   };
 
   const validateStep1 = async () => {
+    if (!variable) {
+      setStepError("Please select what variable you are tasting.");
+      return false;
+    }
+
     const isValid = await trigger(["date", "variable"]);
     if (!isValid) {
       setStepError("Please complete the required setup fields.");
@@ -264,6 +319,11 @@ export const TastingCreateForm = ({
   };
 
   const validateStep2 = async () => {
+    if (!variable) {
+      setStepError("Please select what variable you are tasting.");
+      return false;
+    }
+
     if (fields.length < 2) {
       setStepError("Please keep at least two samples.");
       return false;
@@ -353,6 +413,25 @@ export const TastingCreateForm = ({
     }));
   };
 
+  const toggleAllSampleCards = () => {
+    if (shouldShowCollapseAll) {
+      const collapsedAll: Record<string, boolean> = {};
+      fields.forEach((field) => {
+        collapsedAll[field.id] = true;
+      });
+      setCollapsedSampleIds(collapsedAll);
+      return;
+    }
+
+    setCollapsedSampleIds((current) => {
+      const next = { ...current };
+      fields.forEach((field) => {
+        next[field.id] = false;
+      });
+      return next;
+    });
+  };
+
   const onFormSubmit = (data: TastingFormInputs) => {
     const normalizedSamples = data.samples.map((sample, index) => ({
       ...sample,
@@ -390,6 +469,7 @@ export const TastingCreateForm = ({
 
     onSubmit({
       ...data,
+      variable: data.variable!,
       note: toNullableString(data.note),
       method: toNullableString(data.method),
       grinder: toNullableString(data.grinder),
@@ -475,8 +555,7 @@ export const TastingCreateForm = ({
                           checked={field.value !== TastingVariable.Beans}
                           onChange={() => {
                             if (field.value === TastingVariable.Beans) {
-                              field.onChange(TastingVariable.Method);
-                              updateVariable(TastingVariable.Method);
+                              field.onChange(null);
                             }
                           }}
                         />
@@ -490,20 +569,29 @@ export const TastingCreateForm = ({
                           <div className="mt-3">
                             <select
                               value={
-                                field.value === TastingVariable.Beans
-                                  ? TastingVariable.Method
-                                  : field.value
+                                field.value && field.value !== TastingVariable.Beans
+                                  ? field.value
+                                  : ""
                               }
                               onChange={(event) => {
-                                const value = event.currentTarget.value as Exclude<
+                                const value = event.currentTarget.value as
+                                  | Exclude<TastingVariable, TastingVariable.Beans>
+                                  | "";
+                                if (value === "") {
+                                  field.onChange(null);
+                                  return;
+                                }
+
+                                const variableValue = value as Exclude<
                                   TastingVariable,
                                   TastingVariable.Beans
                                 >;
-                                field.onChange(value);
-                                updateVariable(value);
+                                field.onChange(variableValue);
+                                updateVariable(variableValue);
                               }}
                               className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
                             >
+                              <option value="">Select variable</option>
                               {nonBeansVariables.map((option) => (
                                 <option key={option.value} value={option.value}>
                                   {option.label}
@@ -522,6 +610,7 @@ export const TastingCreateForm = ({
                     </div>
                   )}
                 />
+                {step1VariableError && <Input.Error>{step1VariableError}</Input.Error>}
               </fieldset>
             </FormSection>
 
@@ -534,7 +623,7 @@ export const TastingCreateForm = ({
               {showSetupForm ? (
                 <>
                   <div>
-                    <Input.Label htmlFor="beansId">Shared beans</Input.Label>
+                    <Input.Label htmlFor="beansId">Beans</Input.Label>
                     <div className="mt-1">
                       <select
                         id="beansId"
@@ -545,7 +634,17 @@ export const TastingCreateForm = ({
                         )}
                       >
                         <option value="">No shared beans</option>
-                        {beansList.map((bean) => (
+                        {groupedBeansOptions.open.map((bean) => (
+                          <option key={bean.id} value={bean.id}>
+                            {bean.name} ({bean.roaster})
+                          </option>
+                        ))}
+                        {groupedBeansOptions.frozen.length > 0 && (
+                          <option value="__frozen_separator__" disabled>
+                            ----- Frozen -----
+                          </option>
+                        )}
+                        {groupedBeansOptions.frozen.map((bean) => (
                           <option key={bean.id} value={bean.id}>
                             {bean.name} ({bean.roaster})
                           </option>
@@ -554,42 +653,69 @@ export const TastingCreateForm = ({
                     </div>
                   </div>
 
-                  <FormInput
-                    label="Method"
-                    id="method"
-                    inputProps={{
-                      ...register("method"),
-                      placeholder: "V60",
-                      disabled: variable === TastingVariable.Method,
-                    }}
-                  />
+                  {variable === TastingVariable.Method ? (
+                    <FormInput
+                      label="Method"
+                      id="method"
+                      inputProps={{ value: "Variable", disabled: true }}
+                    />
+                  ) : (
+                    <FormComboboxSingle
+                      label="Method"
+                      name="method"
+                      options={brewFormValueSuggestions?.method?.sort() ?? []}
+                      placeholder="V60"
+                      suggestions={brewFormValueSuggestions?.method?.slice(0, 5) ?? []}
+                    />
+                  )}
 
-                  <FormInput
-                    label="Water type"
-                    id="waterType"
-                    inputProps={{
-                      ...register("waterType"),
-                      disabled: variable === TastingVariable.WaterType,
-                    }}
-                  />
+                  {variable === TastingVariable.WaterType ? (
+                    <FormInput
+                      label="Water type"
+                      id="waterType"
+                      inputProps={{ value: "Variable", disabled: true }}
+                    />
+                  ) : (
+                    <FormComboboxSingle
+                      label="Water type"
+                      name="waterType"
+                      options={brewFormValueSuggestions?.waterType?.sort() ?? []}
+                      placeholder="ZeroWater"
+                      suggestions={brewFormValueSuggestions?.waterType?.slice(0, 5) ?? []}
+                    />
+                  )}
 
-                  <FormInput
-                    label="Filter type"
-                    id="filterType"
-                    inputProps={{
-                      ...register("filterType"),
-                      disabled: variable === TastingVariable.FilterType,
-                    }}
-                  />
+                  {variable === TastingVariable.FilterType ? (
+                    <FormInput
+                      label="Filter type"
+                      id="filterType"
+                      inputProps={{ value: "Variable", disabled: true }}
+                    />
+                  ) : (
+                    <FormComboboxSingle
+                      label="Filter type"
+                      name="filterType"
+                      options={brewFormValueSuggestions?.filterType?.sort() ?? []}
+                      placeholder="Abaca"
+                      suggestions={brewFormValueSuggestions?.filterType?.slice(0, 5) ?? []}
+                    />
+                  )}
 
-                  <FormInput
-                    label="Grinder"
-                    id="grinder"
-                    inputProps={{
-                      ...register("grinder"),
-                      disabled: variable === TastingVariable.Grinder,
-                    }}
-                  />
+                  {variable === TastingVariable.Grinder ? (
+                    <FormInput
+                      label="Grinder"
+                      id="grinder"
+                      inputProps={{ value: "Variable", disabled: true }}
+                    />
+                  ) : (
+                    <FormComboboxSingle
+                      label="Grinder"
+                      name="grinder"
+                      options={brewFormValueSuggestions?.grinder?.sort() ?? []}
+                      placeholder="Niche Zero"
+                      suggestions={brewFormValueSuggestions?.grinder?.slice(0, 5) ?? []}
+                    />
+                  )}
 
                   <FormInput
                     label="Grind setting"
@@ -672,8 +798,13 @@ export const TastingCreateForm = ({
                 <EquipmentTable
                   rows={[
                     {
-                      label: "Shared beans",
-                      value: beansId ? (beansById.get(beansId) ?? "Unknown beans") : null,
+                      label: "Beans",
+                      value:
+                        variable === TastingVariable.Beans
+                          ? "Variable"
+                          : beansId
+                            ? (beansById.get(beansId) ?? "Unknown beans")
+                            : null,
                     },
                     {
                       label: "Method",
@@ -728,8 +859,6 @@ export const TastingCreateForm = ({
               )}
             </FormSection>
 
-            {stepError && <Input.Error>{stepError}</Input.Error>}
-
             <div className="flex justify-end gap-4">
               <Button type="button" variant="primary" colour="accent" onClick={goToStep2}>
                 Next: samples
@@ -752,9 +881,26 @@ export const TastingCreateForm = ({
                     variant="white"
                     colour="accent"
                     size="sm"
+                    onClick={toggleAllSampleCards}
+                  >
+                    {shouldShowCollapseAll ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
+                    <span className="sr-only">
+                      {shouldShowCollapseAll ? "Collapse all samples" : "Expand all samples"}
+                    </span>
+                    <span className="hidden md:inline">
+                      {shouldShowCollapseAll ? "Collapse all" : "Expand all"}
+                    </span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="white"
+                    colour="accent"
+                    size="sm"
                     onClick={addSample}
                   >
-                    <PlusIcon /> Add sample
+                    <PlusIcon />
+                    <span className="sr-only">Add sample</span>
+                    <span className="hidden md:inline">Add sample</span>
                   </Button>
                 </div>
               </div>
@@ -797,22 +943,17 @@ export const TastingCreateForm = ({
                                   {...register(`samples.${index}.variableValueBeansId` as const)}
                                   className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
                                 >
-                                  <option value="">Select beans</option>
-                                  {beansList.map((bean) => {
-                                    const alreadySelectedElsewhere =
-                                      selectedBeanIds.includes(bean.id) &&
-                                      currentSample?.variableValueBeansId !== bean.id;
-
-                                    return (
-                                      <option
-                                        key={bean.id}
-                                        value={bean.id}
-                                        disabled={alreadySelectedElsewhere}
-                                      >
-                                        {bean.name} ({bean.roaster})
-                                      </option>
-                                    );
-                                  })}
+                                  {getSampleBeansOptions(
+                                    currentSample?.variableValueBeansId ?? null,
+                                  ).map((option) => (
+                                    <option
+                                      key={`${field.id}-${option.value}`}
+                                      value={option.value}
+                                      disabled={option.disabled}
+                                    >
+                                      {option.label}
+                                    </option>
+                                  ))}
                                 </select>
                               </div>
                             </div>
@@ -839,9 +980,8 @@ export const TastingCreateForm = ({
                   </div>
                 </SortableContext>
               </DndContext>
+              {step2SamplesError && <Input.Error>{step2SamplesError}</Input.Error>}
             </FormSection>
-
-            {stepError && <Input.Error>{stepError}</Input.Error>}
 
             <div className="flex justify-end gap-4">
               <Button type="button" variant="white" onClick={() => setStep(1)}>
@@ -930,14 +1070,6 @@ export const TastingCreateForm = ({
                     title={getSampleDisplayTitle(activeSampleIndex, fields[activeSampleIndex]?.id)}
                   />
                   <Card.Content className="space-y-4">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {variable === TastingVariable.Beans
-                        ? activeSample.variableValueBeansId
-                          ? beansById.get(activeSample.variableValueBeansId) || "Unknown bean"
-                          : "Unknown bean"
-                        : activeSample.variableValueText || "Untitled"}
-                    </p>
-
                     <FormInputSlider
                       label="Overall"
                       id={`samples.${activeSampleIndex}.overall`}

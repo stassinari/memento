@@ -36,7 +36,7 @@ export interface TastingSampleFormInputs extends TastingSampleRatingInputs {
 
 export interface TastingFormInputs {
   date: Date | null;
-  variable: TastingVariable;
+  variable: TastingVariable | null;
   note: string | null;
 
   beansId: string | null;
