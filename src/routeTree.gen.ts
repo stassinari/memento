@@ -38,6 +38,7 @@ import { Route as AuthLayoutBeansBeansIdCloneRouteImport } from './routes/_auth/
 import { Route as AuthLayoutDrinksTastingsTastingIdIndexRouteImport } from './routes/_auth/_layout/drinks/tastings/$tastingId/index'
 import { Route as AuthLayoutDrinksEspressoEspressoIdIndexRouteImport } from './routes/_auth/_layout/drinks/espresso/$espressoId/index'
 import { Route as AuthLayoutDrinksBrewsBrewIdIndexRouteImport } from './routes/_auth/_layout/drinks/brews/$brewId/index'
+import { Route as AuthLayoutDrinksTastingsTastingIdScoringRouteImport } from './routes/_auth/_layout/drinks/tastings/$tastingId/scoring'
 import { Route as AuthLayoutDrinksEspressoEspressoIdOutcomeRouteImport } from './routes/_auth/_layout/drinks/espresso/$espressoId/outcome'
 import { Route as AuthLayoutDrinksEspressoEspressoIdEditRouteImport } from './routes/_auth/_layout/drinks/espresso/$espressoId/edit'
 import { Route as AuthLayoutDrinksEspressoEspressoIdCloneRouteImport } from './routes/_auth/_layout/drinks/espresso/$espressoId/clone'
@@ -203,6 +204,12 @@ const AuthLayoutDrinksBrewsBrewIdIndexRoute =
     path: '/drinks/brews/$brewId/',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const AuthLayoutDrinksTastingsTastingIdScoringRoute =
+  AuthLayoutDrinksTastingsTastingIdScoringRouteImport.update({
+    id: '/scoring',
+    path: '/scoring',
+    getParentRoute: () => AuthLayoutDrinksTastingsTastingIdRoute,
+  } as any)
 const AuthLayoutDrinksEspressoEspressoIdOutcomeRoute =
   AuthLayoutDrinksEspressoEspressoIdOutcomeRouteImport.update({
     id: '/drinks/espresso/$espressoId/outcome',
@@ -287,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/drinks/espresso/$espressoId/clone': typeof AuthLayoutDrinksEspressoEspressoIdCloneRoute
   '/drinks/espresso/$espressoId/edit': typeof AuthLayoutDrinksEspressoEspressoIdEditRoute
   '/drinks/espresso/$espressoId/outcome': typeof AuthLayoutDrinksEspressoEspressoIdOutcomeRoute
+  '/drinks/tastings/$tastingId/scoring': typeof AuthLayoutDrinksTastingsTastingIdScoringRoute
   '/drinks/brews/$brewId/': typeof AuthLayoutDrinksBrewsBrewIdIndexRoute
   '/drinks/espresso/$espressoId/': typeof AuthLayoutDrinksEspressoEspressoIdIndexRoute
   '/drinks/tastings/$tastingId/': typeof AuthLayoutDrinksTastingsTastingIdIndexRoute
@@ -322,6 +330,7 @@ export interface FileRoutesByTo {
   '/drinks/espresso/$espressoId/clone': typeof AuthLayoutDrinksEspressoEspressoIdCloneRoute
   '/drinks/espresso/$espressoId/edit': typeof AuthLayoutDrinksEspressoEspressoIdEditRoute
   '/drinks/espresso/$espressoId/outcome': typeof AuthLayoutDrinksEspressoEspressoIdOutcomeRoute
+  '/drinks/tastings/$tastingId/scoring': typeof AuthLayoutDrinksTastingsTastingIdScoringRoute
   '/drinks/brews/$brewId': typeof AuthLayoutDrinksBrewsBrewIdIndexRoute
   '/drinks/espresso/$espressoId': typeof AuthLayoutDrinksEspressoEspressoIdIndexRoute
   '/drinks/tastings/$tastingId': typeof AuthLayoutDrinksTastingsTastingIdIndexRoute
@@ -363,6 +372,7 @@ export interface FileRoutesById {
   '/_auth/_layout/drinks/espresso/$espressoId/clone': typeof AuthLayoutDrinksEspressoEspressoIdCloneRoute
   '/_auth/_layout/drinks/espresso/$espressoId/edit': typeof AuthLayoutDrinksEspressoEspressoIdEditRoute
   '/_auth/_layout/drinks/espresso/$espressoId/outcome': typeof AuthLayoutDrinksEspressoEspressoIdOutcomeRoute
+  '/_auth/_layout/drinks/tastings/$tastingId/scoring': typeof AuthLayoutDrinksTastingsTastingIdScoringRoute
   '/_auth/_layout/drinks/brews/$brewId/': typeof AuthLayoutDrinksBrewsBrewIdIndexRoute
   '/_auth/_layout/drinks/espresso/$espressoId/': typeof AuthLayoutDrinksEspressoEspressoIdIndexRoute
   '/_auth/_layout/drinks/tastings/$tastingId/': typeof AuthLayoutDrinksTastingsTastingIdIndexRoute
@@ -401,6 +411,7 @@ export interface FileRouteTypes {
     | '/drinks/espresso/$espressoId/clone'
     | '/drinks/espresso/$espressoId/edit'
     | '/drinks/espresso/$espressoId/outcome'
+    | '/drinks/tastings/$tastingId/scoring'
     | '/drinks/brews/$brewId/'
     | '/drinks/espresso/$espressoId/'
     | '/drinks/tastings/$tastingId/'
@@ -436,6 +447,7 @@ export interface FileRouteTypes {
     | '/drinks/espresso/$espressoId/clone'
     | '/drinks/espresso/$espressoId/edit'
     | '/drinks/espresso/$espressoId/outcome'
+    | '/drinks/tastings/$tastingId/scoring'
     | '/drinks/brews/$brewId'
     | '/drinks/espresso/$espressoId'
     | '/drinks/tastings/$tastingId'
@@ -476,6 +488,7 @@ export interface FileRouteTypes {
     | '/_auth/_layout/drinks/espresso/$espressoId/clone'
     | '/_auth/_layout/drinks/espresso/$espressoId/edit'
     | '/_auth/_layout/drinks/espresso/$espressoId/outcome'
+    | '/_auth/_layout/drinks/tastings/$tastingId/scoring'
     | '/_auth/_layout/drinks/brews/$brewId/'
     | '/_auth/_layout/drinks/espresso/$espressoId/'
     | '/_auth/_layout/drinks/tastings/$tastingId/'
@@ -696,6 +709,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDrinksBrewsBrewIdIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/drinks/tastings/$tastingId/scoring': {
+      id: '/_auth/_layout/drinks/tastings/$tastingId/scoring'
+      path: '/scoring'
+      fullPath: '/drinks/tastings/$tastingId/scoring'
+      preLoaderRoute: typeof AuthLayoutDrinksTastingsTastingIdScoringRouteImport
+      parentRoute: typeof AuthLayoutDrinksTastingsTastingIdRoute
+    }
     '/_auth/_layout/drinks/espresso/$espressoId/outcome': {
       id: '/_auth/_layout/drinks/espresso/$espressoId/outcome'
       path: '/drinks/espresso/$espressoId/outcome'
@@ -763,12 +783,15 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthLayoutDrinksTastingsTastingIdRouteChildren {
+  AuthLayoutDrinksTastingsTastingIdScoringRoute: typeof AuthLayoutDrinksTastingsTastingIdScoringRoute
   AuthLayoutDrinksTastingsTastingIdIndexRoute: typeof AuthLayoutDrinksTastingsTastingIdIndexRoute
   AuthLayoutDrinksTastingsTastingIdSamplesSampleIdRoute: typeof AuthLayoutDrinksTastingsTastingIdSamplesSampleIdRoute
 }
 
 const AuthLayoutDrinksTastingsTastingIdRouteChildren: AuthLayoutDrinksTastingsTastingIdRouteChildren =
   {
+    AuthLayoutDrinksTastingsTastingIdScoringRoute:
+      AuthLayoutDrinksTastingsTastingIdScoringRoute,
     AuthLayoutDrinksTastingsTastingIdIndexRoute:
       AuthLayoutDrinksTastingsTastingIdIndexRoute,
     AuthLayoutDrinksTastingsTastingIdSamplesSampleIdRoute:

@@ -15,8 +15,6 @@ import {
 } from "@dnd-kit/sortable";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
   PlusIcon,
@@ -26,50 +24,34 @@ import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
-import { Card } from "~/components/Card";
 import { EquipmentTable } from "~/components/EquipmentTable";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
-import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
 import { FormComboboxSingle } from "~/components/form/FormComboboxSingle";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputDate } from "~/components/form/FormInputDate";
-import { FormInputSlider } from "~/components/form/FormInputSlider";
 import { FormTextarea } from "~/components/form/FormTextarea";
 import { SortableFormCard } from "~/components/form/SortableFormCard";
-import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { getBrewFormValueSuggestions } from "~/db/queries";
 import { TastingVariable } from "~/db/schema";
 import { Beans } from "~/db/types";
-import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { parseNullableNumberInput } from "~/util";
 import { Divider } from "../Divider";
-import { TastingFormInputs, TastingSampleFormInputs } from "./form-types";
+import { TastingSetupFormInputs, TastingSetupSampleInputs } from "./form-types";
 import { tastingVariablesList } from "./utils";
 
 interface TastingCreateFormProps {
   beansList: Pick<Beans, "id" | "name" | "roaster" | "isFrozen" | "roastDate">[];
-  onSubmit: (data: TastingFormInputs) => void;
+  onSubmit: (data: TastingSetupFormInputs) => void;
   isSubmitting?: boolean;
 }
 
-type FormStep = 1 | 2 | 3;
-type ScoreDimensionKey = "aroma" | "acidity" | "sweetness" | "body" | "finish";
-
-const scoreDimensions: Array<{ key: ScoreDimensionKey; label: string }> = [
-  { key: "aroma", label: "Aroma" },
-  { key: "acidity", label: "Acidity" },
-  { key: "sweetness", label: "Sweetness" },
-  { key: "body", label: "Body" },
-  { key: "finish", label: "Finish" },
-];
+type FormStep = 1 | 2;
 
 const nonBeansVariables = tastingVariablesList.map((entry) => ({
   label: entry.label,
   value: entry.value as Exclude<TastingVariable, TastingVariable.Beans>,
 }));
-
-const allFlavourOptions = notesToOptions(tastingNotes).map((note) => note.label);
 
 const toNullableString = (value: string | null): string | null => {
   if (!value) return null;
@@ -80,41 +62,16 @@ const toNullableString = (value: string | null): string | null => {
 const toNullableNumber = (value: number | null): number | null =>
   value === null || Number.isNaN(value) ? null : value;
 
-const getEmptySample = (position: number): TastingSampleFormInputs => ({
+const getEmptySample = (position: number): TastingSetupSampleInputs => ({
   position,
   variableValueText: "",
   variableValueBeansId: null,
   note: "",
-  actualTimeMinutes: null,
-  actualTimeSeconds: null,
-
-  overall: null,
-  flavours: [],
-
-  aromaQuantity: null,
-  aromaQuality: null,
-  aromaNotes: "",
-
-  acidityQuantity: null,
-  acidityQuality: null,
-  acidityNotes: "",
-
-  sweetnessQuantity: null,
-  sweetnessQuality: null,
-  sweetnessNotes: "",
-
-  bodyQuantity: null,
-  bodyQuality: null,
-  bodyNotes: "",
-
-  finishQuantity: null,
-  finishQuality: null,
-  finishNotes: "",
 });
 
 type BeansSelectOption = { value: string; label: string; disabled?: boolean };
 
-export const tastingFormEmptyValues: TastingFormInputs = {
+export const tastingFormEmptyValues: TastingSetupFormInputs = {
   date: new Date(),
   variable: TastingVariable.Beans,
   note: "",
@@ -139,18 +96,14 @@ export const TastingCreateForm = ({
   onSubmit,
   isSubmitting = false,
 }: TastingCreateFormProps) => {
-  console.log("TastingCreateForm");
-
   const [step, setStep] = useState<FormStep>(1);
   const [stepError, setStepError] = useState<string | null>(null);
-  const [activeSampleIndex, setActiveSampleIndex] = useState(0);
   const [showSetupForm, setShowSetupForm] = useState(false);
   const [collapsedSampleIds, setCollapsedSampleIds] = useState<Record<string, boolean>>({});
   const fallbackSampleOrderByIdRef = useRef<Record<string, number>>({});
   const nextFallbackSampleOrderRef = useRef(1);
-  const isSm = useScreenMediaQuery("sm");
 
-  const methods = useForm<TastingFormInputs>({
+  const methods = useForm<TastingSetupFormInputs>({
     defaultValues: tastingFormEmptyValues,
   });
   const { data: brewFormValueSuggestions } = useQuery({
@@ -359,16 +312,14 @@ export const TastingCreateForm = ({
     setStep(2);
   };
 
-  const goToStep3 = async () => {
+  const saveSetup = async () => {
     const isValid = await validateStep2();
     if (!isValid) return;
-    setActiveSampleIndex(0);
-    setStep(3);
+    await handleSubmit(onFormSubmit)();
   };
 
   const addSample = () => {
     append(getEmptySample(fields.length));
-    setActiveSampleIndex(fields.length);
   };
 
   const removeSample = (index: number) => {
@@ -383,11 +334,6 @@ export const TastingCreateForm = ({
       });
     }
 
-    setActiveSampleIndex((currentIndex) => {
-      if (currentIndex === index) return Math.max(0, index - 1);
-      if (currentIndex > index) return currentIndex - 1;
-      return currentIndex;
-    });
   };
 
   const handleSamplesDragEnd = ({ active, over }: DragEndEvent) => {
@@ -398,12 +344,6 @@ export const TastingCreateForm = ({
     if (oldIndex < 0 || newIndex < 0) return;
 
     move(oldIndex, newIndex);
-
-    if (activeSampleIndex === oldIndex) {
-      setActiveSampleIndex(newIndex);
-    } else if (activeSampleIndex === newIndex) {
-      setActiveSampleIndex(oldIndex);
-    }
   };
 
   const toggleSampleCollapse = (id: string) => {
@@ -432,7 +372,7 @@ export const TastingCreateForm = ({
     });
   };
 
-  const onFormSubmit = (data: TastingFormInputs) => {
+  const onFormSubmit = (data: TastingSetupFormInputs) => {
     const normalizedSamples = data.samples.map((sample, index) => ({
       ...sample,
       position: index,
@@ -441,30 +381,6 @@ export const TastingCreateForm = ({
       variableValueText:
         data.variable === TastingVariable.Beans ? null : toNullableString(sample.variableValueText),
       note: toNullableString(sample.note),
-      actualTimeMinutes: toNullableNumber(sample.actualTimeMinutes),
-      actualTimeSeconds: toNullableNumber(sample.actualTimeSeconds),
-      overall: toNullableNumber(sample.overall),
-      flavours: sample.flavours ?? [],
-
-      aromaQuantity: toNullableNumber(sample.aromaQuantity),
-      aromaQuality: toNullableNumber(sample.aromaQuality),
-      aromaNotes: toNullableString(sample.aromaNotes),
-
-      acidityQuantity: toNullableNumber(sample.acidityQuantity),
-      acidityQuality: toNullableNumber(sample.acidityQuality),
-      acidityNotes: toNullableString(sample.acidityNotes),
-
-      sweetnessQuantity: toNullableNumber(sample.sweetnessQuantity),
-      sweetnessQuality: toNullableNumber(sample.sweetnessQuality),
-      sweetnessNotes: toNullableString(sample.sweetnessNotes),
-
-      bodyQuantity: toNullableNumber(sample.bodyQuantity),
-      bodyQuality: toNullableNumber(sample.bodyQuality),
-      bodyNotes: toNullableString(sample.bodyNotes),
-
-      finishQuantity: toNullableNumber(sample.finishQuantity),
-      finishQuality: toNullableNumber(sample.finishQuality),
-      finishNotes: toNullableString(sample.finishNotes),
     }));
 
     onSubmit({
@@ -485,8 +401,6 @@ export const TastingCreateForm = ({
       samples: normalizedSamples,
     });
   };
-
-  const activeSample = samples[activeSampleIndex];
 
   return (
     <FormProvider {...methods}>
@@ -987,175 +901,8 @@ export const TastingCreateForm = ({
               <Button type="button" variant="white" onClick={() => setStep(1)}>
                 Back
               </Button>
-              <Button type="button" variant="primary" colour="accent" onClick={goToStep3}>
-                Next: ratings
-              </Button>
-            </div>
-          </>
-        )}
-
-        {step === 3 && activeSample && (
-          <>
-            <div className={clsx(isSm && "grid grid-cols-12 gap-4", !isSm && "space-y-4")}>
-              <aside
-                className={clsx(
-                  "space-y-2",
-                  isSm &&
-                    "col-span-4 max-h-[70vh] overflow-y-auto border-r border-gray-200 pr-2 dark:border-white/10",
-                )}
-              >
-                {samples.map((sample, index) => {
-                  const isActive = index === activeSampleIndex;
-                  const label =
-                    variable === TastingVariable.Beans
-                      ? sample.variableValueBeansId
-                        ? beansById.get(sample.variableValueBeansId)
-                        : "Unknown bean"
-                      : sample.variableValueText || "Untitled";
-
-                  return (
-                    <button
-                      key={`${index}-${label}`}
-                      type="button"
-                      onClick={() => setActiveSampleIndex(index)}
-                      className={clsx(
-                        "w-full rounded-md border px-3 py-2 text-left",
-                        isActive
-                          ? "border-orange-500 bg-orange-50 dark:border-orange-400 dark:bg-orange-500/15"
-                          : "border-gray-200 bg-white hover:bg-gray-50 dark:border-white/10 dark:bg-gray-900 dark:hover:bg-white/5",
-                      )}
-                    >
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {getSampleDisplayTitle(index, fields[index]?.id)}
-                      </p>
-                      <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
-                        {label}
-                      </p>
-                    </button>
-                  );
-                })}
-              </aside>
-
-              <main className={clsx(isSm && "col-span-8", "space-y-6")}>
-                {!isSm && (
-                  <div className="flex items-center justify-between">
-                    <Button
-                      type="button"
-                      variant="white"
-                      size="sm"
-                      onClick={() => setActiveSampleIndex((index) => Math.max(0, index - 1))}
-                      disabled={activeSampleIndex === 0}
-                    >
-                      <ArrowLeftIcon /> Previous
-                    </Button>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {activeSampleIndex + 1}/{samples.length}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="white"
-                      size="sm"
-                      onClick={() =>
-                        setActiveSampleIndex((index) => Math.min(samples.length - 1, index + 1))
-                      }
-                      disabled={activeSampleIndex === samples.length - 1}
-                    >
-                      Next <ArrowRightIcon />
-                    </Button>
-                  </div>
-                )}
-
-                <Card.Container>
-                  <Card.Header
-                    title={getSampleDisplayTitle(activeSampleIndex, fields[activeSampleIndex]?.id)}
-                  />
-                  <Card.Content className="space-y-4">
-                    <FormInputSlider
-                      label="Overall"
-                      id={`samples.${activeSampleIndex}.overall`}
-                      min={0}
-                      max={10}
-                      step={0.5}
-                    />
-
-                    <FormComboboxMulti
-                      label="Flavour notes"
-                      name={`samples.${activeSampleIndex}.flavours`}
-                      options={allFlavourOptions}
-                      placeholder="Search flavours"
-                    />
-
-                    {scoreDimensions.map((dimension) => (
-                      <div
-                        key={dimension.key}
-                        className="rounded-md border border-gray-200 p-3 dark:border-white/10"
-                      >
-                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          {dimension.label}
-                        </p>
-
-                        <div className="mt-3 space-y-3">
-                          <FormInputSlider
-                            label="Quantity"
-                            id={`samples.${activeSampleIndex}.${dimension.key}Quantity`}
-                            min={0}
-                            max={5}
-                            step={0.5}
-                          />
-
-                          <FormInputSlider
-                            label="Quality"
-                            id={`samples.${activeSampleIndex}.${dimension.key}Quality`}
-                            min={0}
-                            max={5}
-                            step={0.5}
-                          />
-
-                          <FormTextarea
-                            label="Notes"
-                            id={`samples.${activeSampleIndex}.${dimension.key}Notes`}
-                            textareaProps={{
-                              ...register(
-                                `samples.${activeSampleIndex}.${dimension.key}Notes` as const,
-                              ),
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-
-                    <FormInput
-                      label="Actual time minutes"
-                      id={`samples.${activeSampleIndex}.actualTimeMinutes`}
-                      inputProps={{
-                        ...register(`samples.${activeSampleIndex}.actualTimeMinutes` as const, {
-                          setValueAs: parseNullableNumberInput,
-                        }),
-                        type: "number",
-                      }}
-                    />
-
-                    <FormInput
-                      label="Actual time seconds"
-                      id={`samples.${activeSampleIndex}.actualTimeSeconds`}
-                      inputProps={{
-                        ...register(`samples.${activeSampleIndex}.actualTimeSeconds` as const, {
-                          setValueAs: parseNullableNumberInput,
-                        }),
-                        type: "number",
-                      }}
-                    />
-                  </Card.Content>
-                </Card.Container>
-              </main>
-            </div>
-
-            <div className="flex justify-end gap-4">
-              <Button type="button" variant="white" onClick={() => setStep(2)}>
-                Back
-              </Button>
-              <Button type="submit" variant="primary" colour="accent" disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : "Create tasting"}
+              <Button type="button" variant="primary" colour="accent" onClick={saveSetup}>
+                {isSubmitting ? "Saving..." : "Save setup"}
               </Button>
             </div>
           </>

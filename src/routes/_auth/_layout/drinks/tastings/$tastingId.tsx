@@ -21,14 +21,15 @@ function TastingLayoutPage() {
   const { tastingId } = Route.useParams();
   const isSm = useScreenMediaQuery("sm");
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isScoringRoute = pathname.endsWith("/scoring");
 
   const { tasting, beans, isLoadingTasting } = useTastingDetailData({
     tastingId,
-    enabledTasting: isSm,
-    enabledBeans: isSm,
+    enabledTasting: isSm && !isScoringRoute,
+    enabledBeans: isSm && !isScoringRoute,
   });
 
-  if (!isSm) {
+  if (!isSm || isScoringRoute) {
     return <Outlet />;
   }
 

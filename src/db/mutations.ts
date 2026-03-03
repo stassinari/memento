@@ -6,7 +6,10 @@ import { BrewOutcomeInputs } from "~/components/brews/BrewOutcomeForm";
 import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { EspressoOutcomeInputs } from "~/components/espresso/EspressoOutcomeForm";
 import { DecentEspressoFormInputs } from "~/components/espresso/steps/DecentEspressoForm";
-import { TastingFormInputs } from "~/components/tastings/form-types";
+import {
+  TastingSetupFormInputs,
+  TastingScoringFormInputs,
+} from "~/components/tastings/form-types";
 import { db } from "./db";
 import { beans, brews, espresso, tastingSamples, tastings, TastingVariable, users } from "./schema";
 
@@ -559,7 +562,7 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
 // TASTINGS MUTATIONS
 // ============================================================================
 
-function validateTastingInput(data: TastingFormInputs): void {
+function validateTastingInput(data: TastingSetupFormInputs): void {
   if (!data.date) {
     throw new Error("Tasting date is required");
   }
@@ -591,7 +594,7 @@ const sanitizeNullableNumber = (value: number | null): number | null =>
   value === null || Number.isNaN(value) ? null : value;
 
 export const addTasting = createServerFn({ method: "POST" })
-  .inputValidator((input: { data: TastingFormInputs }) => {
+  .inputValidator((input: { data: TastingSetupFormInputs }) => {
     validateTastingInput(input.data);
     return input;
   })
@@ -643,30 +646,74 @@ export const addTasting = createServerFn({ method: "POST" })
           position: index,
           variableValueBeansId:
             variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
-          variableValueText: variable === TastingVariable.Beans ? null : nullableText(sample.variableValueText),
+          variableValueText:
+            variable === TastingVariable.Beans ? null : nullableText(sample.variableValueText),
           note: nullableText(sample.note),
-          actualTimeMinutes: sanitizeNullableNumber(sample.actualTimeMinutes),
-          actualTimeSeconds: sanitizeNullableNumber(sample.actualTimeSeconds),
-          overall: sanitizeNullableNumber(sample.overall),
-          flavours: sample.flavours ?? [],
-          aromaQuantity: sanitizeNullableNumber(sample.aromaQuantity),
-          aromaQuality: sanitizeNullableNumber(sample.aromaQuality),
-          aromaNotes: nullableText(sample.aromaNotes),
-          acidityQuantity: sanitizeNullableNumber(sample.acidityQuantity),
-          acidityQuality: sanitizeNullableNumber(sample.acidityQuality),
-          acidityNotes: nullableText(sample.acidityNotes),
-          sweetnessQuantity: sanitizeNullableNumber(sample.sweetnessQuantity),
-          sweetnessQuality: sanitizeNullableNumber(sample.sweetnessQuality),
-          sweetnessNotes: nullableText(sample.sweetnessNotes),
-          bodyQuantity: sanitizeNullableNumber(sample.bodyQuantity),
-          bodyQuality: sanitizeNullableNumber(sample.bodyQuality),
-          bodyNotes: nullableText(sample.bodyNotes),
-          finishQuantity: sanitizeNullableNumber(sample.finishQuantity),
-          finishQuality: sanitizeNullableNumber(sample.finishQuality),
-          finishNotes: nullableText(sample.finishNotes),
         })),
       );
 
       return { id: insertedTasting.id };
+    });
+  });
+
+export const updateTastingScoring = createServerFn({ method: "POST" })
+  .inputValidator((input: { tastingId: string; data: TastingScoringFormInputs }) => {
+    if (!input.tastingId) {
+      throw new Error("Tasting ID is required");
+    }
+    if (input.data.samples.length === 0) {
+      throw new Error("At least one sample is required");
+    }
+    return input;
+  })
+  .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
+    const tasting = await db.query.tastings.findFirst({
+      where: (t, { and, eq }) => and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+      columns: { id: true },
+    });
+
+    if (!tasting) {
+      throw new Error("Tasting not found");
+    }
+
+    const sampleIds = data.samples.map((sample) => sample.id);
+    const existingSamples = await db.query.tastingSamples.findMany({
+      where: (sample, { and, eq, inArray }) =>
+        and(eq(sample.tastingId, tastingId), inArray(sample.id, sampleIds)),
+      columns: { id: true },
+    });
+
+    if (existingSamples.length !== data.samples.length) {
+      throw new Error("One or more sample IDs are invalid");
+    }
+
+    await db.transaction(async (tx) => {
+      for (const sample of data.samples) {
+        await tx
+          .update(tastingSamples)
+          .set({
+            note: nullableText(sample.note),
+            actualTimeMinutes: sanitizeNullableNumber(sample.actualTimeMinutes),
+            actualTimeSeconds: sanitizeNullableNumber(sample.actualTimeSeconds),
+            overall: sanitizeNullableNumber(sample.overall),
+            flavours: sample.flavours ?? [],
+            aromaQuantity: sanitizeNullableNumber(sample.aromaQuantity),
+            aromaQuality: sanitizeNullableNumber(sample.aromaQuality),
+            aromaNotes: nullableText(sample.aromaNotes),
+            acidityQuantity: sanitizeNullableNumber(sample.acidityQuantity),
+            acidityQuality: sanitizeNullableNumber(sample.acidityQuality),
+            acidityNotes: nullableText(sample.acidityNotes),
+            sweetnessQuantity: sanitizeNullableNumber(sample.sweetnessQuantity),
+            sweetnessQuality: sanitizeNullableNumber(sample.sweetnessQuality),
+            sweetnessNotes: nullableText(sample.sweetnessNotes),
+            bodyQuantity: sanitizeNullableNumber(sample.bodyQuantity),
+            bodyQuality: sanitizeNullableNumber(sample.bodyQuality),
+            bodyNotes: nullableText(sample.bodyNotes),
+            finishQuantity: sanitizeNullableNumber(sample.finishQuantity),
+            finishQuality: sanitizeNullableNumber(sample.finishQuality),
+            finishNotes: nullableText(sample.finishNotes),
+          })
+          .where(and(eq(tastingSamples.id, sample.id), eq(tastingSamples.tastingId, tastingId)));
+      }
     });
   });

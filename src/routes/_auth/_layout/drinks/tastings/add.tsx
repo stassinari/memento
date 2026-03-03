@@ -4,7 +4,7 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
 import { TastingCreateForm } from "~/components/tastings/TastingCreateForm";
-import { TastingFormInputs } from "~/components/tastings/form-types";
+import { TastingSetupFormInputs } from "~/components/tastings/form-types";
 import { addTasting } from "~/db/mutations";
 import { getSelectableBeans } from "~/db/queries";
 
@@ -22,13 +22,13 @@ function TastingAddPage() {
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: TastingFormInputs) => addTasting({ data: { data } }),
+    mutationFn: async (data: TastingSetupFormInputs) => addTasting({ data: { data } }),
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["tastings"] });
       queryClient.invalidateQueries({ queryKey: ["beans"] });
 
       navigate({
-        to: "/drinks/tastings/$tastingId",
+        to: "/drinks/tastings/$tastingId/scoring",
         params: { tastingId: result.id },
       });
     },
@@ -39,9 +39,9 @@ function TastingAddPage() {
 
   return (
     <>
-      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings, { label: "Add" }]} />
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings, { label: "Setup" }]} />
 
-      <Heading className="mb-4">Add tasting</Heading>
+      <Heading className="mb-4">Tasting setup</Heading>
 
       <TastingCreateForm
         beansList={beansList}
