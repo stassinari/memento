@@ -250,7 +250,7 @@ export const TastingScoringForm = ({
               </Button>
             </div>
 
-            <Card.Container>
+            <Card.Container variant="well">
               <Card.Header title={getSampleLabel(activeSampleIndex)} />
               <Card.Content className="space-y-4">
                 <FormInputSlider
@@ -271,7 +271,7 @@ export const TastingScoringForm = ({
                 {scoreDimensions.map((dimension) => (
                   <div
                     key={dimension.key}
-                    className="rounded-md border border-gray-200 p-3 dark:border-white/10"
+                    className="rounded-md bg-white p-3 ring-1 ring-inset ring-gray-200 dark:bg-gray-900/60 dark:ring-white/10"
                   >
                     <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                       {dimension.label}

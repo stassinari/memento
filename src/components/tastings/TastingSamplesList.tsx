@@ -1,6 +1,46 @@
 import { Slot } from "@radix-ui/react-slot";
-import clsx from "clsx";
+import { cva } from "class-variance-authority";
 import type { ReactNode } from "react";
+
+const listVariants = cva("", {
+  variants: {
+    variant: {
+      inbox: "space-y-1 p-2",
+      card: "space-y-2",
+    },
+  },
+});
+
+const itemVariants = cva("block w-full rounded-md px-3 py-2 text-left text-sm transition-colors", {
+  variants: {
+    variant: {
+      inbox: "",
+      card:
+        "border border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5",
+    },
+    isSelected: {
+      true: "",
+      false: "",
+    },
+  },
+  compoundVariants: [
+    {
+      variant: "inbox",
+      isSelected: true,
+      className:
+        "bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-200 dark:bg-orange-500/15 dark:text-orange-200 dark:ring-orange-400/40",
+    },
+    {
+      variant: "inbox",
+      isSelected: false,
+      className:
+        "text-gray-700 ring-1 ring-inset ring-transparent hover:bg-white dark:text-gray-300 dark:hover:bg-white/5",
+    },
+  ],
+  defaultVariants: {
+    isSelected: false,
+  },
+});
 
 interface TastingSamplesListProps {
   variant: "inbox" | "card";
@@ -8,7 +48,7 @@ interface TastingSamplesListProps {
 }
 
 export const TastingSamplesList = ({ variant, children }: TastingSamplesListProps) => {
-  return <ul className={variant === "inbox" ? "space-y-1 p-2" : "space-y-2"}>{children}</ul>;
+  return <ul className={listVariants({ variant })}>{children}</ul>;
 };
 
 interface TastingSamplesListItemProps {
@@ -30,15 +70,7 @@ export const TastingSamplesListItem = ({
     <li>
       <Comp
         {...(!asChild ? { type: "button" as const } : {})}
-        className={clsx(
-          "block w-full rounded-md border px-3 py-2 text-left text-sm transition-colors",
-          variant === "inbox" &&
-            (isSelected
-              ? "border-orange-300 bg-orange-50 text-orange-700 dark:border-orange-400/60 dark:bg-orange-500/15 dark:text-orange-200"
-              : "border-transparent text-gray-700 hover:border-gray-200 hover:bg-white dark:text-gray-300 dark:hover:border-white/10 dark:hover:bg-white/5"),
-          variant === "card" &&
-            "border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5",
-        )}
+        className={itemVariants({ variant, isSelected })}
       >
         {children}
       </Comp>

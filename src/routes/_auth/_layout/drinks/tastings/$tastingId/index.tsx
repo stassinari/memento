@@ -2,10 +2,9 @@ import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
-import { Card } from "~/components/Card";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
-import { TastingSetupCard, TastingSummaryCard } from "~/components/tastings/TastingDetailCards";
+import { TastingSetupCard } from "~/components/tastings/TastingDetailCards";
 import {
   TastingSamplesList,
   TastingSamplesListItem,
@@ -36,13 +35,11 @@ function TastingIndexPage() {
 
   if (isSm) {
     return (
-      <Card.Container className="h-full min-h-64">
-        <Card.Content className="flex h-full items-center justify-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Select a sample from the left to view its details.
-          </p>
-        </Card.Content>
-      </Card.Container>
+      <div className="grid min-h-64 place-items-center px-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Select a sample from the left to view its details.
+        </p>
+      </div>
     );
   }
 
@@ -70,20 +67,43 @@ function TastingIndexPage() {
         Tasting detail
       </Heading>
 
-      <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-        {formatTastingDate(tasting.date ?? tasting.createdAt)}
-      </p>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <span className="inline-flex items-center rounded-full bg-orange-50 px-2.5 py-1 text-xs font-semibold text-orange-700 ring-1 ring-inset ring-orange-200 dark:bg-orange-500/15 dark:text-orange-200 dark:ring-orange-400/40">
+          {variableLabel}
+        </span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          {formatTastingDate(tasting.date ?? tasting.createdAt)}
+        </span>
+      </div>
 
       <div className="grid gap-4">
-        <TastingSummaryCard tasting={tasting} variableLabel={variableLabel} />
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="primary" colour="accent" size="sm" asChild>
+            <RouterLink to="/drinks/tastings/$tastingId/scoring" params={{ tastingId }}>
+              Edit scoring
+            </RouterLink>
+          </Button>
+          <Button variant="white" size="sm" disabled>
+            Edit setup
+          </Button>
+          <Button variant="white" size="sm" disabled>
+            Clone
+          </Button>
+          <Button variant="white" size="sm" disabled>
+            Delete
+          </Button>
+        </div>
+
         <TastingSetupCard tasting={tasting} />
 
-        <Card.Container>
-          <Card.Header title="Samples" />
-          <Card.Content>
-            <TastingSamplesList variant="card">
+        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-gray-900">
+          <div className="border-b border-gray-200 px-4 py-2 text-sm font-semibold text-gray-900 dark:border-white/10 dark:text-gray-100">
+            Samples
+          </div>
+          <div className="bg-gray-50/50 dark:bg-white/5">
+            <TastingSamplesList variant="inbox">
               {tasting.samples.map((sample, index) => (
-                <TastingSamplesListItem key={sample.id} variant="card" asChild>
+                <TastingSamplesListItem key={sample.id} variant="inbox" asChild>
                   <RouterLink
                     to="/drinks/tastings/$tastingId/samples/$sampleId"
                     params={{ tastingId: tasting.id, sampleId: sample.id }}
@@ -97,8 +117,8 @@ function TastingIndexPage() {
                 </TastingSamplesListItem>
               ))}
             </TastingSamplesList>
-          </Card.Content>
-        </Card.Container>
+          </div>
+        </div>
       </div>
     </>
   );
