@@ -1,5 +1,4 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
@@ -8,6 +7,13 @@ import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputSlider } from "~/components/form/FormInputSlider";
 import { FormTextarea } from "~/components/form/FormTextarea";
+import {
+  TastingSamplesList,
+  TastingSamplesListItem,
+  TastingSamplesListItemContent,
+} from "~/components/tastings/TastingSamplesList";
+import { TastingSamplesShell } from "~/components/tastings/TastingSamplesShell";
+import { buildBeansLookup, getNormalizedTastingSampleLabel } from "~/components/tastings/utils";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { TastingVariable } from "~/db/schema";
 import { parseNullableNumberInput } from "~/util";
@@ -150,26 +156,17 @@ export const TastingScoringForm = ({
 
   const { handleSubmit, register, watch } = methods;
   const samples = watch("samples");
-  const activeSample = samples[activeSampleIndex];
 
-  const beansById = useMemo(() => {
-    const map = new Map<string, string>();
-    beansLookup.forEach((bean) => {
-      map.set(bean.id, `${bean.name} (${bean.roaster})`);
-    });
-    return map;
-  }, [beansLookup]);
+  const normalizedBeansLookup = useMemo(() => buildBeansLookup(beansLookup), [beansLookup]);
 
   const getSampleLabel = (sampleIndex: number): string => {
     const sample = tasting.samples[sampleIndex];
     if (!sample) return `Sample #${sampleIndex + 1}`;
 
-    if (tasting.variable === TastingVariable.Beans) {
-      if (!sample.variableValueBeansId) return `Sample #${sampleIndex + 1}`;
-      return beansById.get(sample.variableValueBeansId) ?? `Sample #${sampleIndex + 1}`;
-    }
-
-    return toNullableString(sample.variableValueText) ?? `Sample #${sampleIndex + 1}`;
+    return (
+      getNormalizedTastingSampleLabel(tasting.variable, sample, normalizedBeansLookup) ||
+      `Sample #${sampleIndex + 1}`
+    );
   };
 
   return (
@@ -205,31 +202,28 @@ export const TastingScoringForm = ({
         autoComplete="off"
         className="space-y-6"
       >
-        <div className="grid grid-cols-12 gap-4">
-          <aside className="col-span-12 space-y-2 sm:col-span-4 sm:max-h-[70vh] sm:overflow-y-auto sm:border-r sm:border-gray-200 sm:pr-2 sm:dark:border-white/10">
-            {tasting.samples.map((_, index) => {
-              const isActive = index === activeSampleIndex;
-              return (
-                <button
-                  key={tasting.samples[index].id}
-                  type="button"
-                  onClick={() => setActiveSampleIndex(index)}
-                  className={clsx(
-                    "w-full rounded-md border px-3 py-2 text-left",
-                    isActive
-                      ? "border-orange-500 bg-orange-50 dark:border-orange-400 dark:bg-orange-500/15"
-                      : "border-gray-200 bg-white hover:bg-gray-50 dark:border-white/10 dark:bg-gray-900 dark:hover:bg-white/5",
-                  )}
+        <TastingSamplesShell
+          list={
+            <TastingSamplesList variant="inbox">
+              {tasting.samples.map((sample, index) => (
+                <TastingSamplesListItem
+                  key={sample.id}
+                  variant="inbox"
+                  isSelected={tasting.samples[activeSampleIndex]?.id === sample.id}
+                  asChild
                 >
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {getSampleLabel(index)}
-                  </p>
-                </button>
-              );
-            })}
-          </aside>
-
-          <main className="col-span-12 space-y-6 sm:col-span-8">
+                  <button type="button" onClick={() => setActiveSampleIndex(index)}>
+                    <TastingSamplesListItemContent
+                      sampleNumber={index + 1}
+                      label={getSampleLabel(index)}
+                    />
+                  </button>
+                </TastingSamplesListItem>
+              ))}
+            </TastingSamplesList>
+          }
+        >
+          <div className="space-y-6">
             <div className="flex items-center justify-between sm:hidden">
               <Button
                 type="button"
@@ -247,7 +241,9 @@ export const TastingScoringForm = ({
                 type="button"
                 variant="white"
                 size="sm"
-                onClick={() => setActiveSampleIndex((index) => Math.min(samples.length - 1, index + 1))}
+                onClick={() =>
+                  setActiveSampleIndex((index) => Math.min(samples.length - 1, index + 1))
+                }
                 disabled={activeSampleIndex === samples.length - 1}
               >
                 Next <ArrowRightIcon />
@@ -273,8 +269,13 @@ export const TastingScoringForm = ({
                 />
 
                 {scoreDimensions.map((dimension) => (
-                  <div key={dimension.key} className="rounded-md border border-gray-200 p-3 dark:border-white/10">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{dimension.label}</p>
+                  <div
+                    key={dimension.key}
+                    className="rounded-md border border-gray-200 p-3 dark:border-white/10"
+                  >
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                      {dimension.label}
+                    </p>
                     <div className="mt-3 space-y-3">
                       <FormInputSlider
                         label="Quantity"
@@ -294,7 +295,9 @@ export const TastingScoringForm = ({
                         label="Notes"
                         id={`samples.${activeSampleIndex}.${dimension.key}Notes`}
                         textareaProps={{
-                          ...register(`samples.${activeSampleIndex}.${dimension.key}Notes` as const),
+                          ...register(
+                            `samples.${activeSampleIndex}.${dimension.key}Notes` as const,
+                          ),
                         }}
                       />
                     </div>
@@ -330,8 +333,8 @@ export const TastingScoringForm = ({
                 />
               </Card.Content>
             </Card.Container>
-          </main>
-        </div>
+          </div>
+        </TastingSamplesShell>
 
         <div className="flex justify-end gap-4">
           <Button type="submit" variant="primary" colour="accent" disabled={isSubmitting}>

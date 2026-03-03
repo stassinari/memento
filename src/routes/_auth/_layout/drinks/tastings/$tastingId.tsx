@@ -1,13 +1,19 @@
-import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
+import { Link as RouterLink, Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { TastingSetupCard, TastingSummaryCard } from "~/components/tastings/TastingDetailCards";
-import { TastingSamplesList } from "~/components/tastings/TastingSamplesList";
+import {
+  TastingSamplesList,
+  TastingSamplesListItem,
+  TastingSamplesListItemContent,
+} from "~/components/tastings/TastingSamplesList";
+import { TastingSamplesShell } from "~/components/tastings/TastingSamplesShell";
 import {
   buildBeansLookup,
   formatTastingDate,
+  getNormalizedTastingSampleLabel,
   getTastingVariableLabel,
 } from "~/components/tastings/utils";
 import { useTastingDetailData } from "~/hooks/queries/tastings";
@@ -65,26 +71,33 @@ function TastingLayoutPage() {
       <TastingSummaryCard tasting={tasting} variableLabel={variableLabel} />
       <TastingSetupCard tasting={tasting} />
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xs dark:border-white/10 dark:bg-gray-900">
-        <div className="grid grid-cols-12">
-          <aside className="col-span-4 border-r border-gray-200 bg-gray-50/60 dark:border-white/10 dark:bg-white/5">
-            <div className="border-b border-gray-200 px-4 py-3 dark:border-white/10">
-              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Samples</h2>
-            </div>
-            <TastingSamplesList
-              tasting={tasting}
-              tastingId={tastingId}
-              beansLookup={beansLookup}
-              selectedSampleId={selectedSampleId}
-              variant="inbox"
-            />
-          </aside>
-
-          <main className="col-span-8 bg-white p-4 dark:bg-gray-900">
-            <Outlet />
-          </main>
-        </div>
-      </div>
+      <TastingSamplesShell
+        list={
+          <TastingSamplesList variant="inbox">
+            {tasting.samples.map((sample, index) => (
+              <TastingSamplesListItem
+                key={sample.id}
+                variant="inbox"
+                isSelected={selectedSampleId === sample.id}
+                asChild
+              >
+                <RouterLink
+                  to="/drinks/tastings/$tastingId/samples/$sampleId"
+                  params={{ tastingId, sampleId: sample.id }}
+                  resetScroll={false}
+                >
+                  <TastingSamplesListItemContent
+                    sampleNumber={index + 1}
+                    label={getNormalizedTastingSampleLabel(tasting.variable, sample, beansLookup)}
+                  />
+                </RouterLink>
+              </TastingSamplesListItem>
+            ))}
+          </TastingSamplesList>
+        }
+      >
+        <Outlet />
+      </TastingSamplesShell>
     </>
   );
 }
