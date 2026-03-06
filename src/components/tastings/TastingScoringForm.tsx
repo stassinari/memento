@@ -2,7 +2,6 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
-import { Card } from "~/components/Card";
 import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputSlider } from "~/components/form/FormInputSlider";
@@ -250,89 +249,86 @@ export const TastingScoringForm = ({
               </Button>
             </div>
 
-            <Card.Container variant="well">
-              <Card.Header title={getSampleLabel(activeSampleIndex)} />
-              <Card.Content className="space-y-4">
-                <FormInputSlider
-                  label="Overall"
-                  id={`samples.${activeSampleIndex}.overall`}
-                  min={0}
-                  max={10}
-                  step={0.5}
-                />
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+              {getSampleLabel(activeSampleIndex)}
+            </h2>
 
-                <FormComboboxMulti
-                  label="Flavour notes"
-                  name={`samples.${activeSampleIndex}.flavours`}
-                  options={allFlavourOptions}
-                  placeholder="Search flavours"
-                />
+            <FormInputSlider
+              label="Overall"
+              id={`samples.${activeSampleIndex}.overall`}
+              min={0}
+              max={10}
+              step={0.5}
+            />
 
-                {scoreDimensions.map((dimension) => (
-                  <div
-                    key={dimension.key}
-                    className="rounded-md bg-white p-3 ring-1 ring-inset ring-gray-200 dark:bg-gray-900/60 dark:ring-white/10"
-                  >
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                      {dimension.label}
-                    </p>
-                    <div className="mt-3 space-y-3">
-                      <FormInputSlider
-                        label="Quantity"
-                        id={`samples.${activeSampleIndex}.${dimension.key}Quantity`}
-                        min={0}
-                        max={5}
-                        step={0.5}
-                      />
-                      <FormInputSlider
-                        label="Quality"
-                        id={`samples.${activeSampleIndex}.${dimension.key}Quality`}
-                        min={0}
-                        max={5}
-                        step={0.5}
-                      />
-                      <FormTextarea
-                        label="Notes"
-                        id={`samples.${activeSampleIndex}.${dimension.key}Notes`}
-                        textareaProps={{
-                          ...register(
-                            `samples.${activeSampleIndex}.${dimension.key}Notes` as const,
-                          ),
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
+            <FormComboboxMulti
+              label="Flavour notes"
+              name={`samples.${activeSampleIndex}.flavours`}
+              options={allFlavourOptions}
+              placeholder="Search flavours"
+            />
 
-                <FormInput
-                  label="Actual time minutes"
-                  id={`samples.${activeSampleIndex}.actualTimeMinutes`}
-                  inputProps={{
-                    ...register(`samples.${activeSampleIndex}.actualTimeMinutes` as const, {
-                      setValueAs: parseNullableNumberInput,
-                    }),
-                    type: "number",
-                  }}
-                />
+            {scoreDimensions.map((dimension) => (
+              <div
+                key={dimension.key}
+                className="rounded-md bg-white p-3 ring-1 ring-inset ring-gray-200 dark:bg-gray-900/60 dark:ring-white/10"
+              >
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {dimension.label}
+                </p>
+                <div className="mt-3 space-y-3">
+                  <FormInputSlider
+                    label="Quantity"
+                    id={`samples.${activeSampleIndex}.${dimension.key}Quantity`}
+                    min={0}
+                    max={5}
+                    step={0.5}
+                  />
+                  <FormInputSlider
+                    label="Quality"
+                    id={`samples.${activeSampleIndex}.${dimension.key}Quality`}
+                    min={0}
+                    max={5}
+                    step={0.5}
+                  />
+                  <FormTextarea
+                    label="Notes"
+                    id={`samples.${activeSampleIndex}.${dimension.key}Notes`}
+                    textareaProps={{
+                      ...register(`samples.${activeSampleIndex}.${dimension.key}Notes` as const),
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
 
-                <FormInput
-                  label="Actual time seconds"
-                  id={`samples.${activeSampleIndex}.actualTimeSeconds`}
-                  inputProps={{
-                    ...register(`samples.${activeSampleIndex}.actualTimeSeconds` as const, {
-                      setValueAs: parseNullableNumberInput,
-                    }),
-                    type: "number",
-                  }}
-                />
+            <FormInput
+              label="Actual time minutes"
+              id={`samples.${activeSampleIndex}.actualTimeMinutes`}
+              inputProps={{
+                ...register(`samples.${activeSampleIndex}.actualTimeMinutes` as const, {
+                  setValueAs: parseNullableNumberInput,
+                }),
+                type: "number",
+              }}
+            />
 
-                <FormTextarea
-                  label="Sample note"
-                  id={`samples.${activeSampleIndex}.note`}
-                  textareaProps={{ ...register(`samples.${activeSampleIndex}.note` as const) }}
-                />
-              </Card.Content>
-            </Card.Container>
+            <FormInput
+              label="Actual time seconds"
+              id={`samples.${activeSampleIndex}.actualTimeSeconds`}
+              inputProps={{
+                ...register(`samples.${activeSampleIndex}.actualTimeSeconds` as const, {
+                  setValueAs: parseNullableNumberInput,
+                }),
+                type: "number",
+              }}
+            />
+
+            <FormTextarea
+              label="Sample note"
+              id={`samples.${activeSampleIndex}.note`}
+              textareaProps={{ ...register(`samples.${activeSampleIndex}.note` as const) }}
+            />
           </div>
         </TastingSamplesShell>
 
