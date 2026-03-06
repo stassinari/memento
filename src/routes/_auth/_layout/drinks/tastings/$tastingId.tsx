@@ -5,16 +5,11 @@ import { Button } from "~/components/Button";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { TastingSetupCard } from "~/components/tastings/TastingDetailCards";
-import {
-  TastingSamplesList,
-  TastingSamplesListItem,
-  TastingSamplesListItemContent,
-} from "~/components/tastings/TastingSamplesList";
+import { TastingSamplesLinks } from "~/components/tastings/TastingSamplesLinks";
 import { TastingSamplesShell } from "~/components/tastings/TastingSamplesShell";
 import {
   buildBeansLookup,
   formatTastingDate,
-  getNormalizedTastingSampleLabel,
   getTastingVariableLabel,
 } from "~/components/tastings/utils";
 import { useTastingDetailData } from "~/hooks/queries/tastings";
@@ -95,27 +90,14 @@ function TastingLayoutPage() {
 
       <TastingSamplesShell
         list={
-          <TastingSamplesList variant="inbox">
-            {tasting.samples.map((sample, index) => (
-              <TastingSamplesListItem
-                key={sample.id}
-                variant="inbox"
-                isSelected={selectedSampleId === sample.id}
-                asChild
-              >
-                <RouterLink
-                  to="/drinks/tastings/$tastingId/samples/$sampleId"
-                  params={{ tastingId, sampleId: sample.id }}
-                  resetScroll={false}
-                >
-                  <TastingSamplesListItemContent
-                    sampleNumber={index + 1}
-                    label={getNormalizedTastingSampleLabel(tasting.variable, sample, beansLookup)}
-                  />
-                </RouterLink>
-              </TastingSamplesListItem>
-            ))}
-          </TastingSamplesList>
+          <TastingSamplesLinks
+            variant="inbox"
+            tastingId={tastingId}
+            variable={tasting.variable}
+            samples={tasting.samples}
+            beansLookup={beansLookup}
+            selectedSampleId={selectedSampleId}
+          />
         }
       >
         <Outlet />

@@ -1,10 +1,12 @@
-import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
+import { Link as RouterLink, createFileRoute, useNavigate } from "@tanstack/react-router";
 import ReactMarkdown from "react-markdown";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
+import { MobileBottomDrawerNavigator } from "~/components/MobileBottomDrawerNavigator";
+import { TastingSamplesLinks } from "~/components/tastings/TastingSamplesLinks";
 import {
   buildBeansLookup,
   getNormalizedTastingSampleLabel,
@@ -59,6 +61,7 @@ const scoreDimensions = [
 
 function TastingSamplePage() {
   const { tastingId, sampleId } = Route.useParams();
+  const navigate = useNavigate();
   const isSm = useScreenMediaQuery("sm");
 
   const { tasting, beans, isLoadingTasting } = useTastingDetailData({ tastingId });
@@ -94,6 +97,19 @@ function TastingSamplePage() {
     );
   const hasRating = hasMeaningfulNormalizedRating(sample);
   const sampleName = `Sample #${sampleIndex + 1}`;
+  const canGoPrevious = sampleIndex > 0;
+  const canGoNext = sampleIndex < tasting.samples.length - 1;
+
+  const goToSampleByIndex = (nextIndex: number) => {
+    const nextSample = tasting.samples[nextIndex];
+    if (!nextSample) return;
+
+    navigate({
+      to: "/drinks/tastings/$tastingId/samples/$sampleId",
+      params: { tastingId, sampleId: nextSample.id },
+      resetScroll: false,
+    });
+  };
 
   return (
     <>
@@ -121,9 +137,17 @@ function TastingSamplePage() {
         </>
       )}
 
-      <div className={isSm ? "space-y-4" : "mt-3 space-y-4"}>
+      <div
+        className={
+          isSm ? "space-y-4" : "mt-3 space-y-4 pb-[calc(env(safe-area-inset-bottom)+3.5rem)]"
+        }
+      >
         <section className="space-y-2.5">
-          {isSm && <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">{sampleName}</h2>}
+          {isSm && (
+            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+              {sampleName}
+            </h2>
+          )}
 
           <div className="overflow-hidden rounded-md border border-gray-200 bg-white dark:border-white/10 dark:bg-gray-900">
             <dl className="divide-y divide-gray-200 dark:divide-white/10">
@@ -155,7 +179,9 @@ function TastingSamplePage() {
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Rating</h3>
 
           {!hasRating ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">No tasting score for this sample.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              No tasting score for this sample.
+            </p>
           ) : (
             <div className="space-y-2.5">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -215,6 +241,28 @@ function TastingSamplePage() {
           )}
         </section>
       </div>
+
+      {!isSm && (
+        <MobileBottomDrawerNavigator
+          drawerTitle="Samples"
+          currentIndex={sampleIndex}
+          totalCount={tasting.samples.length}
+          onPrevious={() => goToSampleByIndex(sampleIndex - 1)}
+          onNext={() => goToSampleByIndex(sampleIndex + 1)}
+          disablePrevious={!canGoPrevious}
+          disableNext={!canGoNext}
+          closeOnContentClick
+        >
+          <TastingSamplesLinks
+            variant="inbox"
+            tastingId={tastingId}
+            variable={tasting.variable}
+            samples={tasting.samples}
+            beansLookup={beansLookup}
+            selectedSampleId={sample.id}
+          />
+        </MobileBottomDrawerNavigator>
+      )}
     </>
   );
 }

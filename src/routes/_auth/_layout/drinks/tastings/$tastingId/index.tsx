@@ -5,15 +5,10 @@ import { Button } from "~/components/Button";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { TastingSetupCard } from "~/components/tastings/TastingDetailCards";
-import {
-  TastingSamplesList,
-  TastingSamplesListItem,
-  TastingSamplesListItemContent,
-} from "~/components/tastings/TastingSamplesList";
+import { TastingSamplesLinks } from "~/components/tastings/TastingSamplesLinks";
 import {
   buildBeansLookup,
   formatTastingDate,
-  getNormalizedTastingSampleLabel,
   getTastingVariableLabel,
 } from "~/components/tastings/utils";
 import { useTastingDetailData } from "~/hooks/queries/tastings";
@@ -101,22 +96,13 @@ function TastingIndexPage() {
             Samples
           </div>
           <div className="bg-gray-50/50 dark:bg-white/5">
-            <TastingSamplesList variant="inbox">
-              {tasting.samples.map((sample, index) => (
-                <TastingSamplesListItem key={sample.id} variant="inbox" asChild>
-                  <RouterLink
-                    to="/drinks/tastings/$tastingId/samples/$sampleId"
-                    params={{ tastingId: tasting.id, sampleId: sample.id }}
-                    resetScroll={false}
-                  >
-                    <TastingSamplesListItemContent
-                      sampleNumber={index + 1}
-                      label={getNormalizedTastingSampleLabel(tasting.variable, sample, beansLookup)}
-                    />
-                  </RouterLink>
-                </TastingSamplesListItem>
-              ))}
-            </TastingSamplesList>
+            <TastingSamplesLinks
+              variant="inbox"
+              tastingId={tasting.id}
+              variable={tasting.variable}
+              samples={tasting.samples}
+              beansLookup={beansLookup}
+            />
           </div>
         </div>
       </div>
