@@ -83,6 +83,7 @@ export const TastingScoringForm = ({
 
   const { handleSubmit, register, watch } = methods;
   const samples = watch("samples");
+  const activeSampleKey = tasting.samples[activeSampleIndex]?.id ?? String(activeSampleIndex);
 
   const normalizedBeansLookup = useMemo(() => buildBeansLookup(beansLookup), [beansLookup]);
 
@@ -220,10 +221,14 @@ export const TastingScoringForm = ({
       >
         {isSm ? (
           <TastingSamplesShell list={renderSamplesList()}>
-            <div className="space-y-6">{sampleFormContent}</div>
+            <div key={activeSampleKey} className="space-y-6">
+              {sampleFormContent}
+            </div>
           </TastingSamplesShell>
         ) : (
-          <div className="space-y-5">{sampleFormContent}</div>
+          <div key={activeSampleKey} className="space-y-5">
+            {sampleFormContent}
+          </div>
         )}
 
         {!isSm && (

@@ -17,11 +17,17 @@ export const FormInputSlider = ({ label, id, ...rest }: FormInputSlider) => {
       <Input.Label htmlFor={id}>{label}</Input.Label>
       <div className="mt-3">
         <Controller
+          key={id}
           control={control}
           name={id}
           render={({ field }) => (
             <InputSlider
-              values={[typeof field.value === "number" ? field.value : rest.min]}
+              key={id}
+              values={[
+                typeof field.value === "number" && Number.isFinite(field.value)
+                  ? field.value
+                  : rest.min,
+              ]}
               onChange={(values) => field.onChange(values[0])}
               {...rest}
             />
