@@ -20,11 +20,7 @@ function TastingScoringPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { tasting, beans, isLoadingTasting } = useTastingDetailData({
-    tastingId,
-    enabledTasting: true,
-    enabledBeans: true,
-  });
+  const { tasting, beans, isLoadingTasting } = useTastingDetailData({ tastingId });
 
   const mutation = useMutation({
     mutationFn: async (data: TastingScoringFormInputs) =>

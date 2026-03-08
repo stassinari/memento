@@ -1,6 +1,7 @@
 import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { Button } from "~/components/Button";
 import { NotFound } from "~/components/ErrorPage";
+import { TastingDetailDesktopLayout } from "~/components/tastings/TastingDetailDesktopLayout";
 import { TastingDetailHeader } from "~/components/tastings/TastingDetailHeader";
 import { TastingSetupCard } from "~/components/tastings/TastingDetailCards";
 import { TastingSamplesLinks } from "~/components/tastings/TastingSamplesLinks";
@@ -16,21 +17,32 @@ function TastingIndexPage() {
   const { tastingId } = Route.useParams();
   const isSm = useScreenMediaQuery("sm");
 
-  const { tasting, beans, isLoadingTasting } = useTastingDetailData({
-    tastingId,
-    enabledTasting: !isSm,
-    enabledBeans: !isSm,
-  });
-
   if (isSm) {
     return (
-      <div className="grid min-h-64 place-items-center px-2">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Select a sample from the left to view its details.
-        </p>
-      </div>
+      <TastingDetailDesktopLayout
+        tastingId={tastingId}
+        headingActionSlot={
+          <Button variant="white" colour="accent" size="sm" asChild>
+            <RouterLink to="/drinks/tastings">Back to list</RouterLink>
+          </Button>
+        }
+      >
+        {() => (
+          <div className="grid min-h-64 place-items-center px-2">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Select a sample from the left to view its details.
+            </p>
+          </div>
+        )}
+      </TastingDetailDesktopLayout>
     );
   }
+
+  return <TastingIndexMobile tastingId={tastingId} />;
+}
+
+function TastingIndexMobile({ tastingId }: { tastingId: string }) {
+  const { tasting, beans, isLoadingTasting } = useTastingDetailData({ tastingId });
 
   if (isLoadingTasting) {
     return null;

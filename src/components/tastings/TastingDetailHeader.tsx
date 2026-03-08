@@ -44,8 +44,10 @@ export const TastingDetailHeader = ({
             Edit scoring
           </RouterLink>
         </Button>
-        <Button variant="white" size="sm" disabled>
-          Edit setup
+        <Button variant="white" size="sm" asChild>
+          <RouterLink to="/drinks/tastings/$tastingId/setup" params={{ tastingId }}>
+            Edit setup
+          </RouterLink>
         </Button>
         <Button variant="white" size="sm" disabled>
           Clone

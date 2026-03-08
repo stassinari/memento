@@ -16,24 +16,12 @@ export const beansLookupQueryOptions = () =>
     queryFn: () => getBeansLookup(),
   });
 
-interface UseTastingDetailDataParams {
-  tastingId: string;
-  enabledTasting?: boolean;
-  enabledBeans?: boolean;
-}
-
-export const useTastingDetailData = ({
-  tastingId,
-  enabledTasting = true,
-  enabledBeans = true,
-}: UseTastingDetailDataParams) => {
+export const useTastingDetailData = ({ tastingId }: { tastingId: string }) => {
   const { data: tasting, isLoading: isLoadingTasting } = useQuery({
     ...tastingQueryOptions(tastingId),
-    enabled: enabledTasting,
   });
   const { data: beans = [] } = useQuery({
     ...beansLookupQueryOptions(),
-    enabled: enabledBeans,
   });
 
   return {

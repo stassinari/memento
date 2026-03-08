@@ -13,7 +13,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
@@ -38,20 +37,17 @@ import { Beans } from "~/db/types";
 import { parseNullableNumberInput } from "~/util";
 import { Divider } from "../Divider";
 import { TastingSetupFormInputs, TastingSetupSampleInputs } from "./form-types";
-import { tastingVariablesList } from "./utils";
+import { TastingVariableSelector } from "./TastingVariableSelector";
 
 interface TastingCreateFormProps {
   beansList: Pick<Beans, "id" | "name" | "roaster" | "isFrozen" | "roastDate">[];
   onSubmit: (data: TastingSetupFormInputs) => void;
   isSubmitting?: boolean;
+  mode?: "create" | "edit";
+  defaultValues?: TastingSetupFormInputs;
 }
 
 type FormStep = 1 | 2;
-
-const nonBeansVariables = tastingVariablesList.map((entry) => ({
-  label: entry.label,
-  value: entry.value as Exclude<TastingVariable, TastingVariable.Beans>,
-}));
 
 const toNullableString = (value: string | null): string | null => {
   if (!value) return null;
@@ -95,6 +91,8 @@ export const TastingCreateForm = ({
   beansList,
   onSubmit,
   isSubmitting = false,
+  mode = "create",
+  defaultValues,
 }: TastingCreateFormProps) => {
   const [step, setStep] = useState<FormStep>(1);
   const [stepError, setStepError] = useState<string | null>(null);
@@ -104,7 +102,7 @@ export const TastingCreateForm = ({
   const nextFallbackSampleOrderRef = useRef(1);
 
   const methods = useForm<TastingSetupFormInputs>({
-    defaultValues: tastingFormEmptyValues,
+    defaultValues: defaultValues ?? tastingFormEmptyValues,
   });
   const { data: brewFormValueSuggestions } = useQuery({
     queryKey: ["brews", "formValueSuggestions"],
@@ -124,6 +122,7 @@ export const TastingCreateForm = ({
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "samples",
+    keyName: "fieldId",
   });
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -150,6 +149,7 @@ export const TastingCreateForm = ({
   const targetTimeSeconds = watch("targetTimeSeconds");
   const note = watch("note");
   const samples = watch("samples");
+  const isEditMode = mode === "edit";
 
   const beansById = useMemo(() => {
     const map = new Map<string, string>();
@@ -181,12 +181,12 @@ export const TastingCreateForm = ({
     targetTimeMinutes !== null || targetTimeSeconds !== null
       ? `${targetTimeMinutes ?? 0}:${String(targetTimeSeconds ?? 0).padStart(2, "0")}`
       : null;
-  const shouldShowCollapseAll = fields.some((field) => collapsedSampleIds[field.id] !== true);
+  const shouldShowCollapseAll = fields.some((field) => collapsedSampleIds[field.fieldId] !== true);
 
   useEffect(() => {
     fields.forEach((field) => {
-      if (!fallbackSampleOrderByIdRef.current[field.id]) {
-        fallbackSampleOrderByIdRef.current[field.id] = nextFallbackSampleOrderRef.current++;
+      if (!fallbackSampleOrderByIdRef.current[field.fieldId]) {
+        fallbackSampleOrderByIdRef.current[field.fieldId] = nextFallbackSampleOrderRef.current++;
       }
     });
   }, [fields]);
@@ -324,7 +324,15 @@ export const TastingCreateForm = ({
 
   const removeSample = (index: number) => {
     if (fields.length <= 2) return;
-    const removedId = fields[index]?.id;
+    const hasPersistedSample = isEditMode && Boolean(samples[index]?.id);
+    if (hasPersistedSample && typeof window !== "undefined") {
+      const confirmed = window.confirm(
+        "Removing this sample will permanently delete its scoring data when you save setup. Continue?",
+      );
+      if (!confirmed) return;
+    }
+
+    const removedId = fields[index]?.fieldId;
     remove(index);
     if (removedId) {
       setCollapsedSampleIds((current) => {
@@ -333,14 +341,13 @@ export const TastingCreateForm = ({
         return next;
       });
     }
-
   };
 
   const handleSamplesDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
 
-    const oldIndex = fields.findIndex((field) => field.id === active.id);
-    const newIndex = fields.findIndex((field) => field.id === over.id);
+    const oldIndex = fields.findIndex((field) => field.fieldId === active.id);
+    const newIndex = fields.findIndex((field) => field.fieldId === over.id);
     if (oldIndex < 0 || newIndex < 0) return;
 
     move(oldIndex, newIndex);
@@ -357,7 +364,7 @@ export const TastingCreateForm = ({
     if (shouldShowCollapseAll) {
       const collapsedAll: Record<string, boolean> = {};
       fields.forEach((field) => {
-        collapsedAll[field.id] = true;
+        collapsedAll[field.fieldId] = true;
       });
       setCollapsedSampleIds(collapsedAll);
       return;
@@ -366,7 +373,7 @@ export const TastingCreateForm = ({
     setCollapsedSampleIds((current) => {
       const next = { ...current };
       fields.forEach((field) => {
-        next[field.id] = false;
+        next[field.fieldId] = false;
       });
       return next;
     });
@@ -415,117 +422,23 @@ export const TastingCreateForm = ({
                 error={errors.date?.message}
               />
 
-              <fieldset>
-                <legend className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  What are you tasting?
-                </legend>
-                <Controller
-                  control={control}
-                  name="variable"
-                  render={({ field }) => (
-                    <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                      <label
-                        className={clsx(
-                          "group relative flex rounded-lg border border-gray-300 bg-white p-4 has-focus-visible:outline-3 has-focus-visible:-outline-offset-1 dark:border-white/10 dark:bg-gray-900",
-                          field.value === TastingVariable.Beans &&
-                            "-outline-offset-2 outline-2 outline-orange-600 dark:outline-orange-400",
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          className="sr-only"
-                          checked={field.value === TastingVariable.Beans}
-                          onChange={() => {
-                            field.onChange(TastingVariable.Beans);
-                            updateVariable(TastingVariable.Beans);
-                          }}
-                        />
-                        <div className="flex-1">
-                          <span className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
-                            Beans
-                          </span>
-                          <span className="mt-1 block text-sm text-gray-500 dark:text-gray-400">
-                            Compare different coffees (cupping and similar sessions).
-                          </span>
-                        </div>
-                        <CheckCircleIcon
-                          className={clsx(
-                            "size-5 text-orange-600 dark:text-orange-400",
-                            field.value === TastingVariable.Beans ? "visible" : "invisible",
-                          )}
-                        />
-                      </label>
-
-                      <label
-                        className={clsx(
-                          "group relative flex rounded-lg border border-gray-300 bg-white p-4 has-focus-visible:outline-3 has-focus-visible:-outline-offset-1 dark:border-white/10 dark:bg-gray-900",
-                          field.value !== TastingVariable.Beans &&
-                            "-outline-offset-2 outline-2 outline-orange-600 dark:outline-orange-400",
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          className="sr-only"
-                          checked={field.value !== TastingVariable.Beans}
-                          onChange={() => {
-                            if (field.value === TastingVariable.Beans) {
-                              field.onChange(null);
-                            }
-                          }}
-                        />
-                        <div className="flex-1">
-                          <span className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
-                            Something else
-                          </span>
-                          <span className="mt-1 block text-sm text-gray-500 dark:text-gray-400">
-                            Compare one setup variable while holding the rest steady.
-                          </span>
-                          <div className="mt-3">
-                            <select
-                              value={
-                                field.value && field.value !== TastingVariable.Beans
-                                  ? field.value
-                                  : ""
-                              }
-                              onChange={(event) => {
-                                const value = event.currentTarget.value as
-                                  | Exclude<TastingVariable, TastingVariable.Beans>
-                                  | "";
-                                if (value === "") {
-                                  field.onChange(null);
-                                  return;
-                                }
-
-                                const variableValue = value as Exclude<
-                                  TastingVariable,
-                                  TastingVariable.Beans
-                                >;
-                                field.onChange(variableValue);
-                                updateVariable(variableValue);
-                              }}
-                              className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
-                            >
-                              <option value="">Select variable</option>
-                              {nonBeansVariables.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                        <CheckCircleIcon
-                          className={clsx(
-                            "size-5 text-orange-600 dark:text-orange-400",
-                            field.value !== TastingVariable.Beans ? "visible" : "invisible",
-                          )}
-                        />
-                      </label>
-                    </div>
-                  )}
-                />
-                {step1VariableError && <Input.Error>{step1VariableError}</Input.Error>}
-              </fieldset>
+              <Controller
+                control={control}
+                name="variable"
+                render={({ field }) => (
+                  <TastingVariableSelector
+                    value={field.value}
+                    disabled={isEditMode}
+                    onChange={(nextVariable) => {
+                      field.onChange(nextVariable);
+                      if (nextVariable) {
+                        updateVariable(nextVariable);
+                      }
+                    }}
+                  />
+                )}
+              />
+              {step1VariableError && <Input.Error>{step1VariableError}</Input.Error>}
             </FormSection>
 
             <Divider className="hidden sm:block" />
@@ -830,55 +743,84 @@ export const TastingCreateForm = ({
                 onDragEnd={handleSamplesDragEnd}
               >
                 <SortableContext
-                  items={fields.map((field) => field.id)}
+                  items={fields.map((field) => field.fieldId)}
                   strategy={verticalListSortingStrategy}
                 >
                   <div className="space-y-4">
                     {fields.map((field, index) => {
                       const currentSample = samples[index];
+                      const isLockedSampleValue = isEditMode && Boolean(currentSample?.id);
                       return (
                         <SortableFormCard
-                          key={field.id}
-                          id={field.id}
-                          title={getSampleDisplayTitle(index, field.id)}
+                          key={field.fieldId}
+                          id={field.fieldId}
+                          title={getSampleDisplayTitle(index, field.fieldId)}
                           canRemove={fields.length > 2}
                           onRemove={() => removeSample(index)}
-                          isCollapsed={collapsedSampleIds[field.id] ?? false}
-                          onToggleCollapse={() => toggleSampleCollapse(field.id)}
+                          isCollapsed={collapsedSampleIds[field.fieldId] ?? false}
+                          onToggleCollapse={() => toggleSampleCollapse(field.fieldId)}
                         >
                           {variable === TastingVariable.Beans ? (
-                            <div>
-                              <Input.Label htmlFor={`samples.${index}.variableValueBeansId`}>
-                                Beans *
-                              </Input.Label>
-                              <div className="mt-1">
-                                <select
-                                  id={`samples.${index}.variableValueBeansId`}
-                                  {...register(`samples.${index}.variableValueBeansId` as const)}
-                                  className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
-                                >
-                                  {getSampleBeansOptions(
-                                    currentSample?.variableValueBeansId ?? null,
-                                  ).map((option) => (
-                                    <option
-                                      key={`${field.id}-${option.value}`}
-                                      value={option.value}
-                                      disabled={option.disabled}
-                                    >
-                                      {option.label}
-                                    </option>
-                                  ))}
-                                </select>
+                            isLockedSampleValue ? (
+                              <FormInput
+                                label="Beans"
+                                id={`samples.${index}.variableValueBeansId`}
+                                inputProps={{
+                                  value: currentSample?.variableValueBeansId
+                                    ? (beansById.get(currentSample.variableValueBeansId) ?? "Unknown beans")
+                                    : "",
+                                  disabled: true,
+                                  readOnly: true,
+                                }}
+                              />
+                            ) : (
+                              <div>
+                                <Input.Label htmlFor={`samples.${index}.variableValueBeansId`}>
+                                  Beans *
+                                </Input.Label>
+                                <div className="mt-1">
+                                  <select
+                                    id={`samples.${index}.variableValueBeansId`}
+                                    {...register(`samples.${index}.variableValueBeansId` as const)}
+                                    className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
+                                  >
+                                    {getSampleBeansOptions(
+                                      currentSample?.variableValueBeansId ?? null,
+                                    ).map((option) => (
+                                      <option
+                                        key={`${field.fieldId}-${option.value}`}
+                                        value={option.value}
+                                        disabled={option.disabled}
+                                      >
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
                               </div>
-                            </div>
+                            )
                           ) : (
-                            <FormInput
-                              label="Variable value *"
-                              id={`samples.${index}.variableValueText`}
-                              inputProps={{
-                                ...register(`samples.${index}.variableValueText` as const),
-                              }}
-                            />
+                            <>
+                              {isLockedSampleValue ? (
+                                <FormInput
+                                  label="Variable value"
+                                  id={`samples.${index}.variableValueText`}
+                                  inputProps={{
+                                    value: currentSample?.variableValueText ?? "",
+                                    disabled: true,
+                                    readOnly: true,
+                                  }}
+                                />
+                              ) : (
+                                <FormInput
+                                  label="Variable value *"
+                                  id={`samples.${index}.variableValueText`}
+                                  inputProps={{
+                                    ...register(`samples.${index}.variableValueText` as const),
+                                  }}
+                                />
+                              )}
+                            </>
                           )}
 
                           <div className="mt-3">
@@ -902,7 +844,7 @@ export const TastingCreateForm = ({
                 Back
               </Button>
               <Button type="button" variant="primary" colour="accent" onClick={saveSetup}>
-                {isSubmitting ? "Saving..." : "Save setup"}
+                {isSubmitting ? "Saving..." : isEditMode ? "Save changes" : "Save setup"}
               </Button>
             </div>
           </>
