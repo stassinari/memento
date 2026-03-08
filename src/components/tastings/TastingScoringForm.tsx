@@ -66,6 +66,7 @@ interface TastingScoringFormProps {
   tasting: TastingLike;
   beansLookup: BeansLookupItem[];
   onSubmit: (data: TastingScoringFormInputs) => void;
+  onBack?: () => void;
   isSubmitting?: boolean;
 }
 
@@ -94,6 +95,7 @@ export const TastingScoringForm = ({
   tasting,
   beansLookup,
   onSubmit,
+  onBack,
   isSubmitting = false,
 }: TastingScoringFormProps) => {
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
@@ -340,6 +342,11 @@ export const TastingScoringForm = ({
         )}
 
         <div className="flex justify-end gap-4">
+          {onBack && (
+            <Button type="button" variant="white" onClick={onBack} disabled={isSubmitting}>
+              Back
+            </Button>
+          )}
           <Button type="submit" variant="primary" colour="accent" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save scoring"}
           </Button>

@@ -192,23 +192,50 @@ export const deleteBeans = createServerFn({ method: "POST" })
   })
   .handler(async ({ data: { beansId }, context }) => {
     try {
-      // check if beans have associated brews or espressos before deleting
-      const hasDrinks = await db
-        .select({ id: brews.id })
-        .from(brews)
-        .where(eq(brews.beansId, beansId))
-        .union(db.select({ id: espresso.id }).from(espresso).where(eq(espresso.beansId, beansId)))
-        .limit(1);
+      const [hasBrews, hasEspressos, hasTastings, hasTastingSamples] = await Promise.all([
+        db
+          .select({ id: brews.id })
+          .from(brews)
+          .where(and(eq(brews.beansId, beansId), eq(brews.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: espresso.id })
+          .from(espresso)
+          .where(and(eq(espresso.beansId, beansId), eq(espresso.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: tastings.id })
+          .from(tastings)
+          .where(and(eq(tastings.beansId, beansId), eq(tastings.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: tastingSamples.id })
+          .from(tastingSamples)
+          .innerJoin(tastings, eq(tastingSamples.tastingId, tastings.id))
+          .where(
+            and(
+              eq(tastingSamples.variableValueBeansId, beansId),
+              eq(tastings.userId, context.userId),
+            ),
+          )
+          .limit(1),
+      ]);
 
-      if (hasDrinks.length > 0) {
-        return false; // Cannot delete beans with associated brews or espressos
+      if (
+        hasBrews.length > 0 ||
+        hasEspressos.length > 0 ||
+        hasTastings.length > 0 ||
+        hasTastingSamples.length > 0
+      ) {
+        return false;
       }
 
       await db.delete(beans).where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
 
-      return true; // Deletion successful
+      return true;
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
+      return false;
     }
   });
 

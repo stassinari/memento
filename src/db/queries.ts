@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, isNull, or, sql } from "drizzle-orm";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
 import {
@@ -221,7 +221,7 @@ export const getTastings = createServerFn({ method: "GET" })
     try {
       const tastingList = await db.query.tastings.findMany({
         where: (tastings, { eq }) => eq(tastings.userId, context.userId),
-        orderBy: (tastings, { desc }) => [desc(tastings.createdAt)],
+        orderBy: (tastings, { desc }) => [desc(sql`coalesce(${tastings.date}, ${tastings.createdAt})`)],
         limit,
         offset,
         with: {

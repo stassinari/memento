@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link as RouterLink, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
+import { Button } from "~/components/Button";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { TastingScoringForm } from "~/components/tastings/TastingScoringForm";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_auth/_layout/drinks/tastings/$tastingId/
 
 function TastingScoringPage() {
   const { tastingId } = Route.useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { tasting, beans, isLoadingTasting } = useTastingDetailData({
@@ -52,7 +54,17 @@ function TastingScoringPage() {
       <BreadcrumbsWithHome
         items={[navLinks.drinks, navLinks.tastings, { label: variableLabel }, { label: "Scoring" }]}
       />
-      <Heading>Tasting scoring</Heading>
+      <Heading
+        actionSlot={
+          <Button variant="white" colour="accent" size="sm" asChild>
+            <RouterLink to="/drinks/tastings/$tastingId" params={{ tastingId }}>
+              Back to tasting
+            </RouterLink>
+          </Button>
+        }
+      >
+        Tasting scoring
+      </Heading>
       <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
         {formatTastingDate(tasting.date ?? tasting.createdAt)}
       </p>
@@ -61,6 +73,7 @@ function TastingScoringPage() {
         tasting={tasting}
         beansLookup={beans}
         onSubmit={(data) => mutation.mutate(data)}
+        onBack={() => navigate({ to: "/drinks/tastings/$tastingId", params: { tastingId } })}
         isSubmitting={mutation.isPending}
       />
     </>
