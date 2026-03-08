@@ -17,7 +17,11 @@ import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { TastingVariable } from "~/db/schema";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { parseNullableNumberInput } from "~/util";
-import { TastingScoringFormInputs } from "./form-types";
+import { TastingScoringFormInputs, TastingScoringSampleInputs } from "./form-types";
+import {
+  mapTastingScoringFormValuesFromSamples,
+  normalizeTastingScoringFormData,
+} from "./scoring-mappers";
 
 interface BeansLookupItem {
   id: string;
@@ -25,36 +29,9 @@ interface BeansLookupItem {
   roaster: string;
 }
 
-interface TastingSampleLike {
-  id: string;
+interface TastingSampleLike extends TastingScoringSampleInputs {
   variableValueText: string | null;
   variableValueBeansId: string | null;
-  note: string | null;
-  actualTimeMinutes: number | null;
-  actualTimeSeconds: number | null;
-
-  overall: number | null;
-  flavours: string[];
-
-  aromaQuantity: number | null;
-  aromaQuality: number | null;
-  aromaNotes: string | null;
-
-  acidityQuantity: number | null;
-  acidityQuality: number | null;
-  acidityNotes: string | null;
-
-  sweetnessQuantity: number | null;
-  sweetnessQuality: number | null;
-  sweetnessNotes: string | null;
-
-  bodyQuantity: number | null;
-  bodyQuality: number | null;
-  bodyNotes: string | null;
-
-  finishQuantity: number | null;
-  finishQuality: number | null;
-  finishNotes: string | null;
 }
 
 interface TastingLike {
@@ -82,15 +59,6 @@ const scoreDimensions: Array<{ key: ScoreDimensionKey; label: string }> = [
 
 const allFlavourOptions = notesToOptions(tastingNotes).map((note) => note.label);
 
-const toNullableString = (value: string | null): string | null => {
-  if (!value) return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-};
-
-const toNullableNumber = (value: number | null): number | null =>
-  value === null || Number.isNaN(value) ? null : value;
-
 export const TastingScoringForm = ({
   tasting,
   beansLookup,
@@ -100,62 +68,18 @@ export const TastingScoringForm = ({
 }: TastingScoringFormProps) => {
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
   const isSm = useScreenMediaQuery("sm");
+  const formValues = useMemo(
+    () => mapTastingScoringFormValuesFromSamples(tasting.samples),
+    [tasting.samples],
+  );
 
   const methods = useForm<TastingScoringFormInputs>({
-    defaultValues: {
-      samples: tasting.samples.map((sample) => ({
-        id: sample.id,
-        note: sample.note,
-        actualTimeMinutes: sample.actualTimeMinutes,
-        actualTimeSeconds: sample.actualTimeSeconds,
-        overall: sample.overall,
-        flavours: sample.flavours,
-        aromaQuantity: sample.aromaQuantity,
-        aromaQuality: sample.aromaQuality,
-        aromaNotes: sample.aromaNotes,
-        acidityQuantity: sample.acidityQuantity,
-        acidityQuality: sample.acidityQuality,
-        acidityNotes: sample.acidityNotes,
-        sweetnessQuantity: sample.sweetnessQuantity,
-        sweetnessQuality: sample.sweetnessQuality,
-        sweetnessNotes: sample.sweetnessNotes,
-        bodyQuantity: sample.bodyQuantity,
-        bodyQuality: sample.bodyQuality,
-        bodyNotes: sample.bodyNotes,
-        finishQuantity: sample.finishQuantity,
-        finishQuality: sample.finishQuality,
-        finishNotes: sample.finishNotes,
-      })),
-    },
+    defaultValues: formValues,
   });
 
   useEffect(() => {
-    methods.reset({
-      samples: tasting.samples.map((sample) => ({
-        id: sample.id,
-        note: sample.note,
-        actualTimeMinutes: sample.actualTimeMinutes,
-        actualTimeSeconds: sample.actualTimeSeconds,
-        overall: sample.overall,
-        flavours: sample.flavours,
-        aromaQuantity: sample.aromaQuantity,
-        aromaQuality: sample.aromaQuality,
-        aromaNotes: sample.aromaNotes,
-        acidityQuantity: sample.acidityQuantity,
-        acidityQuality: sample.acidityQuality,
-        acidityNotes: sample.acidityNotes,
-        sweetnessQuantity: sample.sweetnessQuantity,
-        sweetnessQuality: sample.sweetnessQuality,
-        sweetnessNotes: sample.sweetnessNotes,
-        bodyQuantity: sample.bodyQuantity,
-        bodyQuality: sample.bodyQuality,
-        bodyNotes: sample.bodyNotes,
-        finishQuantity: sample.finishQuantity,
-        finishQuality: sample.finishQuality,
-        finishNotes: sample.finishNotes,
-      })),
-    });
-  }, [methods, tasting.samples]);
+    methods.reset(formValues);
+  }, [methods, formValues]);
 
   const { handleSubmit, register, watch } = methods;
   const samples = watch("samples");
@@ -289,31 +213,7 @@ export const TastingScoringForm = ({
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit((data) => {
-          onSubmit({
-            samples: data.samples.map((sample) => ({
-              ...sample,
-              note: toNullableString(sample.note),
-              actualTimeMinutes: toNullableNumber(sample.actualTimeMinutes),
-              actualTimeSeconds: toNullableNumber(sample.actualTimeSeconds),
-              overall: toNullableNumber(sample.overall),
-              flavours: sample.flavours ?? [],
-              aromaQuantity: toNullableNumber(sample.aromaQuantity),
-              aromaQuality: toNullableNumber(sample.aromaQuality),
-              aromaNotes: toNullableString(sample.aromaNotes),
-              acidityQuantity: toNullableNumber(sample.acidityQuantity),
-              acidityQuality: toNullableNumber(sample.acidityQuality),
-              acidityNotes: toNullableString(sample.acidityNotes),
-              sweetnessQuantity: toNullableNumber(sample.sweetnessQuantity),
-              sweetnessQuality: toNullableNumber(sample.sweetnessQuality),
-              sweetnessNotes: toNullableString(sample.sweetnessNotes),
-              bodyQuantity: toNullableNumber(sample.bodyQuantity),
-              bodyQuality: toNullableNumber(sample.bodyQuality),
-              bodyNotes: toNullableString(sample.bodyNotes),
-              finishQuantity: toNullableNumber(sample.finishQuantity),
-              finishQuality: toNullableNumber(sample.finishQuality),
-              finishNotes: toNullableString(sample.finishNotes),
-            })),
-          });
+          onSubmit(normalizeTastingScoringFormData(data));
         })}
         autoComplete="off"
         className="space-y-6 pb-[calc(env(safe-area-inset-bottom)+3.5rem)] sm:pb-0"
