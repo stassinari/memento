@@ -977,3 +977,19 @@ export const updateTastingScoring = createServerFn({ method: "POST" })
       }
     });
   });
+
+export const deleteTasting = createServerFn({ method: "POST" })
+  .inputValidator((input: { tastingId: string }) => {
+    if (!input.tastingId) throw new Error("Tasting ID is required");
+    return input;
+  })
+  .handler(async ({ data: { tastingId }, context }): Promise<void> => {
+    try {
+      await db
+        .delete(tastings)
+        .where(and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)));
+    } catch (error) {
+      console.error("PostgreSQL delete tasting failed:", error);
+      throw error;
+    }
+  });

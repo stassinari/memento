@@ -1,9 +1,13 @@
 import type { ReactNode } from "react";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
+import { ConfirmDialog } from "~/components/ConfirmDialog";
 import { Heading } from "~/components/Heading";
+import { deleteTasting } from "~/db/mutations";
 import { formatTastingDate, getTastingVariableLabel } from "~/components/tastings/utils";
 
 interface TastingDetailHeaderProps {
@@ -22,6 +26,22 @@ export const TastingDetailHeader = ({
   headingActionSlot,
 }: TastingDetailHeaderProps) => {
   const variableLabel = getTastingVariableLabel(variable ?? "unknown");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => deleteTasting({ data: { tastingId } }),
+    onSuccess: () => {
+      setShowDeleteDialog(false);
+      queryClient.invalidateQueries({ queryKey: ["tastings"] });
+      queryClient.invalidateQueries({ queryKey: ["beans"] });
+      navigate({ to: "/drinks/tastings" });
+    },
+    onError: (error) => {
+      console.error("Delete tasting - mutation error:", error);
+    },
+  });
 
   return (
     <>
@@ -49,13 +69,30 @@ export const TastingDetailHeader = ({
             Edit setup
           </RouterLink>
         </Button>
-        <Button variant="white" size="sm" disabled>
-          Clone
-        </Button>
-        <Button variant="white" size="sm" disabled>
+        <Button
+          variant="white"
+          size="sm"
+          className="text-red-700 hover:text-red-800 dark:text-red-300 dark:hover:text-red-200"
+          onClick={() => setShowDeleteDialog(true)}
+          disabled={deleteMutation.isPending}
+        >
           Delete
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={showDeleteDialog}
+        title="Delete tasting?"
+        description="This will permanently delete the tasting and all associated samples, including scoring data."
+        confirmLabel={deleteMutation.isPending ? "Deleting..." : "Delete tasting"}
+        cancelLabel="Cancel"
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setShowDeleteDialog(false);
+          }
+        }}
+        onConfirm={() => deleteMutation.mutate()}
+      />
     </>
   );
 };
