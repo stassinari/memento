@@ -21,6 +21,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Button } from "~/components/Button";
+import { ConfirmDialog } from "~/components/ConfirmDialog";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { FormInput } from "~/components/form/FormInput";
@@ -55,6 +56,7 @@ export const TastingCreateFormStepSamples = ({
   onSave,
 }: TastingCreateFormStepSamplesProps) => {
   const [collapsedSampleIds, setCollapsedSampleIds] = useState<Record<string, boolean>>({});
+  const [pendingRemoval, setPendingRemoval] = useState<{ fieldId: string; label: string } | null>(null);
   const fallbackSampleOrderByIdRef = useRef<Record<string, number>>({});
   const nextFallbackSampleOrderRef = useRef(1);
 
@@ -118,13 +120,6 @@ export const TastingCreateFormStepSamples = ({
 
   const removeSample = (index: number) => {
     if (fields.length <= 2) return;
-    const hasPersistedSample = isEditMode && Boolean(samples[index]?.id);
-    if (hasPersistedSample && typeof window !== "undefined") {
-      const confirmed = window.confirm(
-        "Removing this sample will permanently delete its scoring data when you save setup. Continue?",
-      );
-      if (!confirmed) return;
-    }
 
     const removedId = fields[index]?.fieldId;
     remove(index);
@@ -135,6 +130,33 @@ export const TastingCreateFormStepSamples = ({
         return next;
       });
     }
+  };
+
+  const requestRemoveSample = (index: number) => {
+    if (fields.length <= 2) return;
+    const fieldId = fields[index]?.fieldId;
+    if (!fieldId) return;
+
+    const hasPersistedSample = isEditMode && Boolean(samples[index]?.id);
+    if (!hasPersistedSample) {
+      removeSample(index);
+      return;
+    }
+
+    setPendingRemoval({
+      fieldId,
+      label: getSampleDisplayTitle(index, fieldId),
+    });
+  };
+
+  const confirmRemoveSample = () => {
+    if (!pendingRemoval) return;
+
+    const index = fields.findIndex((field) => field.fieldId === pendingRemoval.fieldId);
+    if (index >= 0) {
+      removeSample(index);
+    }
+    setPendingRemoval(null);
   };
 
   const handleSamplesDragEnd = ({ active, over }: DragEndEvent) => {
@@ -230,7 +252,7 @@ export const TastingCreateFormStepSamples = ({
                     id={field.fieldId}
                     title={getSampleDisplayTitle(index, field.fieldId)}
                     canRemove={fields.length > 2}
-                    onRemove={() => removeSample(index)}
+                    onRemove={() => requestRemoveSample(index)}
                     isCollapsed={collapsedSampleIds[field.fieldId] ?? false}
                     onToggleCollapse={() => toggleSampleCollapse(field.fieldId)}
                   >
@@ -323,6 +345,20 @@ export const TastingCreateFormStepSamples = ({
           {isSubmitting ? "Saving..." : isEditMode ? "Save changes" : "Save setup"}
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={pendingRemoval !== null}
+        title="Remove sample?"
+        description={
+          pendingRemoval
+            ? `${pendingRemoval.label} already has scoring data. If you save setup after removing it, all associated scoring will be permanently deleted.`
+            : ""
+        }
+        confirmLabel="Remove sample"
+        cancelLabel="Keep sample"
+        onCancel={() => setPendingRemoval(null)}
+        onConfirm={confirmRemoveSample}
+      />
     </>
   );
 };

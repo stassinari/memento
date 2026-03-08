@@ -97,7 +97,9 @@ export const SortableFormCard = ({
               disabled={!canRemove}
               onClick={onRemove}
             >
-              <TrashIcon /> Remove
+              <TrashIcon />
+              <span className="sr-only">Remove</span>
+              <span className="hidden md:inline">Remove</span>
             </Button>
           ) : null)}
       </div>
