@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
@@ -14,14 +16,12 @@ import {
 import { TastingSamplesShell } from "~/components/tastings/TastingSamplesShell";
 import { buildBeansLookup, getNormalizedTastingSampleLabel } from "~/components/tastings/utils";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
+import { updateTastingScoring } from "~/db/mutations";
 import { TastingVariable } from "~/db/schema";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { parseNullableNumberInput } from "~/util";
 import { TastingScoringFormInputs, TastingScoringSampleInputs } from "./form-types";
-import {
-  mapTastingScoringFormValuesFromSamples,
-  normalizeTastingScoringFormData,
-} from "./scoring-mappers";
+import { mapTastingScoringFormValuesFromSamples } from "./scoring-mappers";
 
 interface BeansLookupItem {
   id: string;
@@ -40,11 +40,10 @@ interface TastingLike {
 }
 
 interface TastingScoringFormProps {
+  tastingId: string;
   tasting: TastingLike;
   beansLookup: BeansLookupItem[];
-  onSubmit: (data: TastingScoringFormInputs) => void;
   onBack?: () => void;
-  isSubmitting?: boolean;
 }
 
 type ScoreDimensionKey = "aroma" | "acidity" | "sweetness" | "body" | "finish";
@@ -60,18 +59,37 @@ const scoreDimensions: Array<{ key: ScoreDimensionKey; label: string }> = [
 const allFlavourOptions = notesToOptions(tastingNotes).map((note) => note.label);
 
 export const TastingScoringForm = ({
+  tastingId,
   tasting,
   beansLookup,
-  onSubmit,
   onBack,
-  isSubmitting = false,
 }: TastingScoringFormProps) => {
+  const navigate = useNavigate();
   const [activeSampleIndex, setActiveSampleIndex] = useState(0);
   const isSm = useScreenMediaQuery("sm");
   const formValues = useMemo(
     () => mapTastingScoringFormValuesFromSamples(tasting.samples),
     [tasting.samples],
   );
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (data: TastingScoringFormInputs) =>
+      updateTastingScoring({ data: { tastingId, data } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tastings"] });
+      queryClient.invalidateQueries({ queryKey: ["tastings", tastingId] });
+      queryClient.invalidateQueries({ queryKey: ["beans"] });
+
+      navigate({ to: "/drinks/tastings/$tastingId", params: { tastingId } });
+    },
+    onError: (error) => {
+      console.error("Update tasting scoring - mutation error:", error);
+    },
+  });
+
+  const isSubmitting = mutation.isPending;
 
   const methods = useForm<TastingScoringFormInputs>({
     defaultValues: formValues,
@@ -114,10 +132,7 @@ export const TastingScoringForm = ({
           isSelected={tasting.samples[activeSampleIndex]?.id === sample.id}
           asChild
         >
-          <button
-            type="button"
-            onClick={() => setActiveSampleIndex(index)}
-          >
+          <button type="button" onClick={() => setActiveSampleIndex(index)}>
             <TastingSamplesListItemContent sampleNumber={index + 1} label={getSampleLabel(index)} />
           </button>
         </TastingSamplesListItem>
@@ -214,7 +229,7 @@ export const TastingScoringForm = ({
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit((data) => {
-          onSubmit(normalizeTastingScoringFormData(data));
+          mutation.mutate(data);
         })}
         autoComplete="off"
         className="space-y-6 pb-[calc(env(safe-area-inset-bottom)+3.5rem)] sm:pb-0"
@@ -253,7 +268,7 @@ export const TastingScoringForm = ({
             </Button>
           )}
           <Button type="submit" variant="primary" colour="accent" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save scoring"}
+            Save scoring
           </Button>
         </div>
       </form>
