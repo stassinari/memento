@@ -23,6 +23,7 @@ export const getEmptySample = (position: number): TastingSetupSampleInputs => ({
 export const tastingFormEmptyValues: TastingSetupFormInputs = {
   date: new Date(),
   variable: TastingVariable.Beans,
+  name: "",
   note: "",
   beansId: null,
   method: "",
@@ -152,6 +153,7 @@ export const normalizeTastingSetupFormData = (
   return {
     ...data,
     variable: data.variable!,
+    name: toNullableString(data.name),
     note: toNullableString(data.note),
     method: toNullableString(data.method),
     grinder: toNullableString(data.grinder),

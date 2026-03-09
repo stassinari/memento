@@ -11,6 +11,7 @@ export interface TastingSetupSampleInputs {
 export interface TastingSetupFormInputs {
   date: Date | null;
   variable: TastingVariable | null;
+  name: string | null;
   note: string | null;
 
   beansId: string | null;

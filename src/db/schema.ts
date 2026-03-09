@@ -269,6 +269,7 @@ export const tastings = pgTable(
     // Normalized tasting fields (migration target)
     date: timestamp("date", { withTimezone: true, mode: "date" }),
     variable: tastingVariableEnum("variable"),
+    name: text("name"),
     note: text("note"),
     beansId: uuid("beans_id").references(() => beans.id, {
       onDelete: "restrict",

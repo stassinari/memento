@@ -10,8 +10,8 @@ import { ListCard } from "~/components/ListCard";
 import {
   buildBeansLookup,
   formatTastingDate,
+  getTastingDisplayName,
   getNormalizedTastingSampleLabel,
-  getTastingVariableLabel,
 } from "~/components/tastings/utils";
 import { getTastings } from "~/db/queries";
 import { beansLookupQueryOptions } from "~/hooks/queries/tastings";
@@ -98,7 +98,7 @@ function TastingsListPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="grow">
                       <ListCard.Title>
-                        {getTastingVariableLabel(tasting.variable ?? "unknown")}
+                        {getTastingDisplayName(tasting.name, tasting.variable)}
                       </ListCard.Title>
                       <ListCard.Row className="line-clamp-2">
                         {preview || `${tasting.samples.length} samples`}

@@ -5,7 +5,11 @@ import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { ConfirmDialog } from "~/components/ConfirmDialog";
 import { Heading } from "~/components/Heading";
-import { formatTastingDate, getTastingVariableLabel } from "~/components/tastings/utils";
+import {
+  formatTastingDate,
+  getTastingDisplayName,
+  getTastingVariableLabel,
+} from "~/components/tastings/utils";
 import { deleteTasting } from "~/db/mutations";
 import { Badge } from "../Badge";
 import { ButtonWithDropdown } from "../ButtonWithDropdown";
@@ -13,6 +17,7 @@ import { ButtonWithDropdown } from "../ButtonWithDropdown";
 interface TastingDetailHeaderProps {
   tastingId: string;
   variable: string | null;
+  name: string | null;
   date: Date | null;
   createdAt: Date;
 }
@@ -20,10 +25,12 @@ interface TastingDetailHeaderProps {
 export const TastingDetailHeader = ({
   tastingId,
   variable,
+  name,
   date,
   createdAt,
 }: TastingDetailHeaderProps) => {
   const variableLabel = getTastingVariableLabel(variable ?? "unknown");
+  const tastingName = getTastingDisplayName(name, variable);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -68,7 +75,7 @@ export const TastingDetailHeader = ({
           />
         }
       >
-        Tasting detail
+        {tastingName}
       </Heading>
 
       <div className="mb-3 flex flex-wrap items-center gap-2">

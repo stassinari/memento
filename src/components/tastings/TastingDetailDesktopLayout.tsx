@@ -38,6 +38,7 @@ export const TastingDetailDesktopLayout = ({
       <TastingDetailHeader
         tastingId={tasting.id}
         variable={tasting.variable}
+        name={tasting.name}
         date={tasting.date}
         createdAt={tasting.createdAt}
       />

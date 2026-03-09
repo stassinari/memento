@@ -51,6 +51,7 @@ function TastingIndexMobile({ tastingId }: { tastingId: string }) {
       <TastingDetailHeader
         tastingId={tasting.id}
         variable={tasting.variable}
+        name={tasting.name}
         date={tasting.date}
         createdAt={tasting.createdAt}
       />

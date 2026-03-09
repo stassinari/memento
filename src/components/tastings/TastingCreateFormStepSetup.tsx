@@ -15,7 +15,13 @@ import { parseNullableNumberInput } from "~/util";
 import { Divider } from "../Divider";
 import { TastingSetupFormInputs } from "./form-types";
 import { TastingVariableSelector } from "./TastingVariableSelector";
-import { buildBeansById, getTargetTimeSummary, groupBeansOptions, toNullableString } from "./tasting-create-form-utils";
+import {
+  buildBeansById,
+  getTargetTimeSummary,
+  groupBeansOptions,
+  toNullableString,
+} from "./tasting-create-form-utils";
+import { getTastingDefaultName } from "./utils";
 
 interface TastingCreateFormStepSetupProps {
   beansList: Pick<Beans, "id" | "name" | "roaster" | "isFrozen" | "roastDate">[];
@@ -121,6 +127,16 @@ export const TastingCreateFormStepSetup = ({
           )}
         />
         {stepError && <Input.Error>{stepError}</Input.Error>}
+
+        <FormInput
+          label="Name"
+          id="name"
+          helperText={`Optional. Defaults to "${getTastingDefaultName(variable)}".`}
+          inputProps={{
+            ...register("name"),
+            placeholder: getTastingDefaultName(variable),
+          }}
+        />
       </FormSection>
 
       <Divider className="hidden sm:block" />

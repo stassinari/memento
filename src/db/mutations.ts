@@ -713,6 +713,7 @@ const toTastingSetupValues = (data: TastingSetupFormInputs) => {
   return {
     date: data.date,
     variable,
+    name: nullableText(data.name),
     note: nullableText(data.note),
     beansId: variable === TastingVariable.Beans ? null : data.beansId,
     method: variable === TastingVariable.Method ? null : nullableText(data.method),

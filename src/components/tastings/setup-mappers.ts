@@ -13,6 +13,7 @@ interface TastingSetupSource {
   date: Date | null;
   createdAt: Date;
   variable: TastingVariable | null;
+  name: string | null;
   note: string | null;
   beansId: string | null;
   method: string | null;
@@ -33,6 +34,7 @@ export const mapTastingSetupFormValuesFromTasting = (
 ): TastingSetupFormInputs => ({
   date: tasting.date ?? tasting.createdAt,
   variable: tasting.variable,
+  name: tasting.name ?? "",
   note: tasting.note ?? "",
   beansId: tasting.beansId,
   method: tasting.method ?? "",
