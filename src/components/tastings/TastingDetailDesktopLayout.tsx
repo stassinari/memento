@@ -10,7 +10,6 @@ import { useTastingDetailData } from "~/hooks/queries/tastings";
 interface TastingDetailDesktopLayoutProps {
   tastingId: string;
   selectedSampleId?: string;
-  headingActionSlot?: ReactNode;
   children: (params: {
     tasting: NonNullable<ReturnType<typeof useTastingDetailData>["tasting"]>;
     beansLookup: ReturnType<typeof buildBeansLookup>;
@@ -20,7 +19,6 @@ interface TastingDetailDesktopLayoutProps {
 export const TastingDetailDesktopLayout = ({
   tastingId,
   selectedSampleId,
-  headingActionSlot,
   children,
 }: TastingDetailDesktopLayoutProps) => {
   const { tasting, beans, isLoadingTasting } = useTastingDetailData({ tastingId });
@@ -42,7 +40,6 @@ export const TastingDetailDesktopLayout = ({
         variable={tasting.variable}
         date={tasting.date}
         createdAt={tasting.createdAt}
-        headingActionSlot={headingActionSlot}
       />
 
       <TastingSetupCard tasting={tasting} />

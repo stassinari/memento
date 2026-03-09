@@ -1,9 +1,8 @@
-import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
-import { Button } from "~/components/Button";
+import { createFileRoute } from "@tanstack/react-router";
 import { NotFound } from "~/components/ErrorPage";
+import { TastingSetupCard } from "~/components/tastings/TastingDetailCards";
 import { TastingDetailDesktopLayout } from "~/components/tastings/TastingDetailDesktopLayout";
 import { TastingDetailHeader } from "~/components/tastings/TastingDetailHeader";
-import { TastingSetupCard } from "~/components/tastings/TastingDetailCards";
 import { TastingSamplesLinks } from "~/components/tastings/TastingSamplesLinks";
 import { buildBeansLookup } from "~/components/tastings/utils";
 import { useTastingDetailData } from "~/hooks/queries/tastings";
@@ -19,14 +18,7 @@ function TastingIndexPage() {
 
   if (isSm) {
     return (
-      <TastingDetailDesktopLayout
-        tastingId={tastingId}
-        headingActionSlot={
-          <Button variant="white" colour="accent" size="sm" asChild>
-            <RouterLink to="/drinks/tastings">Back to list</RouterLink>
-          </Button>
-        }
-      >
+      <TastingDetailDesktopLayout tastingId={tastingId}>
         {() => (
           <div className="grid min-h-64 place-items-center px-2">
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -61,11 +53,6 @@ function TastingIndexMobile({ tastingId }: { tastingId: string }) {
         variable={tasting.variable}
         date={tasting.date}
         createdAt={tasting.createdAt}
-        headingActionSlot={
-          <Button variant="white" colour="accent" size="sm" asChild>
-            <RouterLink to="/drinks/tastings">Back to list</RouterLink>
-          </Button>
-        }
       />
 
       <div className="grid gap-4">

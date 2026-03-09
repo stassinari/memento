@@ -30,7 +30,7 @@ export const TastingSetupCard = ({ tasting }: TastingDetailLike) => {
   const targetTime = getTargetTimeLabel(tasting.targetTimeMinutes, tasting.targetTimeSeconds);
 
   return (
-    <details className="group mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-gray-900">
+    <details className="group sm:mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-gray-900">
       <summary className="flex cursor-pointer list-none items-center justify-between bg-gray-50/50 px-4 py-2 dark:bg-white/5 sm:px-6">
         <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100">
           Session details
@@ -41,33 +41,49 @@ export const TastingSetupCard = ({ tasting }: TastingDetailLike) => {
       <div className="border-t border-gray-200/80 px-4 py-4 dark:border-white/10 sm:px-6">
         <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Method</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Method
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">{tasting.method ?? "-"}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Water type</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Water type
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">{tasting.waterType ?? "-"}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Filter type</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Filter type
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">{tasting.filterType ?? "-"}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Grinder</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Grinder
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">{tasting.grinder ?? "-"}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Grind setting</p>
-            <p className="text-sm text-gray-800 dark:text-gray-200">{tasting.grindSetting ?? "-"}</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Grind setting
+            </p>
+            <p className="text-sm text-gray-800 dark:text-gray-200">
+              {tasting.grindSetting ?? "-"}
+            </p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Beans weight</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Beans weight
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">
               {tasting.beansWeight !== null ? `${tasting.beansWeight}g` : "-"}
             </p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Water weight</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Water weight
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">
               {tasting.waterWeight !== null ? `${tasting.waterWeight}g` : "-"}
             </p>
@@ -81,7 +97,9 @@ export const TastingSetupCard = ({ tasting }: TastingDetailLike) => {
             </p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Target time</p>
+            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Target time
+            </p>
             <p className="text-sm text-gray-800 dark:text-gray-200">{targetTime}</p>
           </div>
         </div>
