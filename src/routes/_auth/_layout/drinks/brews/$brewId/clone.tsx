@@ -83,7 +83,7 @@ function BrewClone() {
         items={[
           navLinks.drinks,
           navLinks.brews,
-          { label: brewToClone.method, linkTo: "/drinks/brews/$brewId" },
+          { label: brewToClone.method, link: { to: "/drinks/brews/$brewId", params: { brewId } } },
           { label: "Clone" },
         ]}
       />

@@ -1,12 +1,12 @@
 import { LinkProps, useRouterState } from "@tanstack/react-router";
 
 // FIXME try and make it "the TanStack way"
-export const useActiveRoute = (linkTo: LinkProps["to"]) => {
+export const useActiveRoute = (link: LinkProps) => {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  if (linkTo !== "/" && typeof linkTo === "string") {
-    return pathname.startsWith(linkTo);
+  if (link.to !== "/" && typeof link.to === "string") {
+    return pathname.startsWith(link.to);
   } else {
-    return pathname === linkTo;
+    return pathname === link.to;
   }
 };

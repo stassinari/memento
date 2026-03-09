@@ -7,7 +7,7 @@ interface BreadcrumbsProps {
 
 interface BreadcrumbItem {
   label: string;
-  linkTo?: LinkProps["to"];
+  link?: LinkProps;
 }
 
 export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
@@ -17,9 +17,9 @@ export const BreadcrumbsWithoutHome = ({ items }: BreadcrumbsProps) => {
         {items.map((item, i) => (
           <li key={item.label}>
             <div className="flex items-center">
-              {item.linkTo ? (
+              {item.link ? (
                 <Link
-                  to={item.linkTo}
+                  {...item.link}
                   className="mr-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                   // aria-current={item.current ? "page" : undefined}
                 >
@@ -50,7 +50,10 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
       <ol role="list" className="flex items-center space-x-2 overflow-x-scroll sm:space-x-4">
         <li>
           <div>
-            <Link to="/" className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300">
+            <Link
+              to="/"
+              className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300"
+            >
               <HomeIcon className="h-5 w-5 shrink-0" aria-hidden="true" />
               <span className="sr-only">Home</span>
             </Link>
@@ -63,9 +66,9 @@ export const BreadcrumbsWithHome = ({ items }: BreadcrumbsProps) => {
                 className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
                 aria-hidden="true"
               />
-              {item.linkTo ? (
+              {item.link ? (
                 <Link
-                  to={item.linkTo}
+                  {...item.link}
                   className="ml-2 whitespace-nowrap text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sm:ml-4"
                   // aria-current={item.current ? "page" : undefined}
                 >

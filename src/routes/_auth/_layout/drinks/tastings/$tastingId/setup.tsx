@@ -7,7 +7,6 @@ import { Heading } from "~/components/Heading";
 import { TastingCreateForm } from "~/components/tastings/TastingCreateForm";
 import { TastingSetupFormInputs } from "~/components/tastings/form-types";
 import { mapTastingSetupFormValuesFromTasting } from "~/components/tastings/setup-mappers";
-import { getTastingVariableLabel } from "~/components/tastings/utils";
 import { updateTastingSetup } from "~/db/mutations";
 import { getSelectableBeans } from "~/db/queries";
 import { tastingQueryOptions } from "~/hooks/queries/tastings";
@@ -28,7 +27,9 @@ function TastingEditSetupPage() {
   const queryClient = useQueryClient();
 
   const { data: tasting, isLoading: isLoadingTasting } = useQuery(tastingQueryOptions(tastingId));
-  const { data: beansList = [], isLoading: isLoadingBeans } = useQuery(selectableBeansQueryOptions());
+  const { data: beansList = [], isLoading: isLoadingBeans } = useQuery(
+    selectableBeansQueryOptions(),
+  );
 
   const mutation = useMutation({
     mutationFn: async (data: TastingSetupFormInputs) =>
@@ -56,12 +57,15 @@ function TastingEditSetupPage() {
     return <NotFound />;
   }
 
-  const variableLabel = getTastingVariableLabel(tasting.variable ?? "unknown");
-
   return (
     <>
       <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.tastings, { label: variableLabel }, { label: "Setup" }]}
+        items={[
+          navLinks.drinks,
+          navLinks.tastings,
+          { label: "Detail", link: { to: "/drinks/tastings/$tastingId", params: { tastingId } } },
+          { label: "Setup" },
+        ]}
       />
 
       <Heading className="mb-4">Edit tasting setup</Heading>

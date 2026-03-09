@@ -137,7 +137,7 @@ function TastingSampleMobile({ tastingId, sampleId }: { tastingId: string; sampl
         items={[
           navLinks.drinks,
           navLinks.tastings,
-          { label: "Detail", linkTo: "/drinks/tastings/$tastingId" },
+          { label: "Detail", link: { to: "/drinks/tastings/$tastingId", params: { tastingId } } },
           { label: sampleName },
         ]}
       />

@@ -4,7 +4,7 @@ import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
 import { TastingScoringForm } from "~/components/tastings/TastingScoringForm";
-import { formatTastingDate, getTastingVariableLabel } from "~/components/tastings/utils";
+import { formatTastingDate } from "~/components/tastings/utils";
 import { useTastingDetailData } from "~/hooks/queries/tastings";
 
 export const Route = createFileRoute("/_auth/_layout/drinks/tastings/$tastingId/scoring")({
@@ -25,12 +25,15 @@ function TastingScoringPage() {
     return <NotFound />;
   }
 
-  const variableLabel = getTastingVariableLabel(tasting.variable ?? "unknown");
-
   return (
     <>
       <BreadcrumbsWithHome
-        items={[navLinks.drinks, navLinks.tastings, { label: variableLabel }, { label: "Scoring" }]}
+        items={[
+          navLinks.drinks,
+          navLinks.tastings,
+          { label: "Detail", link: { to: "/drinks/tastings/$tastingId", params: { tastingId } } },
+          { label: "Scoring" },
+        ]}
       />
       <Heading>Tasting scoring</Heading>
       <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">

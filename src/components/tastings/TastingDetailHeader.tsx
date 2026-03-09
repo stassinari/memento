@@ -1,14 +1,14 @@
-import type { ReactNode } from "react";
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { ConfirmDialog } from "~/components/ConfirmDialog";
 import { Heading } from "~/components/Heading";
-import { deleteTasting } from "~/db/mutations";
 import { formatTastingDate, getTastingVariableLabel } from "~/components/tastings/utils";
+import { deleteTasting } from "~/db/mutations";
 
 interface TastingDetailHeaderProps {
   tastingId: string;
@@ -45,7 +45,7 @@ export const TastingDetailHeader = ({
 
   return (
     <>
-      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings, { label: variableLabel }]} />
+      <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings, { label: "Detail" }]} />
 
       <Heading actionSlot={headingActionSlot}>Tasting detail</Heading>
 
