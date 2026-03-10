@@ -15,7 +15,6 @@ interface SortableFormCardProps {
   canRemove?: boolean;
   onRemove?: () => void;
   actionSlot?: ReactNode;
-  showDragHandle?: boolean;
 }
 
 export const SortableFormCard = ({
@@ -27,7 +26,6 @@ export const SortableFormCard = ({
   canRemove = false,
   onRemove,
   actionSlot,
-  showDragHandle = true,
 }: SortableFormCardProps) => {
   const {
     attributes,
@@ -59,18 +57,16 @@ export const SortableFormCard = ({
         )}
       >
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          {showDragHandle && (
-            <button
-              ref={setActivatorNodeRef}
-              type="button"
-              className="inline-flex cursor-grab items-center rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:cursor-grabbing dark:text-gray-500 dark:hover:bg-white/10 dark:hover:text-gray-300"
-              aria-label={`Reorder ${title}`}
-              {...attributes}
-              {...listeners}
-            >
-              <DragHandleDots2Icon className="h-4 w-4" />
-            </button>
-          )}
+          <button
+            ref={setActivatorNodeRef}
+            type="button"
+            className="inline-flex cursor-grab items-center rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:cursor-grabbing dark:text-gray-500 dark:hover:bg-white/10 dark:hover:text-gray-300"
+            aria-label={`Reorder ${title}`}
+            {...attributes}
+            {...listeners}
+          >
+            <DragHandleDots2Icon className="h-4 w-4" />
+          </button>
 
           <button
             type="button"

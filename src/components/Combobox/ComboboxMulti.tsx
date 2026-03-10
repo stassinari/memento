@@ -5,14 +5,15 @@ import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../form/ListOption";
 import { ComboboxButton, ComboboxOption, ComboboxOptions } from "./ComboboxElements";
+import { filterComboboxOptions } from "./utils";
 
 export interface ComboboxMultiProps {
   name: string;
   label: string;
   options: string[];
-  values?: any[];
-  onChange: (...event: any[]) => void;
-  removeItem: (item: any) => void;
+  values?: string[];
+  onChange: (newValues: string[]) => void;
+  removeItem: (item: string) => void;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
@@ -30,12 +31,7 @@ export const ComboboxMulti = ({
   const [query, setQuery] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 
-  const filteredOptions =
-    query === ""
-      ? options
-      : options.filter((o) => {
-          return o.toLowerCase().includes(query.toLowerCase());
-        });
+  const filteredOptions = filterComboboxOptions(options, query);
 
   return (
     <HuiCombobox

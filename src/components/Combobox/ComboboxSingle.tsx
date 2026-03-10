@@ -15,13 +15,14 @@ import {
   comboboxButtonIconStyles,
   comboboxButtonStyles,
 } from "./ComboboxElements";
+import { filterComboboxOptions } from "./utils";
 
 export interface ComboboxSingleProps {
   name: string;
   label: string;
   options: string[];
-  value: any;
-  onChange: (...event: any[]) => void;
+  value: string | null;
+  onChange: (newValue: string | null) => void;
   reset: () => void;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
@@ -41,12 +42,7 @@ export const ComboboxSingle = ({
 
   const showResetButton = !!value;
 
-  const filteredOptions =
-    query === ""
-      ? options
-      : options.filter((o) => {
-          return o.toLowerCase().includes(query.toLowerCase());
-        });
+  const filteredOptions = filterComboboxOptions(options, query);
 
   return (
     <HuiCombobox as="div" value={value} onChange={onChange} name={name} nullable>

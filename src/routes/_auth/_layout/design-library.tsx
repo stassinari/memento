@@ -97,7 +97,7 @@ const radioCardOptions: InputRadioCardsOption[] = [
 const designLibraryStopwatchAtom = atom<boolean>(false);
 
 function DesignLibrary() {
-  const [singleValue, setSingleValue] = useState<string>();
+  const [singleValue, setSingleValue] = useState<string | null>(null);
   const [multiValues, setMultiValues] = useState<string[]>([]);
 
   const [, setSeconds] = useState(0);
@@ -392,7 +392,7 @@ function DesignLibrary() {
             removeItem={(item: string) =>
               setMultiValues(multiValues.filter((value) => value !== item))
             }
-            onChange={(values: any[]) => setMultiValues(values)}
+            onChange={(values: string[]) => setMultiValues(values)}
           />
         </div>
         <div>

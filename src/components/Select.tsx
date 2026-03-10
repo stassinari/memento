@@ -1,6 +1,13 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import {
+  pickerAnchoredMenuStyles,
+  pickerOptionBaseStyles,
+  pickerOptionCheckStyles,
+  pickerRightIconButtonStyles,
+  pickerRightIconStyles,
+} from "./Combobox/sharedStyles";
 import { inputStyles } from "./Input";
 
 export interface SelectOption {
@@ -49,7 +56,8 @@ const SelectMenuOption = ({
     value={option.value}
     disabled={option.disabled}
     className={clsx(
-      "group relative cursor-default py-2 pr-9 text-gray-900 select-none data-focus:bg-orange-600 data-focus:text-white data-focus:outline-hidden data-disabled:cursor-not-allowed data-disabled:opacity-50 dark:text-gray-100 dark:data-focus:bg-orange-500",
+      pickerOptionBaseStyles,
+      "data-disabled:cursor-not-allowed data-disabled:opacity-50",
       inGroup ? "pl-6" : "pl-3",
     )}
   >
@@ -61,7 +69,7 @@ const SelectMenuOption = ({
         </span>
       )}
     </div>
-    <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-orange-600 group-not-data-selected:hidden group-data-focus:text-white dark:text-orange-300">
+    <span className={pickerOptionCheckStyles}>
       <CheckIcon aria-hidden="true" className="size-5" />
     </span>
   </ListboxOption>
@@ -113,7 +121,7 @@ export const Select = ({
         {showClearButton && (
           <button
             type="button"
-            className="absolute inset-y-0 right-6 flex items-center rounded-r-md px-2 focus:outline-hidden"
+            className={clsx(pickerRightIconButtonStyles, "right-6")}
             aria-label="Clear selection"
             onMouseDown={(event) => {
               event.preventDefault();
@@ -124,7 +132,7 @@ export const Select = ({
               onChange(null);
             }}
           >
-            <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
+            <XMarkIcon className={pickerRightIconStyles} />
           </button>
         )}
 
@@ -141,7 +149,7 @@ export const Select = ({
           modal={false}
           transition
           style={{ maxHeight: "14rem" }}
-          className="z-10 max-h-56 w-(--button-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 [--anchor-gap:0.25rem] [--anchor-max-height:14rem] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-900 dark:outline-white/10"
+          className={pickerAnchoredMenuStyles}
         >
           {hasGroups
             ? groups!.map((group) => (
