@@ -1,4 +1,5 @@
 import { CardRadioGroup, type CardRadioOption } from "~/components/form/CardRadioGroup";
+import { Select } from "~/components/Select";
 import { TastingVariable } from "~/db/schema";
 import { tastingVariablesList } from "./utils";
 
@@ -31,23 +32,18 @@ export const TastingVariableSelector = ({
       title: "Something else",
       description: "Compare one setup variable while holding the rest steady.",
       content: (
-        <select
-          value={value && value !== TastingVariable.Beans ? value : ""}
-          disabled={disabled}
-          onClick={(event) => event.stopPropagation()}
-          onChange={(event) => {
-            const selectedValue = event.currentTarget.value as NonBeansVariable | "";
-            onChange(selectedValue === "" ? null : selectedValue);
-          }}
-          className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-50 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-white/10"
-        >
-          <option value="">Select variable</option>
-          {nonBeansVariables.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div onClick={(event) => event.stopPropagation()}>
+          <Select
+            value={value && value !== TastingVariable.Beans ? value : null}
+            onChange={(nextValue) => {
+              const selectedValue = nextValue as NonBeansVariable | null;
+              onChange(selectedValue);
+            }}
+            disabled={disabled}
+            emptyOptionLabel="Select variable"
+            options={nonBeansVariables}
+          />
+        </div>
       ),
     },
   ];

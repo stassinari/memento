@@ -1,10 +1,10 @@
-import clsx from "clsx";
 import { useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { EquipmentTable } from "~/components/EquipmentTable";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
+import { Select } from "~/components/Select";
 import { FormComboboxSingle } from "~/components/form/FormComboboxSingle";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputDate } from "~/components/form/FormInputDate";
@@ -17,6 +17,7 @@ import { TastingSetupFormInputs } from "./form-types";
 import { TastingVariableSelector } from "./TastingVariableSelector";
 import {
   buildBeansById,
+  getBeansSelectGroups,
   getTargetTimeSummary,
   groupBeansOptions,
   toNullableString,
@@ -150,31 +151,21 @@ export const TastingCreateFormStepSetup = ({
             <div>
               <Input.Label htmlFor="beansId">Beans</Input.Label>
               <div className="mt-1">
-                <select
-                  id="beansId"
-                  {...register("beansId")}
-                  disabled={variable === TastingVariable.Beans}
-                  className={clsx(
-                    "block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100 dark:disabled:border-white/10 dark:disabled:bg-white/10 dark:disabled:text-gray-400",
+                <Controller
+                  control={control}
+                  name="beansId"
+                  render={({ field }) => (
+                    <Select
+                      id="beansId"
+                      value={field.value}
+                      onChange={(nextValue) => field.onChange(nextValue)}
+                      disabled={variable === TastingVariable.Beans}
+                      emptyOptionLabel="No shared beans"
+                      clearable
+                      groups={getBeansSelectGroups({ groupedBeansOptions })}
+                    />
                   )}
-                >
-                  <option value="">No shared beans</option>
-                  {groupedBeansOptions.open.map((bean) => (
-                    <option key={bean.id} value={bean.id}>
-                      {bean.name} ({bean.roaster})
-                    </option>
-                  ))}
-                  {groupedBeansOptions.frozen.length > 0 && (
-                    <option value="__frozen_separator__" disabled>
-                      ----- Frozen -----
-                    </option>
-                  )}
-                  {groupedBeansOptions.frozen.map((bean) => (
-                    <option key={bean.id} value={bean.id}>
-                      {bean.name} ({bean.roaster})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
 

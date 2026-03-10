@@ -1,11 +1,11 @@
-import type { ReactNode } from "react";
-import clsx from "clsx";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
+import type { ReactNode } from "react";
 
 export interface CardRadioOption<T extends string> {
   value: T;
-  title: ReactNode;
-  description?: ReactNode;
+  title: string;
+  description?: string;
   content?: ReactNode;
   disabled?: boolean;
 }
@@ -16,7 +16,6 @@ interface CardRadioGroupProps<T extends string> {
   onChange: (nextValue: T) => void;
   options: CardRadioOption<T>[];
   disabled?: boolean;
-  columnsClassName?: string;
 }
 
 export const CardRadioGroup = <T extends string>({
@@ -25,11 +24,11 @@ export const CardRadioGroup = <T extends string>({
   onChange,
   options,
   disabled = false,
-  columnsClassName = "sm:grid-cols-2",
 }: CardRadioGroupProps<T>) => (
   <fieldset>
     <legend className="text-sm font-medium text-gray-700 dark:text-gray-300">{legend}</legend>
-    <div className={clsx("mt-3 grid gap-4", columnsClassName)}>
+    {/* TODO this currently only work for 2 columns, expand when needed */}
+    <div className="mt-3 grid gap-4 sm:grid-cols-2">
       {options.map((option) => {
         const optionDisabled = disabled || option.disabled;
         const isChecked = value === option.value;

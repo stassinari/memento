@@ -1,8 +1,7 @@
 import { TastingVariable } from "~/db/schema";
 import { Beans } from "~/db/types";
+import { SelectOptionGroup } from "../Select";
 import { TastingSetupFormInputs, TastingSetupSampleInputs } from "./form-types";
-
-export type BeansSelectOption = { value: string; label: string; disabled?: boolean };
 
 export const toNullableString = (value: string | null): string | null => {
   if (!value) return null;
@@ -72,29 +71,33 @@ export const getTargetTimeSummary = (
     ? `${targetTimeMinutes ?? 0}:${String(targetTimeSeconds ?? 0).padStart(2, "0")}`
     : null;
 
-export const getSampleBeansOptions = ({
+export const getBeansSelectGroups = ({
   groupedBeansOptions,
-  selectedBeanIds,
-  currentBeansId,
+  selectedBeanIds = [],
+  currentBeansId = null,
 }: {
   groupedBeansOptions: ReturnType<typeof groupBeansOptions>;
-  selectedBeanIds: string[];
-  currentBeansId: string | null;
-}): BeansSelectOption[] => [
-  { value: "", label: "Select beans" },
-  ...groupedBeansOptions.open.map((bean) => ({
-    value: bean.id,
-    label: `${bean.name} (${bean.roaster})`,
-    disabled: selectedBeanIds.includes(bean.id) && currentBeansId !== bean.id,
-  })),
-  ...(groupedBeansOptions.frozen.length > 0
-    ? [{ value: "__frozen_separator__", label: "----- Frozen -----", disabled: true }]
-    : []),
-  ...groupedBeansOptions.frozen.map((bean) => ({
-    value: bean.id,
-    label: `${bean.name} (${bean.roaster})`,
-    disabled: selectedBeanIds.includes(bean.id) && currentBeansId !== bean.id,
-  })),
+  selectedBeanIds?: string[];
+  currentBeansId?: string | null;
+}): SelectOptionGroup[] => [
+  {
+    label: "Open",
+    options: groupedBeansOptions.open.map((bean) => ({
+      value: bean.id,
+      label: bean.name,
+      secondaryText: bean.roaster,
+      disabled: selectedBeanIds.includes(bean.id) && currentBeansId !== bean.id,
+    })),
+  },
+  {
+    label: "Frozen",
+    options: groupedBeansOptions.frozen.map((bean) => ({
+      value: bean.id,
+      label: bean.name,
+      secondaryText: bean.roaster,
+      disabled: selectedBeanIds.includes(bean.id) && currentBeansId !== bean.id,
+    })),
+  },
 ];
 
 export const validateStep2Samples = ({

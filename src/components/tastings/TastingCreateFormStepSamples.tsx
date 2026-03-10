@@ -19,11 +19,12 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { ConfirmDialog } from "~/components/ConfirmDialog";
 import { FormSection } from "~/components/Form";
 import { Input } from "~/components/Input";
+import { Select } from "~/components/Select";
 import { FormInput } from "~/components/form/FormInput";
 import { FormTextarea } from "~/components/form/FormTextarea";
 import { SortableFormCard } from "~/components/form/SortableFormCard";
@@ -33,7 +34,7 @@ import { TastingSetupFormInputs } from "./form-types";
 import {
   buildBeansById,
   getEmptySample,
-  getSampleBeansOptions,
+  getBeansSelectGroups,
   groupBeansOptions,
   toNullableString,
 } from "./tasting-create-form-utils";
@@ -271,29 +272,27 @@ export const TastingCreateFormStepSamples = ({
                         />
                       ) : (
                         <div>
-                          <Input.Label htmlFor={`samples.${index}.variableValueBeansId`}>
+                          <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Beans *
-                          </Input.Label>
+                          </p>
                           <div className="mt-1">
-                            <select
-                              id={`samples.${index}.variableValueBeansId`}
-                              {...register(`samples.${index}.variableValueBeansId` as const)}
-                              className="block w-full rounded-md border-gray-300 bg-white text-sm text-gray-900 shadow-xs focus:border-orange-500 focus:ring-orange-500 dark:border-white/15 dark:bg-gray-900 dark:text-gray-100"
-                            >
-                              {getSampleBeansOptions({
-                                groupedBeansOptions,
-                                selectedBeanIds,
-                                currentBeansId: currentSample?.variableValueBeansId ?? null,
-                              }).map((option) => (
-                                <option
-                                  key={`${field.fieldId}-${option.value}`}
-                                  value={option.value}
-                                  disabled={option.disabled}
-                                >
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
+                            <Controller
+                              control={control}
+                              name={`samples.${index}.variableValueBeansId` as const}
+                              render={({ field: beansField }) => (
+                                <Select
+                                  id={`samples.${index}.variableValueBeansId`}
+                                  value={beansField.value}
+                                  onChange={(nextValue) => beansField.onChange(nextValue)}
+                                  emptyOptionLabel="Select beans"
+                                  groups={getBeansSelectGroups({
+                                    groupedBeansOptions,
+                                    selectedBeanIds,
+                                    currentBeansId: currentSample?.variableValueBeansId ?? null,
+                                  })}
+                                />
+                              )}
+                            />
                           </div>
                         </div>
                       )
