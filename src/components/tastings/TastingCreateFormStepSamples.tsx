@@ -18,7 +18,7 @@ import {
   ArrowsPointingOutIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { ConfirmDialog } from "~/components/ConfirmDialog";
@@ -29,10 +29,8 @@ import { FormInput } from "~/components/form/FormInput";
 import { FormTextarea } from "~/components/form/FormTextarea";
 import { SortableFormCard } from "~/components/form/SortableFormCard";
 import { TastingVariable } from "~/db/schema";
-import { Beans } from "~/db/types";
 import { TastingSetupFormInputs } from "./form-types";
 import {
-  buildBeansById,
   getEmptySample,
   getBeansSelectGroups,
   groupBeansOptions,
@@ -40,7 +38,8 @@ import {
 } from "./tasting-create-form-utils";
 
 interface TastingCreateFormStepSamplesProps {
-  beansList: Pick<Beans, "id" | "name" | "roaster" | "isFrozen" | "roastDate">[];
+  beansById: Map<string, string>;
+  groupedBeansOptions: ReturnType<typeof groupBeansOptions>;
   isEditMode: boolean;
   isSubmitting?: boolean;
   stepError?: string;
@@ -49,7 +48,8 @@ interface TastingCreateFormStepSamplesProps {
 }
 
 export const TastingCreateFormStepSamples = ({
-  beansList,
+  beansById,
+  groupedBeansOptions,
   isEditMode,
   isSubmitting = false,
   stepError,
@@ -80,9 +80,6 @@ export const TastingCreateFormStepSamples = ({
 
   const variable = useWatch({ control, name: "variable" });
   const samples = useWatch({ control, name: "samples" }) ?? [];
-
-  const beansById = useMemo(() => buildBeansById(beansList), [beansList]);
-  const groupedBeansOptions = useMemo(() => groupBeansOptions(beansList), [beansList]);
 
   const selectedBeanIds = samples
     .map((sample) => sample.variableValueBeansId)
@@ -130,6 +127,7 @@ export const TastingCreateFormStepSamples = ({
         delete next[removedId];
         return next;
       });
+      delete fallbackSampleOrderByIdRef.current[removedId];
     }
   };
 

@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Heading } from "~/components/Heading";
+import { notification } from "~/components/Notification";
 import { TastingCreateForm } from "~/components/tastings/TastingCreateForm";
 import { TastingSetupFormInputs } from "~/components/tastings/form-types";
 import { addTasting } from "~/db/mutations";
@@ -34,6 +36,11 @@ function TastingAddPage() {
     },
     onError: (error) => {
       console.error("Add tasting - mutation error:", error);
+      notification({
+        title: "Could not create tasting",
+        subtitle: "Please try again.",
+        Icon: <ExclamationCircleIcon className="text-red-400" />,
+      });
     },
   });
 

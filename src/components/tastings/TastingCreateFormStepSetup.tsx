@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { EquipmentTable } from "~/components/EquipmentTable";
@@ -10,13 +10,11 @@ import { FormInput } from "~/components/form/FormInput";
 import { FormInputDate } from "~/components/form/FormInputDate";
 import { FormTextarea } from "~/components/form/FormTextarea";
 import { TastingVariable } from "~/db/schema";
-import { Beans } from "~/db/types";
 import { parseNullableNumberInput } from "~/util";
 import { Divider } from "../Divider";
 import { TastingSetupFormInputs } from "./form-types";
 import { TastingVariableSelector } from "./TastingVariableSelector";
 import {
-  buildBeansById,
   getBeansSelectGroups,
   getTargetTimeSummary,
   groupBeansOptions,
@@ -25,7 +23,8 @@ import {
 import { getTastingDefaultName } from "./utils";
 
 interface TastingCreateFormStepSetupProps {
-  beansList: Pick<Beans, "id" | "name" | "roaster" | "isFrozen" | "roastDate">[];
+  beansById: Map<string, string>;
+  groupedBeansOptions: ReturnType<typeof groupBeansOptions>;
   isEditMode: boolean;
   brewFormValueSuggestions?: {
     method: string[];
@@ -38,7 +37,8 @@ interface TastingCreateFormStepSetupProps {
 }
 
 export const TastingCreateFormStepSetup = ({
-  beansList,
+  beansById,
+  groupedBeansOptions,
   isEditMode,
   brewFormValueSuggestions,
   stepError,
@@ -67,8 +67,6 @@ export const TastingCreateFormStepSetup = ({
   const note = useWatch({ control, name: "note" });
   const samples = useWatch({ control, name: "samples" }) ?? [];
 
-  const beansById = useMemo(() => buildBeansById(beansList), [beansList]);
-  const groupedBeansOptions = useMemo(() => groupBeansOptions(beansList), [beansList]);
   const targetTimeSummary = getTargetTimeSummary(targetTimeMinutes, targetTimeSeconds);
 
   const updateVariable = (nextVariable: TastingVariable) => {

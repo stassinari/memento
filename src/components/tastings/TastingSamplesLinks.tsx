@@ -4,7 +4,7 @@ import {
   TastingSamplesListItem,
   TastingSamplesListItemContent,
 } from "~/components/tastings/TastingSamplesList";
-import { buildBeansLookup, getNormalizedTastingSampleLabel } from "~/components/tastings/utils";
+import { buildBeansLookup, getTastingSampleLabel } from "~/components/tastings/utils";
 
 interface TastingSampleLike {
   id: string;
@@ -44,7 +44,7 @@ export const TastingSamplesLinks = ({
         >
           <TastingSamplesListItemContent
             sampleNumber={index + 1}
-            label={getNormalizedTastingSampleLabel(variable, sample, beansLookup)}
+            label={getTastingSampleLabel(variable, sample, beansLookup, index + 1)}
           />
         </RouterLink>
       </TastingSamplesListItem>

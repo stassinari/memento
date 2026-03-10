@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { getBrewFormValueSuggestions } from "~/db/queries";
 import { Beans } from "~/db/types";
 import { TastingSetupFormInputs } from "./form-types";
 import {
+  buildBeansById,
+  groupBeansOptions,
   normalizeTastingSetupFormData,
   tastingFormEmptyValues,
   validateStep2Samples,
@@ -40,6 +42,8 @@ export const TastingCreateForm = ({
     queryKey: ["brews", "formValueSuggestions"],
     queryFn: () => getBrewFormValueSuggestions(),
   });
+  const beansById = useMemo(() => buildBeansById(beansList), [beansList]);
+  const groupedBeansOptions = useMemo(() => groupBeansOptions(beansList), [beansList]);
 
   const { handleSubmit, trigger, getValues } = methods;
 
@@ -94,7 +98,8 @@ export const TastingCreateForm = ({
       <form onSubmit={handleFormSubmit} autoComplete="off" className="space-y-6">
         {step === "setup" ? (
           <TastingCreateFormStepSetup
-            beansList={beansList}
+            beansById={beansById}
+            groupedBeansOptions={groupedBeansOptions}
             isEditMode={isEditMode}
             brewFormValueSuggestions={brewFormValueSuggestions}
             stepError={stepError && stepError.includes("variable") ? stepError : undefined}
@@ -102,7 +107,8 @@ export const TastingCreateForm = ({
           />
         ) : (
           <TastingCreateFormStepSamples
-            beansList={beansList}
+            beansById={beansById}
+            groupedBeansOptions={groupedBeansOptions}
             isEditMode={isEditMode}
             isSubmitting={isSubmitting}
             stepError={stepError ?? undefined}

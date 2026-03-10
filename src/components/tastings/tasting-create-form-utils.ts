@@ -143,19 +143,24 @@ export const validateStep2Samples = ({
 export const normalizeTastingSetupFormData = (
   data: TastingSetupFormInputs,
 ): TastingSetupFormInputs => {
+  if (!data.variable) {
+    throw new Error("Variable is required");
+  }
+
+  const variable = data.variable;
   const normalizedSamples = data.samples.map((sample, index) => ({
     ...sample,
     position: index,
     variableValueBeansId:
-      data.variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
+      variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
     variableValueText:
-      data.variable === TastingVariable.Beans ? null : toNullableString(sample.variableValueText),
+      variable === TastingVariable.Beans ? null : toNullableString(sample.variableValueText),
     note: toNullableString(sample.note),
   }));
 
   return {
     ...data,
-    variable: data.variable!,
+    variable,
     name: toNullableString(data.name),
     note: toNullableString(data.note),
     method: toNullableString(data.method),
@@ -168,7 +173,7 @@ export const normalizeTastingSetupFormData = (
     waterTemperature: toNullableNumber(data.waterTemperature),
     targetTimeMinutes: toNullableNumber(data.targetTimeMinutes),
     targetTimeSeconds: toNullableNumber(data.targetTimeSeconds),
-    beansId: data.variable === TastingVariable.Beans ? null : data.beansId,
+    beansId: variable === TastingVariable.Beans ? null : data.beansId,
     samples: normalizedSamples,
   };
 };

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -13,6 +14,7 @@ import {
 import { deleteTasting } from "~/db/mutations";
 import { Badge } from "../Badge";
 import { ButtonWithDropdown } from "../ButtonWithDropdown";
+import { notification } from "../Notification";
 
 interface TastingDetailHeaderProps {
   tastingId: string;
@@ -45,6 +47,11 @@ export const TastingDetailHeader = ({
     },
     onError: (error) => {
       console.error("Delete tasting - mutation error:", error);
+      notification({
+        title: "Could not delete tasting",
+        subtitle: "Please try again.",
+        Icon: <ExclamationCircleIcon className="text-red-400" />,
+      });
     },
   });
 

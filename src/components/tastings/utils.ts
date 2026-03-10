@@ -66,6 +66,13 @@ export const getNormalizedTastingSampleLabel = (
   return sample.variableValueText ?? "";
 };
 
+export const getTastingSampleLabel = (
+  variable: string | null,
+  sample: { variableValueText: string | null; variableValueBeansId: string | null },
+  lookup: ReturnType<typeof buildBeansLookup>,
+  sampleNumber: number,
+): string => getNormalizedTastingSampleLabel(variable, sample, lookup) || `Sample #${sampleNumber}`;
+
 export const hasMeaningfulNormalizedRating = (sample: {
   overall: number | null;
   flavours: string[];

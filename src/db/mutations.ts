@@ -708,7 +708,10 @@ const getTastingSetupBeansIds = (data: TastingSetupFormInputs): string[] =>
   ];
 
 const toTastingSetupValues = (data: TastingSetupFormInputs) => {
-  const variable = data.variable!;
+  if (!data.variable) {
+    throw new Error("Tasting variable is required");
+  }
+  const variable = data.variable;
 
   return {
     date: data.date,
@@ -830,7 +833,10 @@ export const addTasting = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data: { data }, context }): Promise<{ id: string }> => {
-    const variable = data.variable!;
+    if (!data.variable) {
+      throw new Error("Tasting variable is required");
+    }
+    const variable = data.variable;
     const allBeansIds = getTastingSetupBeansIds(data);
     const tastingValues = toTastingSetupValues(data);
     await assertOwnedBeansIds(context.userId, allBeansIds);
@@ -870,43 +876,51 @@ export const updateTastingSetup = createServerFn({ method: "POST" })
     },
   )
   .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
-    const tasting = await db.query.tastings.findFirst({
-      where: (t, { and, eq }) =>
-        and(eq(t.id, tastingId), eq(t.userId, context.userId)),
-      columns: {
-        id: true,
-        variable: true,
-      },
-    });
-
-    if (!tasting) {
-      throw new Error("Tasting not found");
-    }
-
-    if (tasting.variable !== data.variable) {
-      throw new Error("Tasting variable cannot be changed");
-    }
-
-    const variable = data.variable!;
-    const allBeansIds = getTastingSetupBeansIds(data);
-    const tastingValues = toTastingSetupValues(data);
-    await assertOwnedBeansIds(context.userId, allBeansIds);
-
-    await db.transaction(async (tx) => {
-      await tx
-        .update(tastings)
-        .set(tastingValues)
-        .where(
-          and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)),
-        );
-
-      await syncTastingSetupSamples({
-        tx,
-        tastingId,
-        variable,
-        samples: data.samples,
+    try {
+      const tasting = await db.query.tastings.findFirst({
+        where: (t, { and, eq }) =>
+          and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+        columns: {
+          id: true,
+          variable: true,
+        },
       });
-    });
+
+      if (!tasting) {
+        throw new Error("Tasting not found");
+      }
+
+      if (tasting.variable !== data.variable) {
+        throw new Error("Tasting variable cannot be changed");
+      }
+
+      if (!data.variable) {
+        throw new Error("Tasting variable is required");
+      }
+      const variable = data.variable;
+      const allBeansIds = getTastingSetupBeansIds(data);
+      const tastingValues = toTastingSetupValues(data);
+      await assertOwnedBeansIds(context.userId, allBeansIds);
+
+      await db.transaction(async (tx) => {
+        await tx
+          .update(tastings)
+          .set(tastingValues)
+          .where(
+            and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)),
+          );
+
+        await syncTastingSetupSamples({
+          tx,
+          tastingId,
+          variable,
+          samples: data.samples,
+        });
+      });
+    } catch (error) {
+      console.error("PostgreSQL update tasting setup failed:", error);
+      throw error;
+    }
   });
 
 export const updateTastingScoring = createServerFn({ method: "POST" })
@@ -922,61 +936,66 @@ export const updateTastingScoring = createServerFn({ method: "POST" })
     },
   )
   .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
-    const tasting = await db.query.tastings.findFirst({
-      where: (t, { and, eq }) =>
-        and(eq(t.id, tastingId), eq(t.userId, context.userId)),
-      columns: { id: true },
-    });
+    try {
+      const tasting = await db.query.tastings.findFirst({
+        where: (t, { and, eq }) =>
+          and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+        columns: { id: true },
+      });
 
-    if (!tasting) {
-      throw new Error("Tasting not found");
-    }
-
-    const sampleIds = data.samples.map((sample) => sample.id);
-    const existingSamples = await db.query.tastingSamples.findMany({
-      where: (sample, { and, eq, inArray }) =>
-        and(eq(sample.tastingId, tastingId), inArray(sample.id, sampleIds)),
-      columns: { id: true },
-    });
-
-    if (existingSamples.length !== data.samples.length) {
-      throw new Error("One or more sample IDs are invalid");
-    }
-
-    await db.transaction(async (tx) => {
-      for (const sample of data.samples) {
-        await tx
-          .update(tastingSamples)
-          .set({
-            note: nullableText(sample.note),
-            actualTimeMinutes: sanitizeNullableNumber(sample.actualTimeMinutes),
-            actualTimeSeconds: sanitizeNullableNumber(sample.actualTimeSeconds),
-            overall: sanitizeNullableNumber(sample.overall),
-            flavours: sample.flavours ?? [],
-            aromaQuantity: sanitizeNullableNumber(sample.aromaQuantity),
-            aromaQuality: sanitizeNullableNumber(sample.aromaQuality),
-            aromaNotes: nullableText(sample.aromaNotes),
-            acidityQuantity: sanitizeNullableNumber(sample.acidityQuantity),
-            acidityQuality: sanitizeNullableNumber(sample.acidityQuality),
-            acidityNotes: nullableText(sample.acidityNotes),
-            sweetnessQuantity: sanitizeNullableNumber(sample.sweetnessQuantity),
-            sweetnessQuality: sanitizeNullableNumber(sample.sweetnessQuality),
-            sweetnessNotes: nullableText(sample.sweetnessNotes),
-            bodyQuantity: sanitizeNullableNumber(sample.bodyQuantity),
-            bodyQuality: sanitizeNullableNumber(sample.bodyQuality),
-            bodyNotes: nullableText(sample.bodyNotes),
-            finishQuantity: sanitizeNullableNumber(sample.finishQuantity),
-            finishQuality: sanitizeNullableNumber(sample.finishQuality),
-            finishNotes: nullableText(sample.finishNotes),
-          })
-          .where(
-            and(
-              eq(tastingSamples.id, sample.id),
-              eq(tastingSamples.tastingId, tastingId),
-            ),
-          );
+      if (!tasting) {
+        throw new Error("Tasting not found");
       }
-    });
+
+      const sampleIds = data.samples.map((sample) => sample.id);
+      const existingSamples = await db.query.tastingSamples.findMany({
+        where: (sample, { and, eq, inArray }) =>
+          and(eq(sample.tastingId, tastingId), inArray(sample.id, sampleIds)),
+        columns: { id: true },
+      });
+
+      if (existingSamples.length !== data.samples.length) {
+        throw new Error("One or more sample IDs are invalid");
+      }
+
+      await db.transaction(async (tx) => {
+        for (const sample of data.samples) {
+          await tx
+            .update(tastingSamples)
+            .set({
+              note: nullableText(sample.note),
+              actualTimeMinutes: sanitizeNullableNumber(sample.actualTimeMinutes),
+              actualTimeSeconds: sanitizeNullableNumber(sample.actualTimeSeconds),
+              overall: sanitizeNullableNumber(sample.overall),
+              flavours: sample.flavours ?? [],
+              aromaQuantity: sanitizeNullableNumber(sample.aromaQuantity),
+              aromaQuality: sanitizeNullableNumber(sample.aromaQuality),
+              aromaNotes: nullableText(sample.aromaNotes),
+              acidityQuantity: sanitizeNullableNumber(sample.acidityQuantity),
+              acidityQuality: sanitizeNullableNumber(sample.acidityQuality),
+              acidityNotes: nullableText(sample.acidityNotes),
+              sweetnessQuantity: sanitizeNullableNumber(sample.sweetnessQuantity),
+              sweetnessQuality: sanitizeNullableNumber(sample.sweetnessQuality),
+              sweetnessNotes: nullableText(sample.sweetnessNotes),
+              bodyQuantity: sanitizeNullableNumber(sample.bodyQuantity),
+              bodyQuality: sanitizeNullableNumber(sample.bodyQuality),
+              bodyNotes: nullableText(sample.bodyNotes),
+              finishQuantity: sanitizeNullableNumber(sample.finishQuantity),
+              finishQuality: sanitizeNullableNumber(sample.finishQuality),
+              finishNotes: nullableText(sample.finishNotes),
+            })
+            .where(
+              and(
+                eq(tastingSamples.id, sample.id),
+                eq(tastingSamples.tastingId, tastingId),
+              ),
+            );
+        }
+      });
+    } catch (error) {
+      console.error("PostgreSQL update tasting scoring failed:", error);
+      throw error;
+    }
   });
 
 export const deleteTasting = createServerFn({ method: "POST" })

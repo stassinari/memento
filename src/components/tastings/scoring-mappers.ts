@@ -2,17 +2,9 @@ import {
   TastingScoringFormInputs,
   TastingScoringSampleInputs,
 } from "~/components/tastings/form-types";
+import { toNullableNumber, toNullableString } from "~/components/tastings/tasting-create-form-utils";
 
 export type TastingScoringSampleSource = TastingScoringSampleInputs;
-
-const toNullableString = (value: string | null): string | null => {
-  if (!value) return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-};
-
-const toNullableNumber = (value: number | null): number | null =>
-  value === null || Number.isNaN(value) ? null : value;
 
 export const mapTastingScoringSampleFromSource = (
   sample: TastingScoringSampleSource,

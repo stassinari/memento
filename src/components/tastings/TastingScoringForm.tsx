@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { MobileBottomDrawerNavigator } from "~/components/MobileBottomDrawerNavigator";
+import { notification } from "~/components/Notification";
 import { FormComboboxMulti } from "~/components/form/FormComboboxMulti";
 import { FormInput } from "~/components/form/FormInput";
 import { FormInputSlider } from "~/components/form/FormInputSlider";
@@ -14,7 +16,7 @@ import {
   TastingSamplesListItemContent,
 } from "~/components/tastings/TastingSamplesList";
 import { TastingSamplesShell } from "~/components/tastings/TastingSamplesShell";
-import { buildBeansLookup, getNormalizedTastingSampleLabel } from "~/components/tastings/utils";
+import { buildBeansLookup, getTastingSampleLabel } from "~/components/tastings/utils";
 import { notesToOptions, tastingNotes } from "~/data/tasting-notes";
 import { updateTastingScoring } from "~/db/mutations";
 import { TastingVariable } from "~/db/schema";
@@ -86,6 +88,11 @@ export const TastingScoringForm = ({
     },
     onError: (error) => {
       console.error("Update tasting scoring - mutation error:", error);
+      notification({
+        title: "Could not save tasting scoring",
+        subtitle: "Please try again.",
+        Icon: <ExclamationCircleIcon className="text-red-400" />,
+      });
     },
   });
 
@@ -99,8 +106,8 @@ export const TastingScoringForm = ({
     methods.reset(formValues);
   }, [methods, formValues]);
 
-  const { handleSubmit, register, watch } = methods;
-  const samples = watch("samples");
+  const { handleSubmit, register } = methods;
+  const sampleCount = tasting.samples.length;
   const activeSampleKey = tasting.samples[activeSampleIndex]?.id ?? String(activeSampleIndex);
 
   const normalizedBeansLookup = useMemo(() => buildBeansLookup(beansLookup), [beansLookup]);
@@ -109,10 +116,7 @@ export const TastingScoringForm = ({
     const sample = tasting.samples[sampleIndex];
     if (!sample) return `Sample #${sampleIndex + 1}`;
 
-    return (
-      getNormalizedTastingSampleLabel(tasting.variable, sample, normalizedBeansLookup) ||
-      `Sample #${sampleIndex + 1}`
-    );
+    return getTastingSampleLabel(tasting.variable, sample, normalizedBeansLookup, sampleIndex + 1);
   };
 
   const goToPreviousSample = () => {
@@ -120,7 +124,7 @@ export const TastingScoringForm = ({
   };
 
   const goToNextSample = () => {
-    setActiveSampleIndex((index) => Math.min(samples.length - 1, index + 1));
+    setActiveSampleIndex((index) => Math.min(sampleCount - 1, index + 1));
   };
 
   const renderSamplesList = () => (
@@ -250,11 +254,11 @@ export const TastingScoringForm = ({
           <MobileBottomDrawerNavigator
             drawerTitle="Samples"
             currentIndex={activeSampleIndex}
-            totalCount={samples.length}
+            totalCount={sampleCount}
             onPrevious={goToPreviousSample}
             onNext={goToNextSample}
             disablePrevious={activeSampleIndex === 0}
-            disableNext={activeSampleIndex === samples.length - 1}
+            disableNext={activeSampleIndex === sampleCount - 1}
             closeOnContentClick
           >
             {renderSamplesList()}

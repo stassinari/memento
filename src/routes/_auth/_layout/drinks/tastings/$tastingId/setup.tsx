@@ -1,9 +1,11 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
+import { notification } from "~/components/Notification";
 import { TastingCreateForm } from "~/components/tastings/TastingCreateForm";
 import { TastingSetupFormInputs } from "~/components/tastings/form-types";
 import { mapTastingSetupFormValuesFromTasting } from "~/components/tastings/setup-mappers";
@@ -46,6 +48,11 @@ function TastingEditSetupPage() {
     },
     onError: (error) => {
       console.error("Update tasting setup - mutation error:", error);
+      notification({
+        title: "Could not update tasting setup",
+        subtitle: "Please try again.",
+        Icon: <ExclamationCircleIcon className="text-red-400" />,
+      });
     },
   });
 
