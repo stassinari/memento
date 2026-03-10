@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import ReactMarkdown from "react-markdown";
+import { MarkdownNotes } from "../MarkdownNotes";
 
 interface TastingDetailLike {
   tasting: {
@@ -105,9 +105,10 @@ export const TastingSetupCard = ({ tasting }: TastingDetailLike) => {
         </div>
 
         {tasting.note && (
-          <article className="prose prose-sm mt-4 max-w-none border-t border-gray-200/80 pt-4 dark:border-white/10 dark:prose-invert">
-            <ReactMarkdown>{tasting.note}</ReactMarkdown>
-          </article>
+          <MarkdownNotes
+            markdown={tasting.note}
+            className="mt-4 border-t border-gray-200/80 pt-4 dark:border-white/10"
+          />
         )}
       </div>
     </details>

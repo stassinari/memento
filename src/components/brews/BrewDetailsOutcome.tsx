@@ -1,9 +1,8 @@
-import ReactMarkdown from "react-markdown";
-
 import { BrewWithBeans } from "~/routes/_auth/_layout/drinks/brews/$brewId";
 import { getEyFromBrew } from "~/utils";
 import { Card } from "../Card";
 import { DetailsCard } from "../Details";
+import { MarkdownNotes } from "../MarkdownNotes";
 
 interface BrewDetailsOutcomeProp {
   brew: BrewWithBeans;
@@ -34,9 +33,7 @@ export const BrewDetailsOutcome = ({ brew }: BrewDetailsOutcomeProp) => {
         <Card.Header title="Notes" />
 
         <Card.Content>
-          <article className="prose-sm prose">
-            <ReactMarkdown>{brew.notes ?? ""}</ReactMarkdown>
-          </article>
+          <MarkdownNotes markdown={brew.notes} />
         </Card.Content>
       </Card.Container>
 
