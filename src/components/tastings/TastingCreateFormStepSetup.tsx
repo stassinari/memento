@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { EquipmentTable } from "~/components/EquipmentTable";
 import { FormSection } from "~/components/Form";
@@ -49,24 +49,23 @@ export const TastingCreateFormStepSetup = ({
     control,
     register,
     setValue,
-    watch,
     formState: { errors },
   } = useFormContext<TastingSetupFormInputs>();
 
-  const variable = watch("variable");
-  const beansId = watch("beansId");
-  const method = watch("method");
-  const waterType = watch("waterType");
-  const filterType = watch("filterType");
-  const grinder = watch("grinder");
-  const grindSetting = watch("grindSetting");
-  const beansWeight = watch("beansWeight");
-  const waterWeight = watch("waterWeight");
-  const waterTemperature = watch("waterTemperature");
-  const targetTimeMinutes = watch("targetTimeMinutes");
-  const targetTimeSeconds = watch("targetTimeSeconds");
-  const note = watch("note");
-  const samples = watch("samples");
+  const variable = useWatch({ control, name: "variable" });
+  const beansId = useWatch({ control, name: "beansId" });
+  const method = useWatch({ control, name: "method" });
+  const waterType = useWatch({ control, name: "waterType" });
+  const filterType = useWatch({ control, name: "filterType" });
+  const grinder = useWatch({ control, name: "grinder" });
+  const grindSetting = useWatch({ control, name: "grindSetting" });
+  const beansWeight = useWatch({ control, name: "beansWeight" });
+  const waterWeight = useWatch({ control, name: "waterWeight" });
+  const waterTemperature = useWatch({ control, name: "waterTemperature" });
+  const targetTimeMinutes = useWatch({ control, name: "targetTimeMinutes" });
+  const targetTimeSeconds = useWatch({ control, name: "targetTimeSeconds" });
+  const note = useWatch({ control, name: "note" });
+  const samples = useWatch({ control, name: "samples" }) ?? [];
 
   const beansById = useMemo(() => buildBeansById(beansList), [beansList]);
   const groupedBeansOptions = useMemo(() => groupBeansOptions(beansList), [beansList]);
@@ -114,15 +113,17 @@ export const TastingCreateFormStepSetup = ({
         <Controller
           control={control}
           name="variable"
-          render={({ field }) => (
+          render={() => (
             <TastingVariableSelector
-              value={field.value}
+              value={variable ?? null}
               disabled={isEditMode}
               onChange={(nextVariable) => {
-                field.onChange(nextVariable);
                 if (nextVariable) {
                   updateVariable(nextVariable);
+                  return;
                 }
+
+                setValue("variable", null, { shouldDirty: true });
               }}
             />
           )}

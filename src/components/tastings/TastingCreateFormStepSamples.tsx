@@ -19,7 +19,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Button } from "~/components/Button";
 import { ConfirmDialog } from "~/components/ConfirmDialog";
 import { FormSection } from "~/components/Form";
@@ -61,7 +61,7 @@ export const TastingCreateFormStepSamples = ({
   const fallbackSampleOrderByIdRef = useRef<Record<string, number>>({});
   const nextFallbackSampleOrderRef = useRef(1);
 
-  const { control, register, watch } = useFormContext<TastingSetupFormInputs>();
+  const { control, register } = useFormContext<TastingSetupFormInputs>();
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "samples",
@@ -78,8 +78,8 @@ export const TastingCreateFormStepSamples = ({
     }),
   );
 
-  const variable = watch("variable");
-  const samples = watch("samples");
+  const variable = useWatch({ control, name: "variable" });
+  const samples = useWatch({ control, name: "samples" }) ?? [];
 
   const beansById = useMemo(() => buildBeansById(beansList), [beansList]);
   const groupedBeansOptions = useMemo(() => groupBeansOptions(beansList), [beansList]);
