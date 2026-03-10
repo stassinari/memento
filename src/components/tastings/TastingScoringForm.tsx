@@ -1,6 +1,6 @@
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "~/components/Button";
@@ -22,6 +22,7 @@ import { updateTastingScoring } from "~/db/mutations";
 import { TastingVariable } from "~/db/schema";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { parseNullableNumberInput } from "~/util";
+import { PoweredByMarkdown } from "../MarkdownNotes";
 import { TastingScoringFormInputs, TastingScoringSampleInputs } from "./form-types";
 import { mapTastingScoringFormValuesFromSamples } from "./scoring-mappers";
 
@@ -188,13 +189,16 @@ export const TastingScoringForm = ({
               max={5}
               step={0.5}
             />
-            <FormTextarea
-              label="Notes"
-              id={`samples.${activeSampleIndex}.${dimension.key}Notes`}
-              textareaProps={{
-                ...register(`samples.${activeSampleIndex}.${dimension.key}Notes` as const),
-              }}
-            />
+            <div>
+              <FormTextarea
+                label="Notes"
+                id={`samples.${activeSampleIndex}.${dimension.key}Notes`}
+                textareaProps={{
+                  ...register(`samples.${activeSampleIndex}.${dimension.key}Notes` as const),
+                }}
+              />
+              <PoweredByMarkdown />
+            </div>
           </div>
         </div>
       ))}
@@ -221,11 +225,14 @@ export const TastingScoringForm = ({
         }}
       />
 
-      <FormTextarea
-        label="Sample note"
-        id={`samples.${activeSampleIndex}.note`}
-        textareaProps={{ ...register(`samples.${activeSampleIndex}.note` as const) }}
-      />
+      <div>
+        <FormTextarea
+          label="Sample note"
+          id={`samples.${activeSampleIndex}.note`}
+          textareaProps={{ ...register(`samples.${activeSampleIndex}.note` as const) }}
+        />
+        <PoweredByMarkdown />
+      </div>
     </>
   );
 

@@ -25,10 +25,11 @@ import { FormInput } from "~/components/form/FormInput";
 import { FormTextarea } from "~/components/form/FormTextarea";
 import { SortableFormCard } from "~/components/form/SortableFormCard";
 import { TastingVariable } from "~/db/schema";
+import { PoweredByMarkdown } from "../MarkdownNotes";
 import { TastingSetupFormInputs } from "./form-types";
 import {
-  getEmptySample,
   getBeansSelectGroups,
+  getEmptySample,
   groupBeansOptions,
   toNullableString,
 } from "./tasting-create-form-utils";
@@ -323,6 +324,7 @@ export const TastingCreateFormStepSamples = ({
                         id={`samples.${index}.note`}
                         textareaProps={{ ...register(`samples.${index}.note` as const) }}
                       />
+                      <PoweredByMarkdown />
                     </div>
                   </SortableFormCard>
                 );

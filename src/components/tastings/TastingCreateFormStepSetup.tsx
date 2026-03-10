@@ -12,8 +12,9 @@ import { FormTextarea } from "~/components/form/FormTextarea";
 import { TastingVariable } from "~/db/schema";
 import { parseNullableNumberInput } from "~/util";
 import { Divider } from "../Divider";
-import { TastingSetupFormInputs } from "./form-types";
+import { PoweredByMarkdown } from "../MarkdownNotes";
 import { TastingVariableSelector } from "./TastingVariableSelector";
+import { TastingSetupFormInputs } from "./form-types";
 import {
   getBeansSelectGroups,
   getTargetTimeSummary,
@@ -300,14 +301,17 @@ export const TastingCreateFormStepSetup = ({
               />
             </div>
 
-            <FormTextarea
-              label="Session note"
-              id="note"
-              textareaProps={{
-                ...register("note"),
-                placeholder: "Markdown supported",
-              }}
-            />
+            <div>
+              <FormTextarea
+                label="Session note"
+                id="note"
+                textareaProps={{
+                  ...register("note"),
+                  placeholder: "Markdown supported",
+                }}
+              />
+              <PoweredByMarkdown />
+            </div>
           </>
         ) : (
           <EquipmentTable

@@ -34,3 +34,17 @@ export const MarkdownNotes = ({
     </article>
   );
 };
+
+export const PoweredByMarkdown = () => (
+  <span className="text-xs text-gray-400 dark:text-gray-500">
+    Powered by{" "}
+    <a
+      className="underline hover:no-underline"
+      href="https://www.markdownguide.org/"
+      target="_blank"
+      rel="noreferrer noopener"
+    >
+      Markdown
+    </a>
+  </span>
+);
