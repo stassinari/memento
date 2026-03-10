@@ -333,11 +333,14 @@ export const TastingCreateFormStepSetup = ({
               {
                 label: "Filter type",
                 value:
-                  variable === TastingVariable.FilterType ? "Variable" : toNullableString(filterType),
+                  variable === TastingVariable.FilterType
+                    ? "Variable"
+                    : toNullableString(filterType),
               },
               {
                 label: "Grinder",
-                value: variable === TastingVariable.Grinder ? "Variable" : toNullableString(grinder),
+                value:
+                  variable === TastingVariable.Grinder ? "Variable" : toNullableString(grinder),
               },
               { label: "Grind setting", value: toNullableString(grindSetting) },
               {

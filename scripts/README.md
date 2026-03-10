@@ -80,6 +80,7 @@ pnpm backfill:tastings-normalized -- --apply --log=tastings-normalization-log.js
 ```
 
 Notes:
+
 - Script updates normalized columns on `tastings`, rewrites `tasting_samples` per tasting (idempotent).
 - Legacy `tastings.data` is preserved.
 - Mixed prep across samples is flagged in the log and currently resolved by using the first sample prep.

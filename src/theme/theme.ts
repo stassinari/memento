@@ -29,9 +29,7 @@ export const getSystemTheme = (): ResolvedTheme => {
     return "light";
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
 export const resolveTheme = (preference: ThemePreference): ResolvedTheme => {

@@ -12,7 +12,10 @@ export class TastingDetailPage {
   }
 
   async openSampleByLabel(label: string): Promise<void> {
-    await this.page.getByRole("link", { name: new RegExp(label) }).first().click();
+    await this.page
+      .getByRole("link", { name: new RegExp(label) })
+      .first()
+      .click();
   }
 
   async expectSamplePage(sampleNumber: number): Promise<void> {

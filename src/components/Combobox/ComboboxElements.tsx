@@ -29,10 +29,7 @@ interface ComboboxOptionsProps {
 }
 
 export const ComboboxOptions = ({ children }: ComboboxOptionsProps) => (
-  <HuiComboboxOptions
-    transition
-    className={pickerAbsoluteMenuStyles}
-  >
+  <HuiComboboxOptions transition className={pickerAbsoluteMenuStyles}>
     {children}
   </HuiComboboxOptions>
 );

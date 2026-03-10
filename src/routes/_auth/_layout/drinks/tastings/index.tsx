@@ -65,10 +65,7 @@ function TastingsListPage() {
       </Heading>
 
       {allTastings.length === 0 && !isLoadingTastings ? (
-        <EmptyState
-          title="No tastings yet"
-          description="Start with your first tasting session."
-        />
+        <EmptyState title="No tastings yet" description="Start with your first tasting session." />
       ) : (
         <ul className="mt-4 space-y-4">
           {allTastings.map((tasting) => {

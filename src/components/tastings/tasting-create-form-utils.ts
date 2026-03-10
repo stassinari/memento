@@ -151,8 +151,7 @@ export const normalizeTastingSetupFormData = (
   const normalizedSamples = data.samples.map((sample, index) => ({
     ...sample,
     position: index,
-    variableValueBeansId:
-      variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
+    variableValueBeansId: variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
     variableValueText:
       variable === TastingVariable.Beans ? null : toNullableString(sample.variableValueText),
     note: toNullableString(sample.note),

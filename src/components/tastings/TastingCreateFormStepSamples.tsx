@@ -13,11 +13,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import {
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowsPointingInIcon, ArrowsPointingOutIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { Button } from "~/components/Button";
@@ -57,7 +53,9 @@ export const TastingCreateFormStepSamples = ({
   onSave,
 }: TastingCreateFormStepSamplesProps) => {
   const [collapsedSampleIds, setCollapsedSampleIds] = useState<Record<string, boolean>>({});
-  const [pendingRemoval, setPendingRemoval] = useState<{ fieldId: string; label: string } | null>(null);
+  const [pendingRemoval, setPendingRemoval] = useState<{ fieldId: string; label: string } | null>(
+    null,
+  );
   const fallbackSampleOrderByIdRef = useRef<Record<string, number>>({});
   const nextFallbackSampleOrderRef = useRef(1);
 
@@ -262,7 +260,8 @@ export const TastingCreateFormStepSamples = ({
                           id={`samples.${index}.variableValueBeansId`}
                           inputProps={{
                             value: currentSample?.variableValueBeansId
-                              ? (beansById.get(currentSample.variableValueBeansId) ?? "Unknown beans")
+                              ? (beansById.get(currentSample.variableValueBeansId) ??
+                                "Unknown beans")
                               : "",
                             disabled: true,
                             readOnly: true,

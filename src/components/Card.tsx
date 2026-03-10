@@ -10,8 +10,7 @@ const containerVariants = cva("", {
       elevated:
         "rounded-lg bg-white shadow-sm dark:bg-gray-900 dark:shadow-black/20 dark:ring-1 dark:ring-white/10",
       flat: "rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-gray-900",
-      well:
-        "rounded-lg overflow-hidden border border-gray-200/80 bg-gray-50 dark:border-white/10 dark:bg-white/5",
+      well: "rounded-lg overflow-hidden border border-gray-200/80 bg-gray-50 dark:border-white/10 dark:bg-white/5",
     },
   },
   defaultVariants: {
@@ -20,8 +19,7 @@ const containerVariants = cva("", {
 });
 
 interface ContainerProps
-  extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof containerVariants> {}
+  extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof containerVariants> {}
 
 const Container = ({ className, variant, ...props }: ContainerProps) => (
   <div className={clsx(containerVariants({ variant }), className)} {...props} />

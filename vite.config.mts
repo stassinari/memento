@@ -25,11 +25,7 @@ export default defineConfig({
       },
     }),
     VitePWA({
-      includeAssets: [
-        "favicon.svg",
-        "robots.txt",
-        "apple-touch-icon.png",
-      ],
+      includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
       workbox: {
         // SSR build does not have a static SPA index.html fallback
         navigateFallbackDenylist: [/^\/.*/],

@@ -20,7 +20,10 @@ interface LayoutProps {
 export const Layout = ({ fullWidth = false, children }: LayoutProps) => {
   return (
     <div
-      className={clsx(layoutContainerTailwindStyles, "bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100")}
+      className={clsx(
+        layoutContainerTailwindStyles,
+        "bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100",
+      )}
       style={layoutContainerCssStyles}
     >
       <SidebarNav />

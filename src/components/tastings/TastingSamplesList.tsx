@@ -15,8 +15,7 @@ const itemVariants = cva("block w-full rounded-md px-3 py-2 text-left text-sm tr
   variants: {
     variant: {
       inbox: "",
-      card:
-        "border border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5",
+      card: "border border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5",
     },
     isSelected: {
       true: "",

@@ -2,7 +2,10 @@ import {
   TastingScoringFormInputs,
   TastingScoringSampleInputs,
 } from "~/components/tastings/form-types";
-import { toNullableNumber, toNullableString } from "~/components/tastings/tasting-create-form-utils";
+import {
+  toNullableNumber,
+  toNullableString,
+} from "~/components/tastings/tasting-create-form-utils";
 
 export type TastingScoringSampleSource = TastingScoringSampleInputs;
 

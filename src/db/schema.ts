@@ -55,12 +55,8 @@ export type BeansBlendPart = {
 };
 
 export const timestamps = {
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 };
 
 export const users = pgTable(
@@ -112,8 +108,7 @@ export const beans = pgTable(
     isArchived: boolean("is_archived").notNull().default(false),
 
     isFrozen: boolean("is_frozen").generatedAlwaysAs(
-      (): SQL =>
-        sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,
+      (): SQL => sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,
     ),
     isOpen: boolean("is_open").generatedAlwaysAs(
       (): SQL =>
@@ -303,12 +298,9 @@ export const tastingSamples = pgTable(
     position: integer("position").notNull(),
 
     variableValueText: text("variable_value_text"),
-    variableValueBeansId: uuid("variable_value_beans_id").references(
-      () => beans.id,
-      {
-        onDelete: "restrict",
-      },
-    ),
+    variableValueBeansId: uuid("variable_value_beans_id").references(() => beans.id, {
+      onDelete: "restrict",
+    }),
     note: text("note"),
     actualTimeMinutes: integer("actual_time_minutes"),
     actualTimeSeconds: integer("actual_time_seconds"),
@@ -343,10 +335,7 @@ export const tastingSamples = pgTable(
   },
   (table) => [
     index("tasting_samples_tasting_idx").on(table.tastingId),
-    uniqueIndex("tasting_samples_tasting_position_unique").on(
-      table.tastingId,
-      table.position,
-    ),
+    uniqueIndex("tasting_samples_tasting_position_unique").on(table.tastingId, table.position),
     check(
       "tasting_samples_variable_value_xor_check",
       sql`(${table.variableValueText} is null) <> (${table.variableValueBeansId} is null)`,
@@ -399,15 +388,12 @@ export const espressoRelations = relations(espresso, ({ one }) => ({
   }),
 }));
 
-export const espressoDecentReadingsRelations = relations(
-  espressoDecentReadings,
-  ({ one }) => ({
-    espresso: one(espresso, {
-      fields: [espressoDecentReadings.espressoId],
-      references: [espresso.id],
-    }),
+export const espressoDecentReadingsRelations = relations(espressoDecentReadings, ({ one }) => ({
+  espresso: one(espresso, {
+    fields: [espressoDecentReadings.espressoId],
+    references: [espresso.id],
   }),
-);
+}));
 
 export const tastingsRelations = relations(tastings, ({ one, many }) => ({
   user: one(users, {

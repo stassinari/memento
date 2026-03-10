@@ -59,11 +59,7 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
     <div className="h-44 md:h-56">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} syncId="decentChart">
-          <CartesianGrid
-            vertical={false}
-            stroke={gridStroke}
-            strokeDasharray="3 3"
-          />
+          <CartesianGrid vertical={false} stroke={gridStroke} strokeDasharray="3 3" />
           <XAxis
             type="number"
             dataKey="time"
@@ -92,20 +88,8 @@ export const TemperatureChart = ({ decentReadings }: TemperatureChartProps) => {
             }}
           />
           <Legend content={ChartLegend} />
-          <Line
-            type="basis"
-            dot={false}
-            dataKey="basket"
-            stroke={basketColor}
-            strokeWidth={2}
-          />
-          <Line
-            type="basis"
-            dot={false}
-            dataKey="mix"
-            stroke={mixColor}
-            strokeWidth={1}
-          />
+          <Line type="basis" dot={false} dataKey="basket" stroke={basketColor} strokeWidth={2} />
+          <Line type="basis" dot={false} dataKey="mix" stroke={mixColor} strokeWidth={1} />
           <Line
             type="basis"
             dot={false}

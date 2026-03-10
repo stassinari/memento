@@ -7,8 +7,7 @@ export const pickerRightIconStyles =
 const pickerMenuBaseStyles =
   "z-10 max-h-56 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-900 dark:outline-white/10";
 
-export const pickerAnchoredMenuStyles =
-  `w-(--button-width) [--anchor-gap:0.25rem] [--anchor-max-height:14rem] ${pickerMenuBaseStyles}`;
+export const pickerAnchoredMenuStyles = `w-(--button-width) [--anchor-gap:0.25rem] [--anchor-max-height:14rem] ${pickerMenuBaseStyles}`;
 
 export const pickerAbsoluteMenuStyles = `absolute mt-1 w-full ${pickerMenuBaseStyles}`;
 

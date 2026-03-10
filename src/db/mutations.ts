@@ -6,20 +6,9 @@ import { BrewOutcomeInputs } from "~/components/brews/BrewOutcomeForm";
 import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { EspressoOutcomeInputs } from "~/components/espresso/EspressoOutcomeForm";
 import { DecentEspressoFormInputs } from "~/components/espresso/steps/DecentEspressoForm";
-import {
-  TastingScoringFormInputs,
-  TastingSetupFormInputs,
-} from "~/components/tastings/form-types";
+import { TastingScoringFormInputs, TastingSetupFormInputs } from "~/components/tastings/form-types";
 import { db } from "./db";
-import {
-  beans,
-  brews,
-  espresso,
-  tastings,
-  tastingSamples,
-  TastingVariable,
-  users,
-} from "./schema";
+import { beans, brews, espresso, tastings, tastingSamples, TastingVariable, users } from "./schema";
 
 /**
  * Validate beans input data
@@ -47,23 +36,15 @@ function validateBeansInput(data: BeansFormInputs): void {
  */
 export const generateSecretKey = createServerFn({ method: "POST" })
   .inputValidator((input: { secretKey: string }) => input)
-  .handler(
-    async ({
-      data: { secretKey },
-      context,
-    }): Promise<{ secretKey: string }> => {
-      try {
-        await db
-          .update(users)
-          .set({ secretKey })
-          .where(eq(users.id, context.userId));
-      } catch (error) {
-        console.error("Failed to update secret key:", error);
-      }
+  .handler(async ({ data: { secretKey }, context }): Promise<{ secretKey: string }> => {
+    try {
+      await db.update(users).set({ secretKey }).where(eq(users.id, context.userId));
+    } catch (error) {
+      console.error("Failed to update secret key:", error);
+    }
 
-      return { secretKey };
-    },
-  );
+    return { secretKey };
+  });
 
 /**
  * Delete the secretKey for a user
@@ -71,10 +52,7 @@ export const generateSecretKey = createServerFn({ method: "POST" })
 export const deleteSecretKey = createServerFn({ method: "POST" }).handler(
   async ({ context }): Promise<void> => {
     try {
-      await db
-        .update(users)
-        .set({ secretKey: null })
-        .where(eq(users.id, context.userId));
+      await db.update(users).set({ secretKey: null }).where(eq(users.id, context.userId));
     } catch (error) {
       console.error("Failed to delete secret key:", error);
     }
@@ -116,10 +94,7 @@ export const addBeans = createServerFn({ method: "POST" })
         blendParts: data.origin === "blend" ? data.blendParts : null,
       };
 
-      const [inserted] = await db
-        .insert(beans)
-        .values(pgData)
-        .returning({ id: beans.id });
+      const [inserted] = await db.insert(beans).values(pgData).returning({ id: beans.id });
 
       return { id: inserted.id };
     } catch (error) {
@@ -214,47 +189,34 @@ export const deleteBeans = createServerFn({ method: "POST" })
   })
   .handler(async ({ data: { beansId }, context }) => {
     try {
-      const [hasBrews, hasEspressos, hasTastings, hasTastingSamples] =
-        await Promise.all([
-          db
-            .select({ id: brews.id })
-            .from(brews)
-            .where(
-              and(eq(brews.beansId, beansId), eq(brews.userId, context.userId)),
-            )
-            .limit(1),
-          db
-            .select({ id: espresso.id })
-            .from(espresso)
-            .where(
-              and(
-                eq(espresso.beansId, beansId),
-                eq(espresso.userId, context.userId),
-              ),
-            )
-            .limit(1),
-          db
-            .select({ id: tastings.id })
-            .from(tastings)
-            .where(
-              and(
-                eq(tastings.beansId, beansId),
-                eq(tastings.userId, context.userId),
-              ),
-            )
-            .limit(1),
-          db
-            .select({ id: tastingSamples.id })
-            .from(tastingSamples)
-            .innerJoin(tastings, eq(tastingSamples.tastingId, tastings.id))
-            .where(
-              and(
-                eq(tastingSamples.variableValueBeansId, beansId),
-                eq(tastings.userId, context.userId),
-              ),
-            )
-            .limit(1),
-        ]);
+      const [hasBrews, hasEspressos, hasTastings, hasTastingSamples] = await Promise.all([
+        db
+          .select({ id: brews.id })
+          .from(brews)
+          .where(and(eq(brews.beansId, beansId), eq(brews.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: espresso.id })
+          .from(espresso)
+          .where(and(eq(espresso.beansId, beansId), eq(espresso.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: tastings.id })
+          .from(tastings)
+          .where(and(eq(tastings.beansId, beansId), eq(tastings.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: tastingSamples.id })
+          .from(tastingSamples)
+          .innerJoin(tastings, eq(tastingSamples.tastingId, tastings.id))
+          .where(
+            and(
+              eq(tastingSamples.variableValueBeansId, beansId),
+              eq(tastings.userId, context.userId),
+            ),
+          )
+          .limit(1),
+      ]);
 
       if (
         hasBrews.length > 0 ||
@@ -265,9 +227,7 @@ export const deleteBeans = createServerFn({ method: "POST" })
         return false;
       }
 
-      await db
-        .delete(beans)
-        .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
+      await db.delete(beans).where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
 
       return true;
     } catch (error) {
@@ -379,10 +339,7 @@ export const addBrew = createServerFn({ method: "POST" })
         finish: null,
       };
 
-      const [inserted] = await db
-        .insert(brews)
-        .values(pgData)
-        .returning({ id: brews.id });
+      const [inserted] = await db.insert(brews).values(pgData).returning({ id: brews.id });
 
       return { id: inserted.id };
     } catch (error) {
@@ -446,9 +403,7 @@ export const deleteBrew = createServerFn({ method: "POST" })
   })
   .handler(async ({ data: { brewId }, context }): Promise<void> => {
     try {
-      await db
-        .delete(brews)
-        .where(and(eq(brews.id, brewId), eq(brews.userId, context.userId)));
+      await db.delete(brews).where(and(eq(brews.id, brewId), eq(brews.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
     }
@@ -515,10 +470,7 @@ export const addEspresso = createServerFn({ method: "POST" })
         finish: null,
       };
 
-      const [inserted] = await db
-        .insert(espresso)
-        .values(pgData)
-        .returning({ id: espresso.id });
+      const [inserted] = await db.insert(espresso).values(pgData).returning({ id: espresso.id });
 
       return { id: inserted.id };
     } catch (error) {
@@ -543,9 +495,7 @@ export const updateEspresso = createServerFn({ method: "POST" })
       await db
         .update(espresso)
         .set({ ...data, beansId } as Partial<typeof espresso.$inferInsert>)
-        .where(
-          and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)),
-        );
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)));
 
       return;
     } catch (error) {
@@ -558,20 +508,16 @@ export const updateEspresso = createServerFn({ method: "POST" })
  * Update espresso outcome fields (partial update)
  */
 export const updateEspressoOutcome = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: EspressoOutcomeInputs; espressoId: string }) => {
-      if (!input.espressoId) throw new Error("Espresso ID is required");
-      return input;
-    },
-  )
+  .inputValidator((input: { data: EspressoOutcomeInputs; espressoId: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
+    return input;
+  })
   .handler(async ({ data: { data, espressoId }, context }) => {
     try {
       await db
         .update(espresso)
         .set(data)
-        .where(
-          and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)),
-        );
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL outcome update failed:", error);
     }
@@ -589,9 +535,7 @@ export const deleteEspresso = createServerFn({ method: "POST" })
     try {
       await db
         .delete(espresso)
-        .where(
-          and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)),
-        );
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
     }
@@ -602,12 +546,10 @@ export const deleteEspresso = createServerFn({ method: "POST" })
  * Sets partial=false and adds beans + equipment details
  */
 export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { data: DecentEspressoFormInputs; espressoId: string }) => {
-      if (!input.espressoId) throw new Error("Espresso ID is required");
-      return input;
-    },
-  )
+  .inputValidator((input: { data: DecentEspressoFormInputs; espressoId: string }) => {
+    if (!input.espressoId) throw new Error("Espresso ID is required");
+    return input;
+  })
   .handler(async ({ data: { data, espressoId }, context }): Promise<void> => {
     try {
       const beansId = data.beans;
@@ -631,9 +573,7 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
           targetWeight: data.targetWeight,
           beansWeight: data.beansWeight,
         })
-        .where(
-          and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)),
-        );
+        .where(and(eq(espresso.id, espressoId), eq(espresso.userId, context.userId)));
 
       return;
     } catch (error) {
@@ -680,32 +620,25 @@ const sanitizeNullableNumber = (value: number | null): number | null =>
 /* Helper function to ensure all provided beans IDs belong to the current user.
  * This is important for security, especially since some beans IDs come from the client (e.g. tasting samples).
  */
-const assertOwnedBeansIds = async (
-  userId: string,
-  beansIds: string[],
-): Promise<void> => {
+const assertOwnedBeansIds = async (userId: string, beansIds: string[]): Promise<void> => {
   if (beansIds.length === 0) return;
 
   const ownedBeans = await db.query.beans.findMany({
-    where: (b, { and, eq, inArray }) =>
-      and(eq(b.userId, userId), inArray(b.id, beansIds)),
+    where: (b, { and, eq, inArray }) => and(eq(b.userId, userId), inArray(b.id, beansIds)),
     columns: { id: true },
   });
   const ownedIds = new Set(ownedBeans.map((bean) => bean.id));
   if (beansIds.some((beansId) => !ownedIds.has(beansId))) {
-    throw new Error(
-      "One or more selected beans do not belong to the current user",
-    );
+    throw new Error("One or more selected beans do not belong to the current user");
   }
 };
 
-const getTastingSetupBeansIds = (data: TastingSetupFormInputs): string[] =>
-  [
-    ...(data.beansId ? [data.beansId] : []),
-    ...data.samples
-      .map((sample) => sample.variableValueBeansId)
-      .filter((beansId): beansId is string => Boolean(beansId)),
-  ];
+const getTastingSetupBeansIds = (data: TastingSetupFormInputs): string[] => [
+  ...(data.beansId ? [data.beansId] : []),
+  ...data.samples
+    .map((sample) => sample.variableValueBeansId)
+    .filter((beansId): beansId is string => Boolean(beansId)),
+];
 
 const toTastingSetupValues = (data: TastingSetupFormInputs) => {
   if (!data.variable) {
@@ -797,10 +730,7 @@ const syncTastingSetupSamples = async ({
     await tx
       .delete(tastingSamples)
       .where(
-        and(
-          eq(tastingSamples.tastingId, tastingId),
-          inArray(tastingSamples.id, sampleIdsToDelete),
-        ),
+        and(eq(tastingSamples.tastingId, tastingId), inArray(tastingSamples.id, sampleIdsToDelete)),
       );
   }
 
@@ -866,20 +796,17 @@ export const addTasting = createServerFn({ method: "POST" })
   });
 
 export const updateTastingSetup = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { tastingId: string; data: TastingSetupFormInputs }) => {
-      if (!input.tastingId) {
-        throw new Error("Tasting ID is required");
-      }
-      validateTastingInput(input.data);
-      return input;
-    },
-  )
+  .inputValidator((input: { tastingId: string; data: TastingSetupFormInputs }) => {
+    if (!input.tastingId) {
+      throw new Error("Tasting ID is required");
+    }
+    validateTastingInput(input.data);
+    return input;
+  })
   .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
     try {
       const tasting = await db.query.tastings.findFirst({
-        where: (t, { and, eq }) =>
-          and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+        where: (t, { and, eq }) => and(eq(t.id, tastingId), eq(t.userId, context.userId)),
         columns: {
           id: true,
           variable: true,
@@ -906,9 +833,7 @@ export const updateTastingSetup = createServerFn({ method: "POST" })
         await tx
           .update(tastings)
           .set(tastingValues)
-          .where(
-            and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)),
-          );
+          .where(and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)));
 
         await syncTastingSetupSamples({
           tx,
@@ -924,22 +849,19 @@ export const updateTastingSetup = createServerFn({ method: "POST" })
   });
 
 export const updateTastingScoring = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { tastingId: string; data: TastingScoringFormInputs }) => {
-      if (!input.tastingId) {
-        throw new Error("Tasting ID is required");
-      }
-      if (input.data.samples.length === 0) {
-        throw new Error("At least one sample is required");
-      }
-      return input;
-    },
-  )
+  .inputValidator((input: { tastingId: string; data: TastingScoringFormInputs }) => {
+    if (!input.tastingId) {
+      throw new Error("Tasting ID is required");
+    }
+    if (input.data.samples.length === 0) {
+      throw new Error("At least one sample is required");
+    }
+    return input;
+  })
   .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
     try {
       const tasting = await db.query.tastings.findFirst({
-        where: (t, { and, eq }) =>
-          and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+        where: (t, { and, eq }) => and(eq(t.id, tastingId), eq(t.userId, context.userId)),
         columns: { id: true },
       });
 
@@ -984,12 +906,7 @@ export const updateTastingScoring = createServerFn({ method: "POST" })
               finishQuality: sanitizeNullableNumber(sample.finishQuality),
               finishNotes: nullableText(sample.finishNotes),
             })
-            .where(
-              and(
-                eq(tastingSamples.id, sample.id),
-                eq(tastingSamples.tastingId, tastingId),
-              ),
-            );
+            .where(and(eq(tastingSamples.id, sample.id), eq(tastingSamples.tastingId, tastingId)));
         }
       });
     } catch (error) {

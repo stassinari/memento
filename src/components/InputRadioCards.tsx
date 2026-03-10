@@ -39,7 +39,10 @@ export const InputRadioCards = <T,>({
           >
             <span className="flex items-center">
               <span className="flex flex-col text-sm">
-                <RadioGroup.Label as="span" className="font-medium text-gray-900 dark:text-gray-100">
+                <RadioGroup.Label
+                  as="span"
+                  className="font-medium text-gray-900 dark:text-gray-100"
+                >
                   {option.left.top}
                 </RadioGroup.Label>
                 {option.left.bottom && (
