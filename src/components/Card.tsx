@@ -1,16 +1,28 @@
 import { Link } from "@tanstack/react-router";
+import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import { HTMLAttributes, type ReactNode } from "react";
 import { Action } from "./ButtonWithDropdown";
 
-const Container = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={clsx(
-      "rounded-lg bg-white shadow-sm dark:bg-gray-900 dark:shadow-black/20 dark:ring-1 dark:ring-white/10",
-      className,
-    )}
-    {...props}
-  />
+const containerVariants = cva("", {
+  variants: {
+    variant: {
+      elevated:
+        "rounded-lg bg-white shadow-sm dark:bg-gray-900 dark:shadow-black/20 dark:ring-1 dark:ring-white/10",
+      flat: "rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-gray-900",
+      well: "rounded-lg overflow-hidden border border-gray-200/80 bg-gray-50 dark:border-white/10 dark:bg-white/5",
+    },
+  },
+  defaultVariants: {
+    variant: "elevated",
+  },
+});
+
+interface ContainerProps
+  extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof containerVariants> {}
+
+const Container = ({ className, variant, ...props }: ContainerProps) => (
+  <div className={clsx(containerVariants({ variant }), className)} {...props} />
 );
 
 const Content = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (

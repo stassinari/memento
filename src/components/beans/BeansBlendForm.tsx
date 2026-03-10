@@ -6,6 +6,7 @@ import countries from "~/data/countries";
 import { processes } from "~/data/processes";
 import { varietals } from "~/data/varietals";
 import { BeansBlendPart } from "~/db/schema";
+import { parseNullableNumberInput } from "~/util";
 import { Button } from "../Button";
 import { IconButton } from "../IconButton";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
@@ -39,8 +40,11 @@ export const BeansBlendForm = () => {
   return fields.length > 0 ? (
     <div className="space-y-4">
       {fields.map((field, i) => (
-        <div className="rounded-md border dark:border-white/15" key={field.id}>
-          <div className="flex items-center justify-between border-b bg-gray-100 px-4 py-2 dark:border-white/10 dark:bg-white/5">
+        <div
+          className="overflow-hidden rounded-lg bg-gray-50 ring-1 ring-inset ring-gray-200 dark:bg-white/5 dark:ring-white/10"
+          key={field.id}
+        >
+          <div className="flex items-center justify-between border-b border-gray-200/80 bg-white/70 px-4 py-2 dark:border-white/10 dark:bg-white/5">
             <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
               Blend part {i + 1}
             </span>
@@ -69,7 +73,7 @@ export const BeansBlendForm = () => {
               id={`blendParts.${i}.percentage`}
               inputProps={{
                 ...register(`blendParts.${i}.percentage`, {
-                  setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                  setValueAs: parseNullableNumberInput,
                 }),
                 type: "number",
                 placeholder: "34",

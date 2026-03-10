@@ -6,6 +6,14 @@ export function immutableRemove<T>(array: T[], item: T) {
   return array.filter((i) => i !== item);
 }
 
+export function parseNullableNumberInput(value: string | null | undefined): number | null {
+  if (value === "" || value === null || value === undefined) {
+    return null;
+  }
+
+  return Number(value);
+}
+
 const MINUTE = 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;

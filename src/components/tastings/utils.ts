@@ -15,6 +15,28 @@ export const getTastingVariableLabel = (value: string): string => {
   return mapped?.label ?? value;
 };
 
+export const getTastingDefaultName = (variable: string | null): string => {
+  if (!variable) {
+    return "Tasting";
+  }
+
+  const label = getTastingVariableLabel(variable);
+  if (label === "unknown") {
+    return "Tasting";
+  }
+
+  return `${label} tasting`;
+};
+
+export const getTastingDisplayName = (name: string | null, variable: string | null): string => {
+  const trimmedName = name?.trim();
+  if (trimmedName) {
+    return trimmedName;
+  }
+
+  return getTastingDefaultName(variable);
+};
+
 type BeansLookupValue = Pick<Beans, "id" | "name" | "roaster">;
 
 export const buildBeansLookup = (beansList: BeansLookupValue[]) => {
@@ -43,6 +65,13 @@ export const getNormalizedTastingSampleLabel = (
 
   return sample.variableValueText ?? "";
 };
+
+export const getTastingSampleLabel = (
+  variable: string | null,
+  sample: { variableValueText: string | null; variableValueBeansId: string | null },
+  lookup: ReturnType<typeof buildBeansLookup>,
+  sampleNumber: number,
+): string => getNormalizedTastingSampleLabel(variable, sample, lookup) || `Sample #${sampleNumber}`;
 
 export const hasMeaningfulNormalizedRating = (sample: {
   overall: number | null;

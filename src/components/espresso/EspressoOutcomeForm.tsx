@@ -4,6 +4,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import { updateEspressoOutcome } from "~/db/mutations";
 import { Espresso } from "~/db/types";
+import { parseNullableNumberInput } from "~/util";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
 import { PoweredByMarkdown } from "../PoweredByMarkdown";
@@ -114,7 +115,7 @@ export const EspressoOutcomeForm = ({ espresso, espressoId }: EspressoOutcomeFor
                   value: 0,
                   message: "Please enter a positive TDS.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",

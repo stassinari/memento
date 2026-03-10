@@ -1,4 +1,8 @@
-import { Combobox as HuiCombobox } from "@headlessui/react";
+import {
+  Combobox as HuiCombobox,
+  ComboboxInput as HuiComboboxInput,
+  Label as HuiLabel,
+} from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { ReactElement, useState } from "react";
@@ -11,13 +15,14 @@ import {
   comboboxButtonIconStyles,
   comboboxButtonStyles,
 } from "./ComboboxElements";
+import { filterComboboxOptions } from "./utils";
 
 export interface ComboboxSingleProps {
   name: string;
   label: string;
   options: string[];
-  value: any;
-  onChange: (...event: any[]) => void;
+  value: string | null;
+  onChange: (newValue: string | null) => void;
   reset: () => void;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
@@ -37,19 +42,14 @@ export const ComboboxSingle = ({
 
   const showResetButton = !!value;
 
-  const filteredOptions =
-    query === ""
-      ? options
-      : options.filter((o) => {
-          return o.toLowerCase().includes(query.toLowerCase());
-        });
+  const filteredOptions = filterComboboxOptions(options, query);
 
   return (
     <HuiCombobox as="div" value={value} onChange={onChange} name={name} nullable>
-      <HuiCombobox.Label className={clsx(labelStyles)}>{label}</HuiCombobox.Label>
+      <HuiLabel className={clsx(labelStyles)}>{label}</HuiLabel>
 
       <div className="relative mt-1">
-        <HuiCombobox.Input
+        <HuiComboboxInput
           className={clsx([
             inputStyles,
             "relative border bg-white py-2 pl-3 focus:outline-hidden focus:ring-1 dark:bg-gray-900 dark:focus:ring-orange-400",
@@ -67,7 +67,7 @@ export const ComboboxSingle = ({
           <button
             onClick={reset}
             type="button"
-              className={clsx([comboboxButtonStyles, "right-6"])}
+            className={clsx([comboboxButtonStyles, "right-6"])}
             tabIndex={-1}
           >
             <XMarkIcon className={clsx(comboboxButtonIconStyles)} />

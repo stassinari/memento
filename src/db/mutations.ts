@@ -1,13 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { BeansFormInputs } from "~/components/beans/BeansForm";
 import { BrewFormInputs } from "~/components/brews/BrewForm";
 import { BrewOutcomeInputs } from "~/components/brews/BrewOutcomeForm";
 import { EspressoFormInputs } from "~/components/espresso/EspressoForm";
 import { EspressoOutcomeInputs } from "~/components/espresso/EspressoOutcomeForm";
 import { DecentEspressoFormInputs } from "~/components/espresso/steps/DecentEspressoForm";
+import { TastingScoringFormInputs, TastingSetupFormInputs } from "~/components/tastings/form-types";
 import { db } from "./db";
-import { beans, brews, espresso, users } from "./schema";
+import { beans, brews, espresso, tastings, tastingSamples, TastingVariable, users } from "./schema";
 
 /**
  * Validate beans input data
@@ -188,23 +189,50 @@ export const deleteBeans = createServerFn({ method: "POST" })
   })
   .handler(async ({ data: { beansId }, context }) => {
     try {
-      // check if beans have associated brews or espressos before deleting
-      const hasDrinks = await db
-        .select({ id: brews.id })
-        .from(brews)
-        .where(eq(brews.beansId, beansId))
-        .union(db.select({ id: espresso.id }).from(espresso).where(eq(espresso.beansId, beansId)))
-        .limit(1);
+      const [hasBrews, hasEspressos, hasTastings, hasTastingSamples] = await Promise.all([
+        db
+          .select({ id: brews.id })
+          .from(brews)
+          .where(and(eq(brews.beansId, beansId), eq(brews.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: espresso.id })
+          .from(espresso)
+          .where(and(eq(espresso.beansId, beansId), eq(espresso.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: tastings.id })
+          .from(tastings)
+          .where(and(eq(tastings.beansId, beansId), eq(tastings.userId, context.userId)))
+          .limit(1),
+        db
+          .select({ id: tastingSamples.id })
+          .from(tastingSamples)
+          .innerJoin(tastings, eq(tastingSamples.tastingId, tastings.id))
+          .where(
+            and(
+              eq(tastingSamples.variableValueBeansId, beansId),
+              eq(tastings.userId, context.userId),
+            ),
+          )
+          .limit(1),
+      ]);
 
-      if (hasDrinks.length > 0) {
-        return false; // Cannot delete beans with associated brews or espressos
+      if (
+        hasBrews.length > 0 ||
+        hasEspressos.length > 0 ||
+        hasTastings.length > 0 ||
+        hasTastingSamples.length > 0
+      ) {
+        return false;
       }
 
       await db.delete(beans).where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
 
-      return true; // Deletion successful
+      return true;
     } catch (error) {
       console.error("PostgreSQL delete failed:", error);
+      return false;
     }
   });
 
@@ -550,6 +578,355 @@ export const updateDecentEspressoDetails = createServerFn({ method: "POST" })
       return;
     } catch (error) {
       console.error("PostgreSQL update failed:", error);
+      throw error;
+    }
+  });
+
+// ============================================================================
+// TASTINGS MUTATIONS
+// ============================================================================
+
+function validateTastingInput(data: TastingSetupFormInputs): void {
+  if (!data.date) {
+    throw new Error("Tasting date is required");
+  }
+  if (!data.variable) {
+    throw new Error("Tasting variable is required");
+  }
+  if (data.samples.length < 2) {
+    throw new Error("At least two samples are required");
+  }
+
+  data.samples.forEach((sample, index) => {
+    const isBeansVariable = data.variable === TastingVariable.Beans;
+    if (isBeansVariable && !sample.variableValueBeansId) {
+      throw new Error(`Sample #${index + 1} must have beans selected`);
+    }
+    if (!isBeansVariable && !sample.variableValueText?.trim()) {
+      throw new Error(`Sample #${index + 1} must have a variable value`);
+    }
+  });
+}
+
+const nullableText = (value: string | null): string | null => {
+  if (!value) return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+const sanitizeNullableNumber = (value: number | null): number | null =>
+  value === null || Number.isNaN(value) ? null : value;
+
+/* Helper function to ensure all provided beans IDs belong to the current user.
+ * This is important for security, especially since some beans IDs come from the client (e.g. tasting samples).
+ */
+const assertOwnedBeansIds = async (userId: string, beansIds: string[]): Promise<void> => {
+  if (beansIds.length === 0) return;
+
+  const ownedBeans = await db.query.beans.findMany({
+    where: (b, { and, eq, inArray }) => and(eq(b.userId, userId), inArray(b.id, beansIds)),
+    columns: { id: true },
+  });
+  const ownedIds = new Set(ownedBeans.map((bean) => bean.id));
+  if (beansIds.some((beansId) => !ownedIds.has(beansId))) {
+    throw new Error("One or more selected beans do not belong to the current user");
+  }
+};
+
+const getTastingSetupBeansIds = (data: TastingSetupFormInputs): string[] => [
+  ...(data.beansId ? [data.beansId] : []),
+  ...data.samples
+    .map((sample) => sample.variableValueBeansId)
+    .filter((beansId): beansId is string => Boolean(beansId)),
+];
+
+const toTastingSetupValues = (data: TastingSetupFormInputs) => {
+  if (!data.variable) {
+    throw new Error("Tasting variable is required");
+  }
+  const variable = data.variable;
+
+  return {
+    date: data.date,
+    variable,
+    name: nullableText(data.name),
+    note: nullableText(data.note),
+    beansId: variable === TastingVariable.Beans ? null : data.beansId,
+    method: variable === TastingVariable.Method ? null : nullableText(data.method),
+    waterWeight: sanitizeNullableNumber(data.waterWeight),
+    beansWeight: sanitizeNullableNumber(data.beansWeight),
+    waterTemperature: sanitizeNullableNumber(data.waterTemperature),
+    grinder: variable === TastingVariable.Grinder ? null : nullableText(data.grinder),
+    grindSetting: nullableText(data.grindSetting),
+    waterType: variable === TastingVariable.WaterType ? null : nullableText(data.waterType),
+    filterType: variable === TastingVariable.FilterType ? null : nullableText(data.filterType),
+    targetTimeMinutes: sanitizeNullableNumber(data.targetTimeMinutes),
+    targetTimeSeconds: sanitizeNullableNumber(data.targetTimeSeconds),
+  };
+};
+
+const toTastingSampleInsertValues = ({
+  tastingId,
+  variable,
+  sample,
+  position,
+}: {
+  tastingId: string;
+  variable: TastingVariable;
+  sample: TastingSetupFormInputs["samples"][number];
+  position: number;
+}) => ({
+  tastingId,
+  position,
+  variableValueBeansId: variable === TastingVariable.Beans ? sample.variableValueBeansId : null,
+  variableValueText:
+    variable === TastingVariable.Beans ? null : nullableText(sample.variableValueText),
+  note: nullableText(sample.note),
+});
+
+type DbTx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+const syncTastingSetupSamples = async ({
+  tx,
+  tastingId,
+  variable,
+  samples,
+}: {
+  tx: DbTx;
+  tastingId: string;
+  variable: TastingVariable;
+  samples: TastingSetupFormInputs["samples"];
+}): Promise<void> => {
+  const existingSamples = await tx
+    .select({ id: tastingSamples.id })
+    .from(tastingSamples)
+    .where(eq(tastingSamples.tastingId, tastingId));
+
+  const existingSampleIds = new Set(existingSamples.map((sample) => sample.id));
+  const incomingExistingSampleIds = samples
+    .map((sample) => sample.id)
+    .filter((sampleId): sampleId is string => Boolean(sampleId));
+
+  if (incomingExistingSampleIds.some((sampleId) => !existingSampleIds.has(sampleId))) {
+    throw new Error("One or more sample IDs are invalid");
+  }
+
+  if (existingSamples.length > 0) {
+    // Temporary offset avoids unique constraint collisions while reordering.
+    await tx
+      .update(tastingSamples)
+      .set({
+        position: sql`${tastingSamples.position} + 10000`,
+      })
+      .where(eq(tastingSamples.tastingId, tastingId));
+  }
+
+  const incomingExistingSampleIdsSet = new Set(incomingExistingSampleIds);
+  const sampleIdsToDelete = existingSamples
+    .filter((sample) => !incomingExistingSampleIdsSet.has(sample.id))
+    .map((sample) => sample.id);
+
+  if (sampleIdsToDelete.length > 0) {
+    await tx
+      .delete(tastingSamples)
+      .where(
+        and(eq(tastingSamples.tastingId, tastingId), inArray(tastingSamples.id, sampleIdsToDelete)),
+      );
+  }
+
+  for (const [index, sample] of samples.entries()) {
+    if (sample.id) {
+      await tx
+        .update(tastingSamples)
+        .set({
+          position: index,
+          note: nullableText(sample.note),
+        })
+        .where(and(eq(tastingSamples.id, sample.id), eq(tastingSamples.tastingId, tastingId)));
+      continue;
+    }
+
+    await tx.insert(tastingSamples).values(
+      toTastingSampleInsertValues({
+        tastingId,
+        variable,
+        sample,
+        position: index,
+      }),
+    );
+  }
+};
+
+export const addTasting = createServerFn({ method: "POST" })
+  .inputValidator((input: { data: TastingSetupFormInputs }) => {
+    validateTastingInput(input.data);
+    return input;
+  })
+  .handler(async ({ data: { data }, context }): Promise<{ id: string }> => {
+    if (!data.variable) {
+      throw new Error("Tasting variable is required");
+    }
+    const variable = data.variable;
+    const allBeansIds = getTastingSetupBeansIds(data);
+    const tastingValues = toTastingSetupValues(data);
+    await assertOwnedBeansIds(context.userId, allBeansIds);
+
+    return db.transaction(async (tx) => {
+      const [insertedTasting] = await tx
+        .insert(tastings)
+        .values({
+          userId: context.userId,
+          ...tastingValues,
+        })
+        .returning({ id: tastings.id });
+
+      await tx.insert(tastingSamples).values(
+        data.samples.map((sample, index) =>
+          toTastingSampleInsertValues({
+            tastingId: insertedTasting.id,
+            variable,
+            sample,
+            position: index,
+          }),
+        ),
+      );
+
+      return { id: insertedTasting.id };
+    });
+  });
+
+export const updateTastingSetup = createServerFn({ method: "POST" })
+  .inputValidator((input: { tastingId: string; data: TastingSetupFormInputs }) => {
+    if (!input.tastingId) {
+      throw new Error("Tasting ID is required");
+    }
+    validateTastingInput(input.data);
+    return input;
+  })
+  .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
+    try {
+      const tasting = await db.query.tastings.findFirst({
+        where: (t, { and, eq }) => and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+        columns: {
+          id: true,
+          variable: true,
+        },
+      });
+
+      if (!tasting) {
+        throw new Error("Tasting not found");
+      }
+
+      if (tasting.variable !== data.variable) {
+        throw new Error("Tasting variable cannot be changed");
+      }
+
+      if (!data.variable) {
+        throw new Error("Tasting variable is required");
+      }
+      const variable = data.variable;
+      const allBeansIds = getTastingSetupBeansIds(data);
+      const tastingValues = toTastingSetupValues(data);
+      await assertOwnedBeansIds(context.userId, allBeansIds);
+
+      await db.transaction(async (tx) => {
+        await tx
+          .update(tastings)
+          .set(tastingValues)
+          .where(and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)));
+
+        await syncTastingSetupSamples({
+          tx,
+          tastingId,
+          variable,
+          samples: data.samples,
+        });
+      });
+    } catch (error) {
+      console.error("PostgreSQL update tasting setup failed:", error);
+      throw error;
+    }
+  });
+
+export const updateTastingScoring = createServerFn({ method: "POST" })
+  .inputValidator((input: { tastingId: string; data: TastingScoringFormInputs }) => {
+    if (!input.tastingId) {
+      throw new Error("Tasting ID is required");
+    }
+    if (input.data.samples.length === 0) {
+      throw new Error("At least one sample is required");
+    }
+    return input;
+  })
+  .handler(async ({ data: { tastingId, data }, context }): Promise<void> => {
+    try {
+      const tasting = await db.query.tastings.findFirst({
+        where: (t, { and, eq }) => and(eq(t.id, tastingId), eq(t.userId, context.userId)),
+        columns: { id: true },
+      });
+
+      if (!tasting) {
+        throw new Error("Tasting not found");
+      }
+
+      const sampleIds = data.samples.map((sample) => sample.id);
+      const existingSamples = await db.query.tastingSamples.findMany({
+        where: (sample, { and, eq, inArray }) =>
+          and(eq(sample.tastingId, tastingId), inArray(sample.id, sampleIds)),
+        columns: { id: true },
+      });
+
+      if (existingSamples.length !== data.samples.length) {
+        throw new Error("One or more sample IDs are invalid");
+      }
+
+      await db.transaction(async (tx) => {
+        for (const sample of data.samples) {
+          await tx
+            .update(tastingSamples)
+            .set({
+              note: nullableText(sample.note),
+              actualTimeMinutes: sanitizeNullableNumber(sample.actualTimeMinutes),
+              actualTimeSeconds: sanitizeNullableNumber(sample.actualTimeSeconds),
+              overall: sanitizeNullableNumber(sample.overall),
+              flavours: sample.flavours ?? [],
+              aromaQuantity: sanitizeNullableNumber(sample.aromaQuantity),
+              aromaQuality: sanitizeNullableNumber(sample.aromaQuality),
+              aromaNotes: nullableText(sample.aromaNotes),
+              acidityQuantity: sanitizeNullableNumber(sample.acidityQuantity),
+              acidityQuality: sanitizeNullableNumber(sample.acidityQuality),
+              acidityNotes: nullableText(sample.acidityNotes),
+              sweetnessQuantity: sanitizeNullableNumber(sample.sweetnessQuantity),
+              sweetnessQuality: sanitizeNullableNumber(sample.sweetnessQuality),
+              sweetnessNotes: nullableText(sample.sweetnessNotes),
+              bodyQuantity: sanitizeNullableNumber(sample.bodyQuantity),
+              bodyQuality: sanitizeNullableNumber(sample.bodyQuality),
+              bodyNotes: nullableText(sample.bodyNotes),
+              finishQuantity: sanitizeNullableNumber(sample.finishQuantity),
+              finishQuality: sanitizeNullableNumber(sample.finishQuality),
+              finishNotes: nullableText(sample.finishNotes),
+            })
+            .where(and(eq(tastingSamples.id, sample.id), eq(tastingSamples.tastingId, tastingId)));
+        }
+      });
+    } catch (error) {
+      console.error("PostgreSQL update tasting scoring failed:", error);
+      throw error;
+    }
+  });
+
+export const deleteTasting = createServerFn({ method: "POST" })
+  .inputValidator((input: { tastingId: string }) => {
+    if (!input.tastingId) throw new Error("Tasting ID is required");
+    return input;
+  })
+  .handler(async ({ data: { tastingId }, context }): Promise<void> => {
+    try {
+      await db
+        .delete(tastings)
+        .where(and(eq(tastings.id, tastingId), eq(tastings.userId, context.userId)));
+    } catch (error) {
+      console.error("PostgreSQL delete tasting failed:", error);
       throw error;
     }
   });

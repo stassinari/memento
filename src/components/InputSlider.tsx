@@ -85,7 +85,10 @@ export const InputSlider = ({
           return (
             <div
               {...props}
-              className={clsx("top-0 h-1 w-0.5 rounded-full", isDark ? "bg-gray-500" : "bg-gray-300")}
+              className={clsx(
+                "top-0 h-1 w-0.5 rounded-full",
+                isDark ? "bg-gray-500" : "bg-gray-300",
+              )}
             />
           );
         }}

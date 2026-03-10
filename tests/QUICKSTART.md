@@ -1,44 +1,46 @@
 # Playwright E2E Tests - Quick Start
 
-## 🚀 Quick Start
+## Quick Start
 
-### Step 1: Start Firebase Emulators
+### Step 1: Set test credentials
 
-In one terminal:
+In your shell:
 
 ```bash
-pnpm emulators:start:empty
+export E2E_TEST_EMAIL="test@example.com"
+export E2E_TEST_PASSWORD="testpassword123"
 ```
 
-### Step 2: Run Tests
-
-In another terminal:
+### Step 2: Run tests
 
 ```bash
 pnpm test:e2e
 ```
 
-That's it! The test user will be created automatically.
+### Optional: run with Firebase emulators
 
-## 📋 What Gets Tested
+```bash
+pnpm emulators:start:empty
+```
 
-The main test (`coffee-tracking-flow.spec.ts`) covers the complete user journey:
+## What Gets Tested
+
+The main test (`tests/e2e/tastings-happy-path.spec.ts`) covers:
 
 1. **Login** - Authenticates with test user
-2. **Add Beans** - Creates a new coffee bean entry
-3. **Add Brew** - Creates a filter coffee brew using those beans
-4. **Add Espresso** - Creates an espresso shot using those beans
-5. **Verify** - Checks that both drinks appear on the beans details page
+2. **Add Beans** - Creates two bean entries
+3. **Tasting Setup** - Creates a tasting setup using beans variable
+4. **Scoring** - Saves scoring data
+5. **Verify** - Checks tasting detail and sample view
 
-## 🎯 Test Features
+## Test Features
 
-- ✅ Automatic test user creation via global setup
+- Uses page object models (`tests/e2e/pages`)
 - ✅ Uses role-based selectors (accessible and robust)
 - ✅ Unique timestamps to avoid test conflicts
 - ✅ Multi-step form navigation
-- ✅ Responsive design handling (mobile tabs)
 
-## 🧪 Development Tips
+## Development Tips
 
 ### Run tests with UI (recommended for development)
 
@@ -63,7 +65,7 @@ See the browser window as tests run.
 ### Run a specific test
 
 ```bash
-pnpm test:e2e tests/coffee-tracking-flow.spec.ts
+pnpm test:e2e tests/e2e/tastings-happy-path.spec.ts
 ```
 
 ### Debug a test
@@ -72,7 +74,7 @@ pnpm test:e2e tests/coffee-tracking-flow.spec.ts
 pnpm test:e2e --debug
 ```
 
-## 📝 Adding Test IDs (Optional)
+## Adding Test IDs (Optional)
 
 If you find selectors are fragile, you can add `data-testid` attributes to components:
 
@@ -86,7 +88,7 @@ Then in tests:
 await page.getByTestId("add-beans-button").click();
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### "strict mode violation: locator resolved to 2 elements"
 
@@ -102,16 +104,15 @@ await page.getByLabel("Roaster *").first().click();
 
 See [PATTERNS.md](./PATTERNS.md) for more examples.
 
-### Test user creation fails
+### Login fails
 
-- Ensure emulators are running on default ports
-- Check that port 9099 (Auth emulator) is accessible
-- Manually create the user via http://localhost:9099/auth
+- Ensure `E2E_TEST_EMAIL` and `E2E_TEST_PASSWORD` are set
+- Ensure the account exists in the auth backend you are using
 
 ### Tests timeout
 
 - Check that the dev server starts successfully on port 5173
-- Ensure Firebase emulators are running
+- If using emulators, ensure they are running
 - Increase timeout in playwright.config.ts if needed
 
 ### Elements not found
@@ -120,7 +121,7 @@ See [PATTERNS.md](./PATTERNS.md) for more examples.
 - Use Playwright UI mode to inspect the page state
 - Add explicit waits if needed: `await page.waitForSelector(...)`
 
-## 📚 Resources
+## Resources
 
 - **[PATTERNS.md](./PATTERNS.md)** - Common patterns and solutions for this project
 - [Playwright Documentation](https://playwright.dev)

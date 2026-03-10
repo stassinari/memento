@@ -1,4 +1,5 @@
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { parseNullableNumberInput } from "~/util";
 
 import { Button } from "../../Button";
 import { FormSection } from "../../Form";
@@ -57,7 +58,7 @@ export const EspressoRecipe = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",
@@ -75,7 +76,7 @@ export const EspressoRecipe = ({
                   value: 0,
                   message: "Please enter a positive weight.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",
@@ -96,7 +97,7 @@ export const EspressoRecipe = ({
                   value: 100,
                   message: "Please enter a non-gaseous water temperature.",
                 },
-                setValueAs: (v: string) => (v === "" ? null : Number(v)),
+                setValueAs: parseNullableNumberInput,
               }),
               type: "number",
               step: "0.01",

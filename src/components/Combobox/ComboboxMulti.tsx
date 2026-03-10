@@ -1,18 +1,19 @@
 import { Combobox as HuiCombobox } from "@headlessui/react";
 import clsx from "clsx";
-import React, { ReactElement, useRef, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 import { Badge, BadgeTimesIcon } from "../Badge";
 import { inputStyles, labelStyles } from "../Input";
 import { TextOption } from "../form/ListOption";
 import { ComboboxButton, ComboboxOption, ComboboxOptions } from "./ComboboxElements";
+import { filterComboboxOptions } from "./utils";
 
 export interface ComboboxMultiProps {
   name: string;
   label: string;
   options: string[];
-  values?: any[];
-  onChange: (...event: any[]) => void;
-  removeItem: (item: any) => void;
+  values?: string[];
+  onChange: (newValues: string[]) => void;
+  removeItem: (item: string) => void;
   placeholder?: string;
   renderOption?: (option: string) => ReactElement;
 }
@@ -30,12 +31,7 @@ export const ComboboxMulti = ({
   const [query, setQuery] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 
-  const filteredOptions =
-    query === ""
-      ? options
-      : options.filter((o) => {
-          return o.toLowerCase().includes(query.toLowerCase());
-        });
+  const filteredOptions = filterComboboxOptions(options, query);
 
   return (
     <HuiCombobox
@@ -58,7 +54,7 @@ export const ComboboxMulti = ({
             "relative border bg-white py-2 pl-3 pr-10 focus:outline-hidden focus:ring-1 dark:bg-gray-900 dark:focus:ring-orange-400",
           ])}
         >
-          <div className="min-h-[1.25rem]">
+          <div className="min-h-5">
             <div className="flex flex-wrap gap-2">
               {values.length > 0 &&
                 values.map((v) => (

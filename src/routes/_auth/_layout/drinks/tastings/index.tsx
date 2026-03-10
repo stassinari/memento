@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link as RouterLink, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
@@ -10,8 +10,8 @@ import { ListCard } from "~/components/ListCard";
 import {
   buildBeansLookup,
   formatTastingDate,
+  getTastingDisplayName,
   getNormalizedTastingSampleLabel,
-  getTastingVariableLabel,
 } from "~/components/tastings/utils";
 import { getTastings } from "~/db/queries";
 import { beansLookupQueryOptions } from "~/hooks/queries/tastings";
@@ -54,13 +54,18 @@ function TastingsListPage() {
   return (
     <>
       <BreadcrumbsWithHome items={[navLinks.drinks, navLinks.tastings]} />
-      <Heading>Tastings</Heading>
+      <Heading
+        actionSlot={
+          <Button variant="primary" colour="accent" size={isSm ? "md" : "sm"} asChild>
+            <RouterLink to="/drinks/tastings/add">Add tasting</RouterLink>
+          </Button>
+        }
+      >
+        Tastings
+      </Heading>
 
       {allTastings.length === 0 && !isLoadingTastings ? (
-        <EmptyState
-          title="No tastings yet"
-          description="Imported tastings will appear here. Creation/editing is coming in a later step."
-        />
+        <EmptyState title="No tastings yet" description="Start with your first tasting session." />
       ) : (
         <ul className="mt-4 space-y-4">
           {allTastings.map((tasting) => {
@@ -90,7 +95,7 @@ function TastingsListPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="grow">
                       <ListCard.Title>
-                        {getTastingVariableLabel(tasting.variable ?? "unknown")}
+                        {getTastingDisplayName(tasting.name, tasting.variable)}
                       </ListCard.Title>
                       <ListCard.Row className="line-clamp-2">
                         {preview || `${tasting.samples.length} samples`}

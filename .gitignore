@@ -31,8 +31,9 @@ tmp/
 # temporary while rebuilding the whole app
 srcOld/
 VIBE_*.md
-scripts/*log.json
-scripts/*.sql
+scripts/tastings*.json
+scripts/beans*.sql
+scripts/beans*.json
 
 # firebase
 firebase-debug.log*

@@ -43,6 +43,13 @@
       "when": 1772147490914,
       "tag": "0005_careless_sister_grimm",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772373735197,
+      "tag": "0006_mute_wallop",
+      "breakpoints": true
     }
   ]
 }

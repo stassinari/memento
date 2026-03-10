@@ -142,7 +142,9 @@ function EspressoDetails() {
               <PuzzlePieceIcon /> Add shot info
             </Link>
           </Button>
-          <span className="text-gray-700 dark:text-gray-300">This shot is missing some information!</span>
+          <span className="text-gray-700 dark:text-gray-300">
+            This shot is missing some information!
+          </span>
         </div>
       )}
 

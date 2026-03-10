@@ -16,12 +16,7 @@ type BeansMapRow = {
   fbId: string;
 };
 
-type TastingVariable =
-  | "beans"
-  | "method"
-  | "waterType"
-  | "filterType"
-  | "grinder";
+type TastingVariable = "beans" | "method" | "waterType" | "filterType" | "grinder";
 
 type TastingPrep = {
   beans: unknown;
@@ -153,13 +148,7 @@ const requireEnv = (key: string): string => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
-const validVariables: TastingVariable[] = [
-  "beans",
-  "method",
-  "waterType",
-  "filterType",
-  "grinder",
-];
+const validVariables: TastingVariable[] = ["beans", "method", "waterType", "filterType", "grinder"];
 
 const toDate = (value: unknown): Date | null => {
   if (!value) return null;
@@ -209,7 +198,9 @@ const getRefLikeId = (value: unknown): string | null => {
     }
 
     if (isRecord(value._path) && Array.isArray(value._path.segments)) {
-      const segments = value._path.segments.filter((segment): segment is string => typeof segment === "string");
+      const segments = value._path.segments.filter(
+        (segment): segment is string => typeof segment === "string",
+      );
       return segments.length > 0 ? segments[segments.length - 1] : null;
     }
   }
@@ -324,14 +315,12 @@ const parseTasting = (data: unknown): ParsedTasting => {
     : null;
 
   const samples = Array.isArray(d.samples)
-    ? d.samples
-        .filter(isRecord)
-        .map((sample) => ({
-          variableValue: sample.variableValue,
-          note: toStringValue(sample.note),
-          prep: parsePrep(sample.prep),
-          rating: parseRating(sample.rating),
-        }))
+    ? d.samples.filter(isRecord).map((sample) => ({
+        variableValue: sample.variableValue,
+        note: toStringValue(sample.note),
+        prep: parsePrep(sample.prep),
+        rating: parseRating(sample.rating),
+      }))
     : [];
 
   return {
@@ -561,8 +550,12 @@ const main = async () => {
   }
 
   const review: ReviewItem[] = [];
-  const updates: Array<{ tastingId: string; parsed: ParsedTasting; setup: NormalizedSetup; sampleInserts: SampleInsert[] }> =
-    [];
+  const updates: Array<{
+    tastingId: string;
+    parsed: ParsedTasting;
+    setup: NormalizedSetup;
+    sampleInserts: SampleInsert[];
+  }> = [];
 
   let mixedPrepCount = 0;
   let skippedInvalidVariable = 0;
@@ -586,7 +579,8 @@ const main = async () => {
       mixedPrepCount += 1;
       review.push({
         tastingId: tasting.id,
-        reason: "Mixed prep values across samples; using only shared values on tasting and adding differences to sample notes",
+        reason:
+          "Mixed prep values across samples; using only shared values on tasting and adding differences to sample notes",
         details: { mixedFields },
       });
     }

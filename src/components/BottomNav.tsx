@@ -17,59 +17,59 @@ import { FrenchPressIcon } from "./icons/FrenchPressIcon";
 
 type NavLink = {
   label: string;
-  linkTo: LinkProps["to"];
+  link: LinkProps;
   Icon: ReactNode;
 };
 
 export const navLinks: Record<string, NavLink> = {
   home: {
     label: "Home",
-    linkTo: "/",
+    link: { to: "/" },
     Icon: <HomeIcon />,
   },
   beans: {
     label: "Beans",
-    linkTo: "/beans",
+    link: { to: "/beans" },
     Icon: <BeansIconOutline />,
   },
   drinks: {
     label: "Drinks",
-    linkTo: "/drinks",
+    link: { to: "/drinks" },
     Icon: <DrinkIcon />,
   },
   brews: {
     label: "Brews",
-    linkTo: "/drinks/brews",
+    link: { to: "/drinks/brews" },
     Icon: <FrenchPressIcon />,
   },
   espresso: {
     label: "Espresso",
-    linkTo: "/drinks/espresso",
+    link: { to: "/drinks/espresso" },
     Icon: <EspressoIcon />,
   },
   tastings: {
     label: "Tastings",
-    linkTo: "/drinks/tastings",
+    link: { to: "/drinks/tastings" },
     Icon: <BowlIcon />,
   },
   decentUpload: {
     label: "Decent upload",
-    linkTo: "/decent-upload",
+    link: { to: "/decent-upload" },
     Icon: <ArrowUpOnSquareIcon />,
   },
   aiPlayground: {
     label: "AI playground",
-    linkTo: "/ai",
+    link: { to: "/ai" },
     Icon: <SparklesIcon />,
   },
   settings: {
     label: "Settings",
-    linkTo: "/settings",
+    link: { to: "/settings" },
     Icon: <Cog6ToothIcon />,
   },
   designLibrary: {
     label: "Design library",
-    linkTo: "/design-library",
+    link: { to: "/design-library" },
     Icon: <PhotoIcon />,
   },
 };
@@ -90,8 +90,8 @@ export const BottomNav = () => (
     }}
   >
     <ol className="flex justify-between h-14">
-      {bottomNavLinks.map(({ Icon, label, linkTo: to }) => (
-        <BottomNavItem key={label} Icon={Icon} label={label} linkTo={to} />
+      {bottomNavLinks.map(({ Icon, label, link }) => (
+        <BottomNavItem key={label} Icon={Icon} label={label} link={link} />
       ))}
     </ol>
   </nav>
@@ -100,16 +100,16 @@ export const BottomNav = () => (
 interface BottomNavItemProps {
   Icon: ReactNode;
   label: string;
-  linkTo: LinkProps["to"];
+  link: LinkProps;
 }
 
-const BottomNavItem = ({ Icon, label, linkTo }: BottomNavItemProps) => {
-  const isActive = useActiveRoute(linkTo);
+const BottomNavItem = ({ Icon, label, link }: BottomNavItemProps) => {
+  const isActive = useActiveRoute(link);
 
   return (
     <li className="inline-flex items-center justify-center w-full p-1 text-center">
       <Link
-        to={linkTo}
+        {...link}
         className={clsx([
           "group",
           "flex h-full w-full flex-col justify-center gap-0.5 rounded-md hover:bg-gray-100 dark:hover:bg-white/10",

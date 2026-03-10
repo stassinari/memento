@@ -77,11 +77,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
       {/* FIXME find a way to better define height (of the legend in particular) */}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} syncId="decentChart">
-          <CartesianGrid
-            vertical={false}
-            stroke={gridStroke}
-            strokeDasharray="3 3"
-          />
+          <CartesianGrid vertical={false} stroke={gridStroke} strokeDasharray="3 3" />
           <XAxis
             type="number"
             dataKey="time"
@@ -126,13 +122,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
             strokeDasharray="5 5"
             activeDot={(props) => (props.value >= 0 ? <Dot {...props} /> : <Dot />)}
           />
-          <Line
-            type="basis"
-            dot={false}
-            dataKey="flow"
-            stroke={flowColor}
-            strokeWidth={2}
-          />
+          <Line type="basis" dot={false} dataKey="flow" stroke={flowColor} strokeWidth={2} />
           <Line
             type="basis"
             dot={false}
@@ -142,13 +132,7 @@ export const PressureFlowWeightChart = ({ readings }: PressureFlowWeightChartPro
             strokeDasharray="5 5"
             activeDot={(props) => (props.value >= 0 ? <Dot {...props} /> : <Dot />)}
           />
-          <Line
-            type="basis"
-            dot={false}
-            dataKey="weight"
-            strokeWidth={2}
-            stroke={weightColor}
-          />
+          <Line type="basis" dot={false} dataKey="weight" strokeWidth={2} stroke={weightColor} />
         </LineChart>
       </ResponsiveContainer>
     </div>

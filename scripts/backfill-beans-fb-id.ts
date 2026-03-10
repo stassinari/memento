@@ -89,10 +89,7 @@ const loadServiceAccount = async () => {
 };
 
 const normalize = (value: string | null | undefined): string =>
-  (value ?? "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, " ");
+  (value ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 
 const parseDate = (value: unknown): Date | null => {
   if (!value) return null;
@@ -142,7 +139,8 @@ const scoreCandidate = (pgBean: PgBean, fsBean: FirestoreBean): Candidate => {
   let score = 0;
   const reasons: string[] = [];
 
-  const nameExact = normalize(pgBean.name) !== "" && normalize(pgBean.name) === normalize(fsBean.name);
+  const nameExact =
+    normalize(pgBean.name) !== "" && normalize(pgBean.name) === normalize(fsBean.name);
   const roasterExact =
     normalize(pgBean.roaster) !== "" && normalize(pgBean.roaster) === normalize(fsBean.roaster);
 

@@ -9,12 +9,12 @@ import { MementoLogoDark } from "./icons/MementoLogoDark";
 import { MementoLogoLight } from "./icons/MementoLogoLight";
 import { ThemePicker } from "./ThemePicker";
 
-const SidebarNavItem = ({ Icon, label, linkTo, nested = false }: SidebarNavItemProps) => {
-  const isActive = useActiveRoute(linkTo);
+const SidebarNavItem = ({ Icon, label, link, nested = false }: SidebarNavItemProps) => {
+  const isActive = useActiveRoute(link);
 
   return (
     <Link
-      to={linkTo}
+      {...link}
       className={clsx([
         "group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-600 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-orange-400",
         nested && "ml-4",
@@ -38,7 +38,7 @@ const SidebarNavItem = ({ Icon, label, linkTo, nested = false }: SidebarNavItemP
 export interface SidebarNavItemProps {
   Icon: ReactNode;
   label: string;
-  linkTo: LinkProps["to"];
+  link: LinkProps;
   nested?: boolean;
 }
 
@@ -82,9 +82,9 @@ export const SidebarNav = () => {
           <ul role="list" className="flex flex-col flex-1 gap-y-7">
             <li>
               <ul role="list" className="-mx-2 space-y-1">
-                {sidebarNavLinks.map(({ Icon, label, linkTo, nested }) => (
+                {sidebarNavLinks.map(({ Icon, label, link, nested }) => (
                   <li key={label}>
-                    <SidebarNavItem Icon={Icon} label={label} linkTo={linkTo} nested={nested} />
+                    <SidebarNavItem Icon={Icon} label={label} link={link} nested={nested} />
                   </li>
                 ))}
               </ul>
@@ -94,7 +94,7 @@ export const SidebarNav = () => {
               <SidebarNavItem
                 Icon={navLinks.settings.Icon}
                 label={navLinks.settings.label}
-                linkTo={navLinks.settings.linkTo}
+                link={navLinks.settings.link}
               />
             </li>
           </ul>

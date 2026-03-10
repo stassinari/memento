@@ -4,29 +4,15 @@
 
 ### Prerequisites
 
-1. Firebase emulators must be running
-2. A test user will be automatically created via the global setup script
+1. A reachable auth backend (Firebase or emulator)
+2. Test credentials exported before running Playwright:
 
-### Running Tests with Emulators
+```bash
+export E2E_TEST_EMAIL="test@example.com"
+export E2E_TEST_PASSWORD="testpassword123"
+```
 
-The easiest way to run tests is:
-
-1. In one terminal, start the Firebase emulators:
-
-   ```bash
-   pnpm emulators:start:empty
-   ```
-
-2. In another terminal, run the tests:
-   ```bash
-   pnpm test:e2e
-   ```
-
-The global setup script (`tests/global-setup.ts`) will automatically create the test user (`test@example.com`) in the Firebase Auth emulator before running tests.
-
-### Manual Test User Creation (Optional)
-
-If you prefer to create the test user manually:
+### Optional: run with Firebase emulators
 
 1. Start the Firebase emulators:
 
@@ -67,23 +53,23 @@ pnpm test:e2e --headed
 ### Run a specific test file
 
 ```bash
-pnpm test:e2e tests/coffee-tracking-flow.spec.ts
+pnpm test:e2e tests/e2e/tastings-happy-path.spec.ts
 ```
 
 ## Test Structure
 
-### `coffee-tracking-flow.spec.ts`
+### `tests/e2e/tastings-happy-path.spec.ts`
 
-Tests the main happy path flow:
+Tests the tasting flow end-to-end:
 
-1. Add beans
-2. Add a brew using those beans
-3. Add an espresso using those beans
-4. Verify both drinks appear on the beans details page
+1. Log in
+2. Add two beans
+3. Create a tasting setup with beans as variable
+4. Save scoring
+5. Verify details/sample navigation
 
 ## Notes
 
-- Tests assume an empty Firebase emulator state for consistency
+- Tests are skipped unless `E2E_TEST_EMAIL` and `E2E_TEST_PASSWORD` are set
 - Each test uses unique timestamps in names to avoid conflicts
-- The main flow test is comprehensive and covers the entire user journey
-- Tests use both role-based selectors (preferred) and text selectors as fallback
+- Page object models live in `tests/e2e/pages/`

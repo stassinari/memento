@@ -137,7 +137,8 @@ function DecentUpload() {
             <div
               className={clsx([
                 "group mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 bg-white px-6 py-10 focus-visible:ring-2 focus-visible:ring-orange-600/75 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-hidden dark:border-white/20 dark:bg-gray-900 dark:focus-visible:ring-orange-400 dark:focus-visible:ring-offset-gray-950",
-                isFileUploading && "after:content after:absolute after:inset-0 after:bg-gray-50/50 dark:after:bg-gray-900/50",
+                isFileUploading &&
+                  "after:content after:absolute after:inset-0 after:bg-gray-50/50 dark:after:bg-gray-900/50",
               ])}
               {...getRootProps()}
             >

@@ -258,17 +258,25 @@ interface StatProps {
 const Stats = ({ title, stats }: StatProps) => {
   return (
     <div>
-      <h3 className="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+      <h3 className="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
+        {title}
+      </h3>
       <dl className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-3">
         {stats.map((item) => (
           <div
             key={item.name}
             className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm dark:bg-gray-900 dark:ring-1 dark:ring-white/10 sm:p-6"
           >
-            <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">{item.name}</dt>
+            <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
+              {item.name}
+            </dt>
             <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
               {item.stat}
-              {item.statSmall && <span className="pl-1 text-xl text-gray-500 dark:text-gray-400">{item.statSmall}</span>}
+              {item.statSmall && (
+                <span className="pl-1 text-xl text-gray-500 dark:text-gray-400">
+                  {item.statSmall}
+                </span>
+              )}
             </dd>
           </div>
         ))}

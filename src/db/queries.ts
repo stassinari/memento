@@ -1,45 +1,34 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, isNull, or, sql } from "drizzle-orm";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
-import {
-  TastingVariable,
-  beans,
-  brews,
-  espresso,
-  tastingSamples,
-  tastings,
-} from "./schema";
+import { TastingVariable, beans, brews, espresso, tastingSamples, tastings } from "./schema";
 
 type TastingRow = typeof tastings.$inferSelect;
 type TastingSampleRow = typeof tastingSamples.$inferSelect;
 type TastingWithSamples = TastingRow & { samples: TastingSampleRow[] };
 
-export const getUser = createServerFn({ method: "GET" }).handler(
-  async ({ context }) => {
-    return db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.id, context.userId),
-    });
-  },
-);
+export const getUser = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  return db.query.users.findFirst({
+    where: (u, { eq }) => eq(u.id, context.userId),
+  });
+});
 
-export const getLastBrew = createServerFn({ method: "GET" }).handler(
-  async ({ context }) => {
-    try {
-      const lastBrew = await db
-        .select({ ...getTableColumns(brews) })
-        .from(brews)
-        .where(eq(brews.userId, context.userId))
-        .orderBy(desc(brews.date))
-        .limit(1)
-        .then((results) => results[0] || null);
-      return lastBrew;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  },
-);
+export const getLastBrew = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  try {
+    const lastBrew = await db
+      .select({ ...getTableColumns(brews) })
+      .from(brews)
+      .where(eq(brews.userId, context.userId))
+      .orderBy(desc(brews.date))
+      .limit(1)
+      .then((results) => results[0] || null);
+    return lastBrew;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
 
 // FIXME this is fetching way more data than needed. Beans should just really
 // come as a string (for name) and users are only needed for ownership
@@ -113,8 +102,7 @@ export const getBrew = createServerFn({ method: "GET" })
   .handler(async ({ data: { brewId }, context }) => {
     try {
       const brew = await db.query.brews.findFirst({
-        where: (brews, { and, eq }) =>
-          and(eq(brews.id, brewId), eq(brews.userId, context.userId)),
+        where: (brews, { and, eq }) => and(eq(brews.id, brewId), eq(brews.userId, context.userId)),
         with: {
           beans: true,
         },
@@ -221,7 +209,9 @@ export const getTastings = createServerFn({ method: "GET" })
     try {
       const tastingList = await db.query.tastings.findMany({
         where: (tastings, { eq }) => eq(tastings.userId, context.userId),
-        orderBy: (tastings, { desc }) => [desc(tastings.createdAt)],
+        orderBy: (tastings, { desc }) => [
+          desc(sql`coalesce(${tastings.date}, ${tastings.createdAt})`),
+        ],
         limit,
         offset,
         with: {
@@ -273,9 +263,7 @@ export const getPartialEspressos = createServerFn({ method: "GET" }).handler(
         .select()
         .from(espresso)
         .leftJoin(beans, eq(espresso.beansId, beans.id))
-        .where(
-          and(eq(espresso.userId, context.userId), eq(espresso.partial, true)),
-        )
+        .where(and(eq(espresso.userId, context.userId), eq(espresso.partial, true)))
         .orderBy(desc(espresso.date))
         .limit(5);
       return espressoList;
@@ -286,28 +274,26 @@ export const getPartialEspressos = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export const getLastEspresso = createServerFn({ method: "GET" }).handler(
-  async ({ context }) => {
-    try {
-      const lastEspresso = await db
-        .select({ ...getTableColumns(espresso) })
-        .from(espresso)
-        .where(
-          and(
-            eq(espresso.userId, context.userId),
-            or(isNull(espresso.partial), eq(espresso.partial, false)),
-          ),
-        ) // not partial excludes Decent shots that haven't had details added yet
-        .orderBy(desc(espresso.date))
-        .limit(1)
-        .then((results) => results[0] || null);
-      return lastEspresso;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  },
-);
+export const getLastEspresso = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  try {
+    const lastEspresso = await db
+      .select({ ...getTableColumns(espresso) })
+      .from(espresso)
+      .where(
+        and(
+          eq(espresso.userId, context.userId),
+          or(isNull(espresso.partial), eq(espresso.partial, false)),
+        ),
+      ) // not partial excludes Decent shots that haven't had details added yet
+      .orderBy(desc(espresso.date))
+      .limit(1)
+      .then((results) => results[0] || null);
+    return lastEspresso;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
 
 export const getDecentReadings = createServerFn({ method: "GET" })
   .inputValidator((input: { espressoId: string }) => {
@@ -358,53 +344,47 @@ export const getBeans = createServerFn({ method: "GET" })
     }
   });
 
-export const getSelectableBeans = createServerFn({ method: "GET" }).handler(
-  async ({ context }) => {
-    try {
-      // Non-archived beans: not marked as finished
-      const beansList = await db
-        .select({
-          id: beans.id,
-          name: beans.name,
-          roaster: beans.roaster,
-          roastDate: beans.roastDate,
-          origin: beans.origin,
-          country: beans.country,
-          isArchived: beans.isArchived,
-          isFrozen: beans.isFrozen,
-          isOpen: beans.isOpen,
-        })
-        .from(beans)
-        .where(
-          and(eq(beans.userId, context.userId), eq(beans.isArchived, false)),
-        )
-        .orderBy(desc(beans.roastDate));
-      return beansList;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  },
-);
+export const getSelectableBeans = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  try {
+    // Non-archived beans: not marked as finished
+    const beansList = await db
+      .select({
+        id: beans.id,
+        name: beans.name,
+        roaster: beans.roaster,
+        roastDate: beans.roastDate,
+        origin: beans.origin,
+        country: beans.country,
+        isArchived: beans.isArchived,
+        isFrozen: beans.isFrozen,
+        isOpen: beans.isOpen,
+      })
+      .from(beans)
+      .where(and(eq(beans.userId, context.userId), eq(beans.isArchived, false)))
+      .orderBy(desc(beans.roastDate));
+    return beansList;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
 
-export const getBeansLookup = createServerFn({ method: "GET" }).handler(
-  async ({ context }) => {
-    try {
-      const beansList = await db
-        .select({
-          id: beans.id,
-          name: beans.name,
-          roaster: beans.roaster,
-        })
-        .from(beans)
-        .where(eq(beans.userId, context.userId));
-      return beansList;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  },
-);
+export const getBeansLookup = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  try {
+    const beansList = await db
+      .select({
+        id: beans.id,
+        name: beans.name,
+        roaster: beans.roaster,
+      })
+      .from(beans)
+      .where(eq(beans.userId, context.userId));
+    return beansList;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw error;
+  }
+});
 
 export const getBean = createServerFn({ method: "GET" })
   .inputValidator((input: { beanId: string }) => {
@@ -414,8 +394,7 @@ export const getBean = createServerFn({ method: "GET" })
   .handler(async ({ data: { beanId }, context }) => {
     try {
       const bean = await db.query.beans.findFirst({
-        where: (beans, { and, eq }) =>
-          and(eq(beans.id, beanId), eq(beans.userId, context.userId)),
+        where: (beans, { and, eq }) => and(eq(beans.id, beanId), eq(beans.userId, context.userId)),
         with: {
           brews: {
             orderBy: (brews, { desc }) => [desc(brews.date)],
