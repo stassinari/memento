@@ -13,7 +13,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
 import { atom } from "jotai";
 import { HTMLAttributes, useState } from "react";
-import toast from "react-hot-toast";
 
 import { Badge, BadgePlusIcon, BadgeTimesIcon } from "~/components/Badge";
 import { navLinks } from "~/components/BottomNav";
@@ -30,7 +29,7 @@ import { InputRadioButtonGroup } from "~/components/InputRadioButtonGroup";
 import { InputRadioCards, InputRadioCardsOption } from "~/components/InputRadioCards";
 import { ListCard } from "~/components/ListCard";
 import { ExampleDialogContent, LoremIpsum, Modal, RadixModal } from "~/components/Modal";
-import { notification } from "~/components/Notification";
+import { dismissNotification, notification } from "~/components/Notification";
 import { Stopwatch } from "~/components/Stopwatch";
 import { Textarea } from "~/components/Textarea";
 import { Toggle } from "~/components/Toggle";
@@ -414,8 +413,8 @@ function DesignLibrary() {
                 showClose: false,
                 primaryButton: {
                   label: "Reload",
-                  onClick: (t) => {
-                    toast.dismiss(t.id);
+                  onClick: (notificationId) => {
+                    dismissNotification(notificationId);
                   },
                 },
               })
@@ -425,7 +424,7 @@ function DesignLibrary() {
           </Button>
           <Button
             variant="primary"
-            onClick={() => toast("Here is your toast.", { duration: Infinity })}
+            onClick={() => notification({ title: "Here is your toast.", duration: Infinity })}
           >
             Default toast
           </Button>

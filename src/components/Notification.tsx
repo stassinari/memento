@@ -2,11 +2,11 @@ import { Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { Fragment, ReactNode } from "react";
-import toast, { Toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type NotificationButton = {
   label: string;
-  onClick: (t: Toast) => void;
+  onClick: (notificationId: string) => void;
 };
 
 type NotificationProps = {
@@ -57,7 +57,7 @@ export const notification = ({
                   <div className="flex mt-3 space-x-7">
                     {primaryButton && (
                       <button
-                        onClick={() => primaryButton.onClick(t)}
+                        onClick={() => primaryButton.onClick(t.id)}
                         type="button"
                         className="rounded-md bg-white text-sm font-medium text-orange-600 hover:text-orange-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:bg-transparent dark:text-orange-300 dark:hover:text-orange-200 dark:focus:ring-orange-400 dark:focus:ring-offset-gray-800"
                       >
@@ -66,7 +66,7 @@ export const notification = ({
                     )}
                     {secondaryButton && (
                       <button
-                        onClick={() => secondaryButton.onClick(t)}
+                        onClick={() => secondaryButton.onClick(t.id)}
                         type="button"
                         className="rounded-md bg-white text-sm font-medium text-gray-700 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:bg-transparent dark:text-gray-200 dark:hover:text-gray-100 dark:focus:ring-orange-400 dark:focus:ring-offset-gray-800"
                       >
@@ -81,7 +81,7 @@ export const notification = ({
                   <button
                     type="button"
                     className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:bg-transparent dark:text-gray-500 dark:hover:text-gray-300 dark:focus:ring-orange-400 dark:focus:ring-offset-gray-800"
-                    onClick={() => toast.dismiss(t.id)}
+                    onClick={() => dismissNotification(t.id)}
                   >
                     <span className="sr-only">Close</span>
                     <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -95,4 +95,8 @@ export const notification = ({
     ),
     { duration },
   );
+};
+
+export const dismissNotification = (notificationId?: string) => {
+  toast.dismiss(notificationId);
 };

@@ -1,8 +1,7 @@
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import React, { useCallback, useEffect } from "react";
-import toast from "react-hot-toast";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import { notification } from "./Notification";
+import { dismissNotification, notification } from "./Notification";
 
 export const ReloadPrompt = () => {
   const {
@@ -27,9 +26,9 @@ export const ReloadPrompt = () => {
         showClose: false,
         primaryButton: {
           label: "Reload",
-          onClick: (t) => {
+          onClick: (notificationId) => {
             updateServiceWorker(true);
-            toast.dismiss(t.id);
+            dismissNotification(notificationId);
             setNeedRefresh(false);
           },
         },
