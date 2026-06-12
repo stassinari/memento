@@ -7,7 +7,7 @@ import { varietals } from "~/data/varietals";
 import { getBeansUniqueRoasters } from "~/db/queries";
 import { BeanOrigin, BeansBlendPart, RoastStyle } from "~/db/schema";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { parseNullableNumberInput } from "~/util";
+import { fromStorageDate, parseNullableNumberInput, toStorageDate } from "~/util";
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
@@ -102,7 +102,15 @@ export const BeansForm = ({
   const isSm = useScreenMediaQuery("sm");
 
   const methods = useForm<BeansFormInputs>({
-    defaultValues,
+    // Stored dates come back at UTC-midnight; show them at local-midnight so the
+    // pickers display the same day the user picked, in any timezone.
+    defaultValues: {
+      ...defaultValues,
+      roastDate: fromStorageDate(defaultValues.roastDate),
+      harvestDate: fromStorageDate(defaultValues.harvestDate),
+      freezeDate: fromStorageDate(defaultValues.freezeDate),
+      thawDate: fromStorageDate(defaultValues.thawDate),
+    },
   });
   const {
     handleSubmit,
@@ -117,6 +125,15 @@ export const BeansForm = ({
     } else {
       data = { ...data, blendParts: [] };
     }
+    // Local-midnight (from the pickers) -> UTC-midnight so the stored DATE keeps
+    // the day the user picked instead of shifting across the UTC boundary.
+    data = {
+      ...data,
+      roastDate: toStorageDate(data.roastDate),
+      harvestDate: toStorageDate(data.harvestDate),
+      freezeDate: toStorageDate(data.freezeDate),
+      thawDate: toStorageDate(data.thawDate),
+    };
     void mutation(data);
   };
 
