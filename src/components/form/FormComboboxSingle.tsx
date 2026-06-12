@@ -1,6 +1,6 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { ComboboxSingle } from "../Combobox/ComboboxSingle";
+import { ComboboxSingle } from "../combobox/ComboboxSingle";
 import { Input } from "../Input";
 import { FormSuggestions } from "./FormSuggestions";
 

@@ -20,10 +20,16 @@ import { BreadcrumbsWithHome, BreadcrumbsWithoutHome } from "~/components/Breadc
 import { Button } from "~/components/Button";
 import { ButtonWithDropdown } from "~/components/ButtonWithDropdown";
 import { Card } from "~/components/Card";
-import { ComboboxMulti } from "~/components/Combobox/ComboboxMulti";
-import { ComboboxSingle } from "~/components/Combobox/ComboboxSingle";
+import { ComboboxMulti } from "~/components/combobox/ComboboxMulti";
+import { ComboboxSingle } from "~/components/combobox/ComboboxSingle";
+import { DrinkRatio } from "~/components/drinks/DrinkRatio";
 import { Heading } from "~/components/Heading";
 import { IconButton } from "~/components/IconButton";
+import { BeanBagIcon } from "~/components/icons/BeanBagIcon";
+import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
+import { DripperIcon } from "~/components/icons/DripperIcon";
+import { DropIcon } from "~/components/icons/DropIcon";
+import { PortafilterIcon } from "~/components/icons/PortafilterIcon";
 import { InputRadio } from "~/components/InputRadio";
 import { InputRadioButtonGroup } from "~/components/InputRadioButtonGroup";
 import { InputRadioCards, InputRadioCardsOption } from "~/components/InputRadioCards";
@@ -33,12 +39,6 @@ import { dismissNotification, notification } from "~/components/Notification";
 import { Stopwatch } from "~/components/Stopwatch";
 import { Textarea } from "~/components/Textarea";
 import { Toggle } from "~/components/Toggle";
-import { DrinkRatio } from "~/components/drinks/DrinkRatio";
-import { BeanBagIcon } from "~/components/icons/BeanBagIcon";
-import { BeanIconSolid } from "~/components/icons/BeanIconSolid";
-import { DripperIcon } from "~/components/icons/DripperIcon";
-import { DropIcon } from "~/components/icons/DropIcon";
-import { PortafilterIcon } from "~/components/icons/PortafilterIcon";
 
 export const Route = createFileRoute("/_auth/_layout/design-library")({
   component: DesignLibrary,

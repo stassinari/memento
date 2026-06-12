@@ -7,7 +7,7 @@ import {
   pickerOptionCheckStyles,
   pickerRightIconButtonStyles,
   pickerRightIconStyles,
-} from "./Combobox/sharedStyles";
+} from "./combobox/sharedStyles";
 import { inputStyles } from "./Input";
 
 export interface SelectOption {
