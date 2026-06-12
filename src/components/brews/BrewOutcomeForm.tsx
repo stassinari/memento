@@ -8,11 +8,11 @@ import { Brew } from "~/db/types";
 import { parseNullableNumberInput } from "~/util";
 import { Button } from "../Button";
 import { FormSection } from "../Form";
-import { PoweredByMarkdown } from "../PoweredByMarkdown";
 import { FormInput } from "../form/FormInput";
 import { FormInputRadioButtonGroup } from "../form/FormInputRadioButtonGroup";
 import { FormInputSlider } from "../form/FormInputSlider";
 import { FormTextarea } from "../form/FormTextarea";
+import { PoweredByMarkdown } from "../MarkdownNotes";
 
 export interface BrewOutcomeInputs {
   rating: number | null;

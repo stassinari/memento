@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import type { Beans } from "~/db/types";
+import { fromStorageDate } from "~/util";
 import { DetailsCard } from "../Details";
 
 interface BeansDetailsInfoProps {
@@ -16,7 +17,7 @@ export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
         { label: "Roaster", value: beans.roaster },
         {
           label: "Roast date",
-          value: beans.roastDate ? dayjs(beans.roastDate).format("DD MMM YYYY") : "",
+          value: beans.roastDate ? dayjs(fromStorageDate(beans.roastDate)).format("DD MMM YYYY") : "",
         },
         { label: "Roast style", value: beans.roastStyle ?? "" },
         {
@@ -34,11 +35,11 @@ export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
       rows={[
         {
           label: "Freeze date",
-          value: beans.freezeDate ? dayjs(beans.freezeDate).format("DD MMM YYYY") : "",
+          value: beans.freezeDate ? dayjs(fromStorageDate(beans.freezeDate)).format("DD MMM YYYY") : "",
         },
         {
           label: "Thaw date",
-          value: beans.thawDate ? dayjs(beans.thawDate).format("DD MMM YYYY") : "",
+          value: beans.thawDate ? dayjs(fromStorageDate(beans.thawDate)).format("DD MMM YYYY") : "",
         },
       ]}
     />
@@ -57,7 +58,7 @@ export const BeansDetailsInfo = ({ beans }: BeansDetailsInfoProps) => (
           { label: "Varietal(s)", value: beans.varietals.join(", ") },
           {
             label: "Harvest date",
-            value: beans.harvestDate ? dayjs(beans.harvestDate).format("MMMM YYYY") : "",
+            value: beans.harvestDate ? dayjs(fromStorageDate(beans.harvestDate)).format("MMMM YYYY") : "",
           },
         ]}
       />

@@ -6,6 +6,32 @@ export function immutableRemove<T>(array: T[], item: T) {
   return array.filter((i) => i !== item);
 }
 
+/**
+ * Calendar-date helpers for Drizzle `date({ mode: "date" })` columns.
+ *
+ * A JS `Date` is an instant, not a calendar date. Drizzle serializes these
+ * columns with `toISOString()` (UTC), while date pickers and `dayjs` read
+ * calendar fields in the user's *local* timezone. For any non-UTC timezone the
+ * same instant can land on two different days, which shifts stored dates by one.
+ *
+ * Convention: in app memory a calendar date is always a Date at *local* midnight
+ * (what the picker produces and what `dayjs` displays). We translate only at the
+ * DB boundary, and these conversions must run on the client where the user's
+ * timezone is known (the server is typically UTC and can't recover it).
+ */
+
+/** app -> DB: local-midnight Date -> UTC-midnight, so its stored Y/M/D is the day the user picked. */
+export function toStorageDate(date: Date | null | undefined): Date | null {
+  if (!date) return null;
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+}
+
+/** DB -> app: UTC-midnight Date -> local-midnight, so the picker and `dayjs` read back the same Y/M/D. */
+export function fromStorageDate(date: Date | null | undefined): Date | null {
+  if (!date) return null;
+  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
 export function parseNullableNumberInput(value: string | null | undefined): number | null {
   if (value === "" || value === null || value === undefined) {
     return null;

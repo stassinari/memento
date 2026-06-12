@@ -1,10 +1,10 @@
 import { Link as RouterLink, createFileRoute, useNavigate } from "@tanstack/react-router";
-import ReactMarkdown from "react-markdown";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { NotFound } from "~/components/ErrorPage";
 import { Heading } from "~/components/Heading";
+import { MarkdownNotes } from "~/components/MarkdownNotes";
 import { MobileBottomDrawerNavigator } from "~/components/MobileBottomDrawerNavigator";
 import { TastingDetailDesktopLayout } from "~/components/tastings/TastingDetailDesktopLayout";
 import { TastingSamplesLinks } from "~/components/tastings/TastingSamplesLinks";
@@ -264,9 +264,7 @@ function TastingSampleDetailContent({
         </div>
 
         {sample.note && (
-          <article className="prose prose-sm max-w-none text-sm text-gray-700 dark:prose-invert dark:text-gray-300">
-            <ReactMarkdown>{sample.note}</ReactMarkdown>
-          </article>
+          <MarkdownNotes markdown={sample.note} />
         )}
       </section>
 
@@ -321,9 +319,7 @@ function TastingSampleDetailContent({
                         </div>
                       </div>
                       {notes && notes.trim() !== "" ? (
-                        <article className="prose prose-sm mt-1 max-w-none dark:prose-invert">
-                          <ReactMarkdown>{notes}</ReactMarkdown>
-                        </article>
+                        <MarkdownNotes markdown={notes} className="mt-1" />
                       ) : (
                         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">No notes</p>
                       )}

@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getGenerativeModel, Schema } from "firebase/vertexai";
 import React, { useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { Heading } from "~/components/Heading";
 import { Input } from "~/components/Input";
+import { MarkdownNotes } from "~/components/MarkdownNotes";
 import { Textarea } from "~/components/Textarea";
 import { BeansCard } from "~/components/beans/BeansCard";
 import sampleText from "~/data/beans-page-example.txt?raw";
@@ -195,8 +195,8 @@ const TextGeneration = () => {
         {isLoading ? "Generating..." : "Generate a story about coffee"}
       </Button>
       {textGenerationOutput && (
-        <div className="mt-4 p-4 bg-gray-100 rounded prose-sm">
-          <ReactMarkdown>{textGenerationOutput}</ReactMarkdown>
+        <div className="mt-4 rounded bg-gray-100 p-4 dark:bg-white/5">
+          <MarkdownNotes markdown={textGenerationOutput} />
         </div>
       )}
     </div>
@@ -400,8 +400,8 @@ const ImageDescription = () => {
           {isLoading ? "Generating..." : "Generate output"}
         </Button>
         {output && (
-          <div className="mt-4 p-4 bg-gray-100 rounded prose-sm">
-            <ReactMarkdown>{output}</ReactMarkdown>
+          <div className="mt-4 rounded bg-gray-100 p-4 dark:bg-white/5">
+            <MarkdownNotes markdown={output} />
           </div>
         )}
       </div>

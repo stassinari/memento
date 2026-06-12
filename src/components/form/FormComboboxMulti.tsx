@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { immutableRemove } from "~/util";
-import { ComboboxMulti } from "../Combobox/ComboboxMulti";
+import { ComboboxMulti } from "../combobox/ComboboxMulti";
 
 export interface FormComboboxMultiProps {
   name: string;

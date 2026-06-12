@@ -1,6 +1,5 @@
-import ReactMarkdown from "react-markdown";
-
 import { EspressoWithBeans } from "~/routes/_auth/_layout/drinks/espresso/$espressoId";
+import { MarkdownNotes } from "../MarkdownNotes";
 import { DetailsCard } from "../Details";
 
 interface EspressoDetailsOutcomeProps {
@@ -19,11 +18,7 @@ export const EspressoDetailsOutcome = ({ espresso }: EspressoDetailsOutcomeProps
           },
           {
             label: "Notes",
-            value: (
-              <article className="prose-sm prose">
-                <ReactMarkdown>{espresso.notes ?? ""}</ReactMarkdown>
-              </article>
-            ),
+            value: <MarkdownNotes markdown={espresso.notes} />,
           },
         ]}
       />
