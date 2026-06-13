@@ -106,6 +106,7 @@ export const beans = pgTable(
     freezeDate: date("freeze_date", { mode: "date" }),
     thawDate: date("thaw_date", { mode: "date" }),
     isArchived: boolean("is_archived").notNull().default(false),
+    archiveDate: date("archive_date", { mode: "date" }),
 
     isFrozen: boolean("is_frozen").generatedAlwaysAs(
       (): SQL => sql`${beans.freezeDate} IS NOT NULL AND ${beans.thawDate} IS NULL`,

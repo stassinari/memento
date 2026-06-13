@@ -115,7 +115,7 @@ export const archiveBeans = createServerFn({ method: "POST" })
     try {
       await db
         .update(beans)
-        .set({ isArchived: true })
+        .set({ isArchived: true, archiveDate: new Date() })
         .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL archive failed:", error);
@@ -134,7 +134,7 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
     try {
       await db
         .update(beans)
-        .set({ isArchived: false })
+        .set({ isArchived: false, archiveDate: null })
         .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL unarchive failed:", error);
