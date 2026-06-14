@@ -21,49 +21,49 @@ export default defineConfig(() => {
       host: "0.0.0.0", // Listen on all interfaces so Firebase emulator can connect
     },
     plugins: [
-    tailwindcss(),
-    tsconfigPaths(),
-    tanstackStart({
-      srcDirectory: "src",
-    }),
-    nitro(),
-    react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
-    }),
-    VitePWA({
-      includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
-      workbox: {
-        // SSR build does not have a static SPA index.html fallback
-        navigateFallbackDenylist: [/^\/.*/],
-      },
-      manifest: {
-        name: "Memento Coffee",
-        short_name: "Memento",
-        description: "Memento helps you keep track of everything coffee",
-        theme_color: "#e64a19",
-        display: "standalone",
-        icons: [
-          {
-            src: "pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-        ],
-      },
-    }),
+      tailwindcss(),
+      tsconfigPaths(),
+      tanstackStart({
+        srcDirectory: "src",
+      }),
+      nitro(),
+      react({
+        babel: {
+          plugins: ["babel-plugin-react-compiler"],
+        },
+      }),
+      VitePWA({
+        includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
+        workbox: {
+          // SSR build does not have a static SPA index.html fallback
+          navigateFallbackDenylist: [/^\/.*/],
+        },
+        manifest: {
+          name: "Memento Coffee",
+          short_name: "Memento",
+          description: "Memento helps you keep track of everything coffee",
+          theme_color: "#e64a19",
+          display: "standalone",
+          icons: [
+            {
+              src: "pwa-192x192.png",
+              sizes: "192x192",
+              type: "image/png",
+            },
+            {
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+            },
+            {
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any maskable",
+            },
+          ],
+        },
+      }),
     ],
   };
 });

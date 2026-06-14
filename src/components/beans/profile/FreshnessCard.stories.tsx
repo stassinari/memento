@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   archivedBean,
+  archivedHistoryBean,
   frozenBean,
   noRoastDateBean,
   openBean,
@@ -16,7 +17,6 @@ const meta: Meta<typeof FreshnessCard> = {
   args: {
     beansId: "bean-1",
     showActions: true,
-    timelineExpanded: false,
     onFreeze: () => {},
     onThaw: () => {},
   },
@@ -28,8 +28,11 @@ export const Open: Story = { args: { bean: openBean } };
 export const Frozen: Story = { args: { bean: frozenBean } };
 export const Thawed: Story = { args: { bean: thawedBean } };
 export const Archived: Story = { args: { bean: archivedBean } };
+// Roasted → frozen → thawed → archived: the bar keeps its phase history, faded.
+export const ArchivedHistory: Story = { args: { bean: archivedHistoryBean, showActions: false } };
 export const NoRoastDate: Story = { args: { bean: noRoastDateBean } };
 
-export const DesktopExpanded: Story = {
-  args: { bean: frozenBean, showActions: false, timelineExpanded: true },
+// Desktop: actions live in the toolbar, so the card shows no in-card buttons.
+export const DesktopNoActions: Story = {
+  args: { bean: frozenBean, showActions: false },
 };

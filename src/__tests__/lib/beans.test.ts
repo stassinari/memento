@@ -3,6 +3,7 @@ import { BeanOrigin } from "~/db/schema";
 import { Beans } from "~/db/types";
 import {
   daysBetween,
+  formatAge,
   getActivitySummary,
   getBeanDescriptor,
   getBeanStatus,
@@ -12,8 +13,7 @@ import {
 } from "~/lib/beans";
 
 /** UTC-midnight date, matching how Drizzle returns `date({ mode: "date" })`. */
-const utc = (y: number, m: number, d: number) =>
-  new Date(Date.UTC(y, m - 1, d));
+const utc = (y: number, m: number, d: number) => new Date(Date.UTC(y, m - 1, d));
 
 /** Minimal bean; only the fields each function reads need to be real. */
 const makeBean = (overrides: Partial<Beans>): Beans =>
@@ -121,10 +121,7 @@ describe("getFreshness", () => {
   });
 
   it("no roastDate but frozen → still reports frozen state", () => {
-    const f = getFreshness(
-      makeBean({ roastDate: null, freezeDate: utc(2026, 6, 1) }),
-      today,
-    );
+    const f = getFreshness(makeBean({ roastDate: null, freezeDate: utc(2026, 6, 1) }), today);
     expect(f.hasRoastDate).toBe(false);
     expect(f.state).toBe("frozen");
   });
@@ -132,34 +129,28 @@ describe("getFreshness", () => {
 
 describe("getBeanStatus", () => {
   it("archived wins over everything", () => {
-    expect(
-      getBeanStatus(
-        makeBean({ isArchived: true, freezeDate: utc(2026, 6, 1) }),
-      ),
-    ).toBe("archived");
+    expect(getBeanStatus(makeBean({ isArchived: true, freezeDate: utc(2026, 6, 1) }))).toBe(
+      "archived",
+    );
   });
   it("open when never frozen", () => {
     expect(getBeanStatus(makeBean({}))).toBe("open");
   });
   it("frozen when freeze and no thaw", () => {
-    expect(getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1) }))).toBe(
-      "frozen",
-    );
+    expect(getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1) }))).toBe("frozen");
   });
   it("thawed when both dates present", () => {
     expect(
-      getBeanStatus(
-        makeBean({ freezeDate: utc(2026, 6, 1), thawDate: utc(2026, 6, 5) }),
-      ),
+      getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1), thawDate: utc(2026, 6, 5) })),
     ).toBe("thawed");
   });
 });
 
 describe("getBeanDescriptor", () => {
   it("process + country → 'Washed · Kenya'", () => {
-    expect(
-      getBeanDescriptor(makeBean({ process: "Washed", country: "Kenya" })),
-    ).toBe("Washed · Kenya");
+    expect(getBeanDescriptor(makeBean({ process: "Washed", country: "Kenya" }))).toBe(
+      "Washed · Kenya",
+    );
   });
   it("country only → country name", () => {
     expect(getBeanDescriptor(makeBean({ country: "Kenya" }))).toBe("Kenya");
@@ -182,17 +173,13 @@ describe("getBeanDescriptor", () => {
   });
   it("blend with one part → singular", () => {
     expect(
-      getBeanDescriptor(
-        makeBean({ origin: BeanOrigin.Blend, blendParts: [{} as never] }),
-      ),
+      getBeanDescriptor(makeBean({ origin: BeanOrigin.Blend, blendParts: [{} as never] })),
     ).toBe("Blend · 1 part");
   });
   it("blend with no parts → 'Blend'", () => {
-    expect(
-      getBeanDescriptor(
-        makeBean({ origin: BeanOrigin.Blend, blendParts: null }),
-      ),
-    ).toBe("Blend");
+    expect(getBeanDescriptor(makeBean({ origin: BeanOrigin.Blend, blendParts: null }))).toBe(
+      "Blend",
+    );
   });
 });
 
@@ -208,6 +195,26 @@ describe("getRoastLevelLabel", () => {
     expect(getRoastLevelLabel(undefined)).toBeNull();
     expect(getRoastLevelLabel(5)).toBeNull();
     expect(getRoastLevelLabel(-1)).toBeNull();
+  });
+});
+
+describe("formatAge", () => {
+  it("counts days below ~4 months", () => {
+    expect(formatAge(0)).toEqual({ value: 0, unit: "days" });
+    expect(formatAge(1)).toEqual({ value: 1, unit: "day" });
+    expect(formatAge(9)).toEqual({ value: 9, unit: "days" });
+    expect(formatAge(119)).toEqual({ value: 119, unit: "days" });
+  });
+
+  it("rounds to months from 120 days up to ~24 months", () => {
+    expect(formatAge(120)).toEqual({ value: 4, unit: "months" });
+    expect(formatAge(150)).toEqual({ value: 5, unit: "months" });
+    expect(formatAge(729)).toEqual({ value: 24, unit: "months" });
+  });
+
+  it("rounds to years past ~24 months", () => {
+    expect(formatAge(730)).toEqual({ value: 2, unit: "years" });
+    expect(formatAge(1095)).toEqual({ value: 3, unit: "years" });
   });
 });
 

@@ -27,9 +27,7 @@ export const RoastCharacterCard = ({ bean }: RoastCharacterCardProps) => {
     <Card.Container className="overflow-hidden">
       <ProfileCardHeader title="Roast character" />
       <Card.Content>
-        {roastStyle && (
-          <Row label="Style" value={ROAST_STYLE_LABELS[roastStyle] ?? roastStyle} />
-        )}
+        {roastStyle && <Row label="Style" value={ROAST_STYLE_LABELS[roastStyle] ?? roastStyle} />}
         {levelLabel !== null && (
           <>
             <Row label="Roast level" value={levelLabel} />

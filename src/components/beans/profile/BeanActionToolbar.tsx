@@ -80,11 +80,7 @@ export const BeanActionToolbar = ({
         <MenuItems className="absolute right-0 z-10 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-900 dark:ring-white/10">
           <div className="py-1">
             <MenuItem>
-              <Link
-                to="/beans/$beansId/edit"
-                params={{ beansId }}
-                className={clsx(menuItemStyles)}
-              >
+              <Link to="/beans/$beansId/edit" params={{ beansId }} className={clsx(menuItemStyles)}>
                 Edit details
               </Link>
             </MenuItem>

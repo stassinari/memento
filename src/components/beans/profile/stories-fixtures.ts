@@ -85,7 +85,13 @@ export const makeBeanWithDrinks = (
     makeEspresso({ id: "esp-a", profileName: "Extractamundo Dos", rating: 8.5, date: daysAgo(1) }),
   ],
   sampledInTastings: drinks.sampledInTastings ?? [
-    { id: "ts-1", position: 1, overall: 8, flavours: ["Blackcurrant", "Rhubarb"], tasting: { id: "t-1" } },
+    {
+      id: "ts-1",
+      position: 1,
+      overall: 8,
+      flavours: ["Blackcurrant", "Rhubarb"],
+      tasting: { id: "t-1" },
+    },
     { id: "ts-2", position: 0, overall: 7.5, flavours: ["Brown sugar"], tasting: { id: "t-1" } },
   ],
 });
@@ -116,6 +122,20 @@ export const archivedBean = makeBean({
   archiveDate: daysAgo(100),
   isOpen: false,
 });
+// Full lifecycle history, then archived — roasted → frozen → thawed → archived.
+export const archivedHistoryBean = makeBean({
+  name: "Nano Genji",
+  roaster: "Drop Coffee",
+  country: "Ethiopia",
+  process: "Washed",
+  roastDate: daysAgo(400),
+  freezeDate: daysAgo(380),
+  thawDate: daysAgo(200),
+  isArchived: true,
+  archiveDate: daysAgo(120),
+  isFrozen: false,
+  isOpen: false,
+});
 export const noRoastDateBean = makeBean({ roastDate: null, country: null, process: null });
 export const blendBean = makeBean({
   name: "Spring Espresso",
@@ -127,7 +147,13 @@ export const blendBean = makeBean({
   varietals: [],
   roastStyle: RoastStyle.Espresso,
   blendParts: [
-    { name: null, country: "Brazil", process: "Natural", varietals: ["Yellow Bourbon"], percentage: 70 },
+    {
+      name: null,
+      country: "Brazil",
+      process: "Natural",
+      varietals: ["Yellow Bourbon"],
+      percentage: 70,
+    },
     { name: null, country: "Ethiopia", process: null, varietals: ["Heirloom"], percentage: 30 },
   ],
 });

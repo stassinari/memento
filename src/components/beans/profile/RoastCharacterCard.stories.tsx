@@ -14,7 +14,9 @@ type Story = StoryObj<typeof RoastCharacterCard>;
 export const Full: Story = { args: { bean: makeBean() } };
 
 export const StyleOnly: Story = {
-  args: { bean: makeBean({ roastStyle: RoastStyle.Espresso, roastLevel: null, roastingNotes: [] }) },
+  args: {
+    bean: makeBean({ roastStyle: RoastStyle.Espresso, roastLevel: null, roastingNotes: [] }),
+  },
 };
 
 export const NoNotes: Story = {

@@ -129,7 +129,6 @@ function BeansProfile() {
                 bean={bean}
                 beansId={beansId}
                 showActions={false}
-                timelineExpanded
                 onFreeze={handleFreeze}
                 onThaw={handleThaw}
               />
@@ -153,17 +152,12 @@ function BeansProfile() {
               bean={bean}
               beansId={beansId}
               showActions
-              timelineExpanded={false}
               onFreeze={handleFreeze}
               onThaw={handleThaw}
             />
             <ActivityCard bean={bean} initialCount={recentLimit} />
             <RoastCharacterCard bean={bean} />
-            {bean.origin === "blend" ? (
-              <CompositionCard bean={bean} />
-            ) : (
-              <OriginCard bean={bean} />
-            )}
+            {bean.origin === "blend" ? <CompositionCard bean={bean} /> : <OriginCard bean={bean} />}
             <ArchiveZone
               isArchived={bean.isArchived}
               onArchive={handleArchive}

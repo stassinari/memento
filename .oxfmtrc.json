@@ -12,6 +12,7 @@
     "backups/",
     "external/decent/shots",
     "srcOld/",
-    "routeTree.gen.ts"
+    "routeTree.gen.ts",
+    "drizzle/meta/"
   ]
 }

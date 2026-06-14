@@ -1,14 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
-import { ChevronDown, Snowflake } from "lucide-react";
+import {
+  Archive,
+  CircleHelp,
+  Flame,
+  type LucideIcon,
+  Snowflake,
+  WavesVertical,
+} from "lucide-react";
 import { useState } from "react";
-import { Button } from "~/components/Button";
 import { BigStat } from "~/components/BigStat";
+import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
 import { Beans } from "~/db/types";
-import { daysBetween, getFreshness, startOfToday } from "~/lib/beans";
-import { fmtDaysAgo, fmtStorageDate } from "./format";
+import { daysBetween, formatAge, getFreshness, startOfToday } from "~/lib/beans";
+import { fmtStorageDate } from "./format";
 import { FreshnessDurationBar } from "./FreshnessDurationBar";
+import { FreshnessInfoDialog } from "./FreshnessInfoDialog";
 import { ProfileCardHeader } from "./ProfileCardHeader";
 
 interface FreshnessCardProps {
@@ -16,8 +24,6 @@ interface FreshnessCardProps {
   beansId: string;
   /** Mobile owns the Freeze/Thaw actions inside this card; desktop puts them in the toolbar. */
   showActions: boolean;
-  /** Desktop expands the timeline inline; mobile hides it behind a disclosure. */
-  timelineExpanded: boolean;
   onFreeze: () => void;
   onThaw: () => void;
 }
@@ -26,13 +32,14 @@ export const FreshnessCard = ({
   bean,
   beansId,
   showActions,
-  timelineExpanded,
   onFreeze,
   onThaw,
 }: FreshnessCardProps) => {
   const today = startOfToday();
   const freshness = getFreshness(bean, today);
-  const [open, setOpen] = useState(false);
+  // Shared hover key links a bar segment to its timeline row (both directions).
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   // ---- No roast date → quiet prompt -------------------------------------
   if (!freshness.hasRoastDate) {
@@ -56,56 +63,66 @@ export const FreshnessCard = ({
     );
   }
 
-  const { state, isArchived, effectiveDays, calendarDays, frozenDays } = freshness;
+  const { state, isArchived, effectiveDays } = freshness;
 
-  // Header hint (right slot), state-dependent.
-  const headerRight = isArchived ? (
-    <span className="text-[11px] text-gray-400 dark:text-gray-500">end of the line</span>
-  ) : state === "frozen" ? (
-    <span className="text-[11px] font-medium text-blue-600 dark:text-blue-300">clock paused</span>
-  ) : state === "thawed" ? (
-    <span className="text-[11px] text-gray-400 dark:text-gray-500">aging resumed</span>
-  ) : showActions ? (
-    <Button variant="white" size="xs" onClick={onFreeze}>
-      <Snowflake /> Freeze
-    </Button>
-  ) : undefined;
+  // Freeze only shows for open-and-never-frozen, non-archived beans (mobile).
+  const headerRight =
+    state === "open" && !isArchived && showActions ? (
+      <Button variant="white" size="xs" onClick={onFreeze}>
+        <Snowflake /> Freeze
+      </Button>
+    ) : undefined;
 
+  const age = formatAge(effectiveDays ?? 0);
   const subLabel = isArchived
-    ? "effective days at archive"
+    ? `effective ${age.unit} at archive`
     : state === "open"
-      ? "days old"
-      : "effective days old";
+      ? `${age.unit} old`
+      : `effective ${age.unit} old`;
 
   return (
     <Card.Container className="overflow-hidden">
-      <ProfileCardHeader title="Freshness" muted={isArchived} right={headerRight} />
+      <ProfileCardHeader
+        title="Freshness"
+        muted={isArchived}
+        titleAdornment={
+          <button
+            type="button"
+            onClick={() => setHelpOpen(true)}
+            aria-label="How freshness works"
+            className="inline-flex items-center justify-center rounded-full text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          >
+            <CircleHelp className="size-4" />
+          </button>
+        }
+        right={headerRight}
+      />
+      <FreshnessInfoDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
       <Card.Content>
         <BigStat
-          value={effectiveDays}
+          value={age.value}
           subtitle={subLabel}
           valueClassName={isArchived ? "text-gray-500 dark:text-gray-400" : undefined}
         />
 
-        {!isArchived && state !== "open" && calendarDays !== null && (
-          <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-            {calendarDays} days since roast · frozen for {frozenDays} of them
-          </p>
-        )}
-
-        <FreshnessDurationBar freshness={freshness} className="mt-4" />
-
-        {/* Caption row under the bar */}
-        <BarCaptions
-          state={state}
-          isArchived={isArchived}
-          frozenDays={frozenDays}
-          effectiveDays={effectiveDays}
-          roastLabel={fmtStorageDate(freshness.roastDate, "D MMM")}
-          archiveLabel={fmtStorageDate(freshness.archiveDate, "D MMM")}
+        <FreshnessDurationBar
+          freshness={freshness}
+          hovered={hovered}
+          onHover={setHovered}
+          className="mt-4"
         />
 
-        {/* Contextual action (mobile only): Thaw is big & central when frozen */}
+        {/* Timeline is always visible now (≤ 4 rows) — no disclosure. */}
+        <div className="mt-5 border-t border-gray-100 pt-4 dark:border-white/10">
+          <FreshnessTimeline
+            freshness={freshness}
+            today={today}
+            hovered={hovered}
+            onHover={setHovered}
+          />
+        </div>
+
+        {/* Contextual action (mobile only): Thaw sits at the bottom of the card. */}
         {showActions && state === "frozen" && (
           <Button
             variant="secondary"
@@ -113,151 +130,164 @@ export const FreshnessCard = ({
             width="full"
             size="lg"
             onClick={onThaw}
-            className="mt-4"
+            className="mt-5"
           >
             <Snowflake /> Thaw beans
           </Button>
-        )}
-
-        {/* Timeline: expanded inline (desktop) or behind a disclosure (mobile) */}
-        {timelineExpanded ? (
-          <div className="mt-5 border-t border-gray-100 pt-4 dark:border-white/10">
-            <FreshnessTimeline freshness={freshness} today={today} />
-          </div>
-        ) : (
-          <div className="mt-3">
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              className="flex w-full items-center justify-between py-1 text-xs font-medium text-gray-500 dark:text-gray-400"
-            >
-              Timeline &amp; dates
-              <ChevronDown
-                className={clsx("h-4 w-4 transition-transform", open && "rotate-180")}
-              />
-            </button>
-            {open && (
-              <div className="mt-2 border-t border-gray-100 pt-2.5 dark:border-white/10">
-                <FreshnessTimeline freshness={freshness} today={today} />
-              </div>
-            )}
-          </div>
         )}
       </Card.Content>
     </Card.Container>
   );
 };
 
-interface BarCaptionsProps {
-  state: "open" | "frozen" | "thawed";
-  isArchived: boolean;
-  frozenDays: number;
-  effectiveDays: number | null;
-  roastLabel: string | null;
-  archiveLabel: string | null;
-}
-
-const BarCaptions = ({
-  state,
-  isArchived,
-  frozenDays,
-  roastLabel,
-  archiveLabel,
-}: BarCaptionsProps) => {
-  if (isArchived) {
-    return (
-      <div className="mt-1.5 flex justify-between text-[10.5px] font-medium text-gray-400 dark:text-gray-500">
-        <span>{roastLabel ? `Roasted ${roastLabel}` : "Roasted"}</span>
-        <span>{archiveLabel ? `Archived ${archiveLabel} · end` : "Archived · end"}</span>
-      </div>
-    );
-  }
-  if (state === "frozen") {
-    return (
-      <div className="mt-1.5 flex justify-between text-[10.5px] font-medium">
-        <span className="text-orange-600 dark:text-orange-300">aging</span>
-        <span className="text-blue-600 dark:text-blue-300">{frozenDays}d frozen</span>
-      </div>
-    );
-  }
-  if (state === "thawed") {
-    return (
-      <div className="mt-1.5 flex justify-between text-[10.5px] font-medium text-gray-400 dark:text-gray-500">
-        <span className="text-orange-600 dark:text-orange-300">aging</span>
-        <span className="text-blue-600 dark:text-blue-300">frozen {frozenDays}d</span>
-        <span className="text-orange-600 dark:text-orange-300">now</span>
-      </div>
-    );
-  }
-  return (
-    <div className="mt-1.5 flex justify-between text-[10.5px] font-medium text-gray-400 dark:text-gray-500">
-      <span>{roastLabel ? `Roasted ${roastLabel}` : "Roasted"}</span>
-      <span className="text-orange-600 dark:text-orange-300">now</span>
-    </div>
-  );
-};
-
 interface FreshnessTimelineProps {
   freshness: ReturnType<typeof getFreshness>;
   today: Date;
+  hovered: string | null;
+  onHover: (key: string | null) => void;
 }
 
-const FreshnessTimeline = ({ freshness, today }: FreshnessTimelineProps) => {
-  const { roastDate, freezeDate, thawDate, archiveDate, state, isArchived } = freshness;
+type Tone = "orange" | "blue" | "gray";
+
+interface TimelineEvent {
+  key: string;
+  Icon: LucideIcon;
+  tone: Tone;
+  label: string;
+  date: string | null;
+  detail: string | null;
+}
+
+// Idle vs hovered styling for the icon badge — hovering lights it up in its
+// phase colour (and the same key swells the matching bar segment).
+const TONES: Record<Tone, { idle: string; active: string; idleIcon: string; activeIcon: string }> =
+  {
+    orange: {
+      idle: "bg-white ring-1 ring-orange-200 dark:bg-gray-900 dark:ring-orange-400/30",
+      active:
+        "scale-110 bg-orange-100 ring-2 ring-orange-400 dark:bg-orange-500/20 dark:ring-orange-400/60",
+      idleIcon: "text-orange-500 dark:text-orange-400",
+      activeIcon: "text-orange-600 dark:text-orange-300",
+    },
+    blue: {
+      idle: "bg-white ring-1 ring-blue-200 dark:bg-gray-900 dark:ring-blue-400/30",
+      active:
+        "scale-110 bg-blue-100 ring-2 ring-blue-400 dark:bg-blue-500/20 dark:ring-blue-400/60",
+      idleIcon: "text-blue-500 dark:text-blue-300",
+      activeIcon: "text-blue-600 dark:text-blue-200",
+    },
+    gray: {
+      idle: "bg-white ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-white/15",
+      active: "scale-110 bg-gray-100 ring-2 ring-gray-400 dark:bg-white/15 dark:ring-white/30",
+      idleIcon: "text-gray-500 dark:text-gray-400",
+      activeIcon: "text-gray-700 dark:text-gray-200",
+    },
+  };
+
+const ageLabel = (days: number) => {
+  const { value, unit } = formatAge(days);
+  return `${value} ${unit}`;
+};
+const agoLabel = (days: number) => (days <= 0 ? "today" : `${ageLabel(days)} ago`);
+
+/** A subtle vertical feed of lifecycle events, one icon per action. */
+const FreshnessTimeline = ({ freshness, today, hovered, onHover }: FreshnessTimelineProps) => {
+  const { roastDate, freezeDate, thawDate, archiveDate, isArchived, endDate } = freshness;
+
+  const events: TimelineEvent[] = [];
+  if (roastDate)
+    events.push({
+      key: "roasted",
+      Icon: Flame,
+      tone: "orange",
+      label: "Roasted",
+      date: fmtStorageDate(roastDate),
+      detail: agoLabel(daysBetween(roastDate, today)),
+    });
+  if (freezeDate)
+    events.push({
+      key: "frozen",
+      Icon: Snowflake,
+      tone: "blue",
+      label: "Frozen",
+      date: fmtStorageDate(freezeDate),
+      detail: `for ${ageLabel(daysBetween(freezeDate, thawDate ?? endDate))}`,
+    });
+  if (thawDate)
+    events.push({
+      key: "thawed",
+      Icon: WavesVertical,
+      tone: "orange",
+      label: "Thawed",
+      date: fmtStorageDate(thawDate),
+      detail: agoLabel(daysBetween(thawDate, today)),
+    });
+  if (isArchived && archiveDate)
+    events.push({
+      key: "archived",
+      Icon: Archive,
+      tone: "gray",
+      label: "Archived",
+      date: fmtStorageDate(archiveDate),
+      detail: agoLabel(daysBetween(archiveDate, today)),
+    });
 
   return (
-    <div className="space-y-1.5">
-      {roastDate && (
-        <Row
-          label="Roasted"
-          value={`${fmtStorageDate(roastDate)} · ${fmtDaysAgo(daysBetween(roastDate, today))}`}
-        />
-      )}
-      {freezeDate && (
-        <Row
-          label="Frozen"
-          tone="blue"
-          value={
-            thawDate
-              ? `${fmtStorageDate(freezeDate)} · for ${daysBetween(freezeDate, thawDate)}d`
-              : `${fmtStorageDate(freezeDate)} · for ${daysBetween(freezeDate, freshness.endDate)}d`
-          }
-        />
-      )}
-      {thawDate && (
-        <Row
-          label="Thawed"
-          value={`${fmtStorageDate(thawDate)} · ${fmtDaysAgo(daysBetween(thawDate, today))}`}
-        />
-      )}
-      {isArchived && archiveDate && (
-        <Row label="Archived" value={`${fmtStorageDate(archiveDate)} · end of the line`} />
-      )}
-      {!isArchived && state === "frozen" && (
-        <p className="pt-1 text-[11px] text-gray-400 dark:text-gray-500">
-          Freezing pauses aging — the effective-age clock resumes the day you thaw.
-        </p>
-      )}
-    </div>
+    <ul role="list">
+      {events.map((event, i) => {
+        const active = hovered === event.key;
+        return (
+          <li
+            key={event.key}
+            className="relative flex gap-x-3 pb-4 last:pb-0"
+            onMouseEnter={() => onHover(event.key)}
+            onMouseLeave={() => onHover(null)}
+          >
+            {/* connecting line behind the icons */}
+            <div
+              className={clsx(
+                i === events.length - 1 ? "h-6" : "-bottom-4",
+                "absolute left-0 top-0 flex w-6 justify-center",
+              )}
+            >
+              <div className="w-px bg-gray-200 dark:bg-white/15" />
+            </div>
+            <div
+              className={clsx(
+                "relative flex size-6 flex-none items-center justify-center rounded-full transition-all duration-150",
+                active ? TONES[event.tone].active : TONES[event.tone].idle,
+              )}
+            >
+              <event.Icon
+                className={clsx(
+                  "size-3.5 transition-colors",
+                  active ? TONES[event.tone].activeIcon : TONES[event.tone].idleIcon,
+                )}
+              />
+            </div>
+            <div className="flex flex-auto items-center justify-between gap-2 py-0.5 text-sm">
+              <span>
+                <span
+                  className={clsx(
+                    "font-semibold transition-colors",
+                    active ? "text-gray-950 dark:text-white" : "text-gray-800 dark:text-gray-200",
+                  )}
+                >
+                  {event.label}
+                </span>
+                {event.date && (
+                  <span className="text-gray-400 dark:text-gray-500"> · {event.date}</span>
+                )}
+              </span>
+              {event.detail && (
+                <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
+                  {event.detail}
+                </span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 };
-
-interface RowProps {
-  label: string;
-  value: string | null;
-  tone?: "blue";
-}
-
-const Row = ({ label, value, tone }: RowProps) => (
-  <div className="flex items-center justify-between text-xs">
-    <span className="text-gray-500 dark:text-gray-400">{label}</span>
-    <span
-      className={clsx(
-        "font-semibold",
-        tone === "blue" ? "text-blue-500 dark:text-blue-300" : "text-gray-800 dark:text-gray-200",
-      )}
-    >
-      {value}
-    </span>
-  </div>
-);

@@ -152,6 +152,30 @@ export function getRoastLevelLabel(
 }
 
 // ---------------------------------------------------------------------------
+// Age formatting — exact day counts get irrelevant for old beans. Count days up
+// to ~4 months, then round to months, and to years past ~24 months.
+// ---------------------------------------------------------------------------
+
+export interface FormattedAge {
+  value: number;
+  unit: string; // already singular/plural for `value`
+}
+
+const DAYS_TO_MONTHS = 120; // ~4 months
+const DAYS_TO_YEARS = 730; // ~24 months
+
+export function formatAge(days: number): FormattedAge {
+  if (days < DAYS_TO_MONTHS)
+    return { value: days, unit: days === 1 ? "day" : "days" };
+  if (days < DAYS_TO_YEARS) {
+    const months = Math.round(days / 30);
+    return { value: months, unit: months === 1 ? "month" : "months" };
+  }
+  const years = Math.round(days / 365);
+  return { value: years, unit: years === 1 ? "year" : "years" };
+}
+
+// ---------------------------------------------------------------------------
 // Activity — aggregate over linked brews / espressos / tasting samples.
 // Avg score uses *rated* drinks only (brews/espressos `rating`, tastings `overall`).
 // ---------------------------------------------------------------------------
