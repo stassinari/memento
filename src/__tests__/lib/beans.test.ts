@@ -147,9 +147,9 @@ describe("getBeanStatus", () => {
 });
 
 describe("getBeanDescriptor", () => {
-  it("process + country → 'Washed · Kenya'", () => {
+  it("process + country → 'Kenya · Washed'", () => {
     expect(getBeanDescriptor(makeBean({ process: "Washed", country: "Kenya" }))).toBe(
-      "Washed · Kenya",
+      "Kenya · Washed",
     );
   });
   it("country only → country name", () => {

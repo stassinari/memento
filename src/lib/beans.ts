@@ -43,10 +43,7 @@ export interface Freshness {
   endDate: Date; // where the timeline terminates (archiveDate or today)
 }
 
-export function getFreshness(
-  bean: Beans,
-  today: Date = startOfToday(),
-): Freshness {
+export function getFreshness(bean: Beans, today: Date = startOfToday()): Freshness {
   const { roastDate, freezeDate, thawDate, archiveDate, isArchived } = bean;
 
   const frozen = !!freezeDate && !thawDate;
@@ -80,9 +77,7 @@ export function getFreshness(
   else if (frozen) frozenDays = daysBetween(freezeDate!, endDate); // still frozen → up to end
 
   // Active aging only. While frozen the clock is paused at freezeDate.
-  const effectiveDays = frozen
-    ? daysBetween(roastDate, freezeDate!)
-    : calendarDays - frozenDays; // open: frozenDays = 0 → effective == calendar
+  const effectiveDays = frozen ? daysBetween(roastDate, freezeDate!) : calendarDays - frozenDays; // open: frozenDays = 0 → effective == calendar
 
   return {
     hasRoastDate: true,
@@ -125,7 +120,7 @@ export function getBeanDescriptor(
     return n > 0 ? `Blend · ${n} part${n === 1 ? "" : "s"}` : "Blend";
   }
   const { process, country } = bean;
-  if (process && country) return `${process} · ${country}`;
+  if (process && country) return `${country} · ${process}`;
   if (country) return country;
   if (process) return process;
   return "Single origin";
@@ -136,17 +131,9 @@ export function getBeanDescriptor(
 // can be prepended (it shifts the scale; never hardcode indices elsewhere).
 // ---------------------------------------------------------------------------
 
-export const ROAST_LEVELS = [
-  "Light",
-  "Medium-light",
-  "Medium",
-  "Medium-dark",
-  "Dark",
-] as const;
+export const ROAST_LEVELS = ["Light", "Medium-light", "Medium", "Medium-dark", "Dark"] as const;
 
-export function getRoastLevelLabel(
-  level: number | null | undefined,
-): string | null {
+export function getRoastLevelLabel(level: number | null | undefined): string | null {
   if (level === null || level === undefined) return null;
   return ROAST_LEVELS[level] ?? null;
 }
@@ -165,8 +152,7 @@ const DAYS_TO_MONTHS = 120; // ~4 months
 const DAYS_TO_YEARS = 730; // ~24 months
 
 export function formatAge(days: number): FormattedAge {
-  if (days < DAYS_TO_MONTHS)
-    return { value: days, unit: days === 1 ? "day" : "days" };
+  if (days < DAYS_TO_MONTHS) return { value: days, unit: days === 1 ? "day" : "days" };
   if (days < DAYS_TO_YEARS) {
     const months = Math.round(days / 30);
     return { value: months, unit: months === 1 ? "month" : "months" };
@@ -205,8 +191,7 @@ export function getActivitySummary(data: {
   ].filter((s): s is number => s !== null);
 
   const ratedCount = scores.length;
-  const avgScore =
-    ratedCount > 0 ? scores.reduce((sum, s) => sum + s, 0) / ratedCount : null;
+  const avgScore = ratedCount > 0 ? scores.reduce((sum, s) => sum + s, 0) / ratedCount : null;
 
   return {
     totalCount: brewCount + espressoCount + tastingCount,

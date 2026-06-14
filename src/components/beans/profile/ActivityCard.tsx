@@ -45,7 +45,7 @@ export const ActivityCard = ({ bean, initialCount }: ActivityCardProps) => {
   if (activity.totalCount === 0) {
     return (
       <Card.Container className="overflow-hidden">
-        <ProfileCardHeader title="Activity" muted />
+        <ProfileCardHeader title="Activity" />
         <Card.Content className="py-5 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">No drinks logged yet</p>
           <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">

@@ -26,9 +26,10 @@ const STATUS_CONFIG: Record<
 
 interface StatusPillProps {
   status: BeanStatus;
+  size?: "small" | "large";
 }
 
-export const StatusPill = ({ status }: StatusPillProps) => {
+export const StatusPill = ({ status, size = "small" }: StatusPillProps) => {
   const { colour, label, leadingIcon } = STATUS_CONFIG[status];
-  return <Badge colour={colour} label={label} leadingIcon={leadingIcon} />;
+  return <Badge colour={colour} size={size} label={label} leadingIcon={leadingIcon} />;
 };

@@ -24,7 +24,7 @@ export const CompositionCard = ({ bean }: CompositionCardProps) => {
           return (
             <div key={i} className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
               <div className="min-w-0">
-                <p className="flex items-center gap-1.5 truncate text-[12.5px] font-semibold text-gray-800 dark:text-gray-200">
+                <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-gray-800 dark:text-gray-200">
                   {part.country && (
                     <CountryOptionFlag
                       country={part.country}
@@ -34,13 +34,11 @@ export const CompositionCard = ({ bean }: CompositionCardProps) => {
                   {title}
                 </p>
                 {sub && (
-                  <p className="mt-0.5 truncate text-[10.5px] text-gray-400 dark:text-gray-500">
-                    {sub}
-                  </p>
+                  <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">{sub}</p>
                 )}
               </div>
               {part.percentage !== null && (
-                <span className="shrink-0 text-[13px] font-bold text-gray-700 dark:text-gray-300">
+                <span className="shrink-0 text-sm font-bold text-gray-700 dark:text-gray-300">
                   {part.percentage}%
                 </span>
               )}

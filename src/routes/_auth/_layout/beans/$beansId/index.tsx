@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import { ActivityCard } from "~/components/beans/profile/ActivityCard";
 import { ArchiveZone } from "~/components/beans/profile/ArchiveZone";
 import { BeansProfileHeader } from "~/components/beans/profile/BeansProfileHeader";
-import { BeanStatsGrid } from "~/components/beans/profile/BeanStatsGrid";
 import { CompositionCard } from "~/components/beans/profile/CompositionCard";
 import { FreshnessCard } from "~/components/beans/profile/FreshnessCard";
 import { OriginCard } from "~/components/beans/profile/OriginCard";
@@ -17,7 +16,7 @@ import { Modal } from "~/components/Modal";
 import { archiveBeans, deleteBeans, freezeBeans, thawBeans, unarchiveBeans } from "~/db/mutations";
 import { getBean } from "~/db/queries";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { getActivitySummary, getBeanStatus, getFreshness } from "~/lib/beans";
+import { getBeanStatus } from "~/lib/beans";
 
 export type BeanWithDrinks = NonNullable<Awaited<ReturnType<typeof getBean>>>;
 
@@ -85,8 +84,6 @@ function BeansProfile() {
   }
 
   const status = getBeanStatus(bean);
-  const freshness = getFreshness(bean);
-  const activity = getActivitySummary(bean);
   const recentLimit = isDesktop ? 5 : 3;
 
   return (
@@ -147,7 +144,6 @@ function BeansProfile() {
           </div>
         ) : (
           <div className="mt-5 space-y-3.5">
-            <BeanStatsGrid freshness={freshness} activity={activity} />
             <FreshnessCard
               bean={bean}
               beansId={beansId}

@@ -5,22 +5,22 @@ import { CountryOptionFlag } from "../CountryOptionFlag";
 
 /**
  * The "what is it" pill: a flag (when a single-origin country is known) plus the
- * degrading descriptor text ("Washed Kenya" / "Kenya" / "Washed" / "Single
- * origin" / "Blend · N parts"). Blends use the orange (brand) tint; single
- * origins a neutral gray. Thin wrapper over `Badge`.
+ * degrading descriptor text ("Kenya · Washed" / "Kenya" / "Washed" / "Single
+ * origin" / "Blend · N parts"). Always a neutral gray. Thin wrapper over `Badge`.
  */
 
 interface DescriptorPillProps {
   bean: Beans;
+  size?: "small" | "large";
 }
 
-export const DescriptorPill = ({ bean }: DescriptorPillProps) => {
-  const isBlend = bean.origin === "blend";
-  const showFlag = !isBlend && !!bean.country;
+export const DescriptorPill = ({ bean, size = "small" }: DescriptorPillProps) => {
+  const showFlag = bean.origin !== "blend" && !!bean.country;
 
   return (
     <Badge
-      colour={isBlend ? "orange" : "grey"}
+      colour="grey"
+      size={size}
       label={getBeanDescriptor(bean)}
       leadingIcon={
         showFlag && (
