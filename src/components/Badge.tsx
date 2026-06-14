@@ -95,9 +95,7 @@ export const Badge = ({
     <span className={badgeVariants({ colour, size, icon: icon?.position ?? "none" })}>
       {icon?.position === "left" && iconElement}
 
-      {leadingIcon && (
-        <span className="mr-1 inline-flex shrink-0 items-center">{leadingIcon}</span>
-      )}
+      {leadingIcon && <span className="mr-1 inline-flex shrink-0 items-center">{leadingIcon}</span>}
 
       {label}
 

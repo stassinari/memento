@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { BeanOrigin } from "~/db/schema";
 import { Beans } from "~/db/types";
 import {
@@ -12,7 +12,8 @@ import {
 } from "~/lib/beans";
 
 /** UTC-midnight date, matching how Drizzle returns `date({ mode: "date" })`. */
-const utc = (y: number, m: number, d: number) => new Date(Date.UTC(y, m - 1, d));
+const utc = (y: number, m: number, d: number) =>
+  new Date(Date.UTC(y, m - 1, d));
 
 /** Minimal bean; only the fields each function reads need to be real. */
 const makeBean = (overrides: Partial<Beans>): Beans =>
@@ -98,7 +99,11 @@ describe("getFreshness", () => {
 
   it("archived legacy (null archiveDate) → falls back to today", () => {
     const f = getFreshness(
-      makeBean({ roastDate: utc(2026, 6, 4), isArchived: true, archiveDate: null }),
+      makeBean({
+        roastDate: utc(2026, 6, 4),
+        isArchived: true,
+        archiveDate: null,
+      }),
       today,
     );
     expect(f.isArchived).toBe(true);
@@ -116,7 +121,10 @@ describe("getFreshness", () => {
   });
 
   it("no roastDate but frozen → still reports frozen state", () => {
-    const f = getFreshness(makeBean({ roastDate: null, freezeDate: utc(2026, 6, 1) }), today);
+    const f = getFreshness(
+      makeBean({ roastDate: null, freezeDate: utc(2026, 6, 1) }),
+      today,
+    );
     expect(f.hasRoastDate).toBe(false);
     expect(f.state).toBe("frozen");
   });
@@ -124,28 +132,34 @@ describe("getFreshness", () => {
 
 describe("getBeanStatus", () => {
   it("archived wins over everything", () => {
-    expect(getBeanStatus(makeBean({ isArchived: true, freezeDate: utc(2026, 6, 1) }))).toBe(
-      "archived",
-    );
+    expect(
+      getBeanStatus(
+        makeBean({ isArchived: true, freezeDate: utc(2026, 6, 1) }),
+      ),
+    ).toBe("archived");
   });
   it("open when never frozen", () => {
     expect(getBeanStatus(makeBean({}))).toBe("open");
   });
   it("frozen when freeze and no thaw", () => {
-    expect(getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1) }))).toBe("frozen");
+    expect(getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1) }))).toBe(
+      "frozen",
+    );
   });
   it("thawed when both dates present", () => {
     expect(
-      getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1), thawDate: utc(2026, 6, 5) })),
+      getBeanStatus(
+        makeBean({ freezeDate: utc(2026, 6, 1), thawDate: utc(2026, 6, 5) }),
+      ),
     ).toBe("thawed");
   });
 });
 
 describe("getBeanDescriptor", () => {
-  it("process + country → 'Washed Kenya'", () => {
-    expect(getBeanDescriptor(makeBean({ process: "Washed", country: "Kenya" }))).toBe(
-      "Washed Kenya",
-    );
+  it("process + country → 'Washed · Kenya'", () => {
+    expect(
+      getBeanDescriptor(makeBean({ process: "Washed", country: "Kenya" })),
+    ).toBe("Washed · Kenya");
   });
   it("country only → country name", () => {
     expect(getBeanDescriptor(makeBean({ country: "Kenya" }))).toBe("Kenya");
@@ -159,17 +173,26 @@ describe("getBeanDescriptor", () => {
   it("blend with parts → 'Blend · N parts'", () => {
     expect(
       getBeanDescriptor(
-        makeBean({ origin: BeanOrigin.Blend, blendParts: [{} as never, {} as never] }),
+        makeBean({
+          origin: BeanOrigin.Blend,
+          blendParts: [{} as never, {} as never],
+        }),
       ),
     ).toBe("Blend · 2 parts");
   });
   it("blend with one part → singular", () => {
     expect(
-      getBeanDescriptor(makeBean({ origin: BeanOrigin.Blend, blendParts: [{} as never] })),
+      getBeanDescriptor(
+        makeBean({ origin: BeanOrigin.Blend, blendParts: [{} as never] }),
+      ),
     ).toBe("Blend · 1 part");
   });
   it("blend with no parts → 'Blend'", () => {
-    expect(getBeanDescriptor(makeBean({ origin: BeanOrigin.Blend, blendParts: null }))).toBe("Blend");
+    expect(
+      getBeanDescriptor(
+        makeBean({ origin: BeanOrigin.Blend, blendParts: null }),
+      ),
+    ).toBe("Blend");
   });
 });
 
@@ -226,7 +249,11 @@ describe("getActivitySummary", () => {
   });
 
   it("handles no drinks at all", () => {
-    const s = getActivitySummary({ brews: [], espressos: [], sampledInTastings: [] });
+    const s = getActivitySummary({
+      brews: [],
+      espressos: [],
+      sampledInTastings: [],
+    });
     expect(s.totalCount).toBe(0);
     expect(s.avgScore).toBeNull();
   });

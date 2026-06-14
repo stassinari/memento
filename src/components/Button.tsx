@@ -34,6 +34,8 @@ const buttonVariants = cva(baseButtonStyles.join(" "), {
       white:
         "text-gray-700 bg-white border-gray-300 shadow-xs hover:bg-gray-50 dark:text-gray-100 dark:bg-white/10 dark:border-white/15 dark:hover:bg-white/20",
       gradient: "",
+      // Looks like an inline text link: no border/bg/padding, underline on hover.
+      link: "border-transparent bg-transparent shadow-none hover:underline p-0!",
     },
     colour: {
       main: "",
@@ -81,6 +83,17 @@ const buttonVariants = cva(baseButtonStyles.join(" "), {
       variant: "gradient",
       colour: "accent",
       className: compoundButtonStyles.gradientAccent,
+    },
+    {
+      variant: "link",
+      colour: "main",
+      className:
+        "text-orange-600 hover:text-orange-500 dark:text-orange-300 dark:hover:text-orange-200",
+    },
+    {
+      variant: "link",
+      colour: "accent",
+      className: "text-blue-600 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200",
     },
   ],
   defaultVariants: {

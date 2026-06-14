@@ -5,6 +5,7 @@ import { chain, entries } from "lodash";
 import { TagIcon } from "@heroicons/react/16/solid";
 import type { Beans, Brew, Espresso } from "~/db/types";
 import { Card } from "../Card";
+import { ScoreChip } from "../ScoreChip";
 import { BeanBagIcon } from "../icons/BeanBagIcon";
 import { BeanIconSolid } from "../icons/BeanIconSolid";
 import { DripperIcon } from "../icons/DripperIcon";
@@ -257,9 +258,7 @@ const BrewCardContent = ({ brew, beans }: BrewCardContentProps) => (
     </div>
     {brew.rating && (
       <div>
-        <span className="-mt-0.5 rounded-sm bg-orange-50 px-1 py-0.5 font-medium text-orange-600 dark:bg-orange-500/15 dark:text-orange-300">
-          {brew.rating}
-        </span>
+        <ScoreChip className="-mt-0.5">{brew.rating}</ScoreChip>
       </div>
     )}
   </div>
@@ -287,9 +286,7 @@ const EspressoCardContent = ({ espresso, beans }: EspressoCardContentProps) => (
       </p>
     </div>
     <div>
-      <p className="-mt-0.5 rounded-sm bg-orange-50 px-1 py-0.5 font-medium text-orange-600 dark:bg-orange-500/15 dark:text-orange-300">
-        {espresso.rating}
-      </p>
+      <ScoreChip className="-mt-0.5">{espresso.rating}</ScoreChip>
     </div>
   </div>
 );
@@ -313,9 +310,7 @@ const TastingCardContent = ({ tasting }: TastingCardContentProps) => {
       </div>
       {tasting.sampleOverall !== null && tasting.sampleOverall > 0 && (
         <div>
-          <span className="-mt-0.5 rounded-sm bg-orange-50 px-1 py-0.5 font-medium text-orange-600 dark:bg-orange-500/15 dark:text-orange-300">
-            {tasting.sampleOverall}
-          </span>
+          <ScoreChip className="-mt-0.5">{tasting.sampleOverall}</ScoreChip>
         </div>
       )}
     </div>

@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { ChevronDown, Snowflake } from "lucide-react";
 import { useState } from "react";
 import { Button } from "~/components/Button";
+import { BigStat } from "~/components/BigStat";
 import { Card } from "~/components/Card";
 import { Beans } from "~/db/types";
 import { daysBetween, getFreshness, startOfToday } from "~/lib/beans";
@@ -80,17 +81,11 @@ export const FreshnessCard = ({
     <Card.Container className="overflow-hidden">
       <ProfileCardHeader title="Freshness" muted={isArchived} right={headerRight} />
       <Card.Content>
-        <div className="flex items-baseline gap-2">
-          <span
-            className={clsx(
-              "font-heading text-4xl font-bold leading-none tracking-tight",
-              isArchived ? "text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100",
-            )}
-          >
-            {effectiveDays}
-          </span>
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{subLabel}</span>
-        </div>
+        <BigStat
+          value={effectiveDays}
+          subtitle={subLabel}
+          valueClassName={isArchived ? "text-gray-500 dark:text-gray-400" : undefined}
+        />
 
         {!isArchived && state !== "open" && calendarDays !== null && (
           <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">

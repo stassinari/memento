@@ -43,7 +43,10 @@ export interface Freshness {
   endDate: Date; // where the timeline terminates (archiveDate or today)
 }
 
-export function getFreshness(bean: Beans, today: Date = startOfToday()): Freshness {
+export function getFreshness(
+  bean: Beans,
+  today: Date = startOfToday(),
+): Freshness {
   const { roastDate, freezeDate, thawDate, archiveDate, isArchived } = bean;
 
   const frozen = !!freezeDate && !thawDate;
@@ -122,7 +125,7 @@ export function getBeanDescriptor(
     return n > 0 ? `Blend · ${n} part${n === 1 ? "" : "s"}` : "Blend";
   }
   const { process, country } = bean;
-  if (process && country) return `${process} ${country}`;
+  if (process && country) return `${process} · ${country}`;
   if (country) return country;
   if (process) return process;
   return "Single origin";
@@ -141,7 +144,9 @@ export const ROAST_LEVELS = [
   "Dark",
 ] as const;
 
-export function getRoastLevelLabel(level: number | null | undefined): string | null {
+export function getRoastLevelLabel(
+  level: number | null | undefined,
+): string | null {
   if (level === null || level === undefined) return null;
   return ROAST_LEVELS[level] ?? null;
 }

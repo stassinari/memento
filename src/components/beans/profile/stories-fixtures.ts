@@ -86,6 +86,7 @@ export const makeBeanWithDrinks = (
   ],
   sampledInTastings: drinks.sampledInTastings ?? [
     { id: "ts-1", position: 1, overall: 8, flavours: ["Blackcurrant", "Rhubarb"], tasting: { id: "t-1" } },
+    { id: "ts-2", position: 0, overall: 7.5, flavours: ["Brown sugar"], tasting: { id: "t-1" } },
   ],
 });
 
