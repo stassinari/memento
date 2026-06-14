@@ -31,13 +31,13 @@ type BeanWithDrinks = Beans & {
   sampledInTastings: TastingSample[];
 };
 
+const COLLAPSED_RECENT_LIMIT = 3;
+
 interface ActivityCardProps {
   bean: BeanWithDrinks;
-  /** How many recent rows to show before "Show all" reveals the rest. */
-  initialCount: number;
 }
 
-export const ActivityCard = ({ bean, initialCount }: ActivityCardProps) => {
+export const ActivityCard = ({ bean }: ActivityCardProps) => {
   const activity = getActivitySummary(bean);
   const [showAll, setShowAll] = useState(false);
 
@@ -72,8 +72,8 @@ export const ActivityCard = ({ bean, initialCount }: ActivityCardProps) => {
 
   const samples = bean.sampledInTastings;
   const recent = getRecentDrinks(bean);
-  const visible = showAll ? recent : recent.slice(0, initialCount);
-  const expandable = recent.length > initialCount;
+  const visible = showAll ? recent : recent.slice(0, COLLAPSED_RECENT_LIMIT);
+  const expandable = recent.length > COLLAPSED_RECENT_LIMIT;
 
   return (
     <Card.Container className="overflow-hidden">

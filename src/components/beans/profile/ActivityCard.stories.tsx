@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ActivityCard } from "./ActivityCard";
-import { makeBeanWithDrinks, makeBrew } from "./stories-fixtures";
 import { withRouter } from "./stories-decorators";
+import { makeBeanWithDrinks, makeBrew } from "./stories-fixtures";
 
 const meta: Meta<typeof ActivityCard> = {
   title: "Beans Profile/ActivityCard",
   component: ActivityCard,
   decorators: [withRouter, (Story) => <div className="max-w-md">{Story()}</div>],
-  args: { initialCount: 3 },
 };
 export default meta;
 type Story = StoryObj<typeof ActivityCard>;

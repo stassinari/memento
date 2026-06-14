@@ -84,7 +84,6 @@ function BeansProfile() {
   }
 
   const status = getBeanStatus(bean);
-  const recentLimit = isDesktop ? 5 : 3;
 
   return (
     <>
@@ -131,7 +130,7 @@ function BeansProfile() {
               />
             </div>
             <div className="col-span-8 space-y-6">
-              <ActivityCard bean={bean} initialCount={recentLimit} />
+              <ActivityCard bean={bean} />
               <div className="grid grid-cols-2 items-start gap-6">
                 <RoastCharacterCard bean={bean} />
                 {bean.origin === "blend" ? (
@@ -151,7 +150,7 @@ function BeansProfile() {
               onFreeze={handleFreeze}
               onThaw={handleThaw}
             />
-            <ActivityCard bean={bean} initialCount={recentLimit} />
+            <ActivityCard bean={bean} />
             <RoastCharacterCard bean={bean} />
             {bean.origin === "blend" ? <CompositionCard bean={bean} /> : <OriginCard bean={bean} />}
             <ArchiveZone
