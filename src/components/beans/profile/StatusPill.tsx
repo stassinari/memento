@@ -1,4 +1,4 @@
-import { Snowflake } from "lucide-react";
+import { Archive, Flame, Snowflake, WavesVertical } from "lucide-react";
 import { Badge } from "~/components/Badge";
 import { BeanStatus } from "~/lib/beans";
 
@@ -15,13 +15,13 @@ const STATUS_CONFIG: Record<
   { colour: BadgeColour; label: string; leadingIcon?: React.ReactNode }
 > = {
   open: {
-    colour: "green",
+    colour: "orange",
     label: "Open",
-    leadingIcon: <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />,
+    leadingIcon: <Flame className="size-3" />,
   },
-  frozen: { colour: "blue", label: "Frozen", leadingIcon: <Snowflake className="h-3 w-3" /> },
-  thawed: { colour: "grey", label: "Thawed" },
-  archived: { colour: "grey", label: "Archived" },
+  frozen: { colour: "blue", label: "Frozen", leadingIcon: <Snowflake className="size-3" /> },
+  thawed: { colour: "orange", label: "Thawed", leadingIcon: <WavesVertical className="size-3" /> },
+  archived: { colour: "grey", label: "Archived", leadingIcon: <Archive className="size-3" /> },
 };
 
 interface StatusPillProps {

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
+import { PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "~/components/Badge";
 import { BigStat } from "~/components/BigStat";
@@ -52,10 +53,16 @@ export const ActivityCard = ({ bean, initialCount }: ActivityCardProps) => {
           </p>
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             <Button variant="white" size="sm" asChild>
-              <Link to="/drinks/brews/add">+ Log a brew</Link>
+              <Link to="/drinks/brews/add">
+                <PlusCircleIcon />
+                Log a brew
+              </Link>
             </Button>
             <Button variant="white" size="sm" asChild>
-              <Link to="/drinks/espresso/add">+ Log an espresso</Link>
+              <Link to="/drinks/espresso/add">
+                <PlusCircleIcon />
+                Log an espresso
+              </Link>
             </Button>
           </div>
         </Card.Content>

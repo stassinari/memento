@@ -91,7 +91,9 @@ const DescriptionList = ({ rows }: DescriptionListProps) => (
         className="flex items-center justify-between py-1 gap-x-4 first-of-type:pt-0 last-of-type:pb-0 sm:py-2"
       >
         <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">{label}</dt>
-        <dd className="mt-1 text-sm font-medium text-gray-800 dark:text-gray-200">{value}</dd>
+        <dd className="mt-1 text-right text-sm font-medium text-gray-800 dark:text-gray-200">
+          {value}
+        </dd>
       </dl>
     ))}
   </div>

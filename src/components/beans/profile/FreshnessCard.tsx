@@ -5,6 +5,7 @@ import {
   CircleHelp,
   Flame,
   type LucideIcon,
+  PlusCircleIcon,
   Snowflake,
   WavesVertical,
 } from "lucide-react";
@@ -54,7 +55,8 @@ export const FreshnessCard = ({
           <div className="mt-3 flex justify-center">
             <Button variant="white" size="sm" asChild>
               <Link to="/beans/$beansId/edit" params={{ beansId }}>
-                + Add roast date
+                <PlusCircleIcon />
+                Add roast date
               </Link>
             </Button>
           </div>
