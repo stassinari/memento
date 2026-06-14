@@ -222,6 +222,14 @@
         "beans_blend_parts_single_origin_check": {
           "name": "beans_blend_parts_single_origin_check",
           "value": "\"beans\".\"origin\" <> 'single-origin' or \"beans\".\"blend_parts\" is null"
+        },
+        "beans_archive_date_check": {
+          "name": "beans_archive_date_check",
+          "value": "\"beans\".\"archive_date\" is null or \"beans\".\"is_archived\""
+        },
+        "beans_thaw_implies_freeze_check": {
+          "name": "beans_thaw_implies_freeze_check",
+          "value": "\"beans\".\"thaw_date\" is null or \"beans\".\"freeze_date\" is not null"
         }
       },
       "isRLSEnabled": false

@@ -128,6 +128,13 @@ export const beans = pgTable(
       "beans_blend_parts_single_origin_check",
       sql`${table.origin} <> 'single-origin' or ${table.blendParts} is null`,
     ),
+    // A date only makes sense when archived; forbids the impossible state.
+    check("beans_archive_date_check", sql`${table.archiveDate} is null or ${table.isArchived}`),
+    // You can't thaw beans that were never frozen.
+    check(
+      "beans_thaw_implies_freeze_check",
+      sql`${table.thawDate} is null or ${table.freezeDate} is not null`,
+    ),
   ],
 );
 
