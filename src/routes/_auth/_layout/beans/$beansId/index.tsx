@@ -1,6 +1,6 @@
 import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { ActivityCard } from "~/components/beans/profile/ActivityCard";
 import { ArchiveZone } from "~/components/beans/profile/ArchiveZone";
 import { BeansProfileHeader } from "~/components/beans/profile/BeansProfileHeader";
@@ -12,11 +12,6 @@ import { RoastCharacterCard } from "~/components/beans/profile/RoastCharacterCar
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
-import {
-  DrinksList,
-  mergeBrewsAndEspressoByUniqueDate,
-  TastingTimelineItem,
-} from "~/components/drinks/DrinksList";
 import { NotFound } from "~/components/ErrorPage";
 import { Modal } from "~/components/Modal";
 import { archiveBeans, deleteBeans, freezeBeans, thawBeans, unarchiveBeans } from "~/db/mutations";
@@ -47,7 +42,6 @@ function BeansProfile() {
   const { data: bean } = useSuspenseQuery<BeanWithDrinks | null>(beansQueryOptions(beansId));
 
   const [isDeleteErrorModalOpen, setIsDeleteErrorModalOpen] = useState(false);
-  const [showAllDrinks, setShowAllDrinks] = useState(false);
   const isDesktop = useScreenMediaQuery("md");
 
   const invalidate = useCallback(() => {
@@ -86,26 +80,6 @@ function BeansProfile() {
     }
   }, [beansId, queryClient, navigate]);
 
-  const sqlDrinks = useMemo(() => {
-    if (!bean) return [];
-    const tastingTimeline: TastingTimelineItem[] = bean.sampledInTastings.map((sample) => ({
-      id: sample.id,
-      date: sample.tasting.date ?? sample.tasting.createdAt,
-      method: sample.tasting.method,
-      samplePosition: sample.position,
-      sampleOverall: sample.overall,
-      sampleFlavours: sample.flavours,
-      tastingId: sample.tasting.id,
-      sampleId: sample.id,
-    }));
-
-    return mergeBrewsAndEspressoByUniqueDate(
-      bean.brews.map((brew) => ({ brews: brew, beans: bean })),
-      bean.espressos.map((espresso) => ({ espresso, beans: bean })),
-      tastingTimeline,
-    );
-  }, [bean]);
-
   if (!bean) {
     return <NotFound />;
   }
@@ -113,7 +87,7 @@ function BeansProfile() {
   const status = getBeanStatus(bean);
   const freshness = getFreshness(bean);
   const activity = getActivitySummary(bean);
-  const toggleAllDrinks = () => setShowAllDrinks((v) => !v);
+  const recentLimit = isDesktop ? 5 : 3;
 
   return (
     <>
@@ -161,8 +135,7 @@ function BeansProfile() {
               />
             </div>
             <div className="col-span-8 space-y-6">
-              <ActivityCard bean={bean} onViewAll={toggleAllDrinks} />
-              {showAllDrinks && <DrinksList drinks={sqlDrinks} />}
+              <ActivityCard bean={bean} initialCount={recentLimit} />
               <div className="grid grid-cols-2 items-start gap-6">
                 <RoastCharacterCard bean={bean} />
                 {bean.origin === "blend" ? (
@@ -184,8 +157,7 @@ function BeansProfile() {
               onFreeze={handleFreeze}
               onThaw={handleThaw}
             />
-            <ActivityCard bean={bean} onViewAll={toggleAllDrinks} />
-            {showAllDrinks && <DrinksList drinks={sqlDrinks} />}
+            <ActivityCard bean={bean} initialCount={recentLimit} />
             <RoastCharacterCard bean={bean} />
             {bean.origin === "blend" ? (
               <CompositionCard bean={bean} />

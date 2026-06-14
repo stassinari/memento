@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { ChevronDown, Snowflake } from "lucide-react";
+import { useState } from "react";
+import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
-import { SnowflakeIcon } from "~/components/icons/SnowflakeIcon";
 import { Beans } from "~/db/types";
 import { daysBetween, getFreshness, startOfToday } from "~/lib/beans";
-import { FreshnessDurationBar } from "./FreshnessDurationBar";
 import { fmtDaysAgo, fmtStorageDate } from "./format";
+import { FreshnessDurationBar } from "./FreshnessDurationBar";
 import { ProfileCardHeader } from "./ProfileCardHeader";
 
 interface FreshnessCardProps {
@@ -43,13 +43,13 @@ export const FreshnessCard = ({
           <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
             Add one to track effective age
           </p>
-          <Link
-            to="/beans/$beansId/edit"
-            params={{ beansId }}
-            className="mt-3 inline-flex items-center rounded-lg border-[1.5px] border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 dark:border-white/15 dark:text-gray-300 dark:hover:bg-white/5"
-          >
-            + Add roast date
-          </Link>
+          <div className="mt-3 flex justify-center">
+            <Button variant="white" size="sm" asChild>
+              <Link to="/beans/$beansId/edit" params={{ beansId }}>
+                + Add roast date
+              </Link>
+            </Button>
+          </div>
         </Card.Content>
       </Card.Container>
     );
@@ -65,13 +65,9 @@ export const FreshnessCard = ({
   ) : state === "thawed" ? (
     <span className="text-[11px] text-gray-400 dark:text-gray-500">aging resumed</span>
   ) : showActions ? (
-    <button
-      type="button"
-      onClick={onFreeze}
-      className="inline-flex items-center gap-1.5 rounded-lg border-[1.5px] border-gray-200 bg-white px-2.5 py-1 text-[11.5px] font-semibold text-gray-600 hover:bg-gray-50 dark:border-white/15 dark:bg-transparent dark:text-gray-300 dark:hover:bg-white/5"
-    >
-      <SnowflakeIcon className="h-3 w-3" /> Freeze
-    </button>
+    <Button variant="white" size="xs" onClick={onFreeze}>
+      <Snowflake /> Freeze
+    </Button>
   ) : undefined;
 
   const subLabel = isArchived
@@ -88,9 +84,7 @@ export const FreshnessCard = ({
           <span
             className={clsx(
               "font-heading text-4xl font-bold leading-none tracking-tight",
-              isArchived
-                ? "text-gray-500 dark:text-gray-400"
-                : "text-gray-900 dark:text-gray-100",
+              isArchived ? "text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100",
             )}
           >
             {effectiveDays}
@@ -118,13 +112,16 @@ export const FreshnessCard = ({
 
         {/* Contextual action (mobile only): Thaw is big & central when frozen */}
         {showActions && state === "frozen" && (
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            colour="accent"
+            width="full"
+            size="lg"
             onClick={onThaw}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-blue-300 bg-blue-50 py-3 text-[15px] font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-400/30 dark:bg-blue-500/15 dark:text-blue-200 dark:hover:bg-blue-500/25"
+            className="mt-4"
           >
-            <SnowflakeIcon className="h-[18px] w-[18px]" /> Thaw beans
-          </button>
+            <Snowflake /> Thaw beans
+          </Button>
         )}
 
         {/* Timeline: expanded inline (desktop) or behind a disclosure (mobile) */}
@@ -140,7 +137,7 @@ export const FreshnessCard = ({
               className="flex w-full items-center justify-between py-1 text-xs font-medium text-gray-500 dark:text-gray-400"
             >
               Timeline &amp; dates
-              <ChevronDownIcon
+              <ChevronDown
                 className={clsx("h-4 w-4 transition-transform", open && "rotate-180")}
               />
             </button>
@@ -233,7 +230,10 @@ const FreshnessTimeline = ({ freshness, today }: FreshnessTimelineProps) => {
         />
       )}
       {thawDate && (
-        <Row label="Thawed" value={`${fmtStorageDate(thawDate)} · ${fmtDaysAgo(daysBetween(thawDate, today))}`} />
+        <Row
+          label="Thawed"
+          value={`${fmtStorageDate(thawDate)} · ${fmtDaysAgo(daysBetween(thawDate, today))}`}
+        />
       )}
       {isArchived && archiveDate && (
         <Row label="Archived" value={`${fmtStorageDate(archiveDate)} · end of the line`} />
@@ -259,9 +259,7 @@ const Row = ({ label, value, tone }: RowProps) => (
     <span
       className={clsx(
         "font-semibold",
-        tone === "blue"
-          ? "text-blue-700 dark:text-blue-300"
-          : "text-gray-800 dark:text-gray-200",
+        tone === "blue" ? "text-blue-500 dark:text-blue-300" : "text-gray-800 dark:text-gray-200",
       )}
     >
       {value}

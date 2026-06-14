@@ -1,4 +1,5 @@
-import { ArchiveBoxIcon, ArrowUturnLeftIcon } from "@heroicons/react/20/solid";
+import { Archive, Undo2 } from "lucide-react";
+import { Button } from "~/components/Button";
 
 interface ArchiveZoneProps {
   isArchived: boolean;
@@ -14,26 +15,18 @@ export const ArchiveZone = ({ isArchived, onArchive, onUnarchive }: ArchiveZoneP
   if (isArchived) {
     return (
       <div className="pt-2">
-        <button
-          type="button"
-          onClick={onUnarchive}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-gray-300 py-3 text-sm font-semibold text-gray-600 hover:bg-gray-100 dark:border-white/15 dark:text-gray-300 dark:hover:bg-white/5"
-        >
-          <ArrowUturnLeftIcon className="h-[18px] w-[18px]" /> Unarchive
-        </button>
+        <Button variant="white" width="full" onClick={onUnarchive}>
+          <Undo2 /> Unarchive
+        </Button>
       </div>
     );
   }
 
   return (
     <div className="pt-2">
-      <button
-        type="button"
-        onClick={onArchive}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-gray-300 py-3 text-sm font-semibold text-gray-600 hover:bg-gray-100 dark:border-white/15 dark:text-gray-300 dark:hover:bg-white/5"
-      >
-        <ArchiveBoxIcon className="h-[18px] w-[18px]" /> Archive these beans
-      </button>
+      <Button variant="white" width="full" onClick={onArchive}>
+        <Archive /> Archive these beans
+      </Button>
       <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-gray-500">
         Moves to your archived cellar · still counts in stats
       </p>

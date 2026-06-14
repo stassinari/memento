@@ -1,10 +1,9 @@
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
+import { MoreVertical, Snowflake } from "lucide-react";
 import { Fragment } from "react";
 import { Button } from "~/components/Button";
-import { SnowflakeIcon } from "~/components/icons/SnowflakeIcon";
 import { BeanStatus } from "~/lib/beans";
 
 const menuItemStyles =
@@ -43,12 +42,12 @@ export const BeanActionToolbar = ({
 
     {status === "open" && (
       <Button variant="secondary" colour="accent" size="sm" onClick={onFreeze}>
-        <SnowflakeIcon className="h-4 w-4" /> Freeze
+        <Snowflake /> Freeze
       </Button>
     )}
     {status === "frozen" && (
       <Button variant="secondary" colour="accent" size="sm" onClick={onThaw}>
-        <SnowflakeIcon className="h-4 w-4" /> Thaw beans
+        <Snowflake /> Thaw beans
       </Button>
     )}
 
@@ -67,7 +66,7 @@ export const BeanActionToolbar = ({
     <Menu as="div" className="relative">
       <MenuButton className="grid h-9 w-9 place-items-center rounded-md text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/10">
         <span className="sr-only">More options</span>
-        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+        <MoreVertical className="h-5 w-5" aria-hidden="true" />
       </MenuButton>
       <Transition
         as={Fragment}

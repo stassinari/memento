@@ -7,12 +7,20 @@ import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  server: {
-    port: 3000,
-    host: "0.0.0.0", // Listen on all interfaces so Firebase emulator can connect
-  },
-  plugins: [
+export default defineConfig(() => {
+  // Storybook's Vite builder loads this config too. The app-server plugins
+  // (TanStack Start, Nitro, PWA) break in that context, so under Storybook we
+  // return just what the components need: Tailwind v4 and the `~` path alias.
+  if (process.env.STORYBOOK) {
+    return { plugins: [tailwindcss(), tsconfigPaths()] };
+  }
+
+  return {
+    server: {
+      port: 3000,
+      host: "0.0.0.0", // Listen on all interfaces so Firebase emulator can connect
+    },
+    plugins: [
     tailwindcss(),
     tsconfigPaths(),
     tanstackStart({
@@ -56,5 +64,6 @@ export default defineConfig({
         ],
       },
     }),
-  ],
+    ],
+  };
 });

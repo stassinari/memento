@@ -1,3 +1,4 @@
+import { Badge } from "~/components/Badge";
 import { Card } from "~/components/Card";
 import { Beans } from "~/db/types";
 import { getRoastLevelLabel } from "~/lib/beans";
@@ -42,12 +43,7 @@ export const RoastCharacterCard = ({ bean }: RoastCharacterCardProps) => {
             </p>
             <div className="flex flex-wrap gap-1.5">
               {roastingNotes.map((note) => (
-                <span
-                  key={note}
-                  className="rounded-lg bg-orange-50 px-2.5 py-1 text-xs font-medium text-orange-700 dark:bg-orange-500/15 dark:text-orange-200"
-                >
-                  {note}
-                </span>
+                <Badge key={note} colour="orange" label={note} />
               ))}
             </div>
           </div>
