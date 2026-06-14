@@ -1,5 +1,9 @@
 import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Preview } from "@storybook/react-vite";
+// Load the variable fonts the theme names (the app does this in __root.tsx);
+// without them config.css's --font-* vars fall back to system fonts.
+import "@fontsource-variable/inter/index.css";
+import "@fontsource-variable/montserrat/index.css";
 import "../src/styles/config.css";
 
 const preview: Preview = {
