@@ -17,6 +17,7 @@ import { archiveBeans, deleteBeans, freezeBeans, thawBeans, unarchiveBeans } fro
 import { getBean } from "~/db/queries";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { getBeanStatus } from "~/lib/beans";
+import { toStorageDate } from "~/util";
 
 export type BeanWithDrinks = NonNullable<Awaited<ReturnType<typeof getBean>>>;
 
@@ -49,7 +50,8 @@ function BeansProfile() {
   }, [beansId, queryClient]);
 
   const handleArchive = useCallback(async () => {
-    await archiveBeans({ data: { beansId } });
+    // Compute the calendar day client-side; the server is UTC.
+    await archiveBeans({ data: { beansId, date: toStorageDate(new Date())! } });
     invalidate();
     navigate({ to: "/beans" });
   }, [beansId, invalidate, navigate]);
@@ -60,12 +62,12 @@ function BeansProfile() {
   }, [beansId, invalidate]);
 
   const handleFreeze = useCallback(async () => {
-    await freezeBeans({ data: { beansId } });
+    await freezeBeans({ data: { beansId, date: toStorageDate(new Date())! } });
     invalidate();
   }, [beansId, invalidate]);
 
   const handleThaw = useCallback(async () => {
-    await thawBeans({ data: { beansId } });
+    await thawBeans({ data: { beansId, date: toStorageDate(new Date())! } });
     invalidate();
   }, [beansId, invalidate]);
 

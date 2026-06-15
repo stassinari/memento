@@ -1,6 +1,6 @@
 import { ButtonWithDropdown } from "~/components/ButtonWithDropdown";
 import { Beans } from "~/db/types";
-import { BeanStatus } from "~/lib/beans";
+import { BeanStatus, getBeanActions } from "~/lib/beans";
 import { BeanActionToolbar } from "./BeanActionToolbar";
 import { DescriptorPill } from "./DescriptorPill";
 import { StatusPill } from "./StatusPill";
@@ -44,7 +44,7 @@ export const BeansProfileHeader = ({
           </div>
         </div>
         <BeanActionToolbar
-          status={status}
+          actions={getBeanActions(bean)}
           beansId={beansId}
           onFreeze={onFreeze}
           onThaw={onThaw}

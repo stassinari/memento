@@ -107,6 +107,26 @@ export function getBeanStatus(bean: Beans): BeanStatus {
   return frozen ? "frozen" : thawed ? "thawed" : "open";
 }
 
+// Which lifecycle actions are available — the single source of truth shared by
+// the desktop toolbar and the mobile freshness card (keyed off status, so
+// archived beans never expose freeze/thaw).
+export interface BeanActions {
+  canFreeze: boolean;
+  canThaw: boolean;
+  canArchive: boolean;
+  canUnarchive: boolean;
+}
+
+export function getBeanActions(bean: Beans): BeanActions {
+  const status = getBeanStatus(bean);
+  return {
+    canFreeze: status === "open",
+    canThaw: status === "frozen",
+    canArchive: status !== "archived",
+    canUnarchive: status === "archived",
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Descriptor — the natural-language "what is it" pill text. The flag is
 // rendered separately (via CountryOptionFlag) when `country` is present.

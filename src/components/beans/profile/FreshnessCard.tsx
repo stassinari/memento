@@ -14,7 +14,7 @@ import { BigStat } from "~/components/BigStat";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
 import { Beans } from "~/db/types";
-import { daysBetween, formatAge, getFreshness, startOfToday } from "~/lib/beans";
+import { daysBetween, formatAge, getBeanActions, getFreshness, startOfToday } from "~/lib/beans";
 import { fmtStorageDate } from "./format";
 import { FreshnessDurationBar } from "./FreshnessDurationBar";
 import { FreshnessInfoDialog } from "./FreshnessInfoDialog";
@@ -42,11 +42,37 @@ export const FreshnessCard = ({
   const [hovered, setHovered] = useState<string | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
 
-  // ---- No roast date → quiet prompt -------------------------------------
+  // Action availability is centralized (archived beans never expose freeze/thaw).
+  const actions = getBeanActions(bean);
+
+  // Freeze ghost (header) and the big Thaw button — mobile only. Computed up here
+  // so they're available in the no-roast prompt too.
+  const freezeButton =
+    actions.canFreeze && showActions ? (
+      <Button variant="white" size="xs" onClick={onFreeze}>
+        <Snowflake /> Freeze
+      </Button>
+    ) : undefined;
+
+  const thawButton =
+    actions.canThaw && showActions ? (
+      <Button
+        variant="secondary"
+        colour="accent"
+        width="full"
+        size="lg"
+        onClick={onThaw}
+        className="mt-5"
+      >
+        <Snowflake /> Thaw beans
+      </Button>
+    ) : null;
+
+  // ---- No roast date → quiet prompt (still allows freeze/thaw) -----------
   if (!freshness.hasRoastDate) {
     return (
       <Card.Container className="overflow-hidden">
-        <ProfileCardHeader title="Freshness" muted />
+        <ProfileCardHeader title="Freshness" muted right={freezeButton} />
         <Card.Content className="py-5 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">No roast date recorded</p>
           <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
@@ -60,20 +86,13 @@ export const FreshnessCard = ({
               </Link>
             </Button>
           </div>
+          {thawButton}
         </Card.Content>
       </Card.Container>
     );
   }
 
   const { state, isArchived, effectiveDays } = freshness;
-
-  // Freeze only shows for open-and-never-frozen, non-archived beans (mobile).
-  const headerRight =
-    state === "open" && !isArchived && showActions ? (
-      <Button variant="white" size="xs" onClick={onFreeze}>
-        <Snowflake /> Freeze
-      </Button>
-    ) : undefined;
 
   const age = formatAge(effectiveDays ?? 0);
   const subLabel = isArchived
@@ -97,7 +116,7 @@ export const FreshnessCard = ({
             <CircleHelp className="size-4" />
           </button>
         }
-        right={headerRight}
+        right={freezeButton}
       />
       <FreshnessInfoDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
       <Card.Content>
@@ -125,18 +144,7 @@ export const FreshnessCard = ({
         </div>
 
         {/* Contextual action (mobile only): Thaw sits at the bottom of the card. */}
-        {showActions && state === "frozen" && (
-          <Button
-            variant="secondary"
-            colour="accent"
-            width="full"
-            size="lg"
-            onClick={onThaw}
-            className="mt-5"
-          >
-            <Snowflake /> Thaw beans
-          </Button>
-        )}
+        {thawButton}
       </Card.Content>
     </Card.Container>
   );

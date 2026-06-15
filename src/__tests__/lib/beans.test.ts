@@ -5,6 +5,7 @@ import {
   daysBetween,
   formatAge,
   getActivitySummary,
+  getBeanActions,
   getBeanDescriptor,
   getBeanStatus,
   getFreshness,
@@ -143,6 +144,43 @@ describe("getBeanStatus", () => {
     expect(
       getBeanStatus(makeBean({ freezeDate: utc(2026, 6, 1), thawDate: utc(2026, 6, 5) })),
     ).toBe("thawed");
+  });
+});
+
+describe("getBeanActions", () => {
+  it("open → freeze + archive only", () => {
+    expect(getBeanActions(makeBean({}))).toEqual({
+      canFreeze: true,
+      canThaw: false,
+      canArchive: true,
+      canUnarchive: false,
+    });
+  });
+  it("frozen → thaw + archive only", () => {
+    expect(getBeanActions(makeBean({ freezeDate: utc(2026, 6, 1) }))).toEqual({
+      canFreeze: false,
+      canThaw: true,
+      canArchive: true,
+      canUnarchive: false,
+    });
+  });
+  it("thawed → no freeze/thaw, archive only", () => {
+    const bean = makeBean({ freezeDate: utc(2026, 6, 1), thawDate: utc(2026, 6, 5) });
+    expect(getBeanActions(bean)).toEqual({
+      canFreeze: false,
+      canThaw: false,
+      canArchive: true,
+      canUnarchive: false,
+    });
+  });
+  it("archived wins → only unarchive (even if frozen underneath)", () => {
+    const bean = makeBean({ isArchived: true, freezeDate: utc(2026, 6, 1) });
+    expect(getBeanActions(bean)).toEqual({
+      canFreeze: false,
+      canThaw: false,
+      canArchive: false,
+      canUnarchive: true,
+    });
   });
 });
 

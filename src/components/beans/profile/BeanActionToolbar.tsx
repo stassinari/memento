@@ -4,13 +4,13 @@ import clsx from "clsx";
 import { MoreVertical, Snowflake } from "lucide-react";
 import { Fragment } from "react";
 import { Button } from "~/components/Button";
-import { BeanStatus } from "~/lib/beans";
+import { BeanActions } from "~/lib/beans";
 
 const menuItemStyles =
   "block w-full px-4 py-2 text-left text-sm ui-active:bg-gray-100 ui-active:text-gray-900 ui-not-active:text-gray-700 dark:ui-active:bg-white/10 dark:ui-active:text-gray-100 dark:ui-not-active:text-gray-300";
 
 interface BeanActionToolbarProps {
-  status: BeanStatus;
+  actions: BeanActions;
   beansId: string;
   onFreeze: () => void;
   onThaw: () => void;
@@ -25,7 +25,7 @@ interface BeanActionToolbarProps {
  * away from Freeze/Thaw by the divider — proximity caused real mis-taps.
  */
 export const BeanActionToolbar = ({
-  status,
+  actions,
   beansId,
   onFreeze,
   onThaw,
@@ -40,12 +40,12 @@ export const BeanActionToolbar = ({
       </Link>
     </Button>
 
-    {status === "open" && (
+    {actions.canFreeze && (
       <Button variant="secondary" colour="accent" size="sm" onClick={onFreeze}>
         <Snowflake /> Freeze
       </Button>
     )}
-    {status === "frozen" && (
+    {actions.canThaw && (
       <Button variant="secondary" colour="accent" size="sm" onClick={onThaw}>
         <Snowflake /> Thaw beans
       </Button>
@@ -53,7 +53,7 @@ export const BeanActionToolbar = ({
 
     <div className="mx-1 h-6 w-px bg-gray-200 dark:bg-white/15" />
 
-    {status === "archived" ? (
+    {actions.canUnarchive ? (
       <Button variant="white" size="sm" onClick={onUnarchive}>
         Unarchive
       </Button>
