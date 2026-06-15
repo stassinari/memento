@@ -25,11 +25,8 @@ export const ArchiveZone = ({ isArchived, onArchive, onUnarchive }: ArchiveZoneP
   return (
     <div className="pt-2">
       <Button variant="white" width="full" onClick={onArchive}>
-        <Archive /> Archive these beans
+        <Archive /> Archive
       </Button>
-      <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-gray-500">
-        Moves to your archived cellar · still counts in stats
-      </p>
     </div>
   );
 };

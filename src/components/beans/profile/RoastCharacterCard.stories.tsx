@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { makeBean } from "~/data/fixtures/beans";
 import { RoastStyle } from "~/db/schema";
 import { RoastCharacterCard } from "./RoastCharacterCard";
-import { makeBean } from "./stories-fixtures";
 
 const meta: Meta<typeof RoastCharacterCard> = {
   title: "Beans Profile/RoastCharacterCard",

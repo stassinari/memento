@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { makeBean } from "~/data/fixtures/beans";
 import { BeanOrigin } from "~/db/schema";
 import { DescriptorPill } from "./DescriptorPill";
-import { makeBean } from "./stories-fixtures";
 
 const meta: Meta<typeof DescriptorPill> = {
   title: "Beans Profile/DescriptorPill",

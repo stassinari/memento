@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { makeBeanWithDrinks, makeBrew } from "~/data/fixtures/beans";
+import { withRouter } from "~/stories/decorators";
 import { ActivityCard } from "./ActivityCard";
-import { withRouter } from "./stories-decorators";
-import { makeBeanWithDrinks, makeBrew } from "./stories-fixtures";
 
 const meta: Meta<typeof ActivityCard> = {
   title: "Beans Profile/ActivityCard",

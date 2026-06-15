@@ -6,9 +6,9 @@ import {
   noRoastDateBean,
   openBean,
   thawedBean,
-} from "./stories-fixtures";
+} from "~/data/fixtures/beans";
+import { withRouter } from "~/stories/decorators";
 import { FreshnessCard } from "./FreshnessCard";
-import { withRouter } from "./stories-decorators";
 
 const meta: Meta<typeof FreshnessCard> = {
   title: "Beans Profile/FreshnessCard",

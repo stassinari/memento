@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { archivedBean, blendBean, frozenBean, openBean } from "~/data/fixtures/beans";
 import { getBeanStatus } from "~/lib/beans";
+import { withRouter } from "~/stories/decorators";
 import { BeansProfileHeader } from "./BeansProfileHeader";
-import { archivedBean, blendBean, frozenBean, openBean } from "./stories-fixtures";
-import { withRouter } from "./stories-decorators";
 
 const meta: Meta<typeof BeansProfileHeader> = {
   title: "Beans Profile/BeansProfileHeader",

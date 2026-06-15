@@ -1,12 +1,14 @@
+import * as Popover from "@radix-ui/react-popover";
 import clsx from "clsx";
-import { Tooltip } from "~/components/Tooltip";
+import { Fragment } from "react";
 import { daysBetween, formatAge, Freshness } from "~/lib/beans";
 import { fmtStorageDate } from "./format";
 
 /**
  * "Battery"-style duration bar — flex-weighted segments in a track, NOT a slider
  * (no handles). Orange = actively aging, blue = frozen (paused), gray = archived
- * (closed). Each segment shows a tooltip on hover with its phase + dates.
+ * (closed). Each segment shows a tooltip on hover (mouse) or tap (touch) with its
+ * phase + dates.
  */
 
 type SegmentColor = "orange" | "blue" | "gray";
@@ -126,42 +128,78 @@ export const FreshnessDurationBar = ({
   // Guard against an all-zero timeline (same-day) so something still renders.
   const hasWeight = segments.some((s) => s.weight > 0);
 
+  // One Popover for the whole bar, anchored to the active segment — NOT one
+  // Popover per segment. Adjacent per-segment popovers each carry their own
+  // dismiss layer, so on touch a tap on a second segment was swallowed closing
+  // the first instead of opening the second. The active segment is driven by the
+  // shared `hovered` key, which also cross-highlights the timeline row.
+  const activeSegment = segments.find((s) => hovered === linkKeyFor(s.key)) ?? null;
+
   return (
-    <div
-      className={clsx(
-        "flex h-6 gap-1 rounded-lg bg-gray-100 p-1 dark:bg-white/10",
-        // Archived = history, not current freshness: fade + desaturate the phases.
-        freshness.isArchived && "opacity-70 saturate-50",
-        className,
-      )}
+    <Popover.Root
+      open={activeSegment !== null}
+      onOpenChange={(open) => {
+        if (!open) onHover?.(null);
+      }}
     >
-      {segments.map((segment, i) => {
-        const linkKey = linkKeyFor(segment.key);
-        const active = hovered === linkKey;
-        return (
-          <Tooltip
-            key={segment.key}
-            content={
-              <>
-                <span className="font-semibold">{segment.title}</span>
-                <span className="block text-gray-300 dark:text-gray-300">{segment.detail}</span>
-              </>
-            }
-          >
+      <div
+        className={clsx(
+          "flex h-6 gap-1 rounded-lg bg-gray-100 p-1 dark:bg-white/10",
+          // Archived = history, not current freshness: fade + desaturate the phases.
+          freshness.isArchived && "opacity-70 saturate-50",
+          className,
+        )}
+      >
+        {segments.map((segment, i) => {
+          const linkKey = linkKeyFor(segment.key);
+          const active = hovered === linkKey;
+          const segmentEl = (
             <div
-              onMouseEnter={() => onHover?.(linkKey)}
-              onMouseLeave={() => onHover?.(null)}
+              // Mouse drives the highlight by hover; touch by tap-toggle. Splitting
+              // on pointerType keeps a desktop *click* from closing a hover-opened
+              // tooltip, and keeps the tooltip's dismiss layer from eating the next
+              // tap (we disable that dismiss below and own the state here).
+              onPointerEnter={(e) => e.pointerType === "mouse" && onHover?.(linkKey)}
+              onPointerLeave={(e) => e.pointerType === "mouse" && onHover?.(null)}
+              onPointerUp={(e) => e.pointerType !== "mouse" && onHover?.(active ? null : linkKey)}
               className={clsx(
-                // CSS :hover handles direct hover; `active` mirrors a timeline-row hover.
                 "origin-center cursor-default rounded-sm transition duration-150 hover:scale-y-125 hover:brightness-105",
                 SEGMENT_STYLES[segment.color],
                 active && "scale-y-125 brightness-105",
               )}
               style={{ flex: hasWeight ? segment.weight : i === 0 ? 1 : 0 }}
             />
-          </Tooltip>
-        );
-      })}
-    </div>
+          );
+          return active ? (
+            <Popover.Anchor asChild key={segment.key}>
+              {segmentEl}
+            </Popover.Anchor>
+          ) : (
+            <Fragment key={segment.key}>{segmentEl}</Fragment>
+          );
+        })}
+      </div>
+      <Popover.Portal>
+        <Popover.Content
+          side="top"
+          sideOffset={6}
+          collisionPadding={8}
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          // Don't let the dismiss layer auto-close on outside pointerdown: on touch
+          // it would eat the tap meant for the next segment. We open/close entirely
+          // via the segment handlers (tap a segment to switch, tap it again to clear).
+          onInteractOutside={(e) => e.preventDefault()}
+          className="z-50 max-w-56 rounded-md bg-gray-900 px-2.5 py-1.5 text-center text-xs leading-snug text-white shadow-lg dark:bg-gray-700"
+        >
+          {activeSegment && (
+            <>
+              <span className="font-semibold">{activeSegment.title}</span>
+              <span className="block text-gray-300 dark:text-gray-300">{activeSegment.detail}</span>
+            </>
+          )}
+          <Popover.Arrow className="fill-gray-900 dark:fill-gray-700" />
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   );
 };

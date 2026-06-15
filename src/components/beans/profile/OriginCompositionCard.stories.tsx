@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { blendBean, makeBean } from "~/data/fixtures/beans";
 import { CompositionCard } from "./CompositionCard";
 import { OriginCard } from "./OriginCard";
-import { blendBean, makeBean } from "./stories-fixtures";
 
 const meta: Meta = {
   title: "Beans Profile/Origin & Composition",

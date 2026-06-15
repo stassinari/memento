@@ -7,10 +7,10 @@ import {
 } from "@tanstack/react-router";
 
 /**
- * Many profile components use TanStack Router's <Link>, which needs a router in
- * context. This wraps a story in a minimal in-memory router whose root route
- * renders the story. Links are inert (targets aren't registered) but render —
- * enough for visual stories.
+ * Many components use TanStack Router's <Link>, which needs a router in context.
+ * This wraps a story in a minimal in-memory router whose root route renders the
+ * story. Links are inert (targets aren't registered) but render — enough for
+ * visual stories.
  */
 export const withRouter: Decorator = (Story) => {
   const rootRoute = createRootRoute({ component: () => <Story /> });

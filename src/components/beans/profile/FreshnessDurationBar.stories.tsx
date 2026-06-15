@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { archivedBean, frozenBean, openBean, thawedBean } from "~/data/fixtures/beans";
 import { getFreshness } from "~/lib/beans";
-import { archivedBean, frozenBean, openBean, thawedBean } from "./stories-fixtures";
 import { FreshnessDurationBar } from "./FreshnessDurationBar";
 
 const meta: Meta<typeof FreshnessDurationBar> = {

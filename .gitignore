@@ -31,7 +31,6 @@ tmp/
 # temporary while rebuilding the whole app
 srcOld/
 VIBE_*.md
-features/
 scripts/tastings*.json
 scripts/beans*.sql
 scripts/beans*.json
