@@ -50,6 +50,13 @@
       "when": 1772373735197,
       "tag": "0006_mute_wallop",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1781378288809,
+      "tag": "0007_bouncy_carnage",
+      "breakpoints": true
     }
   ]
 }

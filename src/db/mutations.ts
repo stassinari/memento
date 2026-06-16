@@ -107,15 +107,18 @@ export const addBeans = createServerFn({ method: "POST" })
  * Archive beans (set isArchived = true)
  */
 export const archiveBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string }) => {
+  // `date` is the user's calendar day, computed client-side (toStorageDate) — the
+  // server is UTC and can't recover the user's timezone.
+  .inputValidator((input: { beansId: string; date: Date }) => {
     if (!input.beansId) throw new Error("Beans ID is required");
+    if (!input.date) throw new Error("Date is required");
     return input;
   })
-  .handler(async ({ data: { beansId }, context }): Promise<void> => {
+  .handler(async ({ data: { beansId, date }, context }): Promise<void> => {
     try {
       await db
         .update(beans)
-        .set({ isArchived: true })
+        .set({ isArchived: true, archiveDate: date })
         .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL archive failed:", error);
@@ -134,7 +137,7 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
     try {
       await db
         .update(beans)
-        .set({ isArchived: false })
+        .set({ isArchived: false, archiveDate: null })
         .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL unarchive failed:", error);
@@ -145,15 +148,17 @@ export const unarchiveBeans = createServerFn({ method: "POST" })
  * Freeze beans (set freezeDate to current date)
  */
 export const freezeBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string }) => {
+  // `date` is the user's calendar day, computed client-side (toStorageDate).
+  .inputValidator((input: { beansId: string; date: Date }) => {
     if (!input.beansId) throw new Error("Beans ID is required");
+    if (!input.date) throw new Error("Date is required");
     return input;
   })
-  .handler(async ({ data: { beansId }, context }): Promise<void> => {
+  .handler(async ({ data: { beansId, date }, context }): Promise<void> => {
     try {
       await db
         .update(beans)
-        .set({ freezeDate: new Date() })
+        .set({ freezeDate: date })
         .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL freeze failed:", error);
@@ -164,15 +169,17 @@ export const freezeBeans = createServerFn({ method: "POST" })
  * Thaw beans (set thawDate to current date)
  */
 export const thawBeans = createServerFn({ method: "POST" })
-  .inputValidator((input: { beansId: string }) => {
+  // `date` is the user's calendar day, computed client-side (toStorageDate).
+  .inputValidator((input: { beansId: string; date: Date }) => {
     if (!input.beansId) throw new Error("Beans ID is required");
+    if (!input.date) throw new Error("Date is required");
     return input;
   })
-  .handler(async ({ data: { beansId }, context }): Promise<void> => {
+  .handler(async ({ data: { beansId, date }, context }): Promise<void> => {
     try {
       await db
         .update(beans)
-        .set({ thawDate: new Date() })
+        .set({ thawDate: date })
         .where(and(eq(beans.id, beansId), eq(beans.userId, context.userId)));
     } catch (error) {
       console.error("PostgreSQL thaw failed:", error);

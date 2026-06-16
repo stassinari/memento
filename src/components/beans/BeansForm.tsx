@@ -108,8 +108,11 @@ export const BeansForm = ({
       ...defaultValues,
       roastDate: fromStorageDate(defaultValues.roastDate),
       harvestDate: fromStorageDate(defaultValues.harvestDate),
-      freezeDate: fromStorageDate(defaultValues.freezeDate),
-      thawDate: fromStorageDate(defaultValues.thawDate),
+      // When the storage section is hidden (e.g. clone), don't carry lifecycle
+      // state — a cloned bag should start fresh/open, not frozen/archived.
+      freezeDate: showStorageSection ? fromStorageDate(defaultValues.freezeDate) : null,
+      thawDate: showStorageSection ? fromStorageDate(defaultValues.thawDate) : null,
+      isArchived: showStorageSection ? defaultValues.isArchived : false,
     },
   });
   const {
@@ -131,8 +134,10 @@ export const BeansForm = ({
       ...data,
       roastDate: toStorageDate(data.roastDate),
       harvestDate: toStorageDate(data.harvestDate),
-      freezeDate: toStorageDate(data.freezeDate),
-      thawDate: toStorageDate(data.thawDate),
+      // Belt-and-suspenders: never persist lifecycle state from a hidden section.
+      freezeDate: showStorageSection ? toStorageDate(data.freezeDate) : null,
+      thawDate: showStorageSection ? toStorageDate(data.thawDate) : null,
+      isArchived: showStorageSection ? data.isArchived : false,
     };
     void mutation(data);
   };

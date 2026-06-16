@@ -7,54 +7,63 @@ import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  server: {
-    port: 3000,
-    host: "0.0.0.0", // Listen on all interfaces so Firebase emulator can connect
-  },
-  plugins: [
-    tailwindcss(),
-    tsconfigPaths(),
-    tanstackStart({
-      srcDirectory: "src",
-    }),
-    nitro(),
-    react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
-    }),
-    VitePWA({
-      includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
-      workbox: {
-        // SSR build does not have a static SPA index.html fallback
-        navigateFallbackDenylist: [/^\/.*/],
-      },
-      manifest: {
-        name: "Memento Coffee",
-        short_name: "Memento",
-        description: "Memento helps you keep track of everything coffee",
-        theme_color: "#e64a19",
-        display: "standalone",
-        icons: [
-          {
-            src: "pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-        ],
-      },
-    }),
-  ],
+export default defineConfig(() => {
+  // Storybook's Vite builder loads this config too. The app-server plugins
+  // (TanStack Start, Nitro, PWA) break in that context, so under Storybook we
+  // return just what the components need: Tailwind v4 and the `~` path alias.
+  if (process.env.STORYBOOK) {
+    return { plugins: [tailwindcss(), tsconfigPaths()] };
+  }
+
+  return {
+    server: {
+      port: 3000,
+      host: "0.0.0.0", // Listen on all interfaces so Firebase emulator can connect
+    },
+    plugins: [
+      tailwindcss(),
+      tsconfigPaths(),
+      tanstackStart({
+        srcDirectory: "src",
+      }),
+      nitro(),
+      react({
+        babel: {
+          plugins: ["babel-plugin-react-compiler"],
+        },
+      }),
+      VitePWA({
+        includeAssets: ["favicon.svg", "robots.txt", "apple-touch-icon.png"],
+        workbox: {
+          // SSR build does not have a static SPA index.html fallback
+          navigateFallbackDenylist: [/^\/.*/],
+        },
+        manifest: {
+          name: "Memento Coffee",
+          short_name: "Memento",
+          description: "Memento helps you keep track of everything coffee",
+          theme_color: "#e64a19",
+          display: "standalone",
+          icons: [
+            {
+              src: "pwa-192x192.png",
+              sizes: "192x192",
+              type: "image/png",
+            },
+            {
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+            },
+            {
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any maskable",
+            },
+          ],
+        },
+      }),
+    ],
+  };
 });
