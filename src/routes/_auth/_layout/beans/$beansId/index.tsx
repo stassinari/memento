@@ -122,7 +122,7 @@ function BeansProfile() {
 
         {isDesktop ? (
           <div className="mt-7 grid grid-cols-12 items-start gap-6">
-            <div className="sticky top-6 col-span-4 space-y-6">
+            <div className="sticky top-6 col-span-5 space-y-6">
               <FreshnessCard
                 bean={bean}
                 beansId={beansId}
@@ -130,17 +130,15 @@ function BeansProfile() {
                 onFreeze={handleFreeze}
                 onThaw={handleThaw}
               />
+              <RoastCharacterCard bean={bean} />
             </div>
-            <div className="col-span-8 space-y-6">
-              <ActivityCard bean={bean} />
-              <div className="grid grid-cols-2 items-start gap-6">
-                <RoastCharacterCard bean={bean} />
-                {bean.origin === "blend" ? (
-                  <CompositionCard bean={bean} />
-                ) : (
-                  <OriginCard bean={bean} />
-                )}
-              </div>
+            <div className="col-span-7 space-y-6">
+              <ActivityCard bean={bean} isDesktop={isDesktop} />
+              {bean.origin === "blend" ? (
+                <CompositionCard bean={bean} />
+              ) : (
+                <OriginCard bean={bean} />
+              )}
             </div>
           </div>
         ) : (
@@ -152,7 +150,7 @@ function BeansProfile() {
               onFreeze={handleFreeze}
               onThaw={handleThaw}
             />
-            <ActivityCard bean={bean} />
+            <ActivityCard bean={bean} isDesktop={isDesktop} />
             <RoastCharacterCard bean={bean} />
             {bean.origin === "blend" ? <CompositionCard bean={bean} /> : <OriginCard bean={bean} />}
             <ArchiveZone

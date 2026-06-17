@@ -6,6 +6,7 @@ import { ActivityCard } from "./ActivityCard";
 const meta: Meta<typeof ActivityCard> = {
   title: "Beans Profile/ActivityCard",
   component: ActivityCard,
+  args: { isDesktop: false },
   decorators: [withRouter, (Story) => <div className="max-w-md">{Story()}</div>],
 };
 export default meta;

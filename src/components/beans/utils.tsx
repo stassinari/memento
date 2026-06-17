@@ -75,6 +75,7 @@ export function parseVertexBeansToBeansFormInput(json: any): BeansFormInputs | n
       blendParts: [],
       freezeDate: null,
       thawDate: null,
+      archiveDate: null,
       isArchived: false,
     };
   } catch {

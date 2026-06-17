@@ -263,6 +263,8 @@ export const updateBeans = createServerFn({ method: "POST" })
       freezeDate: data.freezeDate,
       thawDate: data.thawDate,
       isArchived: data.isArchived ?? false,
+      // A date only makes sense when archived (DB check constraint enforces this).
+      archiveDate: (data.isArchived ?? false) ? data.archiveDate : null,
       origin: data.origin,
       // Single-origin fields (null if blend)
       country: data.origin === "single-origin" ? data.country : null,

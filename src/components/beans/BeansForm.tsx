@@ -45,6 +45,7 @@ export interface BeansFormInputs {
 
   freezeDate: Date | null;
   thawDate: Date | null;
+  archiveDate: Date | null;
 
   isArchived?: boolean;
 }
@@ -75,6 +76,7 @@ export const beansFormEmptyValues: BeansFormInputs = {
 
   freezeDate: null,
   thawDate: null,
+  archiveDate: null,
 
   isArchived: false,
 };
@@ -112,6 +114,7 @@ export const BeansForm = ({
       // state — a cloned bag should start fresh/open, not frozen/archived.
       freezeDate: showStorageSection ? fromStorageDate(defaultValues.freezeDate) : null,
       thawDate: showStorageSection ? fromStorageDate(defaultValues.thawDate) : null,
+      archiveDate: showStorageSection ? fromStorageDate(defaultValues.archiveDate) : null,
       isArchived: showStorageSection ? defaultValues.isArchived : false,
     },
   });
@@ -137,6 +140,7 @@ export const BeansForm = ({
       // Belt-and-suspenders: never persist lifecycle state from a hidden section.
       freezeDate: showStorageSection ? toStorageDate(data.freezeDate) : null,
       thawDate: showStorageSection ? toStorageDate(data.thawDate) : null,
+      archiveDate: showStorageSection ? toStorageDate(data.archiveDate) : null,
       isArchived: showStorageSection ? data.isArchived : false,
     };
     void mutation(data);
@@ -228,6 +232,12 @@ export const BeansForm = ({
               <FormInputDate label="Freeze date" id="freezeDate" placeholder="Select freeze date" />
 
               <FormInputDate label="Thaw date" id="thawDate" placeholder="Select thaw date" />
+
+              <FormInputDate
+                label="Archive date"
+                id="archiveDate"
+                placeholder="Select archive date"
+              />
             </FormSection>
 
             <Divider className="hidden sm:block" />

@@ -232,14 +232,16 @@ const FreshnessTimeline = ({ freshness, today, hovered, onHover }: FreshnessTime
       date: fmtStorageDate(thawDate),
       detail: agoLabel(daysBetween(thawDate, today)),
     });
-  if (isArchived && archiveDate)
+  // Archived rows always appear. Legacy archives predate `archiveDate`, so they
+  // have no date — still show the row, with a quiet "no archive date" disclaimer.
+  if (isArchived)
     events.push({
       key: "archived",
       Icon: Archive,
       tone: "gray",
       label: "Archived",
-      date: fmtStorageDate(archiveDate),
-      detail: agoLabel(daysBetween(archiveDate, today)),
+      date: archiveDate ? fmtStorageDate(archiveDate) : null,
+      detail: archiveDate ? agoLabel(daysBetween(archiveDate, today)) : "no archive date",
     });
 
   return (

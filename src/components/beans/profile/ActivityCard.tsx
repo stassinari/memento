@@ -35,9 +35,10 @@ const COLLAPSED_RECENT_LIMIT = 3;
 
 interface ActivityCardProps {
   bean: BeanWithDrinks;
+  isDesktop: boolean;
 }
 
-export const ActivityCard = ({ bean }: ActivityCardProps) => {
+export const ActivityCard = ({ bean, isDesktop }: ActivityCardProps) => {
   const activity = getActivitySummary(bean);
   const [showAll, setShowAll] = useState(false);
 
@@ -121,13 +122,13 @@ export const ActivityCard = ({ bean }: ActivityCardProps) => {
               </p>
               {expandable && (
                 <Button variant="link" size="xs" onClick={() => setShowAll((v) => !v)}>
-                  {showAll ? "Show less" : "Show all"}
+                  {showAll ? "Show less" : `Show all (${recent.length})`}
                 </Button>
               )}
             </div>
             <ul className="-mx-2">
               {visible.map((item) => (
-                <RecentRow key={`${item.type}-${item.drink.id}`} {...item} />
+                <RecentRow key={`${item.type}-${item.drink.id}`} {...item} isDesktop={isDesktop} />
               ))}
             </ul>
           </div>
@@ -179,13 +180,48 @@ function getRecentDrinks(bean: BeanWithDrinks): RecentDrink[] {
   ].sort((a, b) => dayjs(b.drink.date).valueOf() - dayjs(a.drink.date).valueOf());
 }
 
-const RecentRow = (item: RecentDrink) => {
+const RecentRow = (item: RecentDrink & { isDesktop: boolean }) => {
   const isBrew = item.type === "brew";
   const { drink } = item;
   const title = isBrew ? (item.drink.method ?? "Brew") : (item.drink.profileName ?? "Espresso");
   const dose = isBrew
     ? `${item.drink.beansWeight}g : ${item.drink.waterWeight}ml`
     : `${item.drink.beansWeight ?? "?"}g : ${item.drink.targetWeight ?? "?"}g`;
+  const date = dayjs(drink.date).format("D MMM");
+  const ratingChip =
+    drink.rating !== null ? <ScoreChip className="w-full">{drink.rating}</ScoreChip> : null;
+
+  const iconBadge = (
+    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-gray-100 text-gray-500 group-hover:bg-gray-200 dark:bg-white/10 dark:text-gray-400 dark:group-hover:bg-white/20">
+      {isBrew ? <DripperIcon className="h-4 w-4" /> : <PortafilterIcon className="h-4 w-4" />}
+    </span>
+  );
+
+  // Mobile: stack into two lines — name + rating on top, dose · date as a quiet subline.
+  if (!item.isDesktop) {
+    return (
+      <li>
+        <Link
+          to={isBrew ? "/drinks/brews/$brewId" : "/drinks/espresso/$espressoId"}
+          params={isBrew ? { brewId: drink.id } : { espressoId: drink.id }}
+          className="group flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-50 dark:hover:bg-white/5"
+        >
+          {iconBadge}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {title}
+              </span>
+              <span className="flex shrink-0 justify-end">{ratingChip}</span>
+            </div>
+            <p className="mt-0.5 truncate text-xs text-gray-400 dark:text-gray-500">
+              {dose} · {date}
+            </p>
+          </div>
+        </Link>
+      </li>
+    );
+  }
 
   return (
     <li>
@@ -194,9 +230,7 @@ const RecentRow = (item: RecentDrink) => {
         params={isBrew ? { brewId: drink.id } : { espressoId: drink.id }}
         className="group flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-50 dark:hover:bg-white/5"
       >
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-gray-100 text-gray-500 group-hover:bg-gray-200 dark:bg-white/10 dark:text-gray-400 dark:group-hover:bg-white/20">
-          {isBrew ? <DripperIcon className="h-4 w-4" /> : <PortafilterIcon className="h-4 w-4" />}
-        </span>
+        {iconBadge}
         <span className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-800 dark:text-gray-200">
           {title}
         </span>
@@ -204,11 +238,9 @@ const RecentRow = (item: RecentDrink) => {
           {dose}
         </span>
         <span className="w-12 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">
-          {dayjs(drink.date).format("D MMM")}
+          {date}
         </span>
-        <span className="flex w-8 shrink-0 justify-end">
-          {drink.rating !== null && <ScoreChip className="w-full">{drink.rating}</ScoreChip>}
-        </span>
+        <span className="flex w-8 shrink-0 justify-end">{ratingChip}</span>
       </Link>
     </li>
   );
