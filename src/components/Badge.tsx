@@ -2,7 +2,9 @@ import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import { ReactNode, useMemo } from "react";
 
-const badgeVariants = cva("relative inline-flex items-center rounded-full py-0.5 font-medium", {
+const badgeVariants = cva(
+  "relative inline-flex items-center rounded-full py-0.5 font-medium transition-colors duration-200",
+  {
   variants: {
     colour: {
       grey: "text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-white/10",
@@ -78,7 +80,7 @@ export const Badge = ({
           type="button"
           onClick={icon.onClick}
           className={clsx([
-            "inline-flex items-center justify-center shrink-0 w-4 h-4 rounded-full focus:outline-hidden",
+            "inline-flex items-center justify-center shrink-0 w-4 h-4 rounded-full focus:outline-hidden transition-colors duration-200",
             "after:content after:block after:absolute after:h-full after:rounded-full after:aspect-square",
             clickable && "after:w-full",
             icon.position === "left" ? "mr-0.5 after:left-0" : "ml-0.5 after:right-0",
@@ -114,4 +116,12 @@ export const BadgeTimesIcon = ({ className }: BadgeTimesIconProps) => (
   </svg>
 );
 
-export const BadgePlusIcon = () => <BadgeTimesIcon className="transform rotate-45" />;
+export const BadgePlusIcon = ({ className }: BadgeTimesIconProps) => (
+  <BadgeTimesIcon className={clsx("rotate-45", className)} />
+);
+
+export const BadgeCheckIcon = ({ className }: BadgeTimesIconProps) => (
+  <svg className={className} stroke="currentColor" fill="none" viewBox="0 0 8 8">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M1.5 4.5 3 6l3.5-3.5" />
+  </svg>
+);

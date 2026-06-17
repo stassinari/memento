@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { ComboboxSingle } from "../combobox/ComboboxSingle";
 import { Input } from "../Input";
 import { FormSuggestions } from "./FormSuggestions";
@@ -26,6 +26,7 @@ export const FormComboboxSingle = ({
   suggestions,
 }: FormComboboxSingleProps) => {
   const { control, resetField, setValue } = useFormContext();
+  const currentValue = useWatch({ control, name });
   return (
     <div>
       <Controller
@@ -49,6 +50,7 @@ export const FormComboboxSingle = ({
         <FormSuggestions
           suggestions={suggestions.map((s) => ({
             label: s,
+            active: currentValue === s,
             onClick: () => setValue(name, s),
           }))}
         />

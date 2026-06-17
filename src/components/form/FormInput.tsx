@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 import { Input } from "../Input";
 import { FormSuggestions } from "./FormSuggestions";
@@ -21,7 +21,8 @@ export const FormInput = ({
   inputProps,
   suggestions,
 }: FormInputProps) => {
-  const { setValue } = useFormContext();
+  const { control, setValue } = useFormContext();
+  const currentValue = useWatch({ control, name: id });
 
   return (
     <div>
@@ -39,6 +40,7 @@ export const FormInput = ({
         <FormSuggestions
           suggestions={suggestions.map((s) => ({
             label: s,
+            active: currentValue === s,
             onClick: () => setValue(id, s),
           }))}
         />

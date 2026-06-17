@@ -11,6 +11,7 @@ import { fromStorageDate, parseNullableNumberInput, toStorageDate } from "~/util
 import { Button } from "../Button";
 import { Divider } from "../Divider";
 import { FormSection } from "../Form";
+import { FormActions } from "../form/FormActions";
 import { FormComboboxMulti } from "../form/FormComboboxMulti";
 import { FormComboboxSingle } from "../form/FormComboboxSingle";
 import { FormInput } from "../form/FormInput";
@@ -272,17 +273,14 @@ export const BeansForm = ({
                   />
                 )}
               />
-              <FormComboboxSingle
-                label="Process"
-                name="process"
-                options={processes}
-                placeholder="Red honey"
-              />
-              <FormComboboxMulti
-                label="Varietal(s)"
-                name="varietals"
-                options={varietals}
-                placeholder="Search variety..."
+              <FormInput
+                label="Region"
+                id="region"
+                inputProps={{
+                  ...register("region"),
+                  type: "text",
+                  placeholder: "Huila",
+                }}
               />
               <FormInput
                 label="Farmer / producer"
@@ -291,15 +289,6 @@ export const BeansForm = ({
                   ...register("farmer"),
                   type: "text",
                   placeholder: "Lollanza Cooperative",
-                }}
-              />
-              <FormInput
-                label="Region"
-                id="region"
-                inputProps={{
-                  ...register("region"),
-                  type: "text",
-                  placeholder: "Huila",
                 }}
               />
               <FormInput
@@ -313,6 +302,18 @@ export const BeansForm = ({
                   placeholder: "1200",
                 }}
               />
+              <FormComboboxSingle
+                label="Process"
+                name="process"
+                options={processes}
+                placeholder="Red honey"
+              />
+              <FormComboboxMulti
+                label="Varietal(s)"
+                name="varietals"
+                options={varietals}
+                placeholder="Search variety..."
+              />
               <FormInputMonthYear
                 label="Harvest date"
                 id="harvestDate"
@@ -324,7 +325,7 @@ export const BeansForm = ({
           )}
         </FormSection>
 
-        <div className="flex justify-end gap-4">
+        <FormActions>
           <Button
             variant="white"
             onClick={() => {
@@ -341,7 +342,7 @@ export const BeansForm = ({
           >
             {buttonLabel}
           </Button>
-        </div>
+        </FormActions>
       </form>
     </FormProvider>
   );
