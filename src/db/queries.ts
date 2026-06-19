@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, getTableColumns, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { BeansListItem } from "./types";
-import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
 import { TastingVariable, beans, brews, espresso, tastingSamples, tastings } from "./schema";
 
@@ -315,50 +314,33 @@ export const getDecentReadings = createServerFn({ method: "GET" })
     }
   });
 
-export const getBeans = createServerFn({ method: "GET" })
-  .inputValidator((input: { state: BeansStateName }) => input)
-  .handler(async ({ data: { state }, context }) => {
+// Which slice of the cellar a Beans tab wants. Each tab is its own route and
+// fetches only what it shows — so the Open tab never pays to transfer the
+// hundreds of archived rows. History = everything (its table defaults to the
+// archived view but can fold Open/Frozen back in via the status filter).
+export type BeansListState = "Open" | "Frozen" | "History";
+
+// Backs one Beans tab. Returns that state's bean rows, each enriched with its
+// average score. The score aggregates are grouped per-bean (small result) and
+// merged in JS; they scan the user's drinks regardless of tab, but that's cheap
+// next to transferring every bean row, which is what the state filter avoids.
+export const getBeansList = createServerFn({ method: "GET" })
+  .inputValidator((input: { state: BeansListState }) => input)
+  .handler(async ({ data: { state }, context }): Promise<BeansListItem[]> => {
     try {
+      const userId = context.userId;
+
       const stateFilter =
         state === "Open"
           ? eq(beans.isOpen, true)
           : state === "Frozen"
             ? eq(beans.isFrozen, true)
-            : state === "Archived"
-              ? eq(beans.isArchived, true)
-              : undefined;
-
-      const whereClause = stateFilter
-        ? and(eq(beans.userId, context.userId), stateFilter)
-        : eq(beans.userId, context.userId);
+            : undefined; // History → everything
 
       const beansList = await db
         .select({ ...getTableColumns(beans) })
         .from(beans)
-        .where(whereClause)
-        .orderBy(desc(beans.roastDate));
-
-      return beansList;
-    } catch (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-  });
-
-// The single fetch behind the redesigned Beans list. Returns *every* bean for
-// the user (no state filter — the client derives the Open/Frozen/History tabs,
-// counts, facets, sort and summary stats from this one array), each enriched
-// with its average score. Sorting/filtering all happen client-side, so this is
-// deliberately unordered beyond a stable fallback.
-export const getBeansList = createServerFn({ method: "GET" }).handler(
-  async ({ context }): Promise<BeansListItem[]> => {
-    try {
-      const userId = context.userId;
-
-      const beansList = await db
-        .select({ ...getTableColumns(beans) })
-        .from(beans)
-        .where(eq(beans.userId, userId))
+        .where(stateFilter ? and(eq(beans.userId, userId), stateFilter) : eq(beans.userId, userId))
         .orderBy(desc(beans.roastDate));
 
       // Per-bean rating aggregates, computed once per source table then merged
@@ -429,6 +411,33 @@ export const getBeansList = createServerFn({ method: "GET" }).handler(
           avgScore: ratedCount > 0 ? agg!.sum / ratedCount : null,
         };
       });
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  },
+);
+
+// The three tab-badge counts in one round trip. Cheap (a single filtered count
+// over the user's beans), so every tab route can show all counts without each
+// loading the others' rows.
+export const getBeansCounts = createServerFn({ method: "GET" }).handler(
+  async ({ context }): Promise<{ open: number; frozen: number; archived: number }> => {
+    try {
+      const [row] = await db
+        .select({
+          open: sql<number>`count(*) filter (where ${beans.isOpen})`,
+          frozen: sql<number>`count(*) filter (where ${beans.isFrozen})`,
+          archived: sql<number>`count(*) filter (where ${beans.isArchived})`,
+        })
+        .from(beans)
+        .where(eq(beans.userId, context.userId));
+
+      return {
+        open: Number(row?.open ?? 0),
+        frozen: Number(row?.frozen ?? 0),
+        archived: Number(row?.archived ?? 0),
+      };
     } catch (error) {
       console.error("Database error:", error);
       throw error;

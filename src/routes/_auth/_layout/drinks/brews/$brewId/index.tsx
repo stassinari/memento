@@ -15,7 +15,7 @@ import { Heading } from "~/components/Heading";
 import { deleteBrew } from "~/db/mutations";
 import { getBrew } from "~/db/queries";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { tabStyles } from "../../../beans";
+import { tabStyles } from "~/components/tabStyles";
 
 export type BrewWithBeans = NonNullable<Awaited<ReturnType<typeof getBrew>>>;
 

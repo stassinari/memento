@@ -95,6 +95,34 @@ export function getFreshness(bean: Beans, today: Date = startOfToday()): Freshne
 }
 
 // ---------------------------------------------------------------------------
+// Default sort comparators, one per Beans tab. A bean with no roast date always
+// sinks to the bottom (it has no meaningful age/freshness to rank by).
+// ---------------------------------------------------------------------------
+
+/** Newest first, nulls last. Both dates are storage-space (UTC-midnight). */
+function dateDesc(a: Date | null, b: Date | null): number {
+  if (!a && !b) return 0;
+  if (!a) return 1;
+  if (!b) return -1;
+  return b.getTime() - a.getTime();
+}
+
+/** Open → effective age ascending (freshest first), undated last. */
+export function compareByFreshness(a: Beans, b: Beans): number {
+  return (getFreshness(a).effectiveDays ?? Infinity) - (getFreshness(b).effectiveDays ?? Infinity);
+}
+
+/** Frozen → most recently frozen first. */
+export function compareByFreezeDate(a: Beans, b: Beans): number {
+  return dateDesc(a.freezeDate, b.freezeDate);
+}
+
+/** History → archive date, falling back to roast date when absent. */
+export function compareByArchiveDate(a: Beans, b: Beans): number {
+  return dateDesc(a.archiveDate ?? a.roastDate, b.archiveDate ?? b.roastDate);
+}
+
+// ---------------------------------------------------------------------------
 // Status — single source that drives pill colour + contextual action.
 // ---------------------------------------------------------------------------
 

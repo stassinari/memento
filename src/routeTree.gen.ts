@@ -23,6 +23,9 @@ import { Route as AuthLayoutDecentUploadRouteImport } from './routes/_auth/_layo
 import { Route as AuthLayoutAiRouteImport } from './routes/_auth/_layout/ai'
 import { Route as AuthLayoutDrinksIndexRouteImport } from './routes/_auth/_layout/drinks/index'
 import { Route as AuthLayoutBeansIndexRouteImport } from './routes/_auth/_layout/beans/index'
+import { Route as AuthLayoutBeansOpenRouteImport } from './routes/_auth/_layout/beans/open'
+import { Route as AuthLayoutBeansHistoryRouteImport } from './routes/_auth/_layout/beans/history'
+import { Route as AuthLayoutBeansFrozenRouteImport } from './routes/_auth/_layout/beans/frozen'
 import { Route as AuthLayoutBeansAddRouteImport } from './routes/_auth/_layout/beans/add'
 import { Route as AuthLayoutDrinksTastingsIndexRouteImport } from './routes/_auth/_layout/drinks/tastings/index'
 import { Route as AuthLayoutDrinksEspressoIndexRouteImport } from './routes/_auth/_layout/drinks/espresso/index'
@@ -114,6 +117,21 @@ const AuthLayoutDrinksIndexRoute = AuthLayoutDrinksIndexRouteImport.update({
 const AuthLayoutBeansIndexRoute = AuthLayoutBeansIndexRouteImport.update({
   id: '/beans/',
   path: '/beans/',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthLayoutBeansOpenRoute = AuthLayoutBeansOpenRouteImport.update({
+  id: '/beans/open',
+  path: '/beans/open',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthLayoutBeansHistoryRoute = AuthLayoutBeansHistoryRouteImport.update({
+  id: '/beans/history',
+  path: '/beans/history',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthLayoutBeansFrozenRoute = AuthLayoutBeansFrozenRouteImport.update({
+  id: '/beans/frozen',
+  path: '/beans/frozen',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
 const AuthLayoutBeansAddRoute = AuthLayoutBeansAddRouteImport.update({
@@ -282,6 +300,9 @@ export interface FileRoutesByFullPath {
   '/design-library': typeof AuthLayoutDesignLibraryRoute
   '/settings': typeof AuthLayoutSettingsRoute
   '/beans/add': typeof AuthLayoutBeansAddRoute
+  '/beans/frozen': typeof AuthLayoutBeansFrozenRoute
+  '/beans/history': typeof AuthLayoutBeansHistoryRoute
+  '/beans/open': typeof AuthLayoutBeansOpenRoute
   '/beans/': typeof AuthLayoutBeansIndexRoute
   '/drinks/': typeof AuthLayoutDrinksIndexRoute
   '/beans/$beansId/clone': typeof AuthLayoutBeansBeansIdCloneRoute
@@ -320,6 +341,9 @@ export interface FileRoutesByTo {
   '/design-library': typeof AuthLayoutDesignLibraryRoute
   '/settings': typeof AuthLayoutSettingsRoute
   '/beans/add': typeof AuthLayoutBeansAddRoute
+  '/beans/frozen': typeof AuthLayoutBeansFrozenRoute
+  '/beans/history': typeof AuthLayoutBeansHistoryRoute
+  '/beans/open': typeof AuthLayoutBeansOpenRoute
   '/beans': typeof AuthLayoutBeansIndexRoute
   '/drinks': typeof AuthLayoutDrinksIndexRoute
   '/beans/$beansId/clone': typeof AuthLayoutBeansBeansIdCloneRoute
@@ -362,6 +386,9 @@ export interface FileRoutesById {
   '/_auth/_layout/settings': typeof AuthLayoutSettingsRoute
   '/_auth/_layout/': typeof AuthLayoutIndexRoute
   '/_auth/_layout/beans/add': typeof AuthLayoutBeansAddRoute
+  '/_auth/_layout/beans/frozen': typeof AuthLayoutBeansFrozenRoute
+  '/_auth/_layout/beans/history': typeof AuthLayoutBeansHistoryRoute
+  '/_auth/_layout/beans/open': typeof AuthLayoutBeansOpenRoute
   '/_auth/_layout/beans/': typeof AuthLayoutBeansIndexRoute
   '/_auth/_layout/drinks/': typeof AuthLayoutDrinksIndexRoute
   '/_auth/_layout/beans/$beansId/clone': typeof AuthLayoutBeansBeansIdCloneRoute
@@ -402,6 +429,9 @@ export interface FileRouteTypes {
     | '/design-library'
     | '/settings'
     | '/beans/add'
+    | '/beans/frozen'
+    | '/beans/history'
+    | '/beans/open'
     | '/beans/'
     | '/drinks/'
     | '/beans/$beansId/clone'
@@ -440,6 +470,9 @@ export interface FileRouteTypes {
     | '/design-library'
     | '/settings'
     | '/beans/add'
+    | '/beans/frozen'
+    | '/beans/history'
+    | '/beans/open'
     | '/beans'
     | '/drinks'
     | '/beans/$beansId/clone'
@@ -481,6 +514,9 @@ export interface FileRouteTypes {
     | '/_auth/_layout/settings'
     | '/_auth/_layout/'
     | '/_auth/_layout/beans/add'
+    | '/_auth/_layout/beans/frozen'
+    | '/_auth/_layout/beans/history'
+    | '/_auth/_layout/beans/open'
     | '/_auth/_layout/beans/'
     | '/_auth/_layout/drinks/'
     | '/_auth/_layout/beans/$beansId/clone'
@@ -615,6 +651,27 @@ declare module '@tanstack/react-router' {
       path: '/beans'
       fullPath: '/beans/'
       preLoaderRoute: typeof AuthLayoutBeansIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/_layout/beans/open': {
+      id: '/_auth/_layout/beans/open'
+      path: '/beans/open'
+      fullPath: '/beans/open'
+      preLoaderRoute: typeof AuthLayoutBeansOpenRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/_layout/beans/history': {
+      id: '/_auth/_layout/beans/history'
+      path: '/beans/history'
+      fullPath: '/beans/history'
+      preLoaderRoute: typeof AuthLayoutBeansHistoryRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/_layout/beans/frozen': {
+      id: '/_auth/_layout/beans/frozen'
+      path: '/beans/frozen'
+      fullPath: '/beans/frozen'
+      preLoaderRoute: typeof AuthLayoutBeansFrozenRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
     '/_auth/_layout/beans/add': {
@@ -833,6 +890,9 @@ interface AuthLayoutRouteChildren {
   AuthLayoutSettingsRoute: typeof AuthLayoutSettingsRoute
   AuthLayoutIndexRoute: typeof AuthLayoutIndexRoute
   AuthLayoutBeansAddRoute: typeof AuthLayoutBeansAddRoute
+  AuthLayoutBeansFrozenRoute: typeof AuthLayoutBeansFrozenRoute
+  AuthLayoutBeansHistoryRoute: typeof AuthLayoutBeansHistoryRoute
+  AuthLayoutBeansOpenRoute: typeof AuthLayoutBeansOpenRoute
   AuthLayoutBeansIndexRoute: typeof AuthLayoutBeansIndexRoute
   AuthLayoutDrinksIndexRoute: typeof AuthLayoutDrinksIndexRoute
   AuthLayoutBeansBeansIdCloneRoute: typeof AuthLayoutBeansBeansIdCloneRoute
@@ -864,6 +924,9 @@ const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutSettingsRoute: AuthLayoutSettingsRoute,
   AuthLayoutIndexRoute: AuthLayoutIndexRoute,
   AuthLayoutBeansAddRoute: AuthLayoutBeansAddRoute,
+  AuthLayoutBeansFrozenRoute: AuthLayoutBeansFrozenRoute,
+  AuthLayoutBeansHistoryRoute: AuthLayoutBeansHistoryRoute,
+  AuthLayoutBeansOpenRoute: AuthLayoutBeansOpenRoute,
   AuthLayoutBeansIndexRoute: AuthLayoutBeansIndexRoute,
   AuthLayoutDrinksIndexRoute: AuthLayoutDrinksIndexRoute,
   AuthLayoutBeansBeansIdCloneRoute: AuthLayoutBeansBeansIdCloneRoute,
