@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, getTableColumns, isNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { BeansListItem } from "./types";
 import { BeansStateName } from "~/routes/_auth/_layout/beans";
 import { db } from "./db";
 import { TastingVariable, beans, brews, espresso, tastingSamples, tastings } from "./schema";
@@ -343,6 +344,97 @@ export const getBeans = createServerFn({ method: "GET" })
       throw error;
     }
   });
+
+// The single fetch behind the redesigned Beans list. Returns *every* bean for
+// the user (no state filter — the client derives the Open/Frozen/History tabs,
+// counts, facets, sort and summary stats from this one array), each enriched
+// with its average score. Sorting/filtering all happen client-side, so this is
+// deliberately unordered beyond a stable fallback.
+export const getBeansList = createServerFn({ method: "GET" }).handler(
+  async ({ context }): Promise<BeansListItem[]> => {
+    try {
+      const userId = context.userId;
+
+      const beansList = await db
+        .select({ ...getTableColumns(beans) })
+        .from(beans)
+        .where(eq(beans.userId, userId))
+        .orderBy(desc(beans.roastDate));
+
+      // Per-bean rating aggregates, computed once per source table then merged
+      // in JS. Joining all three one-to-many tables in a single query would
+      // multiply rows (fan-out) and corrupt the sums, so we keep them apart.
+      // Only *rated* rows contribute, matching `getActivitySummary`.
+      const [brewAgg, espressoAgg, tastingAgg] = await Promise.all([
+        db
+          .select({
+            beansId: brews.beansId,
+            sum: sql<number>`coalesce(sum(${brews.rating}), 0)`,
+            count: sql<number>`count(${brews.rating})`,
+          })
+          .from(brews)
+          .where(and(eq(brews.userId, userId), isNotNull(brews.rating)))
+          .groupBy(brews.beansId),
+        db
+          .select({
+            beansId: espresso.beansId,
+            sum: sql<number>`coalesce(sum(${espresso.rating}), 0)`,
+            count: sql<number>`count(${espresso.rating})`,
+          })
+          .from(espresso)
+          .where(and(eq(espresso.userId, userId), isNotNull(espresso.rating)))
+          .groupBy(espresso.beansId),
+        // Tasting scores live on the samples; ownership + "is a beans tasting"
+        // are enforced through the parent tasting (samples carry no userId).
+        db
+          .select({
+            beansId: tastingSamples.variableValueBeansId,
+            sum: sql<number>`coalesce(sum(${tastingSamples.overall}), 0)`,
+            count: sql<number>`count(${tastingSamples.overall})`,
+          })
+          .from(tastingSamples)
+          .innerJoin(tastings, eq(tastingSamples.tastingId, tastings.id))
+          .where(
+            and(
+              eq(tastings.userId, userId),
+              eq(tastings.variable, TastingVariable.Beans),
+              isNotNull(tastingSamples.variableValueBeansId),
+              isNotNull(tastingSamples.overall),
+            ),
+          )
+          .groupBy(tastingSamples.variableValueBeansId),
+      ]);
+
+      // numeric/bigint aggregates arrive as strings over the wire → coerce.
+      const totals = new Map<string, { sum: number; count: number }>();
+      const fold = (rows: { beansId: string | null; sum: number; count: number }[]) => {
+        for (const row of rows) {
+          if (!row.beansId) continue;
+          const prev = totals.get(row.beansId) ?? { sum: 0, count: 0 };
+          prev.sum += Number(row.sum);
+          prev.count += Number(row.count);
+          totals.set(row.beansId, prev);
+        }
+      };
+      fold(brewAgg);
+      fold(espressoAgg);
+      fold(tastingAgg);
+
+      return beansList.map((bean): BeansListItem => {
+        const agg = totals.get(bean.id);
+        const ratedCount = agg?.count ?? 0;
+        return {
+          ...bean,
+          ratedCount,
+          avgScore: ratedCount > 0 ? agg!.sum / ratedCount : null,
+        };
+      });
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  },
+);
 
 export const getSelectableBeans = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   try {

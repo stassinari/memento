@@ -5,7 +5,7 @@ import { ReloadPrompt } from "./ReloadPrompt";
 import { SidebarNav } from "./SidebarNav";
 
 // FIXME this is not ideal, look into TW custom utilities or any other way to handle this
-export const layoutContainerTailwindStyles = "min-h-screen md:pb-0";
+export const layoutContainerTailwindStyles = "min-h-screen md:pb-0!";
 
 export const layoutContainerCssStyles = {
   paddingTop: "env(safe-area-inset-top)",

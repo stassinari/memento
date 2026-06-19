@@ -29,11 +29,10 @@ tmp/
 .DS_Store
 
 # temporary while rebuilding the whole app
-srcOld/
-VIBE_*.md
 scripts/tastings*.json
 scripts/beans*.sql
 scripts/beans*.json
+handovers/
 
 # firebase
 firebase-debug.log*

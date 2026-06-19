@@ -20,13 +20,17 @@ interface FormActionsProps {
  * `-4` matches the layout's smallest gutter, so it reaches the viewport edge on
  * mobile and never overflows on wider screens.
  *
+ * Has no top padding by design: place it as the last child of a `space-y-*`
+ * form so that spacing owns the gap above the bar (keeping one consistent
+ * rhythm). The fade then sits over that empty margin.
+ *
  * Reusable across form pages — pass the action buttons as children.
  */
 export const FormActions = ({ children, className }: FormActionsProps) => {
   return (
     <div
       className={clsx(
-        "sticky bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] z-10 -mx-4 flex justify-end gap-4 bg-gray-50 px-4 py-4 dark:bg-gray-950 md:bottom-0",
+        "sticky bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] z-10 -mx-4 flex justify-end gap-4 bg-gray-50 px-4 dark:bg-gray-950 md:bottom-0",
         className,
       )}
     >

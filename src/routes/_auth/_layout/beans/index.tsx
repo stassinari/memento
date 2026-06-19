@@ -1,57 +1,27 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import clsx from "clsx";
-import { ReactNode, Suspense, useState } from "react";
-import { BeansCard } from "~/components/beans/BeansCard";
+import { Suspense, useMemo, useState } from "react";
+import { BeansQuickList } from "~/components/beans/BeansQuickList";
 import { navLinks } from "~/components/BottomNav";
 import { BreadcrumbsWithHome } from "~/components/Breadcrumbs";
 import { Button } from "~/components/Button";
 import { CardSkeleton } from "~/components/CardSkeleton";
 import { EmptyState } from "~/components/EmptyState";
 import { Heading } from "~/components/Heading";
-import { getBeans } from "~/db/queries";
+import { getBeansList } from "~/db/queries";
+import { BeansListItem } from "~/db/types";
+import { useBeanActions } from "~/hooks/useBeanActions";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
+import { getFreshness } from "~/lib/beans";
 
 export const Route = createFileRoute("/_auth/_layout/beans/")({
   component: BeansList,
 });
 
+// Kept for `getBeans` (legacy per-state query) which still validates against it.
 export type BeansStateName = "Archived" | "Frozen" | "Open";
-
-type BeansTab = {
-  name: BeansStateName;
-  numberOfLoadingCards: number;
-  EmptyState: ReactNode;
-};
-
-const tabs: BeansTab[] = [
-  {
-    name: "Open",
-    numberOfLoadingCards: 5,
-    EmptyState: (
-      <EmptyState
-        title="No open beans"
-        description="Get started by adding some coffee beans"
-        button={{ label: "Add beans", link: "/beans/add" }}
-      />
-    ),
-  },
-  {
-    name: "Frozen",
-    numberOfLoadingCards: 3,
-    EmptyState: (
-      <EmptyState title="No frozen beans" description="Freeze beans for them to appear here." />
-    ),
-  },
-  {
-    name: "Archived",
-    numberOfLoadingCards: 13,
-    EmptyState: (
-      <EmptyState title="No archived beans" description="Beans you archive will appear here." />
-    ),
-  },
-];
 
 export const tabStyles = (isSelected: boolean) => [
   "w-1/3 border-b-2 px-1 py-4 text-center text-sm font-medium transition-colors",
@@ -60,9 +30,33 @@ export const tabStyles = (isSelected: boolean) => [
     : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-400 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500",
 ];
 
-export function BeansList() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+const beansListQueryOptions = () =>
+  queryOptions({
+    queryKey: ["beans"],
+    queryFn: () => getBeansList(),
+  });
 
+// ---- per-tab default sort (no-roast-date always sinks to the bottom) --------
+
+const dateDesc = (a: Date | null, b: Date | null) => {
+  if (!a && !b) return 0;
+  if (!a) return 1;
+  if (!b) return -1;
+  return b.getTime() - a.getTime();
+};
+
+/** Open → effective age ascending (freshest first), undated last. */
+const byFreshness = (a: BeansListItem, b: BeansListItem) =>
+  (getFreshness(a).effectiveDays ?? Infinity) - (getFreshness(b).effectiveDays ?? Infinity);
+
+/** Frozen → most recently frozen first. */
+const byFreezeDate = (a: BeansListItem, b: BeansListItem) => dateDesc(a.freezeDate, b.freezeDate);
+
+/** History → archive date, falling back to roast date when absent. */
+const byArchiveDate = (a: BeansListItem, b: BeansListItem) =>
+  dateDesc(a.archiveDate ?? a.roastDate, b.archiveDate ?? b.roastDate);
+
+export function BeansList() {
   const isSm = useScreenMediaQuery("sm");
 
   return (
@@ -79,62 +73,91 @@ export function BeansList() {
         Beans
       </Heading>
 
-      <div className="mt-2">
-        <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-          <TabList className="flex -mb-px">
-            {tabs.map(({ name }, i) => (
-              <Tab key={name} className={clsx(tabStyles(selectedIndex === i))}>
-                {name}
-              </Tab>
+      <Suspense
+        fallback={
+          <div className="mt-6 space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <CardSkeleton key={i} />
             ))}
-          </TabList>
-
-          <TabPanels className="mt-4">
-            {tabs.map((t, i) => (
-              <TabPanel key={t.name}>
-                <Suspense
-                  fallback={
-                    <ul className="grid gap-4 sm:grid-cols-2">
-                      {Array.from({ length: t.numberOfLoadingCards }).map((_, index) => (
-                        <li key={index}>
-                          <CardSkeleton />
-                        </li>
-                      ))}
-                    </ul>
-                  }
-                >
-                  <BeansTabContent name={t.name} EmptyState={tabs[i].EmptyState} />
-                </Suspense>
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </TabGroup>
-        {/* </Suspense> */}
-      </div>
+          </div>
+        }
+      >
+        <BeansListContent />
+      </Suspense>
     </>
   );
 }
 
-export interface BeansTabContentProps {
-  name: BeansStateName;
-  EmptyState: ReactNode;
-}
+function BeansListContent() {
+  const { data: allBeans } = useSuspenseQuery(beansListQueryOptions());
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const actions = useBeanActions();
 
-export const BeansTabContent = ({ name, EmptyState }: BeansTabContentProps) => {
-  const { data: beansList } = useSuspenseQuery({
-    queryKey: ["beans", name.toLowerCase()],
-    queryFn: () => getBeans({ data: { state: name } }),
-  });
+  const { open, frozen, history } = useMemo(() => {
+    const open = allBeans.filter((b) => b.isOpen).sort(byFreshness);
+    const frozen = allBeans.filter((b) => b.isFrozen).sort(byFreezeDate);
+    // History defaults to the archived cellar; Open/Frozen are folded in later
+    // via the status filter (Phase 4).
+    const history = allBeans.filter((b) => b.isArchived).sort(byArchiveDate);
+    return { open, frozen, history };
+  }, [allBeans]);
 
-  if (beansList.length === 0) return <>{EmptyState}</>;
+  const tabs = [
+    {
+      name: "Open",
+      count: open.length,
+      content:
+        open.length > 0 ? (
+          <BeansQuickList beans={open} actions={actions} />
+        ) : (
+          <EmptyState
+            title="No open beans"
+            description="Get started by adding some coffee beans"
+            button={{ label: "Add beans", link: "/beans/add" }}
+          />
+        ),
+    },
+    {
+      name: "Frozen",
+      count: frozen.length,
+      content:
+        frozen.length > 0 ? (
+          <BeansQuickList beans={frozen} actions={actions} />
+        ) : (
+          <EmptyState title="No frozen beans" description="Freeze beans for them to appear here." />
+        ),
+    },
+    {
+      name: "History",
+      count: history.length,
+      content:
+        history.length > 0 ? (
+          <BeansQuickList beans={history} actions={actions} />
+        ) : (
+          <EmptyState title="No archived beans" description="Beans you archive will appear here." />
+        ),
+    },
+  ];
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2">
-      {beansList.map((beans) => (
-        <li key={beans.id}>
-          <BeansCard beans={beans} />
-        </li>
-      ))}
-    </ul>
+    <div className="mt-2">
+      {actions.deleteErrorModal}
+      <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+        <TabList className="flex -mb-px">
+          {tabs.map(({ name, count }, i) => (
+            <Tab key={name} className={clsx(tabStyles(selectedIndex === i))}>
+              {name}{" "}
+              <span className="ml-1 tabular-nums text-gray-400 dark:text-gray-500">{count}</span>
+            </Tab>
+          ))}
+        </TabList>
+
+        <TabPanels className="mt-4">
+          {tabs.map((t) => (
+            <TabPanel key={t.name}>{t.content}</TabPanel>
+          ))}
+        </TabPanels>
+      </TabGroup>
+    </div>
   );
-};
+}
