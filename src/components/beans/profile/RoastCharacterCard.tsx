@@ -1,15 +1,9 @@
 import { Badge } from "~/components/Badge";
 import { Card } from "~/components/Card";
 import { Beans } from "~/db/types";
-import { getRoastLevelLabel } from "~/lib/beans";
+import { getRoastLevelLabel, ROAST_STYLE_LABELS } from "~/lib/beans";
 import { RoastLevelMeter } from "./RoastLevelMeter";
 import { ProfileCardHeader } from "./ProfileCardHeader";
-
-const ROAST_STYLE_LABELS: Record<string, string> = {
-  filter: "Filter",
-  espresso: "Espresso",
-  "omni-roast": "Omni-roast",
-};
 
 interface RoastCharacterCardProps {
   bean: Beans;

@@ -4,12 +4,20 @@ import { Card } from "~/components/Card";
 import { ScoreChip } from "~/components/ScoreChip";
 import { BeansListItem } from "~/db/types";
 import { UseBeanActions } from "~/hooks/useBeanActions";
-import { formatAge, getBeanDescriptor, getFreshness } from "~/lib/beans";
+import {
+  formatAge,
+  getBeanDescriptor,
+  getFreshness,
+  getRoastLevelLabel,
+  getRoastStyleLabel,
+} from "~/lib/beans";
 import { roundToDecimal } from "~/utils";
-import { CountryOptionFlag } from "./CountryOptionFlag";
 import { BeanRowActionsMenu } from "./BeanRowActionsMenu";
+import { CountryOptionFlag } from "./CountryOptionFlag";
+import { RoastLevelMeter } from "./profile/RoastLevelMeter";
 
-const labelStyles = "text-[10px] font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500";
+const labelStyles =
+  "text-[10px] font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500";
 const ageUnitShort: Record<string, string> = {
   day: "d",
   days: "d",
@@ -33,10 +41,17 @@ interface BeansQuickListProps {
  */
 export const BeansQuickList = ({ beans, actions }: BeansQuickListProps) => (
   <Card.Container variant="elevated" className="overflow-hidden">
-    <div className="flex items-center gap-3.5 border-b border-gray-100 px-4 pb-2 pt-3 dark:border-white/10">
+    <div className="flex items-center gap-2 border-b border-gray-100 px-3.5 pb-2 pt-3 sm:gap-3.5 sm:px-4 dark:border-white/10">
       <span className="flex-1" />
-      <span className={clsx(labelStyles, "w-16 text-right")}>Freshness</span>
-      <span className={clsx(labelStyles, "w-16 text-center")}>Avg score</span>
+      <span className={clsx(labelStyles, "hidden w-40 lg:block lg:mr-8 xl:mr-16")}>Roast</span>
+      <span className={clsx(labelStyles, "w-12 text-right sm:w-16")}>
+        <span className="sm:hidden">Age</span>
+        <span className="hidden sm:inline">Freshness</span>
+      </span>
+      <span className={clsx(labelStyles, "w-12 text-center sm:w-16")}>
+        <span className="sm:hidden">Score</span>
+        <span className="hidden sm:inline">Avg score</span>
+      </span>
       <span className="w-7" />
     </div>
     <div className="divide-y divide-gray-100 dark:divide-white/10">
@@ -53,14 +68,16 @@ const BeansQuickListRow = ({ bean, actions }: { bean: BeansListItem; actions: Us
   return (
     <div
       className={clsx(
-        "flex items-center gap-3.5 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/5",
+        "relative flex items-center gap-2 px-3.5 py-3.5 hover:bg-gray-50 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-inset has-[a:focus-visible]:ring-orange-500 sm:gap-3.5 sm:px-4 dark:hover:bg-white/5",
         !freshness.hasRoastDate && "bg-gray-50/60 dark:bg-white/[0.03]",
       )}
     >
+      {/* Stretched link: its ::after covers the whole row (padding included) so
+          the entire row navigates; the ⋯ button sits above it via z-10. */}
       <Link
         to="/beans/$beansId"
         params={{ beansId: bean.id }}
-        className="min-w-0 flex-1 focus:outline-hidden"
+        className="min-w-0 flex-1 after:absolute after:inset-0 focus:outline-hidden"
       >
         <p className="truncate text-[15px]">
           <span
@@ -78,7 +95,9 @@ const BeansQuickListRow = ({ bean, actions }: { bean: BeansListItem; actions: Us
         <BeanSubline bean={bean} />
       </Link>
 
-      <div className="w-16 text-right">
+      <RoastCell bean={bean} />
+
+      <div className="w-10 text-right sm:w-16">
         <FreshnessFigure
           hasRoastDate={freshness.hasRoastDate}
           days={freshness.effectiveDays}
@@ -86,7 +105,7 @@ const BeansQuickListRow = ({ bean, actions }: { bean: BeansListItem; actions: Us
         />
       </div>
 
-      <div className="flex w-16 justify-center">
+      <div className="flex w-10 justify-center sm:w-16">
         {bean.avgScore !== null ? (
           <ScoreChip>{roundToDecimal(bean.avgScore, 1)}</ScoreChip>
         ) : (
@@ -96,7 +115,7 @@ const BeansQuickListRow = ({ bean, actions }: { bean: BeansListItem; actions: Us
         )}
       </div>
 
-      <div className="flex w-7 justify-center">
+      <div className="relative z-10 flex w-7 justify-center">
         <BeanRowActionsMenu bean={bean} actions={actions} />
       </div>
     </div>
@@ -108,21 +127,49 @@ const BeansQuickListRow = ({ bean, actions }: { bean: BeansListItem; actions: Us
 const BeanSubline = ({ bean }: { bean: BeansListItem }) => {
   if (bean.origin === "blend") {
     return (
-      <p className="mt-1 text-[12.5px] text-gray-500 dark:text-gray-400">{getBeanDescriptor(bean)}</p>
+      <p className="mt-1 text-[12.5px] text-gray-500 dark:text-gray-400">
+        {getBeanDescriptor(bean)}
+      </p>
     );
   }
   if (!bean.country && !bean.process) {
     return (
       <p className="mt-1 text-[12.5px] italic text-gray-400 dark:text-gray-500">
-        Origin &amp; process not recorded
+        No origin details
       </p>
     );
   }
   return (
     <p className="mt-1 flex items-center gap-1.5 text-[12.5px] text-gray-500 dark:text-gray-400">
-      {bean.country && <CountryOptionFlag country={bean.country} className="h-3.5 w-auto rounded-sm" />}
+      {bean.country && (
+        <CountryOptionFlag country={bean.country} className="h-3.5 w-auto rounded-sm" />
+      )}
       <span className="truncate">{getBeanDescriptor(bean)}</span>
     </p>
+  );
+};
+
+/** Desktop-only roast column: compact meter + "Style · Level" text. Each part
+ *  is optional — the meter needs a level, the text shows whichever parts exist;
+ *  the whole cell is blank when nothing is recorded. */
+const RoastCell = ({ bean }: { bean: BeansListItem }) => {
+  const text = [getRoastStyleLabel(bean.roastStyle), getRoastLevelLabel(bean.roastLevel)]
+    .filter(Boolean)
+    .join(" · ");
+
+  return (
+    <div className="hidden w-40 lg:block lg:mr-8 xl:mr-16">
+      {(bean.roastLevel !== null || text) && (
+        <div className="flex flex-col gap-1">
+          {bean.roastLevel !== null && (
+            <RoastLevelMeter level={bean.roastLevel} showEdgeLabels={false} />
+          )}
+          {text && (
+            <span className="truncate text-[11px] text-gray-500 dark:text-gray-400">{text}</span>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

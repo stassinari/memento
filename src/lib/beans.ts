@@ -158,6 +158,18 @@ export function getRoastLevelLabel(level: number | null | undefined): string | n
   return ROAST_LEVELS[level] ?? null;
 }
 
+// Display labels for the roast-style enum ("filter" | "espresso" | "omni-roast").
+export const ROAST_STYLE_LABELS: Record<string, string> = {
+  filter: "Filter",
+  espresso: "Espresso",
+  "omni-roast": "Omni-roast",
+};
+
+export function getRoastStyleLabel(style: string | null | undefined): string | null {
+  if (!style) return null;
+  return ROAST_STYLE_LABELS[style] ?? style;
+}
+
 // ---------------------------------------------------------------------------
 // Age formatting — exact day counts get irrelevant for old beans. Count days up
 // to ~4 months, then round to months, and to years past ~24 months.

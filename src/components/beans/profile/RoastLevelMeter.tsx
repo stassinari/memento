@@ -20,13 +20,22 @@ const POSITION_FILL = [
 interface RoastLevelMeterProps {
   level: number; // 0..ROAST_LEVELS.length - 1
   className?: string;
+  /** Light…Dark edge labels (profile card). Off → just the bar, for dense
+   *  rows/cells where the named level is shown alongside by the caller. */
+  showEdgeLabels?: boolean;
 }
 
-export const RoastLevelMeter = ({ level, className }: RoastLevelMeterProps) => (
+export const RoastLevelMeter = ({
+  level,
+  className,
+  showEdgeLabels = true,
+}: RoastLevelMeterProps) => (
   <div className={clsx("flex items-center gap-2", className)}>
-    <span className="w-9 shrink-0 text-[10px] text-gray-400 dark:text-gray-500">
-      {ROAST_LEVELS[0]}
-    </span>
+    {showEdgeLabels && (
+      <span className="w-9 shrink-0 text-[10px] text-gray-400 dark:text-gray-500">
+        {ROAST_LEVELS[0]}
+      </span>
+    )}
     <div className="flex flex-1 gap-1.5">
       {ROAST_LEVELS.map((_, i) => (
         <div
@@ -38,8 +47,10 @@ export const RoastLevelMeter = ({ level, className }: RoastLevelMeterProps) => (
         />
       ))}
     </div>
-    <span className="w-8 shrink-0 text-right text-[10px] text-gray-400 dark:text-gray-500">
-      {ROAST_LEVELS[ROAST_LEVELS.length - 1]}
-    </span>
+    {showEdgeLabels && (
+      <span className="w-8 shrink-0 text-right text-[10px] text-gray-400 dark:text-gray-500">
+        {ROAST_LEVELS[ROAST_LEVELS.length - 1]}
+      </span>
+    )}
   </div>
 );
