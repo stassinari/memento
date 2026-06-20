@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Card } from "~/components/Card";
-import { ScoreChip } from "~/components/ScoreChip";
 import { BeansListItem } from "~/db/types";
 import { UseBeanActions } from "~/hooks/useBeanActions";
 import {
@@ -11,8 +10,8 @@ import {
   getRoastLevelLabel,
   getRoastStyleLabel,
 } from "~/lib/beans";
-import { roundToDecimal } from "~/utils";
 import { BeanRowActionsMenu } from "./BeanRowActionsMenu";
+import { BeanScore } from "./BeanScore";
 import { CountryOptionFlag } from "./CountryOptionFlag";
 import { RoastLevelMeter } from "./profile/RoastLevelMeter";
 
@@ -111,13 +110,7 @@ const BeansQuickListRow = ({ bean, actions }: { bean: BeansListItem; actions: Us
       </div>
 
       <div className="flex w-10 justify-center sm:w-16">
-        {bean.avgScore !== null ? (
-          <ScoreChip>{roundToDecimal(bean.avgScore, 1)}</ScoreChip>
-        ) : (
-          <span className="rounded-sm bg-gray-100 px-1 py-0.5 text-sm font-medium text-gray-400 dark:bg-white/10 dark:text-gray-500">
-            —
-          </span>
-        )}
+        <BeanScore score={bean.avgScore} />
       </div>
 
       <div className="relative z-10 flex w-7 justify-center">

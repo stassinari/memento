@@ -15,6 +15,8 @@ declare module "@tanstack/react-table" {
     align?: "left" | "right";
     /** Human label for the column picker (falls back to the column id). */
     label?: string;
+    /** Omit from the column picker (visibility is controlled elsewhere). */
+    hideFromPicker?: boolean;
   }
 }
 

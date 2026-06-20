@@ -1,14 +1,31 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { ScoreChip } from "~/components/ScoreChip";
 import { BeansListItem } from "~/db/types";
 import { formatAge, getBeanStatus, getFreshness, getRoastLevelLabel } from "~/lib/beans";
-import { roundToDecimal } from "~/utils";
+import { BeanScore } from "../BeanScore";
 import { CountryOptionFlag } from "../CountryOptionFlag";
 import { fmtStorageDate } from "../profile/format";
 import { RoastLevelMeter } from "../profile/RoastLevelMeter";
 import { StatusPill } from "../profile/StatusPill";
 
 const Dash = () => <span className="text-gray-300 dark:text-gray-600">—</span>;
+
+/** Renders a multi-value field (varietals, etc.) as small pills instead of a
+ *  comma-separated string. Blank when empty. */
+const Pills = ({ values }: { values: string[] }) => {
+  if (values.length === 0) return <Dash />;
+  return (
+    <span className="inline-flex items-center gap-1">
+      {values.map((value) => (
+        <span
+          key={value}
+          className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300"
+        >
+          {value}
+        </span>
+      ))}
+    </span>
+  );
+};
 
 const ch = createColumnHelper<BeansListItem>();
 
@@ -23,11 +40,13 @@ export const beansHistoryColumns = [
     cell: (info) => (
       <span className="font-medium text-gray-900 dark:text-gray-100">{info.getValue()}</span>
     ),
+    enableHiding: false, // the name is the row's anchor — always shown
     meta: { label: "Name" },
   }),
   ch.accessor("roaster", {
     id: "roaster",
     header: "Roaster",
+    enableHiding: false, // roaster is always shown alongside the name
     cell: (info) => info.getValue() || <Dash />,
     meta: { label: "Roaster" },
   }),
@@ -65,7 +84,7 @@ export const beansHistoryColumns = [
   ch.accessor((row) => row.archiveDate ?? undefined, {
     id: "archived",
     header: "Archived",
-    cell: ({ row }) => <DateCell date={row.original.archiveDate} legacy />,
+    cell: ({ row }) => <DateCell date={row.original.archiveDate} />,
     sortingFn: "datetime",
     sortUndefined: -1,
     meta: { label: "Archived" },
@@ -81,12 +100,7 @@ export const beansHistoryColumns = [
   ch.accessor((row) => row.avgScore ?? undefined, {
     id: "score",
     header: "Score",
-    cell: ({ row }) =>
-      row.original.avgScore !== null ? (
-        <ScoreChip>{roundToDecimal(row.original.avgScore, 1)}</ScoreChip>
-      ) : (
-        <Dash />
-      ),
+    cell: ({ row }) => <BeanScore score={row.original.avgScore} />,
     sortingFn: "basic",
     sortUndefined: "last",
     meta: { label: "Score", align: "right" },
@@ -103,9 +117,16 @@ export const beansHistoryColumns = [
   ch.accessor((row) => (row.varietals.length ? row.varietals.join(", ") : undefined), {
     id: "varietals",
     header: "Varietals",
-    cell: (info) => info.getValue() ?? <Dash />,
+    cell: ({ row }) => <Pills values={row.original.varietals} />,
     sortUndefined: "last",
     meta: { label: "Varietals" },
+  }),
+  ch.accessor((row) => (row.roastingNotes.length ? row.roastingNotes.join(", ") : undefined), {
+    id: "roastingNotes",
+    header: "Roasting notes",
+    cell: ({ row }) => <Pills values={row.original.roastingNotes} />,
+    sortUndefined: "last",
+    meta: { label: "Roasting notes" },
   }),
   ch.accessor((row) => row.altitude ?? undefined, {
     id: "altitude",
@@ -145,7 +166,9 @@ export const beansHistoryColumns = [
     id: "status",
     header: "Status",
     cell: ({ row }) => <StatusPill status={getBeanStatus(row.original)} size="small" />,
-    meta: { label: "Status" },
+    // Visibility is auto-managed (shown only when the result set is mixed), so
+    // it's kept out of the manual column picker.
+    meta: { label: "Status", hideFromPicker: true },
   }),
 ];
 
@@ -153,6 +176,7 @@ export const beansHistoryColumns = [
 export const beansHistoryDefaultVisibility: Record<string, boolean> = {
   region: false,
   varietals: false,
+  roastingNotes: false,
   altitude: false,
   farmer: false,
   harvest: false,
@@ -180,16 +204,8 @@ const RoastCell = ({ level }: { level: number | null }) => {
   );
 };
 
-const DateCell = ({ date, legacy }: { date: Date | null; legacy?: boolean }) => {
-  if (!date) {
-    return legacy ? (
-      <span className="text-gray-400 dark:text-gray-500">
-        — <span className="text-[11px]">(legacy)</span>
-      </span>
-    ) : (
-      <Dash />
-    );
-  }
+const DateCell = ({ date }: { date: Date | null }) => {
+  if (!date) return <Dash />;
   return <span>{fmtStorageDate(date)}</span>;
 };
 

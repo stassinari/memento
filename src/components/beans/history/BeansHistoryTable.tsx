@@ -1,23 +1,42 @@
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import {
   SortingState,
-  VisibilityState,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useAtom } from "jotai";
+import { Columns3, ListFilter, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Button } from "~/components/Button";
+import { Drawer } from "~/components/Drawer";
+import { ColumnVisibility } from "~/components/table/ColumnVisibility";
 import { DataTable } from "~/components/table/DataTable";
 import { BeansListItem } from "~/db/types";
+import { beansHistoryColumnVisibilityAtom } from "./atoms";
+import { BeansHistoryFilters } from "./BeansHistoryFilters";
 import { beansHistoryColumns, beansHistoryDefaultVisibility } from "./columns";
+import {
+  applyFacets,
+  countActiveFilters,
+  defaultBeansFilters,
+  deriveFacetOptions,
+  deriveStatusCounts,
+  filterByStatus,
+  getActiveFilterChips,
+  matchesSearch,
+  type BeansFilters,
+} from "./filters";
 
 interface BeansHistoryTableProps {
   beans: BeansListItem[];
 }
 
 /**
- * The History surface: a dense, sortable table over the cellar. Defaults to the
- * archived view (the status filter to fold Open/Frozen back in, search, facets
- * and summary stats land in later slices). Sorting/visibility are client-side.
+ * The History surface: a dense, sortable table over the cellar. Status defaults
+ * to the archived view; folding Open/Frozen back in reveals the Status column.
+ * Search + facets pre-filter rows client-side; sorting is client-side; column
+ * visibility persists per-user.
  */
 export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
   // Opt out of the React Compiler: this component holds the mutable TanStack
@@ -25,22 +44,37 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
   // compiler skip state-driven re-renders (sorting indicators going stale).
   "use no memo";
 
-  // Default multi-sort: Archived primary, Roast date secondary (shift-click a
-  // header to build your own multi-sort; a plain click replaces with a single).
   const [sorting, setSorting] = useState<SortingState>([
     { id: "archived", desc: true },
     { id: "roastDate", desc: true },
   ]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    beansHistoryDefaultVisibility,
+  const [columnVisibility, setColumnVisibility] = useAtom(beansHistoryColumnVisibilityAtom);
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<BeansFilters>(defaultBeansFilters);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const statusCounts = useMemo(() => deriveStatusCounts(beans), [beans]);
+  const scoped = useMemo(() => filterByStatus(beans, filters.statuses), [beans, filters.statuses]);
+  const options = useMemo(() => deriveFacetOptions(scoped), [scoped]);
+  const rows = useMemo(
+    () => applyFacets(scoped, filters).filter((bean) => matchesSearch(bean, search)),
+    [scoped, filters, search],
   );
 
-  const data = useMemo(() => beans.filter((bean) => bean.isArchived), [beans]);
+  const activeCount = countActiveFilters(filters);
+  const activeChips = getActiveFilterChips(filters);
+  // Status column shows only when the result set spans more than one status.
+  const showStatusColumn = filters.statuses.length > 1;
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns: beansHistoryColumns,
-    state: { sorting, columnVisibility },
+    state: {
+      sorting,
+      columnVisibility: { ...columnVisibility, status: showStatusColumn },
+    },
+    // Seeds "Reset to default" in the column picker (table.resetColumnVisibility).
+    initialState: { columnVisibility: beansHistoryDefaultVisibility },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
@@ -48,12 +82,131 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
   });
 
   return (
-    <DataTable
-      table={table}
-      rowLink={(bean) => ({ to: "/beans/$beansId", params: { beansId: bean.id } })}
-      rowLinkLabel={(bean) => `View ${bean.name}`}
-      footer={<span>{data.length} results</span>}
-      emptyState={<p className="text-center text-sm text-gray-500 dark:text-gray-400">No beans match.</p>}
-    />
+    <div>
+      {/* Toolbar: Search · Filters · Columns */}
+      <div className="mb-3 flex flex-wrap items-center gap-2.5">
+        <div className="relative min-w-50 flex-1">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search history — name or roaster…"
+            className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-3 pl-9 text-sm placeholder-gray-400 focus:border-blue-400 focus:outline-hidden dark:border-white/10 dark:bg-gray-900 dark:placeholder-gray-500"
+          />
+        </div>
+
+        <Button
+          variant={activeCount > 0 ? "secondary" : "white"}
+          colour="main"
+          size="sm"
+          onClick={() => setFiltersOpen(true)}
+        >
+          <ListFilter />
+          Filters
+          {activeCount > 0 && (
+            <span className="rounded-full bg-orange-200/80 px-1.5 py-0.5 text-[10px] font-bold text-orange-800 dark:bg-orange-500/30 dark:text-orange-100">
+              {activeCount}
+            </span>
+          )}
+        </Button>
+
+        <Popover className="relative">
+          <PopoverButton as={Button} variant="white" size="sm">
+            <Columns3 />
+            Columns
+          </PopoverButton>
+          <PopoverPanel
+            anchor="bottom end"
+            portal
+            transition
+            className="z-30 w-56 rounded-lg bg-white p-3 shadow-lg outline-1 outline-black/5 transition [--anchor-gap:0.5rem] data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-900 dark:outline-white/10"
+          >
+            <ColumnVisibility table={table} />
+          </PopoverPanel>
+        </Popover>
+      </div>
+
+      {/* Active filter chips + showing count */}
+      <div className="mb-2.5 flex flex-wrap items-center gap-2 text-xs">
+        {activeChips.length > 0 && (
+          <>
+            <span className="font-medium text-gray-400 dark:text-gray-500">Filtering:</span>
+            {activeChips.map((chip) => (
+              <span
+                key={chip.id}
+                className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 font-semibold text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-300"
+              >
+                {chip.label}
+                <button
+                  type="button"
+                  onClick={() => setFilters(chip.remove(filters))}
+                  className="text-blue-400 hover:text-blue-600 dark:text-blue-400/70 dark:hover:text-blue-300"
+                >
+                  <span className="sr-only">Remove {chip.label}</span>
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+            <button
+              type="button"
+              onClick={() => setFilters(defaultBeansFilters)}
+              className="font-medium text-gray-400 underline underline-offset-2 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            >
+              clear all
+            </button>
+          </>
+        )}
+        <span className="ml-auto text-gray-400 dark:text-gray-500">
+          Showing <b className="text-gray-600 dark:text-gray-300">{rows.length}</b> of{" "}
+          {scoped.length}
+        </span>
+      </div>
+
+      <DataTable
+        table={table}
+        rowLink={(bean) => ({ to: "/beans/$beansId", params: { beansId: bean.id } })}
+        rowLinkLabel={(bean) => `View ${bean.name}`}
+        footer={<span>{rows.length} results</span>}
+        emptyState={
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+            No beans match these filters.
+          </p>
+        }
+      />
+
+      <Drawer
+        open={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        title="Filters"
+        headerAction={
+          activeCount > 0 ? (
+            <button
+              type="button"
+              onClick={() => setFilters(defaultBeansFilters)}
+              className="text-xs font-semibold text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            >
+              Clear all
+            </button>
+          ) : undefined
+        }
+        footer={
+          <Button
+            variant="primary"
+            colour="accent"
+            width="full"
+            onClick={() => setFiltersOpen(false)}
+          >
+            Show {rows.length} results
+          </Button>
+        }
+      >
+        <BeansHistoryFilters
+          filters={filters}
+          setFilters={setFilters}
+          statusCounts={statusCounts}
+          options={options}
+        />
+      </Drawer>
+    </div>
   );
 };
