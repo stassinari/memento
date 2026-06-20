@@ -1,18 +1,18 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 import {
   BeansListFallback,
   BeansListTabs,
   beansListQueryOptions,
 } from "~/components/beans/BeansListTabs";
-import { BeansQuickList } from "~/components/beans/BeansQuickList";
+import { BeansHistoryTable } from "~/components/beans/history/BeansHistoryTable";
 import { EmptyState } from "~/components/EmptyState";
-import { useBeanActions } from "~/hooks/useBeanActions";
-import { compareByArchiveDate } from "~/lib/beans";
 
 export const Route = createFileRoute("/_auth/_layout/beans/history")({
   component: HistoryBeansTab,
+  // The table wants the whole width; Open/Frozen stay in the default container.
+  staticData: { fullWidth: true },
 });
 
 function HistoryBeansTab() {
@@ -25,26 +25,14 @@ function HistoryBeansTab() {
   );
 }
 
-// Interim view: the History route fetches everything (the future table defaults
-// to the archived slice but can fold Open/Frozen back in via the status filter).
-// Until that table lands (Phase 4) we show the archived beans as a quick list.
+// The History route fetches everything (the table defaults to the archived
+// slice but can fold Open/Frozen back in via the status filter).
 function HistoryContent() {
   const { data } = useSuspenseQuery(beansListQueryOptions("History"));
-  const actions = useBeanActions();
 
-  const archived = useMemo(
-    () => data.filter((bean) => bean.isArchived).sort(compareByArchiveDate),
-    [data],
-  );
-
-  if (archived.length === 0) {
+  if (!data.some((bean) => bean.isArchived)) {
     return <EmptyState title="No archived beans" description="Beans you archive will appear here." />;
   }
 
-  return (
-    <>
-      {actions.deleteErrorModal}
-      <BeansQuickList beans={archived} actions={actions} />
-    </>
-  );
+  return <BeansHistoryTable beans={data} />;
 }

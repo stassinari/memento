@@ -4,6 +4,15 @@ import { BottomNav } from "./BottomNav";
 import { ReloadPrompt } from "./ReloadPrompt";
 import { SidebarNav } from "./SidebarNav";
 
+declare module "@tanstack/react-router" {
+  // Per-route layout hints. A route sets `staticData: { fullWidth: true }` to
+  // render edge-to-edge (e.g. wide tables) without a separate layout route tree
+  // — the shared `_layout` reads this and widens the container.
+  interface StaticDataRouteOption {
+    fullWidth?: boolean;
+  }
+}
+
 // FIXME this is not ideal, look into TW custom utilities or any other way to handle this
 export const layoutContainerTailwindStyles = "min-h-screen md:pb-0!";
 
