@@ -1,6 +1,6 @@
-import clsx from "clsx";
 import { Search } from "lucide-react";
 import { ReactNode, useState } from "react";
+import { Badge } from "~/components/Badge";
 import { CountryOptionFlag } from "~/components/beans/CountryOptionFlag";
 import { COFFEE_REGION_ORDER, getCoffeeRegion } from "~/data/countries";
 import { getRoastLevelLabel } from "~/lib/beans";
@@ -68,13 +68,14 @@ export const BeansHistoryFilters = ({
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {inRegion.map((o) => (
-                    <Chip
+                    <Badge
                       key={o.value}
                       label={o.value}
-                      leading={
+                      colour="blue"
+                      outline={!filters.countries.includes(o.value)}
+                      leadingIcon={
                         <CountryOptionFlag country={o.value} className="h-3 w-auto rounded-sm" />
                       }
-                      active={filters.countries.includes(o.value)}
                       onClick={() =>
                         setFilters({ ...filters, countries: toggle(filters.countries, o.value) })
                       }
@@ -106,10 +107,11 @@ export const BeansHistoryFilters = ({
           {options.roastLevels.map((o) => {
             const level = Number(o.value);
             return (
-              <Chip
+              <Badge
                 key={o.value}
                 label={getRoastLevelLabel(level) ?? o.value}
-                active={filters.roastLevels.includes(level)}
+                colour="blue"
+                outline={!filters.roastLevels.includes(level)}
                 onClick={() => setFilters({ ...filters, roastLevels: toggle(filters.roastLevels, level) })}
               />
             );
@@ -140,10 +142,11 @@ export const BeansHistoryFilters = ({
           {options.years.map((o) => {
             const year = Number(o.value);
             return (
-              <Chip
+              <Badge
                 key={o.value}
                 label={o.value}
-                active={filters.years.includes(year)}
+                colour="blue"
+                outline={!filters.years.includes(year)}
                 onClick={() => setFilters({ ...filters, years: toggle(filters.years, year) })}
               />
             );
@@ -158,10 +161,11 @@ export const BeansHistoryFilters = ({
           {options.roastYears.map((o) => {
             const year = Number(o.value);
             return (
-              <Chip
+              <Badge
                 key={o.value}
                 label={o.value}
-                active={filters.roastYears.includes(year)}
+                colour="blue"
+                outline={!filters.roastYears.includes(year)}
                 onClick={() => setFilters({ ...filters, roastYears: toggle(filters.roastYears, year) })}
               />
             );
@@ -202,32 +206,6 @@ const CheckboxRow = ({
     <span className="flex-1 truncate">{label}</span>
     {count != null && <span className="text-xs text-gray-400 dark:text-gray-500">{count}</span>}
   </label>
-);
-
-const Chip = ({
-  label,
-  active,
-  onClick,
-  leading,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-  leading?: ReactNode;
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={clsx(
-      "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
-      active
-        ? "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-300"
-        : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-white/15 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-white/5",
-    )}
-  >
-    {leading}
-    {label}
-  </button>
 );
 
 const ScoreInput = ({

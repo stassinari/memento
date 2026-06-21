@@ -6,8 +6,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useAtom } from "jotai";
-import { Columns3, ListFilter, Search, X } from "lucide-react";
+import { Columns3, ListFilter, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Badge, BadgeTimesIcon } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { Drawer } from "~/components/Drawer";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
@@ -23,8 +24,6 @@ import { BeansHistoryCards } from "./BeansHistoryCards";
 import { BeansHistoryFilters } from "./BeansHistoryFilters";
 import { BeansHistorySort } from "./BeansHistorySort";
 import { BeansHistorySummary } from "./BeansHistorySummary";
-import { deriveBeansSummary } from "./summary";
-import { matchSortPreset } from "./sortPresets";
 import { beansHistoryColumns, beansHistoryDefaultVisibility } from "./columns";
 import {
   applyFacets,
@@ -37,6 +36,8 @@ import {
   matchesSearch,
   type BeansFilters,
 } from "./filters";
+import { matchSortPreset } from "./sortPresets";
+import { deriveBeansSummary } from "./summary";
 
 interface BeansHistoryTableProps {
   beans: BeansListItem[];
@@ -94,7 +95,11 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
     },
     // Seeds "Reset to default" in the column picker (resetColumnVisibility /
     // resetColumnOrder / resetColumnSizing restore these).
-    initialState: { columnVisibility: beansHistoryDefaultVisibility, columnOrder: [], columnSizing: {} },
+    initialState: {
+      columnVisibility: beansHistoryDefaultVisibility,
+      columnOrder: [],
+      columnSizing: {},
+    },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
@@ -122,7 +127,7 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search history — name or roaster…"
+            placeholder="Search (name or roaster)"
             className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-3 pl-9 text-sm placeholder-gray-400 focus:border-blue-400 focus:outline-hidden dark:border-white/10 dark:bg-gray-900 dark:placeholder-gray-500"
           />
         </div>
@@ -169,20 +174,17 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
             <>
               <span className="font-medium text-gray-400 dark:text-gray-500">Filtering:</span>
               {activeChips.map((chip) => (
-                <span
+                <Badge
                   key={chip.id}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 font-semibold text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-300"
-                >
-                  {chip.label}
-                  <button
-                    type="button"
-                    onClick={() => setFilters(chip.remove(filters))}
-                    className="text-blue-400 hover:text-blue-600 dark:text-blue-400/70 dark:hover:text-blue-300"
-                  >
-                    <span className="sr-only">Remove {chip.label}</span>
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
+                  label={chip.label}
+                  colour="blue"
+                  icon={{
+                    Element: <BadgeTimesIcon className="h-full w-full" />,
+                    position: "right",
+                    onClick: () => setFilters(chip.remove(filters)),
+                    label: `Remove ${chip.label}`,
+                  }}
+                />
               ))}
               <button
                 type="button"

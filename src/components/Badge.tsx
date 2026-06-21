@@ -1,43 +1,51 @@
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import clsx from "clsx";
 import { ReactNode, useMemo } from "react";
 
 const badgeVariants = cva(
   "relative inline-flex items-center rounded-full py-0.5 font-medium transition-colors duration-200",
   {
-  variants: {
-    colour: {
-      grey: "text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-white/10",
-      orange: "text-orange-800 bg-orange-100 dark:text-orange-200 dark:bg-orange-500/15",
-      blue: "text-blue-800 bg-blue-100 dark:text-blue-200 dark:bg-blue-500/15",
-      green: "text-green-800 bg-green-100 dark:text-green-200 dark:bg-green-500/15",
+    variants: {
+      size: {
+        small: "text-xs",
+        large: "text-sm",
+      },
+      icon: {
+        none: "",
+        left: "",
+        right: "",
+      },
     },
-    size: {
-      small: "text-xs",
-      large: "text-sm",
-    },
-    icon: {
-      none: "",
-      left: "",
-      right: "",
+    compoundVariants: [
+      { size: "small", icon: "none", className: "px-2.5" },
+      { size: "large", icon: "none", className: "px-3" },
+      { size: "small", icon: "left", className: "pl-0.5 pr-2" },
+      { size: "large", icon: "left", className: "pl-1 pr-2.5" },
+      { size: "small", icon: "right", className: "pl-2 pr-0.5" },
+      { size: "large", icon: "right", className: "pl-2.5 pr-1" },
+    ],
+    defaultVariants: {
+      size: "small",
+      icon: "none",
     },
   },
-  compoundVariants: [
-    { size: "small", icon: "none", className: "px-2.5" },
-    { size: "large", icon: "none", className: "px-3" },
-    { size: "small", icon: "left", className: "pl-0.5 pr-2" },
-    { size: "large", icon: "left", className: "pl-1 pr-2.5" },
-    { size: "small", icon: "right", className: "pl-2 pr-0.5" },
-    { size: "large", icon: "right", className: "pl-2.5 pr-1" },
-  ],
-  defaultVariants: {
-    colour: "grey",
-    size: "small",
-    icon: "none",
-  },
-});
+);
 
-const iconButtonColour: Record<NonNullable<BadgeColour>, string> = {
+export type BadgeColour = "grey" | "orange" | "blue" | "green";
+
+// Filled appearance (default).
+const solidColour: Record<BadgeColour, string> = {
+  grey: "text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-white/10",
+  orange: "text-orange-800 bg-orange-100 dark:text-orange-200 dark:bg-orange-500/15",
+  blue: "text-blue-800 bg-blue-100 dark:text-blue-200 dark:bg-blue-500/15",
+  green: "text-green-800 bg-green-100 dark:text-green-200 dark:bg-green-500/15",
+};
+
+// Outline appearance (no fill) — e.g. an unselected toggle chip.
+const outlineAppearance =
+  "border border-gray-200 bg-white text-gray-600 dark:border-white/15 dark:bg-gray-900 dark:text-gray-300";
+
+const iconButtonColour: Record<BadgeColour, string> = {
   grey: "text-gray-400 bg-gray-100 hover:text-gray-500 hover:bg-gray-200 focus:bg-gray-500 focus:text-white dark:text-gray-300 dark:bg-white/10 dark:hover:bg-white/20 dark:hover:text-gray-200 dark:focus:bg-gray-300 dark:focus:text-gray-900",
   orange:
     "text-orange-400 bg-orange-100 hover:text-orange-500 hover:bg-orange-200 focus:bg-orange-500 focus:text-white dark:text-orange-300 dark:bg-orange-500/15 dark:hover:bg-orange-500/25 dark:hover:text-orange-200 dark:focus:bg-orange-400 dark:focus:text-gray-950",
@@ -45,8 +53,6 @@ const iconButtonColour: Record<NonNullable<BadgeColour>, string> = {
   green:
     "text-green-400 bg-green-100 hover:text-green-500 hover:bg-green-200 focus:bg-green-500 focus:text-white dark:text-green-300 dark:bg-green-500/15 dark:hover:bg-green-500/25 dark:hover:text-green-200 dark:focus:bg-green-400 dark:focus:text-gray-950",
 };
-
-type BadgeColour = VariantProps<typeof badgeVariants>["colour"];
 
 interface BadgeProps {
   label: string;
@@ -62,7 +68,16 @@ interface BadgeProps {
     Element: ReactNode;
     position: "left" | "right";
     onClick?: () => void;
+    /** Accessible label for the icon button (it has no visible text). */
+    label?: string;
   };
+
+  /** Outline (no fill) appearance — for an unselected, selectable badge. */
+  outline?: boolean;
+
+  /** Makes the whole badge a button (toggle / selectable chips). Don't combine
+   *  with `icon`, which would nest a button inside a button. */
+  onClick?: () => void;
 }
 
 export const Badge = ({
@@ -72,6 +87,8 @@ export const Badge = ({
   size = "small",
   clickable = false,
   colour = "grey",
+  outline = false,
+  onClick,
 }: BadgeProps) => {
   const iconElement = useMemo(
     () =>
@@ -79,12 +96,13 @@ export const Badge = ({
         <button
           type="button"
           onClick={icon.onClick}
+          aria-label={icon.label}
           className={clsx([
             "inline-flex items-center justify-center shrink-0 w-4 h-4 rounded-full focus:outline-hidden transition-colors duration-200",
             "after:content after:block after:absolute after:h-full after:rounded-full after:aspect-square",
             clickable && "after:w-full",
             icon.position === "left" ? "mr-0.5 after:left-0" : "ml-0.5 after:right-0",
-            iconButtonColour[colour ?? "grey"],
+            iconButtonColour[colour],
           ])}
         >
           <span className="w-2 h-2">{icon.Element}</span>
@@ -93,17 +111,31 @@ export const Badge = ({
     [clickable, colour, icon],
   );
 
-  return (
-    <span className={badgeVariants({ colour, size, icon: icon?.position ?? "none" })}>
-      {icon?.position === "left" && iconElement}
-
-      {leadingIcon && <span className="mr-1 inline-flex shrink-0 items-center">{leadingIcon}</span>}
-
-      {label}
-
-      {icon?.position === "right" && iconElement}
-    </span>
+  const className = clsx(
+    badgeVariants({ size, icon: icon?.position ?? "none" }),
+    outline ? outlineAppearance : solidColour[colour],
+    onClick && "cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-500",
+    onClick && outline && "hover:bg-gray-50 dark:hover:bg-white/5",
   );
+
+  const content = (
+    <>
+      {icon?.position === "left" && iconElement}
+      {leadingIcon && <span className="mr-1 inline-flex shrink-0 items-center">{leadingIcon}</span>}
+      {label}
+      {icon?.position === "right" && iconElement}
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={className}>
+        {content}
+      </button>
+    );
+  }
+
+  return <span className={className}>{content}</span>;
 };
 
 interface BadgeTimesIconProps {

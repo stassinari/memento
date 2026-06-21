@@ -13,6 +13,7 @@ import { useBeanActions } from "~/hooks/useBeanActions";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
 import { compareByFreezeDate, compareByFreshness } from "~/lib/beans";
 import { BeansQuickList, BeansQuickListSkeleton } from "./BeansQuickList";
+import { BeansHistorySkeleton } from "./history/BeansHistorySkeleton";
 
 // Query keys are all prefixed ["beans", …] so the lifecycle mutations'
 // `invalidateQueries({ queryKey: ["beans"] })` refreshes every tab + the counts.
@@ -148,5 +149,6 @@ export const BeansListFallback = ({ tab }: { tab: TabKey }) => {
     : undefined;
   const rows = count === undefined ? 4 : Math.min(Math.max(count, 1), 8);
 
+  if (tab === "history") return <BeansHistorySkeleton rows={rows} />;
   return <BeansQuickListSkeleton rows={rows} />;
 };

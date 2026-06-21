@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
+import { Badge } from "~/components/Badge";
 import { BeansListItem } from "~/db/types";
 import { formatAge, getBeanStatus, getFreshness, getRoastLevelLabel } from "~/lib/beans";
 import { BeanScore } from "../BeanScore";
@@ -9,19 +10,14 @@ import { StatusPill } from "../profile/StatusPill";
 
 const Dash = () => <span className="text-gray-300 dark:text-gray-600">—</span>;
 
-/** Renders a multi-value field (varietals, etc.) as small pills instead of a
+/** Renders a multi-value field (varietals, etc.) as small badges instead of a
  *  comma-separated string. Blank when empty. */
 const Pills = ({ values }: { values: string[] }) => {
   if (values.length === 0) return <Dash />;
   return (
     <span className="inline-flex items-center gap-1">
       {values.map((value) => (
-        <span
-          key={value}
-          className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300"
-        >
-          {value}
-        </span>
+        <Badge key={value} label={value} colour="grey" size="small" />
       ))}
     </span>
   );
