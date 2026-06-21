@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, getTableColumns, isNull, or, sql } from "drizzle-orm";
-import { BeansStateName } from "~/routes/_auth/_layout/beans";
+import { and, desc, eq, getTableColumns, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { BeansListItem } from "./types";
 import { db } from "./db";
 import { TastingVariable, beans, brews, espresso, tastingSamples, tastings } from "./schema";
 
@@ -314,35 +314,136 @@ export const getDecentReadings = createServerFn({ method: "GET" })
     }
   });
 
-export const getBeans = createServerFn({ method: "GET" })
-  .inputValidator((input: { state: BeansStateName }) => input)
-  .handler(async ({ data: { state }, context }) => {
+// Which slice of the cellar a Beans tab wants. Each tab is its own route and
+// fetches only what it shows — so the Open tab never pays to transfer the
+// hundreds of archived rows. History = everything (its table defaults to the
+// archived view but can fold Open/Frozen back in via the status filter).
+export type BeansListState = "Open" | "Frozen" | "History";
+
+// Backs one Beans tab. Returns that state's bean rows, each enriched with its
+// average score. The score aggregates are grouped per-bean (small result) and
+// merged in JS; they scan the user's drinks regardless of tab, but that's cheap
+// next to transferring every bean row, which is what the state filter avoids.
+export const getBeansList = createServerFn({ method: "GET" })
+  .inputValidator((input: { state: BeansListState }) => input)
+  .handler(async ({ data: { state }, context }): Promise<BeansListItem[]> => {
     try {
+      const userId = context.userId;
+
       const stateFilter =
         state === "Open"
           ? eq(beans.isOpen, true)
           : state === "Frozen"
             ? eq(beans.isFrozen, true)
-            : state === "Archived"
-              ? eq(beans.isArchived, true)
-              : undefined;
-
-      const whereClause = stateFilter
-        ? and(eq(beans.userId, context.userId), stateFilter)
-        : eq(beans.userId, context.userId);
+            : undefined; // History → everything
 
       const beansList = await db
         .select({ ...getTableColumns(beans) })
         .from(beans)
-        .where(whereClause)
+        .where(stateFilter ? and(eq(beans.userId, userId), stateFilter) : eq(beans.userId, userId))
         .orderBy(desc(beans.roastDate));
 
-      return beansList;
+      // Per-bean rating aggregates, computed once per source table then merged
+      // in JS. Joining all three one-to-many tables in a single query would
+      // multiply rows (fan-out) and corrupt the sums, so we keep them apart.
+      // Only *rated* rows contribute, matching `getActivitySummary`.
+      const [brewAgg, espressoAgg, tastingAgg] = await Promise.all([
+        db
+          .select({
+            beansId: brews.beansId,
+            sum: sql<number>`coalesce(sum(${brews.rating}), 0)`,
+            count: sql<number>`count(${brews.rating})`,
+          })
+          .from(brews)
+          .where(and(eq(brews.userId, userId), isNotNull(brews.rating)))
+          .groupBy(brews.beansId),
+        db
+          .select({
+            beansId: espresso.beansId,
+            sum: sql<number>`coalesce(sum(${espresso.rating}), 0)`,
+            count: sql<number>`count(${espresso.rating})`,
+          })
+          .from(espresso)
+          .where(and(eq(espresso.userId, userId), isNotNull(espresso.rating)))
+          .groupBy(espresso.beansId),
+        // Tasting scores live on the samples; ownership + "is a beans tasting"
+        // are enforced through the parent tasting (samples carry no userId).
+        db
+          .select({
+            beansId: tastingSamples.variableValueBeansId,
+            sum: sql<number>`coalesce(sum(${tastingSamples.overall}), 0)`,
+            count: sql<number>`count(${tastingSamples.overall})`,
+          })
+          .from(tastingSamples)
+          .innerJoin(tastings, eq(tastingSamples.tastingId, tastings.id))
+          .where(
+            and(
+              eq(tastings.userId, userId),
+              eq(tastings.variable, TastingVariable.Beans),
+              isNotNull(tastingSamples.variableValueBeansId),
+              isNotNull(tastingSamples.overall),
+            ),
+          )
+          .groupBy(tastingSamples.variableValueBeansId),
+      ]);
+
+      // numeric/bigint aggregates arrive as strings over the wire → coerce.
+      const totals = new Map<string, { sum: number; count: number }>();
+      const fold = (rows: { beansId: string | null; sum: number; count: number }[]) => {
+        for (const row of rows) {
+          if (!row.beansId) continue;
+          const prev = totals.get(row.beansId) ?? { sum: 0, count: 0 };
+          prev.sum += Number(row.sum);
+          prev.count += Number(row.count);
+          totals.set(row.beansId, prev);
+        }
+      };
+      fold(brewAgg);
+      fold(espressoAgg);
+      fold(tastingAgg);
+
+      return beansList.map((bean): BeansListItem => {
+        const agg = totals.get(bean.id);
+        const ratedCount = agg?.count ?? 0;
+        return {
+          ...bean,
+          ratedCount,
+          avgScore: ratedCount > 0 ? agg!.sum / ratedCount : null,
+        };
+      });
     } catch (error) {
       console.error("Database error:", error);
       throw error;
     }
-  });
+  },
+);
+
+// The three tab-badge counts in one round trip. Cheap (a single filtered count
+// over the user's beans), so every tab route can show all counts without each
+// loading the others' rows.
+export const getBeansCounts = createServerFn({ method: "GET" }).handler(
+  async ({ context }): Promise<{ open: number; frozen: number; archived: number }> => {
+    try {
+      const [row] = await db
+        .select({
+          open: sql<number>`count(*) filter (where ${beans.isOpen})`,
+          frozen: sql<number>`count(*) filter (where ${beans.isFrozen})`,
+          archived: sql<number>`count(*) filter (where ${beans.isArchived})`,
+        })
+        .from(beans)
+        .where(eq(beans.userId, context.userId));
+
+      return {
+        open: Number(row?.open ?? 0),
+        frozen: Number(row?.frozen ?? 0),
+        archived: Number(row?.archived ?? 0),
+      };
+    } catch (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
+  },
+);
 
 export const getSelectableBeans = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   try {

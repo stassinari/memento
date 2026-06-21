@@ -17,7 +17,7 @@ import { DecentCharts } from "~/components/espresso/charts/DecentCharts";
 import { deleteEspresso } from "~/db/mutations";
 import { getEspresso } from "~/db/queries";
 import useScreenMediaQuery from "~/hooks/useScreenMediaQuery";
-import { tabStyles } from "../../../beans";
+import { tabStyles } from "~/components/tabStyles";
 
 export type EspressoWithBeans = NonNullable<Awaited<ReturnType<typeof getEspresso>>>;
 
