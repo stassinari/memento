@@ -145,7 +145,9 @@ export function DataTable<TData>({
     const widths: Record<string, number> = {};
     table.getVisibleLeafColumns().forEach((c) => {
       const el = container.querySelector<HTMLElement>(`thead [data-col-id="${c.id}"]`);
-      if (el) widths[c.id] = el.offsetWidth;
+      // Round up the fractional border-box width — flooring (offsetWidth) can
+      // leave a column a sub-pixel short and clip the header's trailing chevron.
+      if (el) widths[c.id] = Math.ceil(el.getBoundingClientRect().width);
     });
     measuredKeyRef.current = measureKey;
     setNatural(widths);
@@ -284,13 +286,18 @@ export function DataTable<TData>({
               "border-separate border-spacing-0 text-sm",
               measured ? "table-fixed" : "min-w-full",
             )}
-            style={totalWidth ? { width: totalWidth } : undefined}
+            // Grow to at least the container so wide screens have no gap, but
+            // never below the column sum (so columns keep their set widths). The
+            // trailing spacer column absorbs any leftover instead of the real
+            // columns springing back.
+            style={totalWidth ? { width: `max(${totalWidth}px, 100%)` } : undefined}
           >
             {measured && (
               <colgroup>
                 {visibleColumns.map((c) => (
                   <col key={c.id} style={{ width: widthFor(c.id) }} />
                 ))}
+                <col />
               </colgroup>
             )}
             <thead>
@@ -308,19 +315,32 @@ export function DataTable<TData>({
                       />
                     ))}
                   </SortableContext>
+                  {/* Spacer header — fills the gap on wide screens (see <col />). */}
+                  {measured && (
+                    <th
+                      aria-hidden="true"
+                      className="border-b border-gray-100 bg-gray-50/70 dark:border-white/10 dark:bg-white/5"
+                    />
+                  )}
                 </tr>
               ))}
             </thead>
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={columnCount} className="px-4 py-10">
+                  <td colSpan={columnCount + (measured ? 1 : 0)} className="px-4 py-10">
                     {emptyState}
                   </td>
                 </tr>
               ) : (
                 rows.map((row) => (
-                  <DataRow key={row.id} row={row} rowLink={rowLink} rowLinkLabel={rowLinkLabel} />
+                  <DataRow
+                    key={row.id}
+                    row={row}
+                    rowLink={rowLink}
+                    rowLinkLabel={rowLinkLabel}
+                    spacer={measured}
+                  />
                 ))
               )}
             </tbody>
@@ -391,12 +411,14 @@ interface DataRowProps<TData> {
   rowLink?: (row: TData) => LinkProps;
   // eslint-disable-next-line no-unused-vars
   rowLinkLabel?: (row: TData) => string;
+  /** Render a trailing spacer cell (matches the spacer column on wide screens). */
+  spacer?: boolean;
 }
 
 /** A single body row. Deliberately drag-state-free so the React Compiler can
  *  memoize it — the body then skips re-rendering while a column is dragged or
  *  resized (the overlays live at the table level). */
-function DataRow<TData>({ row, rowLink, rowLinkLabel }: DataRowProps<TData>) {
+function DataRow<TData>({ row, rowLink, rowLinkLabel, spacer }: DataRowProps<TData>) {
   return (
     <tr
       className={clsx(
@@ -427,6 +449,7 @@ function DataRow<TData>({ row, rowLink, rowLinkLabel }: DataRowProps<TData>) {
           </td>
         );
       })}
+      {spacer && <td aria-hidden="true" className="border-b border-gray-100 dark:border-white/10" />}
     </tr>
   );
 }
@@ -470,7 +493,10 @@ function HeaderCell<TData>({
       scope="col"
       data-col-id={column.id}
       className={clsx(
-        "group relative overflow-hidden border-b border-r border-gray-100 bg-gray-50/70 px-3 py-2.5 text-[10.5px] font-bold uppercase tracking-wide first:pl-4 last:border-r-0 last:pr-4 dark:border-white/10 dark:bg-white/5",
+        // Padding lives on the button (below), not here, so the whole cell is a
+        // click/drag target. First/last insets are forwarded to the button to
+        // stay aligned with the body cells.
+        "group relative overflow-hidden border-b border-r border-gray-100 bg-gray-50/70 text-[10.5px] font-bold whitespace-nowrap uppercase tracking-wide last:border-r-0 dark:border-white/10 dark:bg-white/5 [&:first-child>button]:pl-4 [&:last-child>button]:pr-4",
         align === "right" ? "text-right" : "text-left",
         sorted ? "text-orange-600 dark:text-orange-400" : "text-gray-400",
       )}
@@ -484,7 +510,7 @@ function HeaderCell<TData>({
           disabled={!canSort}
           onClick={header.column.getToggleSortingHandler()}
           className={clsx(
-            "group/sort flex w-full items-center gap-1 uppercase",
+            "group/sort flex w-full items-center gap-1 px-3 py-2.5 uppercase",
             align === "right" && "flex-row-reverse",
             reorderable && "touch-none",
             canSort

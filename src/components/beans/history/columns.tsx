@@ -40,9 +40,8 @@ export const beansHistoryColumns = [
     cell: (info) => (
       <span className="font-medium text-gray-900 dark:text-gray-100">{info.getValue()}</span>
     ),
-    enableHiding: false, // the name is the row's anchor — always shown
-    // Pinned first: the first cell carries the row's stretched link.
-    meta: { label: "Name", lockPosition: true },
+    enableHiding: false, // the name is the row's anchor — always shown (but movable)
+    meta: { label: "Name" },
   }),
   ch.accessor("roaster", {
     id: "roaster",
@@ -84,11 +83,11 @@ export const beansHistoryColumns = [
   // bottom for a descending sort.
   ch.accessor((row) => row.archiveDate ?? undefined, {
     id: "archived",
-    header: "Archived",
+    header: "Archive date",
     cell: ({ row }) => <DateCell date={row.original.archiveDate} />,
     sortingFn: "datetime",
     sortUndefined: -1,
-    meta: { label: "Archived" },
+    meta: { label: "Archive date" },
   }),
   ch.accessor((row) => row.roastDate ?? undefined, {
     id: "roastDate",
