@@ -13,7 +13,7 @@ import { Drawer } from "~/components/Drawer";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
 import { DataTable } from "~/components/table/DataTable";
 import { BeansListItem } from "~/db/types";
-import { beansHistoryColumnVisibilityAtom } from "./atoms";
+import { beansHistoryColumnOrderAtom, beansHistoryColumnVisibilityAtom } from "./atoms";
 import { BeansHistoryFilters } from "./BeansHistoryFilters";
 import { beansHistoryColumns, beansHistoryDefaultVisibility } from "./columns";
 import {
@@ -49,6 +49,7 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
     { id: "roastDate", desc: true },
   ]);
   const [columnVisibility, setColumnVisibility] = useAtom(beansHistoryColumnVisibilityAtom);
+  const [columnOrder, setColumnOrder] = useAtom(beansHistoryColumnOrderAtom);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<BeansFilters>(defaultBeansFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -72,11 +73,14 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
     state: {
       sorting,
       columnVisibility: { ...columnVisibility, status: showStatusColumn },
+      columnOrder,
     },
-    // Seeds "Reset to default" in the column picker (table.resetColumnVisibility).
-    initialState: { columnVisibility: beansHistoryDefaultVisibility },
+    // Seeds "Reset to default" in the column picker (resetColumnVisibility /
+    // resetColumnOrder restore these).
+    initialState: { columnVisibility: beansHistoryDefaultVisibility, columnOrder: [] },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -164,6 +168,7 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
 
       <DataTable
         table={table}
+        enableColumnReorder
         rowLink={(bean) => ({ to: "/beans/$beansId", params: { beansId: bean.id } })}
         rowLinkLabel={(bean) => `View ${bean.name}`}
         footer={<span>{rows.length} results</span>}

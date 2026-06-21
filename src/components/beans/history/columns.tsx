@@ -41,7 +41,8 @@ export const beansHistoryColumns = [
       <span className="font-medium text-gray-900 dark:text-gray-100">{info.getValue()}</span>
     ),
     enableHiding: false, // the name is the row's anchor — always shown
-    meta: { label: "Name" },
+    // Pinned first: the first cell carries the row's stretched link.
+    meta: { label: "Name", lockPosition: true },
   }),
   ch.accessor("roaster", {
     id: "roaster",
@@ -103,7 +104,7 @@ export const beansHistoryColumns = [
     cell: ({ row }) => <BeanScore score={row.original.avgScore} />,
     sortingFn: "basic",
     sortUndefined: "last",
-    meta: { label: "Score", align: "right" },
+    meta: { label: "Score" },
   }),
 
   // ---- opt-in depth columns (hidden by default) ----
