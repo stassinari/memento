@@ -19,6 +19,8 @@ import {
   beansHistoryColumnVisibilityAtom,
 } from "./atoms";
 import { BeansHistoryFilters } from "./BeansHistoryFilters";
+import { BeansHistorySummary } from "./BeansHistorySummary";
+import { deriveBeansSummary } from "./summary";
 import { beansHistoryColumns, beansHistoryDefaultVisibility } from "./columns";
 import {
   applyFacets,
@@ -67,6 +69,11 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
     [scoped, filters, search],
   );
 
+  const summary = useMemo(
+    () => deriveBeansSummary(rows, filters.statuses),
+    [rows, filters.statuses],
+  );
+
   const activeCount = countActiveFilters(filters);
   const activeChips = getActiveFilterChips(filters);
   // Status column shows only when the result set spans more than one status.
@@ -94,6 +101,8 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
 
   return (
     <div>
+      <BeansHistorySummary summary={summary} />
+
       {/* Toolbar: Search · Filters · Columns */}
       <div className="mb-3 flex flex-wrap items-center gap-2.5">
         <div className="relative min-w-50 flex-1">
