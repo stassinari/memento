@@ -1,4 +1,4 @@
-import { ColumnOrderState, VisibilityState } from "@tanstack/react-table";
+import { ColumnOrderState, ColumnSizingState, VisibilityState } from "@tanstack/react-table";
 import { atomWithStorage } from "jotai/utils";
 import { beansHistoryDefaultVisibility } from "./columns";
 
@@ -23,4 +23,14 @@ export const beansHistoryColumnVisibilityAtom = atomWithStorage<VisibilityState>
 export const beansHistoryColumnOrderAtom = atomWithStorage<ColumnOrderState>(
   "beans-history-column-order",
   [],
+);
+
+/**
+ * Per-user column widths for the History table, persisted to localStorage. Only
+ * columns the user has explicitly resized appear here; the rest fall back to
+ * their measured content width. Cleared by "Reset" in the column picker.
+ */
+export const beansHistoryColumnSizingAtom = atomWithStorage<ColumnSizingState>(
+  "beans-history-column-sizing",
+  {},
 );

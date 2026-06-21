@@ -67,6 +67,7 @@ export const ColumnVisibility = ({ table }: ColumnVisibilityProps) => {
   const reset = () => {
     table.resetColumnVisibility();
     table.resetColumnOrder();
+    table.resetColumnSizing();
   };
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {

@@ -13,7 +13,11 @@ import { Drawer } from "~/components/Drawer";
 import { ColumnVisibility } from "~/components/table/ColumnVisibility";
 import { DataTable } from "~/components/table/DataTable";
 import { BeansListItem } from "~/db/types";
-import { beansHistoryColumnOrderAtom, beansHistoryColumnVisibilityAtom } from "./atoms";
+import {
+  beansHistoryColumnOrderAtom,
+  beansHistoryColumnSizingAtom,
+  beansHistoryColumnVisibilityAtom,
+} from "./atoms";
 import { BeansHistoryFilters } from "./BeansHistoryFilters";
 import { beansHistoryColumns, beansHistoryDefaultVisibility } from "./columns";
 import {
@@ -50,6 +54,7 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
   ]);
   const [columnVisibility, setColumnVisibility] = useAtom(beansHistoryColumnVisibilityAtom);
   const [columnOrder, setColumnOrder] = useAtom(beansHistoryColumnOrderAtom);
+  const [columnSizing, setColumnSizing] = useAtom(beansHistoryColumnSizingAtom);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<BeansFilters>(defaultBeansFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -74,13 +79,15 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
       sorting,
       columnVisibility: { ...columnVisibility, status: showStatusColumn },
       columnOrder,
+      columnSizing,
     },
     // Seeds "Reset to default" in the column picker (resetColumnVisibility /
-    // resetColumnOrder restore these).
-    initialState: { columnVisibility: beansHistoryDefaultVisibility, columnOrder: [] },
+    // resetColumnOrder / resetColumnSizing restore these).
+    initialState: { columnVisibility: beansHistoryDefaultVisibility, columnOrder: [], columnSizing: {} },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
+    onColumnSizingChange: setColumnSizing,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -169,6 +176,7 @@ export const BeansHistoryTable = ({ beans }: BeansHistoryTableProps) => {
       <DataTable
         table={table}
         enableColumnReorder
+        enableColumnResize
         rowLink={(bean) => ({ to: "/beans/$beansId", params: { beansId: bean.id } })}
         rowLinkLabel={(bean) => `View ${bean.name}`}
         footer={<span>{rows.length} results</span>}
